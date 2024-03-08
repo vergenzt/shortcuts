@@ -1,0 +1,30 @@
+#!/usr/bin/env python
+
+import json
+import re
+import subprocess as sp
+import sys
+from pathlib import Path
+from typing import Any, Tuple
+
+
+def fetch_shortcut(icloud_url: str) -> Tuple[Any, Any]:
+    if not re.match(r"^https://(?:www.)?icloud\.com/shortcuts/.+$", icloud_url):
+        raise ValueError("Must provide an icloud.com url as first argument!")
+
+    sc_url = icloud_url.replace("/shortcuts/", "/shortcuts/api/records/")
+    sc_meta = json.loads(sp.check_output(["curl", "--fail-with-body", "-sS", sc_url]))
+    sc_bytes_url = sc_meta["fields"]["shortcut"]["value"]["downloadURL"]
+    sc_bytes = sp.check_output(["curl", "--fail-with-body", "-sS", sc_bytes_url])
+    sc_json_raw = sp.check_output(["plutil", "-convert", "json", "-o", "-", "--", "-"], input=sc_bytes)
+    sc_json_pretty = sp.check_output(["jq", "."], input=sc_json_raw)
+    sc_jsonnet = sp.check_output(["jsonnetfmt", "/dev/stdin"], input=sc_json_pretty)
+
+    return sc_meta, sc_jsonnet
+
+
+if __name__ == "__main__":
+    [icloud_url] = sys.argv[1:]
+    sc_meta, sc_jsonnet = fetch_shortcut(icloud_url)
+    sc_name = sc_meta["fields"]["name"]["value"]
+    Path("shortcuts", sc_name + ".jsonnet").write_bytes(sc_jsonnet)
