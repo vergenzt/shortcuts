@@ -6,6 +6,8 @@
     WFWorkflowIconGlyphNumber: 61440,
   },
   WFWorkflowClientVersion: '1206.3.2',
+  WFWorkflowOutputContentItemClasses: [],
+  WFWorkflowHasOutputFallback: false,
   WFWorkflowActions: [
     {
       WFWorkflowActionIdentifier: 'is.workflow.actions.gettext',
@@ -968,6 +970,7 @@
     {
       WFWorkflowActionIdentifier: 'is.workflow.actions.repeat.count',
       WFWorkflowActionParameters: {
+        GroupingIdentifier: '70AA4591-58E4-4CB5-8C7E-09A82EB1495D',
         WFRepeatCount: {
           Value: {
             OutputUUID: '86725A5F-9405-4490-B3C0-B1A8AB382C76',
@@ -976,7 +979,6 @@
           },
           WFSerializationType: 'WFTextTokenAttachment',
         },
-        GroupingIdentifier: '70AA4591-58E4-4CB5-8C7E-09A82EB1495D',
         WFControlFlowMode: 0,
       },
     },
@@ -1212,7 +1214,7 @@
     {
       WFWorkflowActionIdentifier: 'is.workflow.actions.repeat.each',
       WFWorkflowActionParameters: {
-        GroupingIdentifier: '5DF290DC-CAED-4223-8B03-363B64E3DB88',
+        GroupingIdentifier: 'C3199CF3-E8AF-4AFF-A78D-D8CA218DF128',
         WFControlFlowMode: 2,
       },
     },
@@ -1220,14 +1222,13 @@
       WFWorkflowActionIdentifier: 'is.workflow.actions.repeat.each',
       WFWorkflowActionParameters: {
         UUID: '5A089C94-0944-459D-958C-1B72D48C0304',
-        GroupingIdentifier: 'C3199CF3-E8AF-4AFF-A78D-D8CA218DF128',
+        GroupingIdentifier: '5DF290DC-CAED-4223-8B03-363B64E3DB88',
         WFControlFlowMode: 2,
       },
     },
   ],
-  WFWorkflowHasOutputFallback: false,
-  WFWorkflowOutputContentItemClasses: [],
   WFWorkflowInputContentItemClasses: [],
+  WFWorkflowTypes: [],
   WFWorkflowImportQuestions: [
     {
       ParameterKey: 'WFItems',
@@ -1265,7 +1266,6 @@
       DefaultValue: '',
     },
   ],
-  WFWorkflowTypes: [],
   WFQuickActionSurfaces: [],
   WFWorkflowHasShortcutInputVariables: false,
 }

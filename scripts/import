@@ -14,6 +14,7 @@ def fetch_shortcut(icloud_url: str) -> Tuple[Any, Any]:
 
     sc_url = icloud_url.replace("/shortcuts/", "/shortcuts/api/records/")
     sc_meta = json.loads(sp.check_output(["curl", "--fail-with-body", "-sS", sc_url]))
+    breakpoint()
     sc_bytes_url = sc_meta["fields"]["shortcut"]["value"]["downloadURL"]
     sc_bytes = sp.check_output(["curl", "--fail-with-body", "-sS", sc_bytes_url])
     sc_json_raw = sp.check_output(["plutil", "-convert", "json", "-o", "-", "--", "-"], input=sc_bytes)

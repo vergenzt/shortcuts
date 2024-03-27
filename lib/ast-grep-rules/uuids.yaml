@@ -1,0 +1,6 @@
+id: extract-uuids
+language: jsonnet
+
+rule:
+  kind: member
+  regex: UUID

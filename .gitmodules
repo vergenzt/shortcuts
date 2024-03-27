@@ -1,0 +1,3 @@
+[submodule "lib/tree-sitter-jsonnet"]
+	path = lib/tree-sitter-jsonnet
+	url = https://github.com/sourcegraph/tree-sitter-jsonnet
