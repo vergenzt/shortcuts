@@ -1,0 +1,47 @@
+id: action-outputs
+language: jsonnet
+
+rule:
+  kind: array
+  inside:
+    kind: field
+    has: { kind: fieldname, regex: ^WFWorkflowActions$ }
+  has:
+    stopBy: { kind: object }
+    all:
+
+    # # an action with UUID
+    # - kind: object
+    #   has:
+    #     stopBy: end
+    #     kind: field
+    #     has:
+    #       stopBy: { kind: object }
+    #       all:
+    #       - { kind: fieldname, regex: ^UUID$ }
+    #       - { kind: string }
+
+    # # another action...
+    # - has:
+    #     kind: object
+    #     stopBy: { kind: object }
+
+    #     # which has...
+    #     has:
+    #       stopBy: end
+
+    #       # a reference to earlier action's output
+    #       kind: object
+    #       all:
+    #       - has:
+    #           kind: field
+    #           stopBy: { kind: object }
+    #           all:
+    #           - has: { kind: fieldname, regex: ^Type$ }
+    #           - has: { kind: string, regex: ^'ActionOutput'$ }
+    #       - has:
+    #           kind: field
+    #           stopBy: { kind: object }
+    #           all:
+    #           - has: { kind: fieldname, regex: ^OutputUUID$ }
+    #           - has: { kind: string, pattern: $UUID }
