@@ -2,8 +2,10 @@ id: extract-uuids
 language: jsonnet
 
 rule:
-  kind: member
-  has:
+  kind: string
+  inside:
+    kind: field
+  follows:
     kind: fieldname
-    pattern: UUID
-    
+    regex: UUID
+    stopBy: end
