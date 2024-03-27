@@ -3,4 +3,7 @@ language: jsonnet
 
 rule:
   kind: member
-  regex: UUID
+  has:
+    kind: fieldname
+    pattern: UUID
+    

@@ -1,6 +1,6 @@
 customLanguages:
   jsonnet:
-    libraryPath: ../tree-sitter-jsonnet/jsonnet.dylib
+    libraryPath: lib/tree-sitter-jsonnet.dylib
     extensions: [jsonnet]
     expandoChar: µ
 
