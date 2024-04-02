@@ -574,8 +574,8 @@
   WFWorkflowMinimumClientVersion: 900,
   WFWorkflowMinimumClientVersionString: '900',
   WFWorkflowOutputContentItemClasses: [
-    'WFStringContentItem',
     'WFGenericFileContentItem',
+    'WFStringContentItem',
   ],
   WFWorkflowTypes: [
     'NCWidget',

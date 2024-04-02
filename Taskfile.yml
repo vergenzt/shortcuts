@@ -50,6 +50,9 @@ tasks:
       | lzfse -decode \
       | aa extract -d "{{.tmp}}"
       plutil -convert json -o - "{{.tmp}}"/Shortcut.wflow \
-      | jq --sort-keys '.WFWorkflowTypes |= sort' \
+      | jq --sort-keys '
+          .WFWorkflowTypes |= sort |
+          .WFWorkflowOutputContentItemClasses |= sort
+        ' \
       | jsonnetfmt /dev/stdin \
       > "{{.SHORTCUT_SOURCE}}"
