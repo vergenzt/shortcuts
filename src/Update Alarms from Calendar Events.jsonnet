@@ -10,13 +10,15 @@
   WFWorkflowOutputContentItemClasses: [],
   WFWorkflowHasOutputFallback: false,
   WFWorkflowActions: [
-    {
+
+    local emptyText = {
       WFWorkflowActionIdentifier: 'is.workflow.actions.gettext',
       WFWorkflowActionParameters: {
         UUID: '4898379A-8CF9-4B46-BE00-3DB1A233D9E0',
         WFTextActionText: '',
       },
     },
+
     {
       WFWorkflowActionIdentifier: 'is.workflow.actions.setvariable',
       WFWorkflowActionParameters: {
