@@ -1,0 +1,54 @@
+version: '3'
+
+set: [errexit, nounset, pipefail]
+
+env:
+  SHORTCUTS_DIR: '{{.HOME}}/Library/Mobile Documents/iCloud~is~workflow~my~workflows/Documents'
+
+tasks:
+  default:
+    deps: [import-all]
+
+  import-all:
+    cmds:
+    - find "{{.SHORTCUTS_DIR}}" -type f -name "*.shortcut" -delete
+    - shortcuts run 'Export Shortcuts'
+    - task: convert-all
+
+  convert-all:
+    vars:
+      SHORTCUTS: { sh: 'find "{{.SHORTCUTS_DIR}}" -type f -name "*.shortcut" -printf "%P\n"' }
+    cmds:
+    - for: { var: SHORTCUTS, split: "\n" }
+      task: convert
+      vars:
+        SHORTCUT: '{{trimSuffix ".shortcut" .ITEM}}'
+
+  convert:
+    label: 'convert-{{.SHORTCUT}}'
+    vars:
+      SHORTCUT_SIGNED: '{{.SHORTCUTS_DIR}}/{{.SHORTCUT}}.shortcut'
+      SHORTCUT_SOURCE: 'src/{{.SHORTCUT}}.jsonnet'
+      tmp: { sh: mktemp -d }
+
+    # # https://github.com/go-task/task/issues/1551
+    # sources:
+    # - '{{.SHORTCUT_SIGNED}}'
+    # generates:
+    # - '{{.SHORTCUT_SOURCE}}'
+
+    cmds:
+    # https://github.com/0xilis/libshortcutsign/blob/main/libshortcutsign.m#L330
+    - |
+      cat "{{.SHORTCUT_SIGNED}}" \
+      | fq -r -d bytes '
+          (.[0x8:0xC] | explode | reverse | tobytes | tonumber) as $aea_ctx_size |
+          ($aea_ctx_size + 0x495c) as $aa_start |
+          .[$aa_start:] | print
+        ' \
+      | lzfse -decode \
+      | aa extract -d "{{.tmp}}"
+      plutil -convert json -o - "{{.tmp}}"/Shortcut.wflow \
+      | jq --sort-keys '.WFWorkflowTypes |= sort' \
+      | jsonnetfmt /dev/stdin \
+      > "{{.SHORTCUT_SOURCE}}"

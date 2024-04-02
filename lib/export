@@ -1,0 +1,11 @@
+#!/usr/bin/env python
+# /// script
+# dependencies = ['jsonnet']
+# ///
+
+from pathlib import Path
+
+import _jsonnet as jsonnet
+
+
+def export_shortcut(source: Path) -> 
