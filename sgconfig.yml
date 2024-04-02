@@ -1,7 +1,7 @@
 customLanguages:
-  cue:
-    libraryPath: lib/tree-sitter-cue.so
-    extensions: [cue]
+  jsonnet:
+    libraryPath: lib/tree-sitter-jsonnet.dylib
+    extensions: [jsonnet]
     expandoChar: z
 
 ruleDirs:
