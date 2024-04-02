@@ -5,6 +5,7 @@ import re
 import subprocess as sp
 import sys
 from pathlib import Path
+from tempfile import mktemp
 from typing import Any, Tuple
 
 
@@ -17,15 +18,16 @@ def fetch_shortcut(icloud_url: str) -> Tuple[Any, Any]:
     sc_bytes_url = sc_meta["fields"]["shortcut"]["value"]["downloadURL"]
     sc_bytes = sp.check_output(["curl", "--fail-with-body", "-sS", sc_bytes_url])
     sc_json_raw = sp.check_output(["plutil", "-convert", "json", "-o", "-", "--", "-"], input=sc_bytes)
-    sc_json_pretty = sp.check_output(["jq", "."], input=sc_json_raw.decode(), text=True)
-    sc_jsonnet = sp.check_output(["jsonnetfmt", "/dev/stdin"], input=sc_json_pretty, text=True)
+    sc_json = sp.check_output(["jq", "."], input=sc_json_raw)
 
-    return sc_meta, sc_jsonnet
+    return sc_meta, sc_json
 
 
 if __name__ == "__main__":
     [icloud_url] = sys.argv[1:]
-    header = f"# from {icloud_url}\n"
-    sc_meta, sc_jsonnet = fetch_shortcut(icloud_url)
+    header = f"// from {icloud_url}\n"
+    sc_meta, sc_json = fetch_shortcut(icloud_url)
     sc_name = sc_meta["fields"]["name"]["value"]
-    Path("shortcuts", sc_name + ".jsonnet").write_text(header + sc_jsonnet)
+    sc_cue_file = Path("shortcuts", sc_name + ".cue")
+    sc_cue_file.write_text(header + sc_json.decode())
+    sp.check_call(["cue", "fmt", "-s", sc_cue_file])
