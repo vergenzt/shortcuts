@@ -38,6 +38,7 @@ tasks:
     # - '{{.SHORTCUT_SOURCE}}'
 
     cmds:
+    - mkdir -p "$(dirname "{{.SHORTCUT_SOURCE}}")"
     # https://github.com/0xilis/libshortcutsign/blob/main/libshortcutsign.m#L330
     - |
       cat "{{.SHORTCUT_SIGNED}}" \
