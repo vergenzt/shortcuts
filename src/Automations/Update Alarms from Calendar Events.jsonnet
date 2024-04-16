@@ -170,6 +170,10 @@
               '{0, 1}': {
                 Aggrandizements: [
                   {
+                    CoercionItemClass: 'WFLinkEntityContentItem_com.apple.mobiletimer_AlarmEntity',
+                    Type: 'WFCoercionVariableAggrandizement',
+                  },
+                  {
                     PropertyName: 'label',
                     PropertyUserInfo: 'label',
                     Type: 'WFPropertyVariableAggrandizement',
@@ -1222,7 +1226,7 @@
       },
     },
     {
-      WFWorkflowActionIdentifier: 'com.apple.clock.DeleteAlarmIntent',
+      WFWorkflowActionIdentifier: 'com.apple.mobiletimer.DeleteAlarmIntent',
       WFWorkflowActionParameters: {
         AppIntentDescriptor: {
           AppIntentIdentifier: 'DeleteAlarmIntent',
