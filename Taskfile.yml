@@ -17,23 +17,10 @@ tasks:
     # https://github.com/0xilis/libshortcutsign/blob/main/libshortcutsign.m#L330
     - |
       find "$SHORTCUTS_DIR" -type f -name "*.shortcut" -printf "%P\0" \
-      | parallel -0 '
-          mkdir -p src/{//}
-          cat "$SHORTCUTS_DIR"/{} \
-          | fq -r -d bytes "
-              (.[0x8:0xC] | explode | reverse | tobytes | tonumber) as $aea_ctx_size |
-              ($aea_ctx_size + 0x495c) as $aa_start |
-              .[$aa_start:] | print
-            " \
-          | lzfse -decode \
-          | aa extract -d "${tmpdir:=$(mktemp -d)}
-          plutil -convert json "$tmpdir"/Shortcut.wflow -o - \
-          | jq --sort-keys "
-              .WFWorkflowTypes |= sort |
-              .WFWorkflowOutputContentItemClasses |= sort
-            " \
-          | jsonnetfmt /dev/stdin \
-          > src/{.}.jsonnet
+      | parallel -0 ' \
+          mkdir -p src/{//} \
+          && scripts/import "$SHORTCUTS_DIR"/{} > "$(echo src/{.}.jsonnet | tee /dev/stderr)" \
+          && rm "$SHORTCUTS_DIR"/{} \
         '
 
   export-all:

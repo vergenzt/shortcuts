@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+tmpdir=$(mktemp -d)
+
+# shellcheck disable=SC2016
+<"$1" \
+  fq -r -d bytes '
+    (.[0x8:0xC] | explode | reverse | tobytes | tonumber) as $aea_ctx_size |
+    ($aea_ctx_size + 0x495c) as $aa_start |
+    .[$aa_start:] | print
+  ' \
+  | lzfse -decode \
+  | aa extract -d "$tmpdir"
+
+plutil -convert json "$tmpdir"/Shortcut.wflow -o - \
+  | jq --sort-keys "
+      .WFWorkflowTypes |= sort |
+      .WFWorkflowOutputContentItemClasses |= sort
+    " \
+  | jsonnetfmt /dev/stdin
