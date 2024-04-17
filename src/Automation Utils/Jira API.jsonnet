@@ -281,5 +281,7 @@
   WFWorkflowOutputContentItemClasses: [
     'WFGenericFileContentItem',
   ],
-  WFWorkflowTypes: [],
+  WFWorkflowTypes: [
+    'Watch',
+  ],
 }

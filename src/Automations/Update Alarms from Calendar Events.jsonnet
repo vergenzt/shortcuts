@@ -2,26 +2,6 @@
   WFQuickActionSurfaces: [],
   WFWorkflowActions: [
     {
-      WFWorkflowActionIdentifier: 'is.workflow.actions.gettext',
-      WFWorkflowActionParameters: {
-        UUID: '4898379A-8CF9-4B46-BE00-3DB1A233D9E0',
-      },
-    },
-    {
-      WFWorkflowActionIdentifier: 'is.workflow.actions.setvariable',
-      WFWorkflowActionParameters: {
-        WFInput: {
-          Value: {
-            OutputName: 'Text',
-            OutputUUID: '4898379A-8CF9-4B46-BE00-3DB1A233D9E0',
-            Type: 'ActionOutput',
-          },
-          WFSerializationType: 'WFTextTokenAttachment',
-        },
-        WFVariableName: 'Delete unmatched?',
-      },
-    },
-    {
       WFWorkflowActionIdentifier: 'is.workflow.actions.dictionary',
       WFWorkflowActionParameters: {
         CustomOutputName: 'Calendars',
@@ -364,6 +344,19 @@
         },
         WFContentItemInputParameter: 'Library',
         WFContentItemLimitEnabled: false,
+      },
+    },
+    {
+      WFWorkflowActionIdentifier: 'is.workflow.actions.filter.calendarevents',
+      WFWorkflowActionParameters: {
+        WFContentItemInputParameter: {
+          Value: {
+            OutputName: 'Calendar Events',
+            OutputUUID: '58E91960-056A-43F4-A3CA-61059329F2A5',
+            Type: 'ActionOutput',
+          },
+          WFSerializationType: 'WFTextTokenAttachment',
+        },
       },
     },
     {
@@ -977,24 +970,6 @@
       },
     },
     {
-      WFWorkflowActionIdentifier: 'is.workflow.actions.conditional',
-      WFWorkflowActionParameters: {
-        GroupingIdentifier: '5DF290DC-CAED-4223-8B03-363B64E3DB88',
-        WFCondition: 100,
-        WFControlFlowMode: 0,
-        WFInput: {
-          Type: 'Variable',
-          Variable: {
-            Value: {
-              Type: 'Variable',
-              VariableName: 'Delete unmatched?',
-            },
-            WFSerializationType: 'WFTextTokenAttachment',
-          },
-        },
-      },
-    },
-    {
       WFWorkflowActionIdentifier: 'is.workflow.actions.count',
       WFWorkflowActionParameters: {
         Input: {
@@ -1121,7 +1096,7 @@
     {
       WFWorkflowActionIdentifier: 'is.workflow.actions.repeat.each',
       WFWorkflowActionParameters: {
-        GroupingIdentifier: 'C3199CF3-E8AF-4AFF-A78D-D8CA218DF128',
+        GroupingIdentifier: 'FA4A18C4-308D-44AC-8E2E-31906FCC518F',
         WFControlFlowMode: 0,
         WFInput: {
           Value: {
@@ -1254,14 +1229,7 @@
     {
       WFWorkflowActionIdentifier: 'is.workflow.actions.repeat.each',
       WFWorkflowActionParameters: {
-        GroupingIdentifier: 'C3199CF3-E8AF-4AFF-A78D-D8CA218DF128',
-        WFControlFlowMode: 2,
-      },
-    },
-    {
-      WFWorkflowActionIdentifier: 'is.workflow.actions.repeat.each',
-      WFWorkflowActionParameters: {
-        GroupingIdentifier: '5DF290DC-CAED-4223-8B03-363B64E3DB88',
+        GroupingIdentifier: 'FA4A18C4-308D-44AC-8E2E-31906FCC518F',
         UUID: '5A089C94-0944-459D-958C-1B72D48C0304',
         WFControlFlowMode: 2,
       },
@@ -1274,43 +1242,7 @@
     WFWorkflowIconGlyphNumber: 61440,
     WFWorkflowIconStartColor: 431817727,
   },
-  WFWorkflowImportQuestions: [
-    {
-      ActionIndex: 2,
-      Category: 'Parameter',
-      DefaultValue: {
-        Value: {
-          WFDictionaryFieldValueItems: [
-            {
-              WFItemType: 0,
-              WFKey: {
-                Value: {
-                  string: 'Calendar',
-                },
-                WFSerializationType: 'WFTextTokenString',
-              },
-              WFValue: {
-                Value: {
-                  string: 'Calendar',
-                },
-                WFSerializationType: 'WFTextTokenString',
-              },
-            },
-          ],
-        },
-        WFSerializationType: 'WFDictionaryFieldValue',
-      },
-      ParameterKey: 'WFItems',
-      Text: 'Which calendars would you like alarms to be created for? Keys should be Calendar names, and values should be aliases for those calendars (to go in alarm names).',
-    },
-    {
-      ActionIndex: 0,
-      Category: 'Parameter',
-      DefaultValue: '',
-      ParameterKey: 'WFTextActionText',
-      Text: 'Delete enabled alarms that don’t match a calendar event? Leave blank for “no”, fill in a string for “yes”.',
-    },
-  ],
+  WFWorkflowImportQuestions: [],
   WFWorkflowInputContentItemClasses: [],
   WFWorkflowMinimumClientVersion: 900,
   WFWorkflowMinimumClientVersionString: '900',
