@@ -326,17 +326,6 @@
                   Bool: false,
                 },
               },
-              {
-                Operator: 5,
-                Property: 'My Status',
-                Removable: true,
-                Values: {
-                  Enumeration: {
-                    Value: 'Declined',
-                    WFSerializationType: 'WFStringSubstitutableState',
-                  },
-                },
-              },
             ],
             WFContentPredicateBoundedDate: false,
           },
