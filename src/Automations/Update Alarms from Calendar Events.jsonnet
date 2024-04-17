@@ -336,19 +336,6 @@
       },
     },
     {
-      WFWorkflowActionIdentifier: 'is.workflow.actions.filter.calendarevents',
-      WFWorkflowActionParameters: {
-        WFContentItemInputParameter: {
-          Value: {
-            OutputName: 'Calendar Events',
-            OutputUUID: '58E91960-056A-43F4-A3CA-61059329F2A5',
-            Type: 'ActionOutput',
-          },
-          WFSerializationType: 'WFTextTokenAttachment',
-        },
-      },
-    },
-    {
       WFWorkflowActionIdentifier: 'is.workflow.actions.repeat.each',
       WFWorkflowActionParameters: {
         GroupingIdentifier: '3A666097-90F9-4E2A-BBDC-A7A2F903EB04',
