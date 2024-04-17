@@ -1,8 +1,11 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# $1 = path to .shortcut file to import
+
 tmpdir=$(mktemp -d)
 
+# https://github.com/0xilis/libshortcutsign/blob/main/libshortcutsign.m#L330
 # shellcheck disable=SC2016
 <"$1" \
   fq -r -d bytes '

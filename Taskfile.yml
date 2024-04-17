@@ -2,38 +2,41 @@ version: '3'
 
 set: [errexit, nounset, pipefail]
 
-env:
-  SHORTCUTS_DIR: '{{.HOME}}/Library/Mobile Documents/iCloud~is~workflow~my~workflows/Documents'
+vars:
+  IMPORT_DIR: '{{.HOME}}/Library/Mobile Documents/iCloud~is~workflow~my~workflows/Documents'
+  EXPORT_DIR: ./build
+  EXPORT_EXT: shortcut
+  SOURCE_DIR: ./src
+  SOURCE_EXT: jsonnet
   PARALLEL_SHELL: bash
 
 tasks:
   default:
     deps: [import-all]
 
-  import-all:
+  clean:
+    vars:
+      dirs: |-
+        {{.EXPORT_DIR}}
+        {{.IMPORT_DIR}}
     cmds:
-    - find "$SHORTCUTS_DIR" -type f -name "*.shortcut" -delete
+    - for: { var: dirs, as: dir, split: "\n" }
+      cmd: find "{{.dir}}" -depth -mindepth 1 -delete
+
+  import-all:
+    deps: [clean]
+    cmds:
     - shortcuts run 'Export Shortcuts'
-    # https://github.com/0xilis/libshortcutsign/blob/main/libshortcutsign.m#L330
-    - |
-      find "$SHORTCUTS_DIR" -type f -name "*.shortcut" -printf "%P\0" \
-      | parallel -0 ' \
-          mkdir -p src/{//} \
-          && scripts/import "$SHORTCUTS_DIR"/{} > "$(echo src/{.}.jsonnet | tee /dev/stderr)" \
-          && rm "$SHORTCUTS_DIR"/{} \
-        '
+    - >
+      find "{{.IMPORT_DIR}}" -type f -name "*.{{.EXPORT_EXT}}" -printf "%H	%P	{{.SOURCE_DIR|replace "%" "%%"}}	{{.SOURCE_EXT}}\0" 
+      | parallel -0 --colsep='	' 'echo "importing: "{2} && mkdir -p {3}/{2//} && scripts/import {1}/{2} > {3}/{2.}.{4}'
 
   export-all:
+    deps: [clean]
     cmds:
-    - |
-      find src -type f -name "*.jsonnet" -printf "%P\0" \
-      | parallel -0 '
-          mkdir -p "${tmpdir:=$(mktemp -d)}"/{//}
-          jsonnet src/{} > "$tmpdir"/{.}.json
-          plutil -convert xml1 "$tmpdir"/{.}.json -o "$tmpdir"/{.}.wflow
-          mkdir -p build/{//}
-          shortcuts sign -i "$tmpdir"/{.}.wflow -o build/{.}.shortcut
-        '
+    - >
+      find "{{.SOURCE_DIR}}" -type f -name "*.{{.SOURCE_EXT}}" -printf "%H	%P	{{.EXPORT_DIR|replace "%" "%%"}}	{{.EXPORT_EXT}}\0"
+      | parallel -0 --colsep='	' 'echo "exporting: "{2} && mkdir -p {3}/{2//} && scripts/export {1}/{2} > {3}/{2.}.{4}'
     - task: open-all
 
   open-all:

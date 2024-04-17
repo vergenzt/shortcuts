@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# $1 = path to .jsonnet file to import
+# $2 = output dir path
+# $3 = output file basename
+
+tmpdir=$(mktemp -d)
+
+jsonnet "$1" -J lib/jsonnet \
+| plutil -convert xml1 - -o "$tmpdir"/Shortcut.wflow
+
+shortcuts sign -i "$tmpdir"/Shortcut.wflow -o "$tmpdir"/Shortcut.shortcut
+
+cat "$tmpdir"/Shortcut.shortcut
