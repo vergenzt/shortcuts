@@ -1,30 +1,26 @@
-local _ = import '_shortcuts_keys.libsonnet';
-
 {
-
   _count(ns):: std.native('global_count')(ns),
 
-  anon():: std.toString($._count("actionId")),
+  local order_key = std.native('UUIDv5')('actions_order', ''),
+  local ordered() = { [order_key]:: $._count('actions_order') },
 
-  _uuid(ns, name):: std.native('UUIDv5')(ns, name),
+  anon():: std.toString($._count('actionId')),
 
-  _action(id):: {
-    [_._order]:: $._count("actionsOrder"),
-    [_.id]:: id,
+  uuid(ns, name):: std.native('UUIDv5')(ns, name),
+
+  _action(id):: ordered {
+    WFWorkflowActionIdentifier: id,
   },
-
 
   _params(params):: {
-    [_.params]+: params,
+    WFWorkflowActionParameters+: params,
   },
-
 
   Action(id, params):: (
     local unidentifiedAction = $._action(id) + $._params(params);
-    local UUID = $._uuid('action', std.manifestJsonMinified(unidentifiedAction));
+    local UUID = $.uuid('action', std.manifestJsonMinified(unidentifiedAction));
     unidentifiedAction + $._params({ UUID: UUID })
   ),
-
 
   Actions(actions_obj):: (
     local actions_kv = std.objectKeysValuesAll(actions_obj);
@@ -36,9 +32,8 @@ local _ = import '_shortcuts_keys.libsonnet';
         else {}
       )
     );
-    local action_order_key(action) = action[_._order];
 
-    std.sort(std.map(action_from_kv, actions_kv), action_order_key)
+    std.sort(std.map(action_from_kv, actions_kv), order_key)
   ),
 
 }

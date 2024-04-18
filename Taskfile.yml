@@ -3,9 +3,8 @@ version: '3'
 set: [errexit, nounset, pipefail]
 
 vars:
-  EXPORT_DIR: ./build
-  EXPORT_EXT: shortcut
-  SOURCE_DIR: ./src
+  BUILD_DIR: build
+  SOURCE_DIR: src
 
 env:
   PARALLEL_SHELL: bash
@@ -16,9 +15,6 @@ includes:
   export: ./lib/tasks/export.yaml
 
 tasks:
-  default:
-    deps: [import:all]
-
   clean:
     vars:
       dirs: |-
@@ -27,10 +23,6 @@ tasks:
     cmds:
     - for: { var: dirs, as: dir, split: "\n" }
       cmd: find "{{.dir}}" -depth -mindepth 1 -delete
-
-  import-all:
-    deps: [clean]
-    cmds:
 
   export-all:
     deps: [clean]
