@@ -1,9 +1,7 @@
 {
   WFQuickActionSurfaces: [],
-  WFWorkflowActions: [
-    {
-      WFWorkflowActionIdentifier: 'is.workflow.actions.ask',
-      WFWorkflowActionParameters: {
+  WFWorkflowActions: lib.Actions({
+    [lib.anon()]: lib.Action('is.workflow.actions.ask', {
         UUID: '08745925-9D0E-4887-A37A-6DF8CCA06249',
         WFAskActionDefaultAnswer: {
           Value: {
@@ -18,11 +16,9 @@
         },
         WFAskActionPrompt: 'What’s the message?',
         WFInputType: 'Text',
-      },
-    },
-    {
-      WFWorkflowActionIdentifier: 'is.workflow.actions.text.match',
-      WFWorkflowActionParameters: {
+      })
+      ,
+      [lib.anon()]: lib.Action('is.workflow.actions.text.match', {
         UUID: 'AF8E2A17-3E43-4DDA-B9EF-449A886431AE',
         WFMatchTextCaseSensitive: false,
         WFMatchTextPattern: '(?<=\\{\\{)[\\w ]+(?=\\}\\})',
@@ -39,18 +35,14 @@
           },
           WFSerializationType: 'WFTextTokenString',
         },
-      },
-    },
-    {
-      WFWorkflowActionIdentifier: 'is.workflow.actions.selectcontacts',
-      WFWorkflowActionParameters: {
+      })
+      ,
+      [lib.anon()]: lib.Action('is.workflow.actions.selectcontacts', {
         UUID: '72B1CB92-840C-4804-9B47-3AD68EB93C3F',
         WFSelectMultiple: true,
-      },
-    },
-    {
-      WFWorkflowActionIdentifier: 'is.workflow.actions.repeat.each',
-      WFWorkflowActionParameters: {
+      })
+      ,
+      [lib.anon()]: lib.Action('is.workflow.actions.repeat.each', {
         GroupingIdentifier: '4CC0F7FC-67E5-4A99-9E5B-355E2F0B56ED',
         UUID: 'DADB7B38-37DE-47A8-AB9C-553B4DC5052F',
         WFControlFlowMode: 0,
@@ -62,11 +54,9 @@
           },
           WFSerializationType: 'WFTextTokenAttachment',
         },
-      },
-    },
-    {
-      WFWorkflowActionIdentifier: 'is.workflow.actions.repeat.each',
-      WFWorkflowActionParameters: {
+      })
+      ,
+      [lib.anon()]: lib.Action('is.workflow.actions.repeat.each', {
         GroupingIdentifier: '55D8D462-8872-4045-9F46-91174853FBC0',
         WFControlFlowMode: 0,
         WFInput: {
@@ -77,11 +67,9 @@
           },
           WFSerializationType: 'WFTextTokenAttachment',
         },
-      },
-    },
-    {
-      WFWorkflowActionIdentifier: 'is.workflow.actions.properties.contacts',
-      WFWorkflowActionParameters: {
+      })
+      ,
+      [lib.anon()]: lib.Action('is.workflow.actions.properties.contacts', {
         UUID: 'CB8E419C-2BCF-49B9-8460-3CB9899B8B0C',
         WFContentItemPropertyName: {
           Value: {
@@ -97,11 +85,9 @@
           },
           WFSerializationType: 'WFTextTokenAttachment',
         },
-      },
-    },
-    {
-      WFWorkflowActionIdentifier: 'is.workflow.actions.text.replace',
-      WFWorkflowActionParameters: {
+      })
+      ,
+      [lib.anon()]: lib.Action('is.workflow.actions.text.replace', {
         UUID: 'D313D4E3-013F-4C4D-91F6-8E428F076FF5',
         WFInput: {
           Value: {
@@ -142,19 +128,15 @@
           },
           WFSerializationType: 'WFTextTokenString',
         },
-      },
-    },
-    {
-      WFWorkflowActionIdentifier: 'is.workflow.actions.repeat.each',
-      WFWorkflowActionParameters: {
+      })
+      ,
+      [lib.anon()]: lib.Action('is.workflow.actions.repeat.each', {
         GroupingIdentifier: '55D8D462-8872-4045-9F46-91174853FBC0',
         UUID: '1C368B7B-5A16-4607-A75B-EE757FD6C7C8',
         WFControlFlowMode: 2,
-      },
-    },
-    {
-      WFWorkflowActionIdentifier: 'is.workflow.actions.sendmessage',
-      WFWorkflowActionParameters: {
+      })
+      ,
+      [lib.anon()]: lib.Action('is.workflow.actions.sendmessage', {
         IntentAppDefinition: {
           BundleIdentifier: 'com.apple.MobileSMS',
           Name: 'Messages',
@@ -181,17 +163,15 @@
           },
           WFSerializationType: 'WFTextTokenString',
         },
-      },
-    },
-    {
-      WFWorkflowActionIdentifier: 'is.workflow.actions.repeat.each',
-      WFWorkflowActionParameters: {
+      })
+      ,
+      [lib.anon()]: lib.Action('is.workflow.actions.repeat.each', {
         GroupingIdentifier: '4CC0F7FC-67E5-4A99-9E5B-355E2F0B56ED',
         UUID: 'E36736DB-A729-46A2-B903-C080A94B245B',
         WFControlFlowMode: 2,
-      },
-    },
-  ],
+      })
+      ,
+  }),
   WFWorkflowClientVersion: '2302.0.4',
   WFWorkflowHasOutputFallback: false,
   WFWorkflowHasShortcutInputVariables: false,

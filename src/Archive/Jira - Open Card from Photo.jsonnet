@@ -1,16 +1,12 @@
 {
   WFQuickActionSurfaces: [],
-  WFWorkflowActions: [
-    {
-      WFWorkflowActionIdentifier: 'is.workflow.actions.takephoto',
-      WFWorkflowActionParameters: {
+  WFWorkflowActions: lib.Actions({
+    [lib.anon()]: lib.Action('is.workflow.actions.takephoto', {
         UUID: 'E5EEEC27-9961-4BA0-B494-2B5058A36E02',
         WFCameraCaptureShowPreview: true,
-      },
-    },
-    {
-      WFWorkflowActionIdentifier: 'is.workflow.actions.extracttextfromimage',
-      WFWorkflowActionParameters: {
+      })
+      ,
+      [lib.anon()]: lib.Action('is.workflow.actions.extracttextfromimage', {
         UUID: '2F5C059E-4286-4620-A2CB-4F546115B199',
         WFImage: {
           Value: {
@@ -20,11 +16,9 @@
           },
           WFSerializationType: 'WFTextTokenAttachment',
         },
-      },
-    },
-    {
-      WFWorkflowActionIdentifier: 'is.workflow.actions.text.match',
-      WFWorkflowActionParameters: {
+      })
+      ,
+      [lib.anon()]: lib.Action('is.workflow.actions.text.match', {
         UUID: '458A2E62-B389-4BC6-8588-628C795D0A48',
         WFMatchTextPattern: 'CARD-(\\d+)',
         text: {
@@ -40,11 +34,9 @@
           },
           WFSerializationType: 'WFTextTokenString',
         },
-      },
-    },
-    {
-      WFWorkflowActionIdentifier: 'is.workflow.actions.runworkflow',
-      WFWorkflowActionParameters: {
+      })
+      ,
+      [lib.anon()]: lib.Action('is.workflow.actions.runworkflow', {
         WFInput: {
           Value: {
             OutputName: 'Matches',
@@ -53,11 +45,9 @@
           },
           WFSerializationType: 'WFTextTokenAttachment',
         },
-      },
-    },
-    {
-      WFWorkflowActionIdentifier: 'com.atlassian.jira.app.GetIssueIntent',
-      WFWorkflowActionParameters: {
+      })
+      ,
+      [lib.anon()]: lib.Action('com.atlassian.jira.app.GetIssueIntent', {
         UUID: 'EC39AC83-4A91-45CA-8289-8DA1A5F1B284',
         account: 'vergenzt@gmail.com',
         issueKey: {
@@ -74,11 +64,9 @@
           WFSerializationType: 'WFTextTokenString',
         },
         site: 'vergenz',
-      },
-    },
-    {
-      WFWorkflowActionIdentifier: 'com.atlassian.jira.app.OpenIssueIntent',
-      WFWorkflowActionParameters: {
+      })
+      ,
+      [lib.anon()]: lib.Action('com.atlassian.jira.app.OpenIssueIntent', {
         UUID: 'D8CDAE08-ED1E-4814-8EB1-AB8E73B25C29',
         issue: {
           Value: {
@@ -88,9 +76,9 @@
           },
           WFSerializationType: 'WFTextTokenAttachment',
         },
-      },
-    },
-  ],
+      })
+      ,
+  }),
   WFWorkflowClientVersion: '2302.0.4',
   WFWorkflowHasOutputFallback: false,
   WFWorkflowHasShortcutInputVariables: false,

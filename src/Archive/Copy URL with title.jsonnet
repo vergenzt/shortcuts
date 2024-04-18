@@ -1,9 +1,7 @@
 {
   WFQuickActionSurfaces: [],
-  WFWorkflowActions: [
-    {
-      WFWorkflowActionIdentifier: 'is.workflow.actions.getarticle',
-      WFWorkflowActionParameters: {
+  WFWorkflowActions: lib.Actions({
+    [lib.anon()]: lib.Action('is.workflow.actions.getarticle', {
         UUID: '1B4A9A3E-E59C-413E-AF6A-1F2627C46F42',
         WFWebPage: {
           Value: {
@@ -16,11 +14,9 @@
           },
           WFSerializationType: 'WFTextTokenString',
         },
-      },
-    },
-    {
-      WFWorkflowActionIdentifier: 'is.workflow.actions.gettext',
-      WFWorkflowActionParameters: {
+      })
+      ,
+      [lib.anon()]: lib.Action('is.workflow.actions.gettext', {
         UUID: '58084029-5B88-4AE9-95C7-0506CA89C45D',
         WFTextActionText: {
           Value: {
@@ -44,11 +40,9 @@
           },
           WFSerializationType: 'WFTextTokenString',
         },
-      },
-    },
-    {
-      WFWorkflowActionIdentifier: 'is.workflow.actions.setclipboard',
-      WFWorkflowActionParameters: {
+      })
+      ,
+      [lib.anon()]: lib.Action('is.workflow.actions.setclipboard', {
         UUID: 'F3D25BD5-457B-4392-975B-8354AFEC33D7',
         WFInput: {
           Value: {
@@ -58,9 +52,9 @@
           },
           WFSerializationType: 'WFTextTokenAttachment',
         },
-      },
-    },
-  ],
+      })
+      ,
+  }),
   WFWorkflowClientVersion: '2302.0.4',
   WFWorkflowHasOutputFallback: false,
   WFWorkflowHasShortcutInputVariables: true,

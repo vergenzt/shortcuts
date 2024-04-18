@@ -1,9 +1,7 @@
 {
   WFQuickActionSurfaces: [],
-  WFWorkflowActions: [
-    {
-      WFWorkflowActionIdentifier: 'is.workflow.actions.filter.reminders',
-      WFWorkflowActionParameters: {
+  WFWorkflowActions: lib.Actions({
+    [lib.anon()]: lib.Action('is.workflow.actions.filter.reminders', {
         UUID: '1B8B463C-7805-4FAD-ADAD-A620A3FF6580',
         WFContentItemFilter: {
           Value: {
@@ -34,11 +32,9 @@
           WFSerializationType: 'WFContentPredicateTableTemplate',
         },
         WFContentItemInputParameter: 'Library',
-      },
-    },
-    {
-      WFWorkflowActionIdentifier: 'is.workflow.actions.repeat.each',
-      WFWorkflowActionParameters: {
+      })
+      ,
+      [lib.anon()]: lib.Action('is.workflow.actions.repeat.each', {
         GroupingIdentifier: '06C7177F-0DD0-4EF7-8354-638BF3E43DE8',
         WFControlFlowMode: 0,
         WFInput: {
@@ -49,11 +45,9 @@
           },
           WFSerializationType: 'WFTextTokenAttachment',
         },
-      },
-    },
-    {
-      WFWorkflowActionIdentifier: 'com.atlassian.jira.app.CreateIssueIntent',
-      WFWorkflowActionParameters: {
+      })
+      ,
+      [lib.anon()]: lib.Action('com.atlassian.jira.app.CreateIssueIntent', {
         UUID: 'E860BDA0-451E-43E4-A596-885F0FC20C24',
         account: 'vergenzt@gmail.com',
         issueType: {
@@ -77,11 +71,9 @@
           },
           WFSerializationType: 'WFTextTokenString',
         },
-      },
-    },
-    {
-      WFWorkflowActionIdentifier: 'is.workflow.actions.gettext',
-      WFWorkflowActionParameters: {
+      })
+      ,
+      [lib.anon()]: lib.Action('is.workflow.actions.gettext', {
         UUID: '151FEADD-B4FF-4B9F-81BE-9584E7D95578',
         WFTextActionText: {
           Value: {
@@ -121,11 +113,9 @@
           },
           WFSerializationType: 'WFTextTokenString',
         },
-      },
-    },
-    {
-      WFWorkflowActionIdentifier: 'com.atlassian.jira.app.SetIssueFieldIntent',
-      WFWorkflowActionParameters: {
+      })
+      ,
+      [lib.anon()]: lib.Action('com.atlassian.jira.app.SetIssueFieldIntent', {
         UUID: '59B2D1C3-7557-4932-9EAF-BADCDC0C77B8',
         issue: {
           Value: {
@@ -149,11 +139,9 @@
           },
           WFSerializationType: 'WFTextTokenString',
         },
-      },
-    },
-    {
-      WFWorkflowActionIdentifier: 'is.workflow.actions.setters.reminders',
-      WFWorkflowActionParameters: {
+      })
+      ,
+      [lib.anon()]: lib.Action('is.workflow.actions.setters.reminders', {
         Mode: 'Set',
         UUID: 'C86E9AB3-CE48-45B0-B0A9-F723BD913903',
         WFContentItemPropertyName: 'List',
@@ -165,11 +153,9 @@
           WFSerializationType: 'WFTextTokenAttachment',
         },
         WFReminderContentItemList: 'Added to Jira',
-      },
-    },
-    {
-      WFWorkflowActionIdentifier: 'is.workflow.actions.gettext',
-      WFWorkflowActionParameters: {
+      })
+      ,
+      [lib.anon()]: lib.Action('is.workflow.actions.gettext', {
         UUID: '7AFF23E1-2035-4D5B-AF32-A6222A5BA909',
         WFTextActionText: {
           Value: {
@@ -211,11 +197,9 @@
           },
           WFSerializationType: 'WFTextTokenString',
         },
-      },
-    },
-    {
-      WFWorkflowActionIdentifier: 'is.workflow.actions.setters.reminders',
-      WFWorkflowActionParameters: {
+      })
+      ,
+      [lib.anon()]: lib.Action('is.workflow.actions.setters.reminders', {
         Mode: 'Set',
         'Show-WFReminderContentItemTags': true,
         UUID: '67E3BB42-CF2A-45CC-9740-39D45C4E40E0',
@@ -241,17 +225,15 @@
           },
           WFSerializationType: 'WFTextTokenString',
         },
-      },
-    },
-    {
-      WFWorkflowActionIdentifier: 'is.workflow.actions.repeat.each',
-      WFWorkflowActionParameters: {
+      })
+      ,
+      [lib.anon()]: lib.Action('is.workflow.actions.repeat.each', {
         GroupingIdentifier: '06C7177F-0DD0-4EF7-8354-638BF3E43DE8',
         UUID: '0A5023FF-3BE0-4FD6-95F4-D7FDA0FB2A00',
         WFControlFlowMode: 2,
-      },
-    },
-  ],
+      })
+      ,
+  }),
   WFWorkflowClientVersion: '2302.0.4',
   WFWorkflowHasOutputFallback: false,
   WFWorkflowHasShortcutInputVariables: false,

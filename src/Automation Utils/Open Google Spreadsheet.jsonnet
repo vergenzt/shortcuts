@@ -1,16 +1,12 @@
 {
   WFQuickActionSurfaces: [],
-  WFWorkflowActions: [
-    {
-      WFWorkflowActionIdentifier: 'is.workflow.actions.getdevicedetails',
-      WFWorkflowActionParameters: {
+  WFWorkflowActions: lib.Actions({
+    [lib.anon()]: lib.Action('is.workflow.actions.getdevicedetails', {
         UUID: '70BF179B-0520-4404-9E01-FB6D891D5536',
         WFDeviceDetail: 'Device Model',
-      },
-    },
-    {
-      WFWorkflowActionIdentifier: 'is.workflow.actions.conditional',
-      WFWorkflowActionParameters: {
+      })
+      ,
+      [lib.anon()]: lib.Action('is.workflow.actions.conditional', {
         GroupingIdentifier: '2607D75E-2498-4367-B38D-ECE360DB437F',
         WFCondition: 4,
         WFConditionalActionString: 'Mac',
@@ -26,41 +22,31 @@
             WFSerializationType: 'WFTextTokenAttachment',
           },
         },
-      },
-    },
-    {
-      WFWorkflowActionIdentifier: 'is.workflow.actions.gettext',
-      WFWorkflowActionParameters: {
+      })
+      ,
+      [lib.anon()]: lib.Action('is.workflow.actions.gettext', {
         UUID: '4C33B873-50CF-44E1-8A8F-5A6EA03F6C26',
         WFTextActionText: 'https',
-      },
-    },
-    {
-      WFWorkflowActionIdentifier: 'is.workflow.actions.conditional',
-      WFWorkflowActionParameters: {
+      })
+      ,
+      [lib.anon()]: lib.Action('is.workflow.actions.conditional', {
         GroupingIdentifier: '2607D75E-2498-4367-B38D-ECE360DB437F',
         WFControlFlowMode: 1,
-      },
-    },
-    {
-      WFWorkflowActionIdentifier: 'is.workflow.actions.gettext',
-      WFWorkflowActionParameters: {
+      })
+      ,
+      [lib.anon()]: lib.Action('is.workflow.actions.gettext', {
         UUID: 'C32F3A03-E30D-4B85-9944-FEEEF866251E',
         WFTextActionText: 'googlesheets',
-      },
-    },
-    {
-      WFWorkflowActionIdentifier: 'is.workflow.actions.conditional',
-      WFWorkflowActionParameters: {
-        CustomOutputName: 'Scheme',
-        GroupingIdentifier: '2607D75E-2498-4367-B38D-ECE360DB437F',
-        UUID: '316906E6-934C-40B3-8165-F27AFBE00983',
-        WFControlFlowMode: 2,
-      },
-    },
-    {
-      WFWorkflowActionIdentifier: 'is.workflow.actions.url',
-      WFWorkflowActionParameters: {
+      })
+      ,
+      ['Scheme']: lib.Action('is.workflow.actions.conditional', {
+              CustomOutputName: 'Scheme',
+              GroupingIdentifier: '2607D75E-2498-4367-B38D-ECE360DB437F',
+              UUID: '316906E6-934C-40B3-8165-F27AFBE00983',
+              WFControlFlowMode: 2,
+            })
+      ,
+      [lib.anon()]: lib.Action('is.workflow.actions.url', {
         'Show-WFURLActionURL': true,
         UUID: 'E493CEF0-9ABF-4261-9968-304EC2EE7798',
         WFURLActionURL: {
@@ -79,11 +65,9 @@
           },
           WFSerializationType: 'WFTextTokenString',
         },
-      },
-    },
-    {
-      WFWorkflowActionIdentifier: 'is.workflow.actions.openurl',
-      WFWorkflowActionParameters: {
+      })
+      ,
+      [lib.anon()]: lib.Action('is.workflow.actions.openurl', {
         'Show-WFInput': true,
         UUID: 'D60C6ACE-FD01-47BF-B159-F075667CEBFD',
         WFInput: {
@@ -94,9 +78,9 @@
           },
           WFSerializationType: 'WFTextTokenAttachment',
         },
-      },
-    },
-  ],
+      })
+      ,
+  }),
   WFWorkflowClientVersion: '2302.0.4',
   WFWorkflowHasOutputFallback: false,
   WFWorkflowHasShortcutInputVariables: true,

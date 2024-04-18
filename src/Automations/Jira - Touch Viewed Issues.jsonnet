@@ -1,16 +1,12 @@
 {
   WFQuickActionSurfaces: [],
-  WFWorkflowActions: [
-    {
-      WFWorkflowActionIdentifier: 'is.workflow.actions.gettext',
-      WFWorkflowActionParameters: {
+  WFWorkflowActions: lib.Actions({
+    [lib.anon()]: lib.Action('is.workflow.actions.gettext', {
         UUID: 'DDC72E39-4309-44F3-9CF8-5363F365A6CE',
         WFTextActionText: '10096',
-      },
-    },
-    {
-      WFWorkflowActionIdentifier: 'is.workflow.actions.setvariable',
-      WFWorkflowActionParameters: {
+      })
+      ,
+      [lib.anon()]: lib.Action('is.workflow.actions.setvariable', {
         WFInput: {
           Value: {
             OutputName: 'Text',
@@ -20,30 +16,26 @@
           WFSerializationType: 'WFTextTokenAttachment',
         },
         WFVariableName: 'FID',
-      },
-    },
-    {
-      WFWorkflowActionIdentifier: 'is.workflow.actions.gettext',
-      WFWorkflowActionParameters: {
-        CustomOutputName: 'JQL',
-        UUID: '265915F4-5E67-47DE-915D-1A00F0928D3F',
-        WFTextActionText: {
-          Value: {
-            attachmentsByRange: {
-              '{30, 1}': {
-                Type: 'Variable',
-                VariableName: 'FID',
+      })
+      ,
+      ['JQL']: lib.Action('is.workflow.actions.gettext', {
+              CustomOutputName: 'JQL',
+              UUID: '265915F4-5E67-47DE-915D-1A00F0928D3F',
+              WFTextActionText: {
+                Value: {
+                  attachmentsByRange: {
+                    '{30, 1}': {
+                      Type: 'Variable',
+                      VariableName: 'FID',
+                    },
+                  },
+                  string: 'lastViewed is not EMPTY or cf[￼] is EMPTY',
+                },
+                WFSerializationType: 'WFTextTokenString',
               },
-            },
-            string: 'lastViewed is not EMPTY or cf[￼] is EMPTY',
-          },
-          WFSerializationType: 'WFTextTokenString',
-        },
-      },
-    },
-    {
-      WFWorkflowActionIdentifier: 'is.workflow.actions.dictionary',
-      WFWorkflowActionParameters: {
+            })
+      ,
+      [lib.anon()]: lib.Action('is.workflow.actions.dictionary', {
         UUID: '88D0D22C-5C6D-465B-B196-7FCCC743A09C',
         WFItems: {
           Value: {
@@ -159,32 +151,28 @@
           },
           WFSerializationType: 'WFDictionaryFieldValue',
         },
-      },
-    },
-    {
-      WFWorkflowActionIdentifier: 'is.workflow.actions.runworkflow',
-      WFWorkflowActionParameters: {
-        CustomOutputName: 'Get Viewed Issues Result',
-        UUID: '0BC34C52-3304-4A72-8199-D233EFFF2D04',
-        WFInput: {
-          Value: {
-            OutputName: 'Dictionary',
-            OutputUUID: '88D0D22C-5C6D-465B-B196-7FCCC743A09C',
-            Type: 'ActionOutput',
-          },
-          WFSerializationType: 'WFTextTokenAttachment',
-        },
-        WFWorkflow: {
-          isSelf: false,
-          workflowIdentifier: 'B245F907-CA3B-4273-B2B7-BE1A4BAE3F79',
-          workflowName: 'Jira API',
-        },
-        WFWorkflowName: 'Jira API',
-      },
-    },
-    {
-      WFWorkflowActionIdentifier: 'is.workflow.actions.repeat.each',
-      WFWorkflowActionParameters: {
+      })
+      ,
+      ['Get Viewed Issues Result']: lib.Action('is.workflow.actions.runworkflow', {
+              CustomOutputName: 'Get Viewed Issues Result',
+              UUID: '0BC34C52-3304-4A72-8199-D233EFFF2D04',
+              WFInput: {
+                Value: {
+                  OutputName: 'Dictionary',
+                  OutputUUID: '88D0D22C-5C6D-465B-B196-7FCCC743A09C',
+                  Type: 'ActionOutput',
+                },
+                WFSerializationType: 'WFTextTokenAttachment',
+              },
+              WFWorkflow: {
+                isSelf: false,
+                workflowIdentifier: 'B245F907-CA3B-4273-B2B7-BE1A4BAE3F79',
+                workflowName: 'Jira API',
+              },
+              WFWorkflowName: 'Jira API',
+            })
+      ,
+      [lib.anon()]: lib.Action('is.workflow.actions.repeat.each', {
         GroupingIdentifier: '6F192F82-E28B-4DA5-8E9D-3595CEE96F87',
         WFControlFlowMode: 0,
         WFInput: {
@@ -205,30 +193,26 @@
           },
           WFSerializationType: 'WFTextTokenAttachment',
         },
-      },
-    },
-    {
-      WFWorkflowActionIdentifier: 'is.workflow.actions.gettext',
-      WFWorkflowActionParameters: {
-        CustomOutputName: 'jq',
-        UUID: 'E0BE9453-92FB-40ED-B03E-B9C6B46BC0B1',
-        WFTextActionText: {
-          Value: {
-            attachmentsByRange: {
-              '{57, 1}': {
-                Type: 'Variable',
-                VariableName: 'FID',
+      })
+      ,
+      ['jq']: lib.Action('is.workflow.actions.gettext', {
+              CustomOutputName: 'jq',
+              UUID: 'E0BE9453-92FB-40ED-B03E-B9C6B46BC0B1',
+              WFTextActionText: {
+                Value: {
+                  attachmentsByRange: {
+                    '{57, 1}': {
+                      Type: 'Variable',
+                      VariableName: 'FID',
+                    },
+                  },
+                  string: '([.fields[]] | max) as $max\n| (\n  if .fields.customfield_￼ == $max\n  then empty\n  else { key, newValue: $max }\n  end\n)',
+                },
+                WFSerializationType: 'WFTextTokenString',
               },
-            },
-            string: '([.fields[]] | max) as $max\n| (\n  if .fields.customfield_￼ == $max\n  then empty\n  else { key, newValue: $max }\n  end\n)',
-          },
-          WFSerializationType: 'WFTextTokenString',
-        },
-      },
-    },
-    {
-      WFWorkflowActionIdentifier: 'ke.bou.GizmoPack.QueryJSONIntent',
-      WFWorkflowActionParameters: {
+            })
+      ,
+      [lib.anon()]: lib.Action('ke.bou.GizmoPack.QueryJSONIntent', {
         UUID: 'C3E456FC-B4AC-4548-8650-E06F7DCA6CE1',
         input: {
           Value: {
@@ -251,11 +235,9 @@
           WFSerializationType: 'WFTextTokenString',
         },
         queryType: 'jq',
-      },
-    },
-    {
-      WFWorkflowActionIdentifier: 'is.workflow.actions.conditional',
-      WFWorkflowActionParameters: {
+      })
+      ,
+      [lib.anon()]: lib.Action('is.workflow.actions.conditional', {
         GroupingIdentifier: 'FAC0F958-C6D7-4969-9830-1BE2C0B6472C',
         WFCondition: 100,
         WFConditionalActionString: {
@@ -283,11 +265,9 @@
             WFSerializationType: 'WFTextTokenAttachment',
           },
         },
-      },
-    },
-    {
-      WFWorkflowActionIdentifier: 'is.workflow.actions.dictionary',
-      WFWorkflowActionParameters: {
+      })
+      ,
+      [lib.anon()]: lib.Action('is.workflow.actions.dictionary', {
         UUID: 'D340DC0F-B702-4938-9C37-36168D945BF1',
         WFItems: {
           Value: {
@@ -419,11 +399,9 @@
           },
           WFSerializationType: 'WFDictionaryFieldValue',
         },
-      },
-    },
-    {
-      WFWorkflowActionIdentifier: 'is.workflow.actions.runworkflow',
-      WFWorkflowActionParameters: {
+      })
+      ,
+      [lib.anon()]: lib.Action('is.workflow.actions.runworkflow', {
         UUID: '5F5B077B-A275-4C29-AD81-ACBBB635E124',
         WFInput: {
           Value: {
@@ -439,11 +417,9 @@
           workflowName: 'Jira API',
         },
         WFWorkflowName: 'Jira API',
-      },
-    },
-    {
-      WFWorkflowActionIdentifier: 'is.workflow.actions.appendvariable',
-      WFWorkflowActionParameters: {
+      })
+      ,
+      [lib.anon()]: lib.Action('is.workflow.actions.appendvariable', {
         WFInput: {
           Value: {
             OutputName: 'Shortcut Result',
@@ -453,27 +429,21 @@
           WFSerializationType: 'WFTextTokenAttachment',
         },
         WFVariableName: 'Updated Issues',
-      },
-    },
-    {
-      WFWorkflowActionIdentifier: 'is.workflow.actions.conditional',
-      WFWorkflowActionParameters: {
+      })
+      ,
+      [lib.anon()]: lib.Action('is.workflow.actions.conditional', {
         GroupingIdentifier: 'FAC0F958-C6D7-4969-9830-1BE2C0B6472C',
         UUID: '8D9F8B76-6DCE-4FE1-9947-0DA9AECC8CCE',
         WFControlFlowMode: 2,
-      },
-    },
-    {
-      WFWorkflowActionIdentifier: 'is.workflow.actions.repeat.each',
-      WFWorkflowActionParameters: {
+      })
+      ,
+      [lib.anon()]: lib.Action('is.workflow.actions.repeat.each', {
         GroupingIdentifier: '6F192F82-E28B-4DA5-8E9D-3595CEE96F87',
         UUID: '93C52995-3225-47BD-9DAE-68B78165FCC5',
         WFControlFlowMode: 2,
-      },
-    },
-    {
-      WFWorkflowActionIdentifier: 'is.workflow.actions.count',
-      WFWorkflowActionParameters: {
+      })
+      ,
+      [lib.anon()]: lib.Action('is.workflow.actions.count', {
         Input: {
           Value: {
             Type: 'Variable',
@@ -482,11 +452,9 @@
           WFSerializationType: 'WFTextTokenAttachment',
         },
         UUID: '23180042-1F8E-4EC8-A828-ED3315DF5F7D',
-      },
-    },
-    {
-      WFWorkflowActionIdentifier: 'is.workflow.actions.conditional',
-      WFWorkflowActionParameters: {
+      })
+      ,
+      [lib.anon()]: lib.Action('is.workflow.actions.conditional', {
         GroupingIdentifier: '732DECE0-5E84-43B1-A972-8FEC52FECF86',
         WFCondition: 2,
         WFControlFlowMode: 0,
@@ -502,11 +470,9 @@
           },
         },
         WFNumberValue: '0',
-      },
-    },
-    {
-      WFWorkflowActionIdentifier: 'is.workflow.actions.notification',
-      WFWorkflowActionParameters: {
+      })
+      ,
+      [lib.anon()]: lib.Action('is.workflow.actions.notification', {
         UUID: '3944118D-3424-4F5F-870F-4FAD5931EB7E',
         WFNotificationActionBody: {
           Value: {
@@ -521,16 +487,14 @@
           },
           WFSerializationType: 'WFTextTokenString',
         },
-      },
-    },
-    {
-      WFWorkflowActionIdentifier: 'is.workflow.actions.conditional',
-      WFWorkflowActionParameters: {
+      })
+      ,
+      [lib.anon()]: lib.Action('is.workflow.actions.conditional', {
         GroupingIdentifier: '732DECE0-5E84-43B1-A972-8FEC52FECF86',
         WFControlFlowMode: 2,
-      },
-    },
-  ],
+      })
+      ,
+  }),
   WFWorkflowClientVersion: '2302.0.4',
   WFWorkflowHasOutputFallback: false,
   WFWorkflowHasShortcutInputVariables: false,

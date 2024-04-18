@@ -1,38 +1,30 @@
 {
   WFQuickActionSurfaces: [],
-  WFWorkflowActions: [
-    {
-      WFWorkflowActionIdentifier: 'is.workflow.actions.detect.dictionary',
-      WFWorkflowActionParameters: {
-        CustomOutputName: 'Input Dict',
-        UUID: '89C08046-311F-4B52-90E3-C2A3DBFCF024',
-        WFInput: {
-          Value: {
-            Type: 'ExtensionInput',
-          },
-          WFSerializationType: 'WFTextTokenAttachment',
-        },
-      },
-    },
-    {
-      WFWorkflowActionIdentifier: 'dk.simonbs.DataJar.GetValueIntent',
-      WFWorkflowActionParameters: {
-        CustomOutputName: 'Jira Config',
-        UUID: '89A86341-ECE8-4BBA-B75E-EC3E951D9F57',
-        keyPath: 'jira-config',
-      },
-    },
-    {
-      WFWorkflowActionIdentifier: 'ke.bou.GizmoPack.RandomDataIntent',
-      WFWorkflowActionParameters: {
-        CustomOutputName: 'Error Nonce',
-        UUID: '996788C8-83B7-43C2-AB00-1BA590A2A85F',
-        outputEncoding: 'hex',
-      },
-    },
-    {
-      WFWorkflowActionIdentifier: 'ch.marcela.ada.Pyto.RunCodeIntent',
-      WFWorkflowActionParameters: {
+  WFWorkflowActions: lib.Actions({
+    ['Input Dict']: lib.Action('is.workflow.actions.detect.dictionary', {
+              CustomOutputName: 'Input Dict',
+              UUID: '89C08046-311F-4B52-90E3-C2A3DBFCF024',
+              WFInput: {
+                Value: {
+                  Type: 'ExtensionInput',
+                },
+                WFSerializationType: 'WFTextTokenAttachment',
+              },
+            })
+      ,
+      ['Jira Config']: lib.Action('dk.simonbs.DataJar.GetValueIntent', {
+              CustomOutputName: 'Jira Config',
+              UUID: '89A86341-ECE8-4BBA-B75E-EC3E951D9F57',
+              keyPath: 'jira-config',
+            })
+      ,
+      ['Error Nonce']: lib.Action('ke.bou.GizmoPack.RandomDataIntent', {
+              CustomOutputName: 'Error Nonce',
+              UUID: '996788C8-83B7-43C2-AB00-1BA590A2A85F',
+              outputEncoding: 'hex',
+            })
+      ,
+      [lib.anon()]: lib.Action('ch.marcela.ada.Pyto.RunCodeIntent', {
         UUID: '94BD3C02-F0B8-4EA3-B793-51A53A09FE97',
         code: {
           Value: {
@@ -59,17 +51,13 @@
         },
         input: '',
         showConsole: false,
-      },
-    },
-    {
-      WFWorkflowActionIdentifier: 'ch.marcela.ada.Pyto.GetScriptOutputIntent',
-      WFWorkflowActionParameters: {
+      })
+      ,
+      [lib.anon()]: lib.Action('ch.marcela.ada.Pyto.GetScriptOutputIntent', {
         UUID: 'D7A259F7-36FF-42B3-A9B4-BCE9394624D7',
-      },
-    },
-    {
-      WFWorkflowActionIdentifier: 'is.workflow.actions.text.split',
-      WFWorkflowActionParameters: {
+      })
+      ,
+      [lib.anon()]: lib.Action('is.workflow.actions.text.split', {
         UUID: 'AD47B4AC-D848-4D16-AC07-A5C512D66BBA',
         text: {
           Value: {
@@ -79,11 +67,9 @@
           },
           WFSerializationType: 'WFTextTokenAttachment',
         },
-      },
-    },
-    {
-      WFWorkflowActionIdentifier: 'is.workflow.actions.getitemfromlist',
-      WFWorkflowActionParameters: {
+      })
+      ,
+      [lib.anon()]: lib.Action('is.workflow.actions.getitemfromlist', {
         UUID: '125443CC-6BC7-4578-BA1F-836F14C029F5',
         WFInput: {
           Value: {
@@ -93,11 +79,9 @@
           },
           WFSerializationType: 'WFTextTokenAttachment',
         },
-      },
-    },
-    {
-      WFWorkflowActionIdentifier: 'is.workflow.actions.conditional',
-      WFWorkflowActionParameters: {
+      })
+      ,
+      [lib.anon()]: lib.Action('is.workflow.actions.conditional', {
         GroupingIdentifier: 'B8B9F0F6-0B7F-4C5D-9FF3-1256A1C48B93',
         WFCondition: 4,
         WFConditionalActionString: {
@@ -125,61 +109,53 @@
             WFSerializationType: 'WFTextTokenAttachment',
           },
         },
-      },
-    },
-    {
-      WFWorkflowActionIdentifier: 'is.workflow.actions.getitemfromlist',
-      WFWorkflowActionParameters: {
-        CustomOutputName: 'Error Context',
-        UUID: '1F185F43-5922-472E-B25E-BA4EA4DDB6E4',
-        WFInput: {
-          Value: {
-            OutputName: 'Split Text',
-            OutputUUID: 'AD47B4AC-D848-4D16-AC07-A5C512D66BBA',
-            Type: 'ActionOutput',
-          },
-          WFSerializationType: 'WFTextTokenAttachment',
-        },
-        WFItemIndex: '2',
-        WFItemRangeStart: '2',
-        WFItemSpecifier: 'Item At Index',
-      },
-    },
-    {
-      WFWorkflowActionIdentifier: 'is.workflow.actions.getitemfromlist',
-      WFWorkflowActionParameters: {
-        CustomOutputName: 'Error Message Lines',
-        UUID: '421DC2D2-68AB-4602-ADDD-D272F4441728',
-        WFInput: {
-          Value: {
-            OutputName: 'Split Text',
-            OutputUUID: 'AD47B4AC-D848-4D16-AC07-A5C512D66BBA',
-            Type: 'ActionOutput',
-          },
-          WFSerializationType: 'WFTextTokenAttachment',
-        },
-        WFItemRangeStart: '3',
-        WFItemSpecifier: 'Items in Range',
-      },
-    },
-    {
-      WFWorkflowActionIdentifier: 'is.workflow.actions.text.combine',
-      WFWorkflowActionParameters: {
-        CustomOutputName: 'Error Message',
-        UUID: 'E89D9FB3-E77E-46E3-93E5-2E21D3DC7474',
-        text: {
-          Value: {
-            OutputName: 'Error Message Lines',
-            OutputUUID: '421DC2D2-68AB-4602-ADDD-D272F4441728',
-            Type: 'ActionOutput',
-          },
-          WFSerializationType: 'WFTextTokenAttachment',
-        },
-      },
-    },
-    {
-      WFWorkflowActionIdentifier: 'is.workflow.actions.alert',
-      WFWorkflowActionParameters: {
+      })
+      ,
+      ['Error Context']: lib.Action('is.workflow.actions.getitemfromlist', {
+              CustomOutputName: 'Error Context',
+              UUID: '1F185F43-5922-472E-B25E-BA4EA4DDB6E4',
+              WFInput: {
+                Value: {
+                  OutputName: 'Split Text',
+                  OutputUUID: 'AD47B4AC-D848-4D16-AC07-A5C512D66BBA',
+                  Type: 'ActionOutput',
+                },
+                WFSerializationType: 'WFTextTokenAttachment',
+              },
+              WFItemIndex: '2',
+              WFItemRangeStart: '2',
+              WFItemSpecifier: 'Item At Index',
+            })
+      ,
+      ['Error Message Lines']: lib.Action('is.workflow.actions.getitemfromlist', {
+              CustomOutputName: 'Error Message Lines',
+              UUID: '421DC2D2-68AB-4602-ADDD-D272F4441728',
+              WFInput: {
+                Value: {
+                  OutputName: 'Split Text',
+                  OutputUUID: 'AD47B4AC-D848-4D16-AC07-A5C512D66BBA',
+                  Type: 'ActionOutput',
+                },
+                WFSerializationType: 'WFTextTokenAttachment',
+              },
+              WFItemRangeStart: '3',
+              WFItemSpecifier: 'Items in Range',
+            })
+      ,
+      ['Error Message']: lib.Action('is.workflow.actions.text.combine', {
+              CustomOutputName: 'Error Message',
+              UUID: 'E89D9FB3-E77E-46E3-93E5-2E21D3DC7474',
+              text: {
+                Value: {
+                  OutputName: 'Error Message Lines',
+                  OutputUUID: '421DC2D2-68AB-4602-ADDD-D272F4441728',
+                  Type: 'ActionOutput',
+                },
+                WFSerializationType: 'WFTextTokenAttachment',
+              },
+            })
+      ,
+      [lib.anon()]: lib.Action('is.workflow.actions.alert', {
         WFAlertActionMessage: {
           Value: {
             attachmentsByRange: {
@@ -206,18 +182,14 @@
           },
           WFSerializationType: 'WFTextTokenString',
         },
-      },
-    },
-    {
-      WFWorkflowActionIdentifier: 'is.workflow.actions.conditional',
-      WFWorkflowActionParameters: {
+      })
+      ,
+      [lib.anon()]: lib.Action('is.workflow.actions.conditional', {
         GroupingIdentifier: 'B8B9F0F6-0B7F-4C5D-9FF3-1256A1C48B93',
         WFControlFlowMode: 1,
-      },
-    },
-    {
-      WFWorkflowActionIdentifier: 'is.workflow.actions.output',
-      WFWorkflowActionParameters: {
+      })
+      ,
+      [lib.anon()]: lib.Action('is.workflow.actions.output', {
         WFOutput: {
           Value: {
             attachmentsByRange: {
@@ -231,17 +203,15 @@
           },
           WFSerializationType: 'WFTextTokenString',
         },
-      },
-    },
-    {
-      WFWorkflowActionIdentifier: 'is.workflow.actions.conditional',
-      WFWorkflowActionParameters: {
+      })
+      ,
+      [lib.anon()]: lib.Action('is.workflow.actions.conditional', {
         GroupingIdentifier: 'B8B9F0F6-0B7F-4C5D-9FF3-1256A1C48B93',
         UUID: 'E97FD31C-D2E0-49C0-B4A9-796A16C27345',
         WFControlFlowMode: 2,
-      },
-    },
-  ],
+      })
+      ,
+  }),
   WFWorkflowClientVersion: '2302.0.4',
   WFWorkflowHasOutputFallback: false,
   WFWorkflowHasShortcutInputVariables: true,

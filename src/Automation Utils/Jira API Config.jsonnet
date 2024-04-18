@@ -1,17 +1,13 @@
 {
   WFQuickActionSurfaces: [],
-  WFWorkflowActions: [
-    {
-      WFWorkflowActionIdentifier: 'dk.simonbs.DataJar.GetValueIntent',
-      WFWorkflowActionParameters: {
-        CustomOutputName: 'Jira Config',
-        UUID: '2C93C881-B46A-43DA-B28F-9C9FFED23E79',
-        keyPath: 'jira-config',
-      },
-    },
-    {
-      WFWorkflowActionIdentifier: 'ke.bou.GizmoPack.QueryJSONIntent',
-      WFWorkflowActionParameters: {
+  WFWorkflowActions: lib.Actions({
+    ['Jira Config']: lib.Action('dk.simonbs.DataJar.GetValueIntent', {
+              CustomOutputName: 'Jira Config',
+              UUID: '2C93C881-B46A-43DA-B28F-9C9FFED23E79',
+              keyPath: 'jira-config',
+            })
+      ,
+      [lib.anon()]: lib.Action('ke.bou.GizmoPack.QueryJSONIntent', {
         UUID: '1D3A849D-EFB8-433B-AAAE-E4874ABA35BA',
         input: {
           Value: {
@@ -23,11 +19,9 @@
         },
         jqQuery: '"\\(.username):\\(.api_token)" | @base64',
         queryType: 'jq',
-      },
-    },
-    {
-      WFWorkflowActionIdentifier: 'is.workflow.actions.setvalueforkey',
-      WFWorkflowActionParameters: {
+      })
+      ,
+      [lib.anon()]: lib.Action('is.workflow.actions.setvalueforkey', {
         UUID: 'DB9762D8-746F-4B5A-BF6E-B933A7E1C055',
         WFDictionary: {
           Value: {
@@ -57,9 +51,9 @@
           },
           WFSerializationType: 'WFTextTokenString',
         },
-      },
-    },
-  ],
+      })
+      ,
+  }),
   WFWorkflowClientVersion: '2302.0.4',
   WFWorkflowHasOutputFallback: false,
   WFWorkflowHasShortcutInputVariables: false,

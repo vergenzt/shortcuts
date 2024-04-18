@@ -1,9 +1,7 @@
 {
   WFQuickActionSurfaces: [],
-  WFWorkflowActions: [
-    {
-      WFWorkflowActionIdentifier: 'is.workflow.actions.runshellscript',
-      WFWorkflowActionParameters: {
+  WFWorkflowActions: lib.Actions({
+    [lib.anon()]: lib.Action('is.workflow.actions.runshellscript', {
         Input: {
           Value: {
             Type: 'ExtensionInput',
@@ -14,9 +12,9 @@
         Script: 'gshred -u "$@"',
         Shell: '/bin/bash',
         UUID: '6F16FCD4-8611-4C46-A4F2-2D76552BF163',
-      },
-    },
-  ],
+      })
+      ,
+  }),
   WFWorkflowClientVersion: '2302.0.4',
   WFWorkflowHasOutputFallback: false,
   WFWorkflowHasShortcutInputVariables: true,

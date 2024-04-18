@@ -1,16 +1,12 @@
 {
   WFQuickActionSurfaces: [],
-  WFWorkflowActions: [
-    {
-      WFWorkflowActionIdentifier: 'dk.simonbs.DataJar.GetValueIntent',
-      WFWorkflowActionParameters: {
+  WFWorkflowActions: lib.Actions({
+    [lib.anon()]: lib.Action('dk.simonbs.DataJar.GetValueIntent', {
         UUID: '33258B4E-F713-463A-BB6A-44039131D019',
         keyPath: 'dose-recorder',
-      },
-    },
-    {
-      WFWorkflowActionIdentifier: 'is.workflow.actions.runworkflow',
-      WFWorkflowActionParameters: {
+      })
+      ,
+      [lib.anon()]: lib.Action('is.workflow.actions.runworkflow', {
         UUID: '1CEEAC73-E5EA-4E73-BD39-B5F7F2B05175',
         WFInput: {
           Value: {
@@ -36,9 +32,9 @@
           workflowName: 'Open Google Spreadsheet',
         },
         WFWorkflowName: 'Open Google Spreadsheet',
-      },
-    },
-  ],
+      })
+      ,
+  }),
   WFWorkflowClientVersion: '2302.0.4',
   WFWorkflowHasOutputFallback: false,
   WFWorkflowHasShortcutInputVariables: false,

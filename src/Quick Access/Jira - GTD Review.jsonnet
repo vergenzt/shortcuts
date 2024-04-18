@@ -1,9 +1,7 @@
 {
   WFQuickActionSurfaces: [],
-  WFWorkflowActions: [
-    {
-      WFWorkflowActionIdentifier: 'is.workflow.actions.runworkflow',
-      WFWorkflowActionParameters: {
+  WFWorkflowActions: lib.Actions({
+    [lib.anon()]: lib.Action('is.workflow.actions.runworkflow', {
         UUID: '4497936E-1C1E-4C1A-B5CB-4CE2F5C6D206',
         WFWorkflow: {
           isSelf: false,
@@ -11,18 +9,14 @@
           workflowName: 'Google OAuth',
         },
         WFWorkflowName: 'Google OAuth',
-      },
-    },
-    {
-      WFWorkflowActionIdentifier: 'dk.simonbs.DataJar.GetValueIntent',
-      WFWorkflowActionParameters: {
+      })
+      ,
+      [lib.anon()]: lib.Action('dk.simonbs.DataJar.GetValueIntent', {
         UUID: 'AA396E6A-E9EE-4534-BA6E-1D6EF716A83C',
         keyPath: 'jira-config',
-      },
-    },
-    {
-      WFWorkflowActionIdentifier: 'is.workflow.actions.url',
-      WFWorkflowActionParameters: {
+      })
+      ,
+      [lib.anon()]: lib.Action('is.workflow.actions.url', {
         UUID: '1066C8E0-90E0-4FC0-9B25-BC32FFE55A8F',
         WFURLActionURL: {
           Value: {
@@ -47,19 +41,15 @@
           },
           WFSerializationType: 'WFTextTokenString',
         },
-      },
-    },
-    {
-      WFWorkflowActionIdentifier: 'dk.simonbs.DataJar.GetValueIntent',
-      WFWorkflowActionParameters: {
-        CustomOutputName: 'Filters by First Issue Age',
-        UUID: '5B3A3F04-4964-453A-B343-0F4736391F37',
-        keyPath: 'jira-cache.Filters & Issues by First Issue Age',
-      },
-    },
-    {
-      WFWorkflowActionIdentifier: 'is.workflow.actions.repeat.each',
-      WFWorkflowActionParameters: {
+      })
+      ,
+      ['Filters by First Issue Age']: lib.Action('dk.simonbs.DataJar.GetValueIntent', {
+              CustomOutputName: 'Filters by First Issue Age',
+              UUID: '5B3A3F04-4964-453A-B343-0F4736391F37',
+              keyPath: 'jira-cache.Filters & Issues by First Issue Age',
+            })
+      ,
+      [lib.anon()]: lib.Action('is.workflow.actions.repeat.each', {
         GroupingIdentifier: 'D61B3F28-18FE-47C0-87CB-8F871024AFE9',
         WFControlFlowMode: 0,
         WFInput: {
@@ -76,35 +66,31 @@
           },
           WFSerializationType: 'WFTextTokenAttachment',
         },
-      },
-    },
-    {
-      WFWorkflowActionIdentifier: 'is.workflow.actions.detect.dictionary',
-      WFWorkflowActionParameters: {
-        CustomOutputName: 'Filter Description Dictionary',
-        UUID: '0FE23374-3316-4C7B-913C-DB6FBC3FBA14',
-        WFInput: {
-          Value: {
-            Aggrandizements: [
-              {
-                CoercionItemClass: 'WFDictionaryContentItem',
-                Type: 'WFCoercionVariableAggrandizement',
+      })
+      ,
+      ['Filter Description Dictionary']: lib.Action('is.workflow.actions.detect.dictionary', {
+              CustomOutputName: 'Filter Description Dictionary',
+              UUID: '0FE23374-3316-4C7B-913C-DB6FBC3FBA14',
+              WFInput: {
+                Value: {
+                  Aggrandizements: [
+                    {
+                      CoercionItemClass: 'WFDictionaryContentItem',
+                      Type: 'WFCoercionVariableAggrandizement',
+                    },
+                    {
+                      DictionaryKey: 'description',
+                      Type: 'WFDictionaryValueVariableAggrandizement',
+                    },
+                  ],
+                  Type: 'Variable',
+                  VariableName: 'Repeat Item',
+                },
+                WFSerializationType: 'WFTextTokenAttachment',
               },
-              {
-                DictionaryKey: 'description',
-                Type: 'WFDictionaryValueVariableAggrandizement',
-              },
-            ],
-            Type: 'Variable',
-            VariableName: 'Repeat Item',
-          },
-          WFSerializationType: 'WFTextTokenAttachment',
-        },
-      },
-    },
-    {
-      WFWorkflowActionIdentifier: 'is.workflow.actions.repeat.each',
-      WFWorkflowActionParameters: {
+            })
+      ,
+      [lib.anon()]: lib.Action('is.workflow.actions.repeat.each', {
         GroupingIdentifier: 'E0CA601A-6D60-4670-B03D-08FB3BEAA176',
         WFControlFlowMode: 0,
         WFInput: {
@@ -124,11 +110,9 @@
           },
           WFSerializationType: 'WFTextTokenAttachment',
         },
-      },
-    },
-    {
-      WFWorkflowActionIdentifier: 'is.workflow.actions.dictionary',
-      WFWorkflowActionParameters: {
+      })
+      ,
+      [lib.anon()]: lib.Action('is.workflow.actions.dictionary', {
         UUID: 'EBB3E40C-3309-4FE9-B471-8238CAE72D50',
         WFItems: {
           Value: {
@@ -264,32 +248,28 @@
           },
           WFSerializationType: 'WFDictionaryFieldValue',
         },
-      },
-    },
-    {
-      WFWorkflowActionIdentifier: 'is.workflow.actions.runworkflow',
-      WFWorkflowActionParameters: {
-        CustomOutputName: 'JQL Matches',
-        UUID: '549E2EE9-7E5A-4EDE-8BCF-ED28146943AB',
-        WFInput: {
-          Value: {
-            OutputName: 'Dictionary',
-            OutputUUID: 'EBB3E40C-3309-4FE9-B471-8238CAE72D50',
-            Type: 'ActionOutput',
-          },
-          WFSerializationType: 'WFTextTokenAttachment',
-        },
-        WFWorkflow: {
-          isSelf: false,
-          workflowIdentifier: 'B245F907-CA3B-4273-B2B7-BE1A4BAE3F79',
-          workflowName: 'Jira API',
-        },
-        WFWorkflowName: 'Jira API',
-      },
-    },
-    {
-      WFWorkflowActionIdentifier: 'ke.bou.GizmoPack.QueryJSONIntent',
-      WFWorkflowActionParameters: {
+      })
+      ,
+      ['JQL Matches']: lib.Action('is.workflow.actions.runworkflow', {
+              CustomOutputName: 'JQL Matches',
+              UUID: '549E2EE9-7E5A-4EDE-8BCF-ED28146943AB',
+              WFInput: {
+                Value: {
+                  OutputName: 'Dictionary',
+                  OutputUUID: 'EBB3E40C-3309-4FE9-B471-8238CAE72D50',
+                  Type: 'ActionOutput',
+                },
+                WFSerializationType: 'WFTextTokenAttachment',
+              },
+              WFWorkflow: {
+                isSelf: false,
+                workflowIdentifier: 'B245F907-CA3B-4273-B2B7-BE1A4BAE3F79',
+                workflowName: 'Jira API',
+              },
+              WFWorkflowName: 'Jira API',
+            })
+      ,
+      [lib.anon()]: lib.Action('ke.bou.GizmoPack.QueryJSONIntent', {
         UUID: '8155851A-DB07-4452-8C78-BAEBAE5567AB',
         input: {
           Value: {
@@ -307,11 +287,9 @@
         },
         jqQuery: '.matches[].matchedIssues[]',
         queryType: 'jq',
-      },
-    },
-    {
-      WFWorkflowActionIdentifier: 'is.workflow.actions.conditional',
-      WFWorkflowActionParameters: {
+      })
+      ,
+      [lib.anon()]: lib.Action('is.workflow.actions.conditional', {
         GroupingIdentifier: 'DDA9A0FE-3ABA-4A9B-A939-1777995CE8E9',
         WFCondition: 100,
         WFControlFlowMode: 0,
@@ -332,11 +310,9 @@
             WFSerializationType: 'WFTextTokenAttachment',
           },
         },
-      },
-    },
-    {
-      WFWorkflowActionIdentifier: 'is.workflow.actions.dictionary',
-      WFWorkflowActionParameters: {
+      })
+      ,
+      [lib.anon()]: lib.Action('is.workflow.actions.dictionary', {
         UUID: '5F1412EE-D0E1-4722-8E9B-DBB92C30F0F1',
         WFItems: {
           Value: {
@@ -422,11 +398,9 @@
           },
           WFSerializationType: 'WFDictionaryFieldValue',
         },
-      },
-    },
-    {
-      WFWorkflowActionIdentifier: 'is.workflow.actions.setvalueforkey',
-      WFWorkflowActionParameters: {
+      })
+      ,
+      [lib.anon()]: lib.Action('is.workflow.actions.setvalueforkey', {
         UUID: '3CA9DD17-9B12-4EEB-993F-6F1D0A4A747E',
         WFDictionary: {
           Value: {
@@ -449,11 +423,9 @@
           },
           WFSerializationType: 'WFTextTokenString',
         },
-      },
-    },
-    {
-      WFWorkflowActionIdentifier: 'is.workflow.actions.setvalueforkey',
-      WFWorkflowActionParameters: {
+      })
+      ,
+      [lib.anon()]: lib.Action('is.workflow.actions.setvalueforkey', {
         UUID: 'C060FACB-7EC7-4CA8-87C3-01493C679DEF',
         WFDictionary: {
           Value: {
@@ -482,11 +454,9 @@
           },
           WFSerializationType: 'WFTextTokenString',
         },
-      },
-    },
-    {
-      WFWorkflowActionIdentifier: 'is.workflow.actions.runworkflow',
-      WFWorkflowActionParameters: {
+      })
+      ,
+      [lib.anon()]: lib.Action('is.workflow.actions.runworkflow', {
         UUID: '358CCB0F-EE50-4B64-8299-12EA1FE50BA3',
         WFInput: {
           Value: {
@@ -502,11 +472,9 @@
           workflowName: 'Jira - Prompt to Review',
         },
         WFWorkflowName: 'Jira - Prompt to Review',
-      },
-    },
-    {
-      WFWorkflowActionIdentifier: 'is.workflow.actions.conditional',
-      WFWorkflowActionParameters: {
+      })
+      ,
+      [lib.anon()]: lib.Action('is.workflow.actions.conditional', {
         GroupingIdentifier: 'A334B26F-D55D-429E-9239-81E9A45C3671',
         WFCondition: 101,
         WFControlFlowMode: 0,
@@ -527,39 +495,31 @@
             WFSerializationType: 'WFTextTokenAttachment',
           },
         },
-      },
-    },
-    {
-      WFWorkflowActionIdentifier: 'is.workflow.actions.conditional',
-      WFWorkflowActionParameters: {
+      })
+      ,
+      [lib.anon()]: lib.Action('is.workflow.actions.conditional', {
         GroupingIdentifier: 'A334B26F-D55D-429E-9239-81E9A45C3671',
         UUID: '34834033-D933-4DDA-A8C6-3E7765568D4C',
         WFControlFlowMode: 2,
-      },
-    },
-    {
-      WFWorkflowActionIdentifier: 'is.workflow.actions.conditional',
-      WFWorkflowActionParameters: {
+      })
+      ,
+      [lib.anon()]: lib.Action('is.workflow.actions.conditional', {
         GroupingIdentifier: 'DDA9A0FE-3ABA-4A9B-A939-1777995CE8E9',
         UUID: '94339012-69AA-4BC5-A87A-0E1ACC0FD160',
         WFControlFlowMode: 2,
-      },
-    },
-    {
-      WFWorkflowActionIdentifier: 'is.workflow.actions.repeat.each',
-      WFWorkflowActionParameters: {
+      })
+      ,
+      [lib.anon()]: lib.Action('is.workflow.actions.repeat.each', {
         GroupingIdentifier: 'E0CA601A-6D60-4670-B03D-08FB3BEAA176',
         WFControlFlowMode: 2,
-      },
-    },
-    {
-      WFWorkflowActionIdentifier: 'is.workflow.actions.repeat.each',
-      WFWorkflowActionParameters: {
+      })
+      ,
+      [lib.anon()]: lib.Action('is.workflow.actions.repeat.each', {
         GroupingIdentifier: 'D61B3F28-18FE-47C0-87CB-8F871024AFE9',
         WFControlFlowMode: 2,
-      },
-    },
-  ],
+      })
+      ,
+  }),
   WFWorkflowClientVersion: '2302.0.4',
   WFWorkflowHasOutputFallback: false,
   WFWorkflowHasShortcutInputVariables: false,

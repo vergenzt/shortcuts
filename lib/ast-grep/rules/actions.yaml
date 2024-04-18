@@ -3,50 +3,64 @@ language: jsonnet
 
 rule:
   pattern: |
-    WFWorkflowActions: [ $$$ACTIONS ]
+    [ $$$ACTIONS ]
+  inside:
+    kind: field
+    has:
+      kind: fieldname
+      regex: WFWorkflowActions
 
-# rewriters:
+utils:
+  has-custom-output-name:
+    has:
+      kind: field
+      stopBy: end
+      has:
+        kind: fieldname
+        regex: CustomOutputName
+        precedes:
+          stopBy: { kind: field }
+          kind: string
+          pattern: $NAME
 
-# - id: named-action
-#   rule: 
-#     pattern: |
-#       {
-#         WFWorkflowActionIdentifier: $ID,
-#         WFWorkflowActionParameters: {
-#           $$$PRE
-#           CustomOutputName: $NAME,
-#           $$$POST
-#         }
-#       }
-#   fix: |
-#     '$NAME': lib.Action($ID, {
-#       $$$PRE
-#       $$$POST
-#     })
+rewriters:
 
-# - id: anon-action
-#   rule:
-#     pattern: |
-#       {
-#         WFWorkflowActionIdentifier: $ID,
-#         WFWorkflowActionParameters: $PARAMS
-#       }
-#   fix: |
-#     [lib.anon()]:: lib.Action($ID, $PARAMS)
+- id: named-action
+  rule: 
+    pattern: |
+      {
+        WFWorkflowActionIdentifier: $ID,
+        WFWorkflowActionParameters: $PARAMS,
+      }
+    matches: has-custom-output-name
+  transform:
+    PARAMS_NO_OUTPUT_NAME:
+      replace:
+        source: '$PARAMS'
+        replace: '^CustomOutputName: .*,$'
+        by: ''
+  fix: |
+    [$NAME]: lib.Action($ID, $PARAMS_NO_OUTPUT_NAME)
 
-# transform:
-#   ACTIONS_OBJ:
-#     rewrite:
-#       rewriters: [named-action, anon-action]
-#       source: $$$ACTIONS
-#       joinBy: ",\n"
+- id: anon-action
+  rule: 
+    pattern: |
+      {
+        WFWorkflowActionIdentifier: $ID,
+        WFWorkflowActionParameters: $PARAMS,
+      }
+    not:
+      matches: has-custom-output-name
+  fix: |
+    [lib.anon()]: lib.Action($ID, $PARAMS)
 
-# fix: |-
-#   {
-#     $$$PRE
-#     WFWorkflowActions: lib.Actions({
-#       $$$ACTIONS_OBJ
-#     })
-#     $$$POST
-#   }
+transform:
+  ACTIONS_OBJ:
+    rewrite:
+      rewriters: [named-action, anon-action]
+      source: '$$$ACTIONS'
 
+fix: |-
+  lib.Actions({
+    $ACTIONS_OBJ
+  })
