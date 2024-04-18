@@ -1,0 +1,52 @@
+id: actions
+language: jsonnet
+
+rule:
+  pattern: |
+    WFWorkflowActions: [ $$$ACTIONS ]
+
+# rewriters:
+
+# - id: named-action
+#   rule: 
+#     pattern: |
+#       {
+#         WFWorkflowActionIdentifier: $ID,
+#         WFWorkflowActionParameters: {
+#           $$$PRE
+#           CustomOutputName: $NAME,
+#           $$$POST
+#         }
+#       }
+#   fix: |
+#     '$NAME': lib.Action($ID, {
+#       $$$PRE
+#       $$$POST
+#     })
+
+# - id: anon-action
+#   rule:
+#     pattern: |
+#       {
+#         WFWorkflowActionIdentifier: $ID,
+#         WFWorkflowActionParameters: $PARAMS
+#       }
+#   fix: |
+#     [lib.anon()]:: lib.Action($ID, $PARAMS)
+
+# transform:
+#   ACTIONS_OBJ:
+#     rewrite:
+#       rewriters: [named-action, anon-action]
+#       source: $$$ACTIONS
+#       joinBy: ",\n"
+
+# fix: |-
+#   {
+#     $$$PRE
+#     WFWorkflowActions: lib.Actions({
+#       $$$ACTIONS_OBJ
+#     })
+#     $$$POST
+#   }
+
