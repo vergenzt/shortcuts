@@ -3,7 +3,7 @@ local lib = import 'shortcuts.libsonnet';
 {
   WFQuickActionSurfaces: [],
   WFWorkflowActions: lib.Actions({
-    local results = self,
+    // local results = self,
 
     Calendars: lib.Action('is.workflow.actions.dictionary', {
       WFItems: {

@@ -45,6 +45,3 @@ tasks:
       | tee {{shellQuote .BUILD_PATH}}/Shortcut.json
       | jsonnetfmt /dev/stdin
       > {{shellQuote .SOURCE_PATH}}
-
-
-

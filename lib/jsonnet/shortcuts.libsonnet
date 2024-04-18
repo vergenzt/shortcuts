@@ -23,17 +23,18 @@
   ),
 
   Actions(actions_obj):: (
-    local actions_kv = std.objectKeysValuesAll(actions_obj);
-    local action_from_kv(kv) = (
-      local name = kv.key, action = kv.value;
-      local isVisible = std.objectHas(actions_obj, name);
-      action + (
-        if isVisible then $._params({ CustomOutputName: name })
-        else {}
-      )
-    );
-
-    std.sort(std.map(action_from_kv, actions_kv), order_key)
+    std.sort(
+      [
+        actions_obj[name] + (
+          // (if name is not hidden)
+          if std.objectHas(actions_obj, name)
+          then $._params({ CustomOutputName: name })
+          else $._params({})
+        )
+        for name in std.objectFieldsAll(actions_obj)
+      ],
+      function(action) action[order_key],
+    )
   ),
 
 }
