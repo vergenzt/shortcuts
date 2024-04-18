@@ -3,16 +3,21 @@ version: '3'
 set: [errexit, nounset, pipefail]
 
 vars:
-  IMPORT_DIR: '{{.HOME}}/Library/Mobile Documents/iCloud~is~workflow~my~workflows/Documents'
   EXPORT_DIR: ./build
   EXPORT_EXT: shortcut
   SOURCE_DIR: ./src
-  SOURCE_EXT: jsonnet
+
+env:
   PARALLEL_SHELL: bash
+  JSONNET_PATH: lib/jsonnet
+
+includes:
+  import: ./lib/tasks/import.yaml
+  export: ./lib/tasks/export.yaml
 
 tasks:
   default:
-    deps: [import-all]
+    deps: [import:all]
 
   clean:
     vars:
@@ -26,10 +31,6 @@ tasks:
   import-all:
     deps: [clean]
     cmds:
-    - shortcuts run 'Export Shortcuts'
-    - >
-      find "{{.IMPORT_DIR}}" -type f -name "*.{{.EXPORT_EXT}}" -printf "%H	%P	{{.SOURCE_DIR|replace "%" "%%"}}	{{.SOURCE_EXT}}\0" 
-      | parallel -0 --colsep='	' 'echo "importing: "{2} && mkdir -p {3}/{2//} && scripts/import {1}/{2} > {3}/{2.}.{4}'
 
   export-all:
     deps: [clean]

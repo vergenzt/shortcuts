@@ -1,0 +1,49 @@
+version: '3'
+
+vars:
+  IMPORT_DIR: '{{.HOME}}/Library/Mobile Documents/iCloud~is~workflow~my~workflows/Documents'
+  PATHS:
+    sh: >
+      shortcuts run 'Export Shortcuts' &&
+      find '{{.IMPORT_DIR}}' -type f -name '*.shortcut' -printf '%P\n'
+      | sed 's/\.[^\./]+$//g'
+
+tasks:
+  all:
+    desc: Imports all Apple Shortcuts from your account into {{.SOURCE_DIR}}.
+    cmds:
+    - for: { var: PATHS, split: "\n", as: PATH }
+      task: default
+
+  default:
+    desc: Imports a single Apple Shortcut at {{.PATH}} into {{.SOURCE_DIR}}.
+    requires:
+      vars: ["SOURCE_DIR", "BUILD_DIR", "PATH"]
+    vars:
+      BUILD_PATH: '{{.BUILD_DIR}}/{{.PATH}}'
+      IMPORT_PATH: '{{.IMPORT_DIR}}/{{.PATH}}.shortcut'
+      SOURCE_PATH: '{{.SOURCE_DIR}}/{{.PATH}}.jsonnet'
+    sources:
+    - '{{.IMPORT_PATH}}'
+    generates:
+    - '{{.SOURCE_PATH}}'
+
+    cmds:
+    - >
+      <'{{.IMPORT_PATH}}' fq -r -d bytes '
+        (.[0x8:0xC] | explode | reverse | tobytes | tonumber) as $aea_ctx_size |
+        ($aea_ctx_size + 0x495c) as $aa_start |
+        .[$aa_start:] | print
+      ' \
+      | aa extract -a lzfse -d '{{.BUILD_PATH}}'
+    - plutil -convert json '{{.BUILD_PATH}}/Shortcut.wflow' -o '{{.BUILD_PATH}}/Shortcut.json'
+    - >
+      <'{{.BUILD_PATH}}/Shortcut.json' jq --sort-keys "
+        .WFWorkflowTypes |= sort |
+        .WFWorkflowOutputContentItemClasses |= sort
+      "
+      | jsonnetfmt /dev/stdin
+      > '{{.SOURCE_PATH}}'
+
+
+

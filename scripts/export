@@ -7,7 +7,7 @@ set -euo pipefail
 
 tmpdir=$(mktemp -d)
 
-jsonnet "$1" -J lib/jsonnet \
+pip-run lib/python/jsonnet_render.py "$1" \
 | plutil -convert xml1 - -o "$tmpdir"/Shortcut.wflow
 
 shortcuts sign -i "$tmpdir"/Shortcut.wflow -o "$tmpdir"/Shortcut.shortcut
