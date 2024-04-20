@@ -1,0 +1,30 @@
+id: actions
+language: jsonnet
+
+rule:
+  pattern: $NAME
+  kind: fieldname
+  inside:
+    kind: field
+    has:
+      matches: action
+    inside:
+      kind: member
+      follows:
+        kind: member
+        has:
+          kind: field
+          has:
+            all:
+            - kind: fieldname
+              pattern: $NAME
+            - matches: action
+
+transform:
+  NAME_COPY:
+    replace:
+      source: $NAME
+      replace: '$'
+      by: ' Copy'
+
+fix: $NAME_COPY
