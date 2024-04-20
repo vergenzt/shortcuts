@@ -1,0 +1,9 @@
+id: actions-list
+language: jsonnet
+
+rule:
+  inside:
+    kind: field
+    has:
+      kind: fieldname
+      regex: WFWorkflowActions

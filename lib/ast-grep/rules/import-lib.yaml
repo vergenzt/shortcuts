@@ -1,0 +1,13 @@
+id: top-level-imports
+language: jsonnet
+
+rule:
+  pattern: $DOC
+  kind: document
+  has: { kind: object } # i.e. a simple object node; no imports first
+
+fix: |-
+  local lib = import 'shortcuts.libsonnet';
+  local _ = lib.anon;
+
+  $DOC

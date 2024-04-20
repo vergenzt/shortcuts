@@ -1,39 +1,43 @@
+local lib = import 'shortcuts.libsonnet';
+local _ = lib.anon;
+
 {
   WFQuickActionSurfaces: [],
   WFWorkflowActions: lib.Actions({
-    [lib.anon()]: lib.Action('dk.simonbs.DataJar.GetValueIntent', {
-        UUID: '33258B4E-F713-463A-BB6A-44039131D019',
-        keyPath: 'dose-recorder',
-      })
-      ,
-      [lib.anon()]: lib.Action('is.workflow.actions.runworkflow', {
-        UUID: '1CEEAC73-E5EA-4E73-BD39-B5F7F2B05175',
-        WFInput: {
-          Value: {
-            Aggrandizements: [
-              {
-                CoercionItemClass: 'WFDictionaryContentItem',
-                Type: 'WFCoercionVariableAggrandizement',
-              },
-              {
-                DictionaryKey: 'spreadsheetId',
-                Type: 'WFDictionaryValueVariableAggrandizement',
-              },
-            ],
-            OutputName: 'Value',
-            OutputUUID: '33258B4E-F713-463A-BB6A-44039131D019',
-            Type: 'ActionOutput',
-          },
-          WFSerializationType: 'WFTextTokenAttachment',
+    local outputs = self,
+
+    [_()]: lib.Action('dk.simonbs.DataJar.GetValueIntent', {
+      UUID: '33258B4E-F713-463A-BB6A-44039131D019',
+      keyPath: 'dose-recorder',
+    }),
+
+    [_()]: lib.Action('is.workflow.actions.runworkflow', {
+      UUID: '1CEEAC73-E5EA-4E73-BD39-B5F7F2B05175',
+      WFInput: {
+        Value: {
+          Aggrandizements: [
+            {
+              CoercionItemClass: 'WFDictionaryContentItem',
+              Type: 'WFCoercionVariableAggrandizement',
+            },
+            {
+              DictionaryKey: 'spreadsheetId',
+              Type: 'WFDictionaryValueVariableAggrandizement',
+            },
+          ],
+          OutputName: 'Value',
+          OutputUUID: '33258B4E-F713-463A-BB6A-44039131D019',
+          Type: 'ActionOutput',
         },
-        WFWorkflow: {
-          isSelf: false,
-          workflowIdentifier: 'B96A6DDC-DDD1-4684-9AC3-BFF4D9C8DC54',
-          workflowName: 'Open Google Spreadsheet',
-        },
-        WFWorkflowName: 'Open Google Spreadsheet',
-      })
-      ,
+        WFSerializationType: 'WFTextTokenAttachment',
+      },
+      WFWorkflow: {
+        isSelf: false,
+        workflowIdentifier: 'B96A6DDC-DDD1-4684-9AC3-BFF4D9C8DC54',
+        workflowName: 'Open Google Spreadsheet',
+      },
+      WFWorkflowName: 'Open Google Spreadsheet',
+    }),
   }),
   WFWorkflowClientVersion: '2302.0.4',
   WFWorkflowHasOutputFallback: false,

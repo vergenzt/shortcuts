@@ -1,59 +1,63 @@
+local lib = import 'shortcuts.libsonnet';
+local _ = lib.anon;
+
 {
   WFQuickActionSurfaces: [],
   WFWorkflowActions: lib.Actions({
-    [lib.anon()]: lib.Action('is.workflow.actions.getarticle', {
-        UUID: '1B4A9A3E-E59C-413E-AF6A-1F2627C46F42',
-        WFWebPage: {
-          Value: {
-            attachmentsByRange: {
-              '{0, 1}': {
-                Type: 'ExtensionInput',
-              },
+    local outputs = self,
+
+    [_()]: lib.Action('is.workflow.actions.getarticle', {
+      UUID: '1B4A9A3E-E59C-413E-AF6A-1F2627C46F42',
+      WFWebPage: {
+        Value: {
+          attachmentsByRange: {
+            '{0, 1}': {
+              Type: 'ExtensionInput',
             },
-            string: '￼',
           },
-          WFSerializationType: 'WFTextTokenString',
+          string: '￼',
         },
-      })
-      ,
-      [lib.anon()]: lib.Action('is.workflow.actions.gettext', {
-        UUID: '58084029-5B88-4AE9-95C7-0506CA89C45D',
-        WFTextActionText: {
-          Value: {
-            attachmentsByRange: {
-              '{0, 1}': {
-                Aggrandizements: [
-                  {
-                    PropertyName: 'Title',
-                    Type: 'WFPropertyVariableAggrandizement',
-                  },
-                ],
-                OutputName: 'Article',
-                OutputUUID: '1B4A9A3E-E59C-413E-AF6A-1F2627C46F42',
-                Type: 'ActionOutput',
-              },
-              '{3, 1}': {
-                Type: 'ExtensionInput',
-              },
+        WFSerializationType: 'WFTextTokenString',
+      },
+    }),
+
+    [_()]: lib.Action('is.workflow.actions.gettext', {
+      UUID: '58084029-5B88-4AE9-95C7-0506CA89C45D',
+      WFTextActionText: {
+        Value: {
+          attachmentsByRange: {
+            '{0, 1}': {
+              Aggrandizements: [
+                {
+                  PropertyName: 'Title',
+                  Type: 'WFPropertyVariableAggrandizement',
+                },
+              ],
+              OutputName: 'Article',
+              OutputUUID: '1B4A9A3E-E59C-413E-AF6A-1F2627C46F42',
+              Type: 'ActionOutput',
             },
-            string: '￼: ￼',
+            '{3, 1}': {
+              Type: 'ExtensionInput',
+            },
           },
-          WFSerializationType: 'WFTextTokenString',
+          string: '￼: ￼',
         },
-      })
-      ,
-      [lib.anon()]: lib.Action('is.workflow.actions.setclipboard', {
-        UUID: 'F3D25BD5-457B-4392-975B-8354AFEC33D7',
-        WFInput: {
-          Value: {
-            OutputName: 'Text',
-            OutputUUID: '58084029-5B88-4AE9-95C7-0506CA89C45D',
-            Type: 'ActionOutput',
-          },
-          WFSerializationType: 'WFTextTokenAttachment',
+        WFSerializationType: 'WFTextTokenString',
+      },
+    }),
+
+    [_()]: lib.Action('is.workflow.actions.setclipboard', {
+      UUID: 'F3D25BD5-457B-4392-975B-8354AFEC33D7',
+      WFInput: {
+        Value: {
+          OutputName: 'Text',
+          OutputUUID: '58084029-5B88-4AE9-95C7-0506CA89C45D',
+          Type: 'ActionOutput',
         },
-      })
-      ,
+        WFSerializationType: 'WFTextTokenAttachment',
+      },
+    }),
   }),
   WFWorkflowClientVersion: '2302.0.4',
   WFWorkflowHasOutputFallback: false,

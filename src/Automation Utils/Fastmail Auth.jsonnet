@@ -1,11 +1,15 @@
+local lib = import 'shortcuts.libsonnet';
+local _ = lib.anon;
+
 {
   WFQuickActionSurfaces: [],
   WFWorkflowActions: lib.Actions({
-    [lib.anon()]: lib.Action('dk.simonbs.DataJar.GetValueIntent', {
-        UUID: '9B76AD6E-10C1-4A4E-A9F0-7CE3F3A21D3D',
-        keyPath: 'fastmail-config',
-      })
-      ,
+    local outputs = self,
+
+    [_()]: lib.Action('dk.simonbs.DataJar.GetValueIntent', {
+      UUID: '9B76AD6E-10C1-4A4E-A9F0-7CE3F3A21D3D',
+      keyPath: 'fastmail-config',
+    }),
   }),
   WFWorkflowClientVersion: '2302.0.4',
   WFWorkflowHasOutputFallback: false,

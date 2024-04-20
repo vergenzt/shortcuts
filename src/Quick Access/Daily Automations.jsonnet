@@ -1,86 +1,86 @@
+local lib = import 'shortcuts.libsonnet';
+local _ = lib.anon;
+
 {
   WFQuickActionSurfaces: [],
   WFWorkflowActions: lib.Actions({
-    [lib.anon()]: lib.Action('is.workflow.actions.getmyworkflows', {
-        Folder: {
-          DisplayString: 'Automations',
-          Identifier: 'D53EB35E-8044-4094-97D9-BD272C132E32',
-        },
-        UUID: '54872846-4D52-466B-BA19-19ED5923760C',
-      })
-      ,
-      {
-        WFWorkflowActionIdentifier: 'is.workflow.actions.repeat.each',
-        WFWorkflowActionParameters: {
-          GroupingIdentifier: 'B4F3CD09-4BC6-4CBD-B8AC-2DC99998DBF2',
-          WFControlFlowMode: 0,
-          WFInput: {
-            Value: {
-              OutputName: 'My Shortcuts',
-              OutputUUID: '54872846-4D52-466B-BA19-19ED5923760C',
-              Type: 'ActionOutput',
-            },
-            WFSerializationType: 'WFTextTokenAttachment',
-          },
-        },
+    local outputs = self,
+
+    [_()]: lib.Action('is.workflow.actions.getmyworkflows', {
+      Folder: {
+        DisplayString: 'Automations',
+        Identifier: 'D53EB35E-8044-4094-97D9-BD272C132E32',
       },
-      {
-        WFWorkflowActionIdentifier: 'is.workflow.actions.notification',
-        WFWorkflowActionParameters: {
-          UUID: '6F4FFBE5-5C68-4AA7-A0E4-00B77EEC6BC0',
-          WFInput: {
-            Value: {
+      UUID: '54872846-4D52-466B-BA19-19ED5923760C',
+    }),
+
+    [_()]: lib.Action('is.workflow.actions.repeat.each', {
+      GroupingIdentifier: 'B4F3CD09-4BC6-4CBD-B8AC-2DC99998DBF2',
+      WFControlFlowMode: 0,
+      WFInput: {
+        Value: {
+          OutputName: 'My Shortcuts',
+          OutputUUID: '54872846-4D52-466B-BA19-19ED5923760C',
+          Type: 'ActionOutput',
+        },
+        WFSerializationType: 'WFTextTokenAttachment',
+      },
+    }),
+
+    [_()]: lib.Action('is.workflow.actions.notification', {
+      UUID: '6F4FFBE5-5C68-4AA7-A0E4-00B77EEC6BC0',
+      WFInput: {
+        Value: {
+          Type: 'Variable',
+          VariableName: 'Repeat Item',
+        },
+        WFSerializationType: 'WFTextTokenAttachment',
+      },
+      WFNotificationActionBody: {
+        Value: {
+          attachmentsByRange: {
+            '{8, 1}': {
               Type: 'Variable',
               VariableName: 'Repeat Item',
             },
-            WFSerializationType: 'WFTextTokenAttachment',
           },
-          WFNotificationActionBody: {
-            Value: {
-              attachmentsByRange: {
-                '{8, 1}': {
-                  Type: 'Variable',
-                  VariableName: 'Repeat Item',
-                },
-              },
-              string: 'Running ￼',
-            },
-            WFSerializationType: 'WFTextTokenString',
-          },
-          WFNotificationActionSound: false,
+          string: 'Running ￼',
         },
+        WFSerializationType: 'WFTextTokenString',
       },
-      [lib.anon()]: lib.Action('is.workflow.actions.runworkflow', {
-        UUID: 'BE981082-DE33-4103-81E7-3841C8ECFD19',
-        WFInput: {
-          Value: {
-            Type: 'Variable',
-            VariableName: 'Repeat Item',
-          },
-          WFSerializationType: 'WFTextTokenAttachment',
+      WFNotificationActionSound: false,
+    }),
+
+    [_()]: lib.Action('is.workflow.actions.runworkflow', {
+      UUID: 'BE981082-DE33-4103-81E7-3841C8ECFD19',
+      WFInput: {
+        Value: {
+          Type: 'Variable',
+          VariableName: 'Repeat Item',
         },
-        WFWorkflow: {
-          Value: {
-            Type: 'Variable',
-            VariableName: 'Repeat Item',
-          },
-          WFSerializationType: 'WFTextTokenAttachment',
+        WFSerializationType: 'WFTextTokenAttachment',
+      },
+      WFWorkflow: {
+        Value: {
+          Type: 'Variable',
+          VariableName: 'Repeat Item',
         },
-        WFWorkflowName: {
-          Value: {
-            Type: 'Variable',
-            VariableName: 'Repeat Item',
-          },
-          WFSerializationType: 'WFTextTokenAttachment',
+        WFSerializationType: 'WFTextTokenAttachment',
+      },
+      WFWorkflowName: {
+        Value: {
+          Type: 'Variable',
+          VariableName: 'Repeat Item',
         },
-      })
-      ,
-      [lib.anon()]: lib.Action('is.workflow.actions.repeat.each', {
-        GroupingIdentifier: 'B4F3CD09-4BC6-4CBD-B8AC-2DC99998DBF2',
-        UUID: 'BACD74D6-7EB6-4E23-84B5-BDCC69BBD6F4',
-        WFControlFlowMode: 2,
-      })
-      ,
+        WFSerializationType: 'WFTextTokenAttachment',
+      },
+    }),
+
+    [_()]: lib.Action('is.workflow.actions.repeat.each', {
+      GroupingIdentifier: 'B4F3CD09-4BC6-4CBD-B8AC-2DC99998DBF2',
+      UUID: 'BACD74D6-7EB6-4E23-84B5-BDCC69BBD6F4',
+      WFControlFlowMode: 2,
+    }),
   }),
   WFWorkflowClientVersion: '2302.0.4',
   WFWorkflowHasOutputFallback: false,

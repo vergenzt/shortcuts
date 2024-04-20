@@ -1,19 +1,23 @@
+local lib = import 'shortcuts.libsonnet';
+local _ = lib.anon;
+
 {
   WFQuickActionSurfaces: [],
   WFWorkflowActions: lib.Actions({
-    [lib.anon()]: lib.Action('is.workflow.actions.runshellscript', {
-        Input: {
-          Value: {
-            Type: 'ExtensionInput',
-          },
-          WFSerializationType: 'WFTextTokenAttachment',
+    local outputs = self,
+
+    [_()]: lib.Action('is.workflow.actions.runshellscript', {
+      Input: {
+        Value: {
+          Type: 'ExtensionInput',
         },
-        InputMode: 'as arguments',
-        Script: 'gshred -u "$@"',
-        Shell: '/bin/bash',
-        UUID: '6F16FCD4-8611-4C46-A4F2-2D76552BF163',
-      })
-      ,
+        WFSerializationType: 'WFTextTokenAttachment',
+      },
+      InputMode: 'as arguments',
+      Script: 'gshred -u "$@"',
+      Shell: '/bin/bash',
+      UUID: '6F16FCD4-8611-4C46-A4F2-2D76552BF163',
+    }),
   }),
   WFWorkflowClientVersion: '2302.0.4',
   WFWorkflowHasOutputFallback: false,

@@ -1,0 +1,6 @@
+id: action
+language: jsonnet
+
+rule:
+  inside:
+    matches: action-list

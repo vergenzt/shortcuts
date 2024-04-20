@@ -38,3 +38,12 @@ tasks:
       | tee {{shellQuote .BUILD_DIR}}/{{shellQuote .SHORTCUT_PATH}}/Shortcut.json
       | jsonnetfmt /dev/stdin
       > {{shellQuote .SOURCE_DIR}}/{{shellQuote .SHORTCUT_PATH}}.jsonnet
+
+    - >
+      while true; do
+        sg scan --update-all {{shellQuote .SOURCE_DIR}}/{{shellQuote .SHORTCUT_PATH}}.jsonnet
+        jsonnetfmt -i {{shellQuote .SOURCE_DIR}}/{{shellQuote .SHORTCUT_PATH}}.jsonnet || true
+        SHA1_PREV=${SHA1_CURR:-}
+        SHA1_CURR=$(sha1sum {{shellQuote .SOURCE_DIR}}/{{shellQuote .SHORTCUT_PATH}}.jsonnet)
+        test "$SHA1_CURR" = "$SHA1_PREV" && break
+      done

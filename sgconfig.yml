@@ -6,3 +6,6 @@ customLanguages:
 
 ruleDirs:
 - ./lib/ast-grep/rules
+
+utilDirs:
+- ./lib/ast-grep/utils

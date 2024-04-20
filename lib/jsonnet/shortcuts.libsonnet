@@ -1,3 +1,5 @@
+local lib = import 'shortcuts.libsonnet';
+
 {
   _count(ns):: std.native('global_count')(ns),
 
@@ -16,8 +18,16 @@
     WFWorkflowActionParameters+: params,
   },
 
-  Action(id, params):: (
-    local unidentifiedAction = $._action(id) + $._params(params);
+  Action(id, params, label=null):: (
+    local unidentifiedAction = (
+      $._action(id) +
+      $._params(params) +
+      (
+        if label != null
+        then $._params({ CustomOutputName: label })
+        else {}
+      )
+    );
     local UUID = $.uuid('action', std.manifestJsonMinified(unidentifiedAction));
     unidentifiedAction + $._params({ UUID: UUID })
   ),
@@ -27,8 +37,11 @@
       [
         actions_obj[name] + (
           // (if name is not hidden)
-          if std.objectHas(actions_obj, name)
-          then $._params({ CustomOutputName: name })
+          if !std.objectHas(actions_obj, name)
+          then $._params({
+            // only set CustomOutputName if none was defined via label
+            [if super['CustomOutputName'] != null then 'CustomOutputName']: name,
+          })
           else $._params({})
         )
         for name in std.objectFieldsAll(actions_obj)
@@ -36,5 +49,16 @@
       function(action) action[order_key],
     )
   ),
+
+  Ref(outputs, name, aggrandizements=null):: {
+    Type: 'ActionOutput',
+    OutputUUID: outputs[name].UUID,
+    OutputName: (
+      // required because some CustomOutputNames are set by `Actions` during
+      // transformation into an array, taking into account the field name.
+      local label = outputs[name].WFWorkflowActionParameters.CustomOutputName;
+      if label != null then label else name
+    ),
+  },
 
 }

@@ -2,16 +2,11 @@ id: actions
 language: jsonnet
 
 rule:
-  pattern: |
-    [ $$$ACTIONS ]
-  inside:
-    kind: field
-    has:
-      kind: fieldname
-      regex: WFWorkflowActions
+  matches: actions-list
+  pattern: '[ $$$ACTIONS ]'
 
 utils:
-  has-custom-output-name:
+  has-custom-output-label:
     has:
       kind: field
       stopBy: end
@@ -21,46 +16,49 @@ utils:
         precedes:
           stopBy: { kind: field }
           kind: string
-          pattern: $NAME
+          pattern: $LABEL
 
 rewriters:
 
-- id: named-action
-  rule: 
+- id: labeled-action
+  rule:
     pattern: |
       {
         WFWorkflowActionIdentifier: $ID,
         WFWorkflowActionParameters: $PARAMS,
       }
-    matches: has-custom-output-name
+    matches: has-custom-output-label
   transform:
-    PARAMS_NO_OUTPUT_NAME:
+    PARAMS_NO_OUTPUT_LABEL:
       replace:
         source: '$PARAMS'
-        replace: '^CustomOutputName: .*,$'
+        replace: 'CustomOutputName: .*,\n'
         by: ''
-  fix: |
-    [$NAME]: lib.Action($ID, $PARAMS_NO_OUTPUT_NAME)
+  fix: |-
+    [_()]: lib.Action($ID, label=$LABEL, params=$PARAMS_NO_OUTPUT_LABEL)
 
-- id: anon-action
-  rule: 
-    pattern: |
+- id: unlabeled-action
+  rule:
+    pattern: |-
       {
         WFWorkflowActionIdentifier: $ID,
         WFWorkflowActionParameters: $PARAMS,
       }
     not:
-      matches: has-custom-output-name
-  fix: |
-    [lib.anon()]: lib.Action($ID, $PARAMS)
+      matches: has-custom-output-label
+  fix: |-
+    [_()]: lib.Action($ID, $PARAMS)
 
 transform:
   ACTIONS_OBJ:
     rewrite:
-      rewriters: [named-action, anon-action]
+      rewriters: [labeled-action, unlabeled-action]
       source: '$$$ACTIONS'
+      joinBy: ",\n\n"
 
 fix: |-
   lib.Actions({
+    local outputs = self,
+
     $ACTIONS_OBJ
   })

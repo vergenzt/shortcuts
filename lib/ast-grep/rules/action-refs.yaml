@@ -1,0 +1,106 @@
+id: action-refs
+language: jsonnet
+
+# context
+rule:
+  pattern: lib.Actions($ACTIONS_OBJ)
+  inside:
+    kind: field
+    has:
+      kind: fieldname
+      regex: WFWorkflowActions
+
+utils:
+
+  # rewrite referees (i.e. actions which are referred to)
+  referee:
+    matches: action
+
+    # with a UUID
+    has:
+      stopBy: end
+      kind: field
+      has:
+        all:
+        - kind: fieldname
+          regex: ^UUID$
+        - kind: string
+          pattern: '$UUID'
+
+    all:
+
+      # if it has a name already, then capture it
+    - any:
+      - inside:
+          kind: field
+          has:
+            all:
+            - kind: fieldname
+              not: { regex: '^\[_\(\)\]$' } # i.e. fieldname is NOT '[_()]'
+            - kind: string
+              pattern: $NAME
+      - pattern: $_
+
+      # if it has a label already, then capture it
+    - any:
+      - pattern: lib.Action($_ID, label=$ACT_LABEL, params=$_PARAMS)
+      - pattern: $_
+
+  reference:
+    any:
+    - pattern: >
+        {
+          OutputName: $REF_LABEL,
+          OutputUUID: $UUID,
+          Type: 'ActionOutput',
+        }
+    - pattern: >
+        {
+          Aggrandizements: $AGGS,
+          OutputName: $REF_LABEL,
+          OutputUUID: $UUID,
+          Type: 'ActionOutput',
+        }
+
+rewriters:
+
+-
+  # rewriter to set referee action names based on their labels
+  id: add-referee-names
+  rule:
+    kind: field
+    has:
+      all:
+      - kind: fieldname
+        regex: '^\[_\(\)\]$'
+      - matches: action
+        pattern: $ACTION
+  fix: >-
+    [$ACT_LABEL]: $ACTION
+
+-
+  # rewriter to
+  id: rewrite-references
+  rule:
+    matches: reference
+    inside:
+      stopBy: { matches: action }
+      matches: action
+      follows:
+        matches: referee
+  transform:
+    AGGS_ARG:
+      replace:
+        source: $AGGS
+        replace: '^'
+        by: ', aggs='
+  fix: lib.Ref(outputs, $NAME$AGGS_ARG)
+
+transform:
+  ACTIONS_OBJ_WITH_REFS:
+    rewrite:
+      rewriters: [add-referee-names, rewrite-references]
+      source: '$ACTIONS_OBJ'
+
+fix: >-
+  lib.Actions($ACTIONS_OBJ_WITH_REFS)

@@ -1,23 +1,27 @@
+local lib = import 'shortcuts.libsonnet';
+local _ = lib.anon;
+
 {
   WFQuickActionSurfaces: [],
   WFWorkflowActions: lib.Actions({
-    [lib.anon()]: lib.Action('dk.simonbs.DataJar.GetValueIntent', {
-        UUID: '83331DE5-C36A-4DF3-82A2-48E9CA993A0D',
-        keyPath: 'Created Colorful.Amanda',
-      })
-      ,
-      [lib.anon()]: lib.Action('is.workflow.actions.openurl', {
-        UUID: 'CA8D8206-2020-4B4A-8925-B89A33BE494D',
-        WFInput: {
-          Value: {
-            OutputName: 'Value',
-            OutputUUID: '83331DE5-C36A-4DF3-82A2-48E9CA993A0D',
-            Type: 'ActionOutput',
-          },
-          WFSerializationType: 'WFTextTokenAttachment',
+    local outputs = self,
+
+    [_()]: lib.Action('dk.simonbs.DataJar.GetValueIntent', {
+      UUID: '83331DE5-C36A-4DF3-82A2-48E9CA993A0D',
+      keyPath: 'Created Colorful.Amanda',
+    }),
+
+    [_()]: lib.Action('is.workflow.actions.openurl', {
+      UUID: 'CA8D8206-2020-4B4A-8925-B89A33BE494D',
+      WFInput: {
+        Value: {
+          OutputName: 'Value',
+          OutputUUID: '83331DE5-C36A-4DF3-82A2-48E9CA993A0D',
+          Type: 'ActionOutput',
         },
-      })
-      ,
+        WFSerializationType: 'WFTextTokenAttachment',
+      },
+    }),
   }),
   WFWorkflowClientVersion: '2302.0.4',
   WFWorkflowHasOutputFallback: false,
