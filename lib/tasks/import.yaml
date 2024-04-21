@@ -27,6 +27,7 @@ tasks:
     - { silent: true, cmd: 'mkdir -p {{shellQuote .BUILD_DIR}}/{{shellQuote .SHORTCUT_PATH}}' }
 
     # https://github.com/0xilis/libshortcutsign/blob/753da95f42945ea76bc9ac8f5cccdfa31cc300cc/libshortcutsign.m#L330-L388
+    # `fq` below is https://github.com/wader/fq.
     - >
       cat {{shellQuote .IMPORT_DIR}}/{{shellQuote .SHORTCUT_PATH}}.shortcut
       | tee {{shellQuote .BUILD_DIR}}/{{shellQuote .SHORTCUT_PATH}}.shortcut
