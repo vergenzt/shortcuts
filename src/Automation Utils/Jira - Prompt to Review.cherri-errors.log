@@ -1,0 +1,19 @@
+panic: interface conversion: interface {} is nil, not string
+
+goroutine 1 [running]:
+main.decompObjectValue({0x5960f60, 0xc0001e7050})
+	/Users/tim_vergenz/code/cherri/decompile.go:676 +0x627
+main.decompValueObject(0xc0001e7020)
+	/Users/tim_vergenz/code/cherri/decompile.go:641 +0x1a5
+main.decompValue({0x5960f60, 0xc0001e7020})
+	/Users/tim_vergenz/code/cherri/decompile.go:611 +0xfa
+main.decompDictionaryItems({0xc0001fd680, 0x2, 0x58a92e9?})
+	/Users/tim_vergenz/code/cherri/decompile.go:543 +0xfb
+main.decompDictionary(0xc0001b7a20)
+	/Users/tim_vergenz/code/cherri/decompile.go:529 +0xbd
+main.decompileActions()
+	/Users/tim_vergenz/code/cherri/decompile.go:225 +0x17a
+main.decompile({0xc0001a4000?, 0x0?, 0x0?})
+	/Users/tim_vergenz/code/cherri/decompile.go:55 +0x27a
+main.main()
+	/Users/tim_vergenz/code/cherri/main.go:70 +0x456

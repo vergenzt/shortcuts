@@ -1,0 +1,9 @@
+prompt("What’s the message?","Text")
+const Contacts = selectContact(true)
+
+for _ in Contacts {
+	for _ in Matches {
+		getContactDetail(RepeatItem,RepeatItem2)
+		replaceText()
+	}
+}

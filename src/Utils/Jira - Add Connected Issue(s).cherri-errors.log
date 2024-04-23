@@ -1,0 +1,11 @@
+panic: interface conversion: interface {} is nil, not map[string]interface {}
+
+goroutine 1 [running]:
+main.decompDictionary(0xc00024ba20)
+	/Users/tim_vergenz/code/cherri/decompile.go:527 +0x15d
+main.decompileActions()
+	/Users/tim_vergenz/code/cherri/decompile.go:225 +0x17a
+main.decompile({0xc0001a4000?, 0x0?, 0x0?})
+	/Users/tim_vergenz/code/cherri/decompile.go:55 +0x27a
+main.main()
+	/Users/tim_vergenz/code/cherri/main.go:70 +0x456

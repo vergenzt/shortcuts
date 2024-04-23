@@ -1,0 +1,17 @@
+#define color blue
+#define glyph hammerwrench
+
+if existingunexpiredtoken {
+	mustOutput("{existingunexpiredtoken} {existingunexpiredtoken}","Successfully authenticated to Google. ✅")
+}
+if refresh_uri {
+	const refresh_result = fileRequest()
+	mustOutput("{Result}","Successfully authenticated to Google. ✅")
+} else {
+	const auth_params = {"access_type":"offline","approval_prompt":"force","response_type":"code"}
+	const X-CallbackResult = openCustomXCallbackURL("{auth_uri}","state")
+	const result = getDictionary(X-CallbackResult)
+	const token_params = {"grant_type":"authorization_code"}
+	const token = formRequest()
+	mustOutput("{Result}","Successfully authenticated to Google. ✅")
+}

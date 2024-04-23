@@ -1,0 +1,11 @@
+
+const EncodedURL = urlDecode()
+const Archive Save URL = "https://web.archive.org/save/{EncodedURL}"
+formRequest()
+const Archive Root URL = "https://web.archive.org/web/{EncodedURL}"
+const HeadersofURL = getURLHeaders("{ArchiveRootURL}")
+const LinkHeader = const LinkHeader = getValue(HeadersofURL,"Link")
+quicklook(LinkHeader)
+const ArchiveURL = const ArchiveURL = matchedTextGroupIndex(LinkHeaderMatches)
+copyToClipboard(ArchiveURL,false)
+notification("Archive URL copied to clipboard")

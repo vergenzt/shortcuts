@@ -1,0 +1,19 @@
+#define color darkblue
+
+getDeviceDetail("Device Model")
+date()
+const HashSuffix = regReplaceText()
+const Result = "Hash repetitions: {NumRepetitions}
+Total time: {TimeBetweenDates}s
+Hash suffix: {HashSuffix}
+Started at: {Date}"
+const Prompt = "{Result}
+
+View leading digits?"
+menu "{Prompt}" {
+	item :
+		const LeadingDigits = iReplaceText()
+		show("{LeadingDigits}")
+		item :
+			output("{Result}")
+	}

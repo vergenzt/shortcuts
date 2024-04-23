@@ -1,0 +1,12 @@
+
+const InputDict = getDictionary(ShortcutInput)
+const SplitText = splitText()
+getListItem(SplitText)
+if ItemfromList == "{ErrorNonce}" {
+	const ErrorContext = getListItem()
+	const ErrorMessageLines = getListItems(SplitText)
+	const ErrorMessage = joinText()
+	alert("{ErrorMessage}","{ErrorContext}")
+} else {
+	output("{Output}")
+}

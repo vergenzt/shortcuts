@@ -1,0 +1,7 @@
+
+const MyShortcuts = getShortcuts()
+
+for _ in MyShortcuts {
+	saveFile("/{RepeatItem}/{RepeatItem}",RepeatItem,true)
+}
+output("{RepeatResults}")

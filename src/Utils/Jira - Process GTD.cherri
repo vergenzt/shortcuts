@@ -1,0 +1,12 @@
+
+const InputAsDict = const InputAsDict = getDictionary(ShortcutInput)
+if InputAsDict {
+	getValue(InputAsDict,"issue_key")
+} else {
+	iRegReplaceText()
+}
+const Dictionary = {"method":"GET","path":"issue/{Issuekey}"}
+const GetInitialIssueResponse = const GetInitialIssueResponse = runSelf()
+const InitialIssueKey = getValue(GetInitialIssueResponse,"key")
+const fields.summary = getValue(GetInitialIssueResponse,"fields.summary")
+urlEncode()

@@ -1,0 +1,17 @@
+#define color orange
+
+const InputDict = const InputDict = getDictionary(ShortcutInput)
+const RequestMethod = getValue(InputDict,"method")
+const Text = "{TogglTrackAPIToken}:api_token"
+base64Decode()
+const QueryParams = const QueryParams = getValue(InputDict,"params")
+if QueryParams {
+	for _ in QueryParams {
+		const Key = urlEncode()
+		const Value = getValue(QueryParams,"{RepeatItem}")
+		const Value = urlEncode()
+	}
+	joinText()
+}
+const CombinedURL = joinText()
+jsonRequest()
