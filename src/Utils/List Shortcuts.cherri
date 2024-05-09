@@ -1,7 +1,0 @@
-
-const MyShortcuts = getShortcuts()
-
-for _ in MyShortcuts {
-}
-joinText()
-output("{CombinedText}")

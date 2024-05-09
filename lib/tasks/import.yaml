@@ -35,32 +35,18 @@ tasks:
       | lzfse -decode
       | aa extract -d {{shellQuote .BUILD_DIR}}/{{shellQuote .SHORTCUT_PATH}}
       &&
-      plutil -convert xml1 
-      {{shellQuote .BUILD_DIR}}/{{shellQuote .SHORTCUT_PATH}}/Shortcut.wflow
-      -o 
-      {{shellQuote .SOURCE_DIR}}/{{shellQuote .SHORTCUT_PATH}}.plist
-      &&
-      plutil -convert json 
-      {{shellQuote .BUILD_DIR}}/{{shellQuote .SHORTCUT_PATH}}/Shortcut.wflow
-      -o - | jq --sort-keys .  >
-      {{shellQuote .SOURCE_DIR}}/{{shellQuote .SHORTCUT_PATH}}.json
-      &&
-      {
-      {
-      {{.HOME}}/code/cherri/cherri
-      --import={{shellQuote .SOURCE_DIR}}/{{shellQuote .SHORTCUT_PATH}}.plist
-      2>&1
-      &&
-      mv
-      {{shellQuote (base .SHORTCUT_PATH) }}_decompiled.cherri
-      {{shellQuote .SOURCE_DIR}}/{{shellQuote .SHORTCUT_PATH}}.cherri
-      ;
-      }
-      || true;
-      }
-      | tee {{shellQuote .SOURCE_DIR}}/{{shellQuote .SHORTCUT_PATH}}.cherri-errors.log
+      cat {{shellQuote .BUILD_DIR}}/{{shellQuote .SHORTCUT_PATH}}/Shortcut.wflow
+      | plutil -convert json -o - -
+      | jq --sort-keys '(.WFWorkflowTypes, .WFWorkflowOutputContentItemClasses) |= sort'
+      | tee {{shellQuote .BUILD_DIR}}/{{shellQuote .SHORTCUT_PATH}}/Shortcut.json
+      | jsonnetfmt /dev/stdin
+      > {{shellQuote .SOURCE_DIR}}/{{shellQuote .SHORTCUT_PATH}}.jsonnet
+
     - >
-      find
-      {{shellQuote .SOURCE_DIR}}/{{shellQuote .SHORTCUT_PATH}}.cherri-errors.log
-      -size 0
-      -delete
+      while true; do
+        sg scan --update-all {{shellQuote .SOURCE_DIR}}/{{shellQuote .SHORTCUT_PATH}}.jsonnet
+        jsonnetfmt -i {{shellQuote .SOURCE_DIR}}/{{shellQuote .SHORTCUT_PATH}}.jsonnet || true
+        SHA1_PREV=${SHA1_CURR:-}
+        SHA1_CURR=$(sha1sum {{shellQuote .SOURCE_DIR}}/{{shellQuote .SHORTCUT_PATH}}.jsonnet)
+        test "$SHA1_CURR" = "$SHA1_PREV" && break
+      done

@@ -1,8 +1,0 @@
-#define glyph circleplay
-
-const MyShortcuts = getShortcuts()
-
-for _ in MyShortcuts {
-	notification("Running {RepeatItem}",false)
-	runSelf()
-}

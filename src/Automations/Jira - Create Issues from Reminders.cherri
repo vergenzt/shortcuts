@@ -1,6 +1,0 @@
-#define color blue
-#define glyph circlefastforward
-
-
-for _ in Reminders {
-}
