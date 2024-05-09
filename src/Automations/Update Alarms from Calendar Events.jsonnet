@@ -234,8 +234,33 @@ local _ = lib.anon;
       UUID: 'F1E39DC9-CAE8-458C-8B72-450D09704C59',
     }),
 
-    [_()]: lib.Action('is.workflow.actions.adjustdate', label='24 Hours Out', params={
+    [_()]: lib.Action('is.workflow.actions.adjustdate', label='4 Hours Ago', params={
       UUID: '9D0897C6-4877-4C09-B387-90503CC88144',
+      WFAdjustOperation: 'Subtract',
+      WFDate: {
+        Value: {
+          attachmentsByRange: {
+            '{0, 1}': {
+              OutputName: 'Current Datetime',
+              OutputUUID: 'F1E39DC9-CAE8-458C-8B72-450D09704C59',
+              Type: 'ActionOutput',
+            },
+          },
+          string: '￼',
+        },
+        WFSerializationType: 'WFTextTokenString',
+      },
+      WFDuration: {
+        Value: {
+          Magnitude: '4',
+          Unit: 'hr',
+        },
+        WFSerializationType: 'WFQuantityFieldValue',
+      },
+    }),
+
+    [_()]: lib.Action('is.workflow.actions.adjustdate', label='24 Hours Out', params={
+      UUID: '382EC078-69E3-4231-BBAC-6B1BC371D3BE',
       WFDate: {
         Value: {
           attachmentsByRange: {
@@ -273,15 +298,15 @@ local _ = lib.anon;
                 AnotherDate: {
                   Value: {
                     OutputName: '24 Hours Out',
-                    OutputUUID: '9D0897C6-4877-4C09-B387-90503CC88144',
+                    OutputUUID: '382EC078-69E3-4231-BBAC-6B1BC371D3BE',
                     Type: 'ActionOutput',
                   },
                   WFSerializationType: 'WFTextTokenAttachment',
                 },
                 Date: {
                   Value: {
-                    OutputName: 'Current Datetime',
-                    OutputUUID: 'F1E39DC9-CAE8-458C-8B72-450D09704C59',
+                    OutputName: '4 Hours Ago',
+                    OutputUUID: '9D0897C6-4877-4C09-B387-90503CC88144',
                     Type: 'ActionOutput',
                   },
                   WFSerializationType: 'WFTextTokenAttachment',
@@ -994,7 +1019,7 @@ local _ = lib.anon;
         },
         WFSerializationType: 'WFTextTokenAttachment',
       },
-      WFVariableName: 'Alarm to Delete',
+      WFVariableName: 'Alarm to Disable',
     }),
 
     [_()]: lib.Action('is.workflow.actions.conditional', {
@@ -1013,7 +1038,7 @@ local _ = lib.anon;
               },
             ],
             Type: 'Variable',
-            VariableName: 'Alarm to Delete',
+            VariableName: 'Alarm to Disable',
           },
           WFSerializationType: 'WFTextTokenAttachment',
         },
@@ -1033,7 +1058,7 @@ local _ = lib.anon;
       WFNotificationActionBody: {
         Value: {
           attachmentsByRange: {
-            '{15, 1}': {
+            '{16, 1}': {
               Aggrandizements: [
                 {
                   PropertyName: 'label',
@@ -1042,30 +1067,32 @@ local _ = lib.anon;
                 },
               ],
               Type: 'Variable',
-              VariableName: 'Alarm to Delete',
+              VariableName: 'Alarm to Disable',
             },
           },
-          string: 'Deleting alarm ￼',
+          string: 'Disabling alarm ￼',
         },
         WFSerializationType: 'WFTextTokenString',
       },
     }),
 
-    [_()]: lib.Action('com.apple.mobiletimer.DeleteAlarmIntent', {
+    [_()]: lib.Action('com.apple.mobiletimer-framework.MobileTimerIntents.MTToggleAlarmIntent', {
       AppIntentDescriptor: {
-        AppIntentIdentifier: 'DeleteAlarmIntent',
+        AppIntentIdentifier: 'ToggleAlarmIntent',
         BundleIdentifier: 'com.apple.mobiletimer',
         Name: 'Clock',
         TeamIdentifier: '0000000000',
       },
-      UUID: 'FC44BE9E-12C8-4249-9D53-F250712E4122',
-      entities: {
+      ShowWhenRun: false,
+      UUID: 'C0C00086-D37E-45A4-A43B-471B8B150124',
+      alarm: {
         Value: {
           Type: 'Variable',
-          VariableName: 'Alarm to Delete',
+          VariableName: 'Alarm to Disable',
         },
         WFSerializationType: 'WFTextTokenAttachment',
       },
+      state: 0,
     }),
 
     [_()]: lib.Action('is.workflow.actions.conditional', {
