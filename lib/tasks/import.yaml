@@ -14,8 +14,14 @@ tasks:
       vars:
         SHORTCUT_PATH: '{{.SHORTCUT_PATH}}'
 
+  export-all:
+    run: once
+    cmds:
+    - shortcuts run 'Export Shortcuts'
+
   default:
     desc: Imports a single Apple Shortcut at {{"{{.SHORTCUT_PATH}}"}} into `{{.SOURCE_DIR}}`.
+    deps: [export-all]
     requires:
       vars: ["SOURCE_DIR", "BUILD_DIR", "SHORTCUT_PATH"]
     # sources:
@@ -43,11 +49,9 @@ tasks:
       | jsonnetfmt /dev/stdin
       > {{q .SOURCE_DIR}}/{{q .SHORTCUT_PATH}}.jsonnet
 
-    - >
-      while true; do
-        sg scan --update-all {{q .SOURCE_DIR}}/{{q .SHORTCUT_PATH}}.jsonnet
-        jsonnetfmt -i {{q .SOURCE_DIR}}/{{q .SHORTCUT_PATH}}.jsonnet || true
-        SHA1_PREV=${SHA1_CURR:-}
-        SHA1_CURR=$(sha1sum {{q .SOURCE_DIR}}/{{q .SHORTCUT_PATH}}.jsonnet)
-        test "$SHA1_CURR" = "$SHA1_PREV" && break
-      done
+    - sg scan --update-all {{q .SOURCE_DIR}}/{{q .SHORTCUT_PATH}}.jsonnet
+    - jsonnetfmt -i {{q .SOURCE_DIR}}/{{q .SHORTCUT_PATH}}.jsonnet
+    - sg scan --update-all {{q .SOURCE_DIR}}/{{q .SHORTCUT_PATH}}.jsonnet
+    - jsonnetfmt -i {{q .SOURCE_DIR}}/{{q .SHORTCUT_PATH}}.jsonnet
+    - sg scan --update-all {{q .SOURCE_DIR}}/{{q .SHORTCUT_PATH}}.jsonnet
+    - jsonnetfmt -i {{q .SOURCE_DIR}}/{{q .SHORTCUT_PATH}}.jsonnet
