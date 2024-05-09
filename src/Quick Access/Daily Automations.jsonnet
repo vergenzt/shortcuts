@@ -27,30 +27,6 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('is.workflow.actions.notification', {
-      UUID: '6F4FFBE5-5C68-4AA7-A0E4-00B77EEC6BC0',
-      WFInput: {
-        Value: {
-          Type: 'Variable',
-          VariableName: 'Repeat Item',
-        },
-        WFSerializationType: 'WFTextTokenAttachment',
-      },
-      WFNotificationActionBody: {
-        Value: {
-          attachmentsByRange: {
-            '{8, 1}': {
-              Type: 'Variable',
-              VariableName: 'Repeat Item',
-            },
-          },
-          string: 'Running ￼',
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
-      WFNotificationActionSound: false,
-    }),
-
     [_()]: lib.Action('is.workflow.actions.runworkflow', {
       UUID: 'BE981082-DE33-4103-81E7-3841C8ECFD19',
       WFInput: {
