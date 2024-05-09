@@ -24,29 +24,29 @@ tasks:
     # - '{{.SOURCE_PATH}}'
 
     cmds:
-    - { silent: true, cmd: 'mkdir -p {{shellQuote .BUILD_DIR}}/{{shellQuote .SHORTCUT_PATH}}' }
+    - { silent: true, cmd: 'mkdir -p {{q .BUILD_DIR}}/{{q .SHORTCUT_PATH}}' }
 
     # https://github.com/0xilis/libshortcutsign/blob/753da95f42945ea76bc9ac8f5cccdfa31cc300cc/libshortcutsign.m#L330-L388
     # `fq` below is https://github.com/wader/fq.
     - >
-      cat {{shellQuote .IMPORT_DIR}}/{{shellQuote .SHORTCUT_PATH}}.shortcut
-      | tee {{shellQuote .BUILD_DIR}}/{{shellQuote .SHORTCUT_PATH}}.shortcut
+      cat {{q .IMPORT_DIR}}/{{q .SHORTCUT_PATH}}.shortcut
+      | tee {{q .BUILD_DIR}}/{{q .SHORTCUT_PATH}}.shortcut
       | fq -r -d bytes '.[((.[0x8:0xC] | explode | reverse | tobytes | tonumber) + 0x495c):] | print'
       | lzfse -decode
-      | aa extract -d {{shellQuote .BUILD_DIR}}/{{shellQuote .SHORTCUT_PATH}}
+      | aa extract -d {{q .BUILD_DIR}}/{{q .SHORTCUT_PATH}}
       &&
-      cat {{shellQuote .BUILD_DIR}}/{{shellQuote .SHORTCUT_PATH}}/Shortcut.wflow
+      cat {{q .BUILD_DIR}}/{{q .SHORTCUT_PATH}}/Shortcut.wflow
       | plutil -convert json -o - -
       | jq --sort-keys '(.WFWorkflowTypes, .WFWorkflowOutputContentItemClasses) |= sort'
-      | tee {{shellQuote .BUILD_DIR}}/{{shellQuote .SHORTCUT_PATH}}/Shortcut.json
+      | tee {{q .BUILD_DIR}}/{{q .SHORTCUT_PATH}}/Shortcut.json
       | jsonnetfmt /dev/stdin
-      > {{shellQuote .SOURCE_DIR}}/{{shellQuote .SHORTCUT_PATH}}.jsonnet
+      > {{q .SOURCE_DIR}}/{{q .SHORTCUT_PATH}}.jsonnet
 
     - >
       while true; do
-        sg scan --update-all {{shellQuote .SOURCE_DIR}}/{{shellQuote .SHORTCUT_PATH}}.jsonnet
-        jsonnetfmt -i {{shellQuote .SOURCE_DIR}}/{{shellQuote .SHORTCUT_PATH}}.jsonnet || true
+        sg scan --update-all {{q .SOURCE_DIR}}/{{q .SHORTCUT_PATH}}.jsonnet
+        jsonnetfmt -i {{q .SOURCE_DIR}}/{{q .SHORTCUT_PATH}}.jsonnet || true
         SHA1_PREV=${SHA1_CURR:-}
-        SHA1_CURR=$(sha1sum {{shellQuote .SOURCE_DIR}}/{{shellQuote .SHORTCUT_PATH}}.jsonnet)
+        SHA1_CURR=$(sha1sum {{q .SOURCE_DIR}}/{{q .SHORTCUT_PATH}}.jsonnet)
         test "$SHA1_CURR" = "$SHA1_PREV" && break
       done
