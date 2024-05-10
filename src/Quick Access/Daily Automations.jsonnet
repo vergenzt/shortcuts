@@ -1,12 +1,10 @@
-local lib = import 'shortcuts.libsonnet';
-local _ = lib.anon;
+local sc = import 'shortcuts.libsonnet';
 
 {
   WFQuickActionSurfaces: [],
-  WFWorkflowActions: lib.Actions({
-    local outputs = self,
+  WFWorkflowActions: sc.ActionsSeq([
 
-    [_()]: lib.Action('is.workflow.actions.getmyworkflows', {
+    sc.Action('is.workflow.actions.getmyworkflows', {
       Folder: {
         DisplayString: 'Automations',
         Identifier: 'D53EB35E-8044-4094-97D9-BD272C132E32',
@@ -14,7 +12,7 @@ local _ = lib.anon;
       UUID: '54872846-4D52-466B-BA19-19ED5923760C',
     }),
 
-    [_()]: lib.Action('is.workflow.actions.repeat.each', {
+    sc.Action('is.workflow.actions.repeat.each', {
       GroupingIdentifier: 'B4F3CD09-4BC6-4CBD-B8AC-2DC99998DBF2',
       WFControlFlowMode: 0,
       WFInput: {
@@ -27,7 +25,7 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('is.workflow.actions.runworkflow', {
+    sc.Action('is.workflow.actions.runworkflow', {
       UUID: 'BE981082-DE33-4103-81E7-3841C8ECFD19',
       WFInput: {
         Value: {
@@ -52,12 +50,13 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('is.workflow.actions.repeat.each', {
+    sc.Action('is.workflow.actions.repeat.each', {
       GroupingIdentifier: 'B4F3CD09-4BC6-4CBD-B8AC-2DC99998DBF2',
       UUID: 'BACD74D6-7EB6-4E23-84B5-BDCC69BBD6F4',
       WFControlFlowMode: 2,
     }),
-  }),
+
+  ]),
   WFWorkflowClientVersion: '2302.0.4',
   WFWorkflowHasOutputFallback: false,
   WFWorkflowHasShortcutInputVariables: false,

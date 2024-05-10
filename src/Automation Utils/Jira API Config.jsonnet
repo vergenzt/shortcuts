@@ -1,17 +1,16 @@
-local lib = import 'shortcuts.libsonnet';
-local _ = lib.anon;
+local sc = import 'shortcuts.libsonnet';
 
 {
   WFQuickActionSurfaces: [],
-  WFWorkflowActions: lib.Actions({
-    local outputs = self,
+  WFWorkflowActions: sc.ActionsSeq([
 
-    [_()]: lib.Action('dk.simonbs.DataJar.GetValueIntent', label='Jira Config', params={
+    sc.Action('dk.simonbs.DataJar.GetValueIntent', {
+      CustomOutputName: 'Jira Config',
       UUID: '2C93C881-B46A-43DA-B28F-9C9FFED23E79',
       keyPath: 'jira-config',
     }),
 
-    [_()]: lib.Action('ke.bou.GizmoPack.QueryJSONIntent', {
+    sc.Action('ke.bou.GizmoPack.QueryJSONIntent', {
       UUID: '1D3A849D-EFB8-433B-AAAE-E4874ABA35BA',
       input: {
         Value: {
@@ -25,7 +24,7 @@ local _ = lib.anon;
       queryType: 'jq',
     }),
 
-    [_()]: lib.Action('is.workflow.actions.setvalueforkey', {
+    sc.Action('is.workflow.actions.setvalueforkey', {
       UUID: 'DB9762D8-746F-4B5A-BF6E-B933A7E1C055',
       WFDictionary: {
         Value: {
@@ -56,7 +55,8 @@ local _ = lib.anon;
         WFSerializationType: 'WFTextTokenString',
       },
     }),
-  }),
+
+  ]),
   WFWorkflowClientVersion: '2302.0.4',
   WFWorkflowHasOutputFallback: false,
   WFWorkflowHasShortcutInputVariables: false,

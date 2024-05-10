@@ -1,3 +1,33 @@
 version: '3'
 
+vars:
+  IMPORT_DIR: '{{.HOME}}/Library/Mobile Documents/iCloud~is~workflow~my~workflows/Documents'
+  SHORTCUT_PATHS:
+    sh: shortcuts run 'List Shortcuts'
+
 tasks:
+  all:
+    desc: Exports all Apple Shortcuts from `{{.SOURCE_DIR}}` into your iCloud account.
+    deps:
+    - for: { var: SHORTCUT_PATHS, split: "\n", as: SHORTCUT_PATH }
+      task: default
+      vars:
+        SHORTCUT_PATH: '{{.SHORTCUT_PATH}}'
+
+  default:
+    desc: Exports a single Apple Shortcut from `{{.SOURCE_DIR}}` into your iCloud account.
+    requires:
+      vars: ["SOURCE_DIR", "BUILD_DIR", "SHORTCUT_PATH"]
+
+    cmds:
+    - { silent: true, cmd: 'mkdir -p {{q .BUILD_DIR}}/{{q (dir .SHORTCUT_PATH)}}' }
+
+    - >
+      pip-run lib/python/jsonnet_render.py {{q .SOURCE_DIR}}/{{q .SHORTCUT_PATH}}.jsonnet
+      | tee {{q .BUILD_DIR}}/{{q .SHORTCUT_PATH}}.json
+      | plutil -convert xml1 - -o {{q .BUILD_DIR}}/{{q .SHORTCUT_PATH}}.wflow
+
+    - >
+      shortcuts sign
+      -i {{q .BUILD_DIR}}/{{q .SHORTCUT_PATH}}.wflow
+      -o {{q .BUILD_DIR}}/{{q .SHORTCUT_PATH}}.shortcut

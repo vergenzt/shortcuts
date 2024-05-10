@@ -1,17 +1,15 @@
-local lib = import 'shortcuts.libsonnet';
-local _ = lib.anon;
+local sc = import 'shortcuts.libsonnet';
 
 {
   WFQuickActionSurfaces: [],
-  WFWorkflowActions: lib.Actions({
-    local outputs = self,
+  WFWorkflowActions: sc.ActionsSeq([
 
-    [_()]: lib.Action('dk.simonbs.DataJar.GetValueIntent', {
+    sc.Action('dk.simonbs.DataJar.GetValueIntent', {
       UUID: '33258B4E-F713-463A-BB6A-44039131D019',
       keyPath: 'dose-recorder',
     }),
 
-    [_()]: lib.Action('is.workflow.actions.runworkflow', {
+    sc.Action('is.workflow.actions.runworkflow', {
       UUID: '1CEEAC73-E5EA-4E73-BD39-B5F7F2B05175',
       WFInput: {
         Value: {
@@ -38,7 +36,8 @@ local _ = lib.anon;
       },
       WFWorkflowName: 'Open Google Spreadsheet',
     }),
-  }),
+
+  ]),
   WFWorkflowClientVersion: '2302.0.4',
   WFWorkflowHasOutputFallback: false,
   WFWorkflowHasShortcutInputVariables: false,

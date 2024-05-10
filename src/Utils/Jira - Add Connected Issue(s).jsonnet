@@ -1,16 +1,16 @@
-local lib = import 'shortcuts.libsonnet';
-local _ = lib.anon;
+local sc = import 'shortcuts.libsonnet';
 
 {
   WFQuickActionSurfaces: [],
-  WFWorkflowActions: lib.Actions({
-    local outputs = self,
+  WFWorkflowActions: sc.ActionsSeq([
 
-    [_()]: lib.Action('is.workflow.actions.dictionary', label='Empty Dictionary', params={
+    sc.Action('is.workflow.actions.dictionary', {
+      CustomOutputName: 'Empty Dictionary',
       UUID: 'D99BCD84-949B-49F8-9FF9-6C3335D183D2',
     }),
 
-    [_()]: lib.Action('is.workflow.actions.detect.dictionary', label='Input As Dict', params={
+    sc.Action('is.workflow.actions.detect.dictionary', {
+      CustomOutputName: 'Input As Dict',
       UUID: '2AD3A488-0CEF-4445-AB44-9959DAC1472F',
       WFInput: {
         Value: {
@@ -20,7 +20,7 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('is.workflow.actions.conditional', {
+    sc.Action('is.workflow.actions.conditional', {
       GroupingIdentifier: 'AA47C097-218D-48E1-8EC2-CE887F3EA1C4',
       WFCondition: 100,
       WFControlFlowMode: 0,
@@ -37,7 +37,7 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('is.workflow.actions.getvalueforkey', {
+    sc.Action('is.workflow.actions.getvalueforkey', {
       UUID: '8BAFECD7-A17E-4FCC-8DBF-89A4B292C18F',
       WFDictionaryKey: 'issue_key',
       WFInput: {
@@ -50,12 +50,12 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('is.workflow.actions.conditional', {
+    sc.Action('is.workflow.actions.conditional', {
       GroupingIdentifier: 'AA47C097-218D-48E1-8EC2-CE887F3EA1C4',
       WFControlFlowMode: 1,
     }),
 
-    [_()]: lib.Action('is.workflow.actions.text.replace', {
+    sc.Action('is.workflow.actions.text.replace', {
       UUID: 'F5C1A2B2-6F88-4B40-8CD8-9948E2B2F762',
       WFInput: {
         Value: {
@@ -73,13 +73,14 @@ local _ = lib.anon;
       WFReplaceTextReplace: '$1',
     }),
 
-    [_()]: lib.Action('is.workflow.actions.conditional', label='Issue key', params={
+    sc.Action('is.workflow.actions.conditional', {
+      CustomOutputName: 'Issue key',
       GroupingIdentifier: 'AA47C097-218D-48E1-8EC2-CE887F3EA1C4',
       UUID: '0136A062-CA5F-4107-8BC7-4AE815BEEE68',
       WFControlFlowMode: 2,
     }),
 
-    [_()]: lib.Action('is.workflow.actions.dictionary', {
+    sc.Action('is.workflow.actions.dictionary', {
       UUID: 'F25C44DC-481A-4936-847E-03A8DE5CC0FF',
       WFItems: {
         Value: {
@@ -127,7 +128,8 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('is.workflow.actions.runworkflow', label='Get Initial Issue Response', params={
+    sc.Action('is.workflow.actions.runworkflow', {
+      CustomOutputName: 'Get Initial Issue Response',
       UUID: '1FF07592-0AD1-4DE6-8EF7-55E37F5B44AE',
       WFInput: {
         Value: {
@@ -145,7 +147,8 @@ local _ = lib.anon;
       WFWorkflowName: 'Jira API',
     }),
 
-    [_()]: lib.Action('is.workflow.actions.getvalueforkey', label='Initial Issue Key', params={
+    sc.Action('is.workflow.actions.getvalueforkey', {
+      CustomOutputName: 'Initial Issue Key',
       UUID: 'F64A9F32-626F-4776-87A8-674454196E8E',
       WFDictionaryKey: 'key',
       WFInput: {
@@ -158,7 +161,7 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('is.workflow.actions.dictionary', {
+    sc.Action('is.workflow.actions.dictionary', {
       UUID: '33AEAE09-3079-4865-BC17-36661989C2FF',
       WFItems: {
         Value: {
@@ -199,7 +202,8 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('is.workflow.actions.runworkflow', label='Get Link Types Result', params={
+    sc.Action('is.workflow.actions.runworkflow', {
+      CustomOutputName: 'Get Link Types Result',
       UUID: '4088C2CB-BE97-4421-8CD1-7C940678AE98',
       WFInput: {
         Value: {
@@ -217,7 +221,8 @@ local _ = lib.anon;
       WFWorkflowName: 'Jira API',
     }),
 
-    [_()]: lib.Action('ke.bou.GizmoPack.QueryJSONIntent', label='Link Type IDs by Inward String', params={
+    sc.Action('ke.bou.GizmoPack.QueryJSONIntent', {
+      CustomOutputName: 'Link Type IDs by Inward String',
       UUID: 'DED77A96-D76F-41D8-8D0D-AF6E04B6DE84',
       input: {
         Value: {
@@ -231,7 +236,8 @@ local _ = lib.anon;
       queryType: 'jq',
     }),
 
-    [_()]: lib.Action('is.workflow.actions.choosefromlist', label='Chosen String', params={
+    sc.Action('is.workflow.actions.choosefromlist', {
+      CustomOutputName: 'Chosen String',
       UUID: '5E6E4F44-9FA5-4CA6-A888-CD1403D3D744',
       WFChooseFromListActionPrompt: "What's the relationship?",
       WFInput: {
@@ -254,7 +260,8 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('is.workflow.actions.getvalueforkey', label='Link Type ID', params={
+    sc.Action('is.workflow.actions.getvalueforkey', {
+      CustomOutputName: 'Link Type ID',
       UUID: 'C76A162D-C96B-4E02-9EB1-2F6AC61EF6A0',
       WFDictionaryKey: {
         Value: {
@@ -279,7 +286,8 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('is.workflow.actions.getvalueforkey', label='fields.summary', params={
+    sc.Action('is.workflow.actions.getvalueforkey', {
+      CustomOutputName: 'fields.summary',
       UUID: '77F5841A-5F54-4CB0-B6C2-BF2E890D4153',
       WFDictionaryKey: 'fields.summary',
       WFInput: {
@@ -292,7 +300,8 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('is.workflow.actions.ask', label='New Issue Summary', params={
+    sc.Action('is.workflow.actions.ask', {
+      CustomOutputName: 'New Issue Summary',
       UUID: '9639A5A1-6CB9-4744-8E09-641EECD0147E',
       WFAllowsMultilineText: false,
       WFAskActionDefaultAnswer: {
@@ -311,7 +320,7 @@ local _ = lib.anon;
       WFAskActionPrompt: 'What’s the connected issue summary?',
     }),
 
-    [_()]: lib.Action('is.workflow.actions.setclipboard', {
+    sc.Action('is.workflow.actions.setclipboard', {
       UUID: '22000F0C-A819-4ABF-AEBC-B11425E50A49',
       WFInput: {
         Value: {
@@ -323,7 +332,8 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('is.workflow.actions.text.replace', label='Quoted New Issue Summary', params={
+    sc.Action('is.workflow.actions.text.replace', {
+      CustomOutputName: 'Quoted New Issue Summary',
       UUID: 'EA18110B-B53A-487E-A84C-F27757B239A6',
       WFInput: {
         Value: {
@@ -342,7 +352,8 @@ local _ = lib.anon;
       WFReplaceTextReplace: '\\"',
     }),
 
-    [_()]: lib.Action('is.workflow.actions.gettext', label='Query', params={
+    sc.Action('is.workflow.actions.gettext', {
+      CustomOutputName: 'Query',
       UUID: '3A78A6FD-4D7D-472C-8558-F4EFAF603C66',
       WFTextActionText: {
         Value: {
@@ -369,7 +380,8 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('ke.bou.GizmoPack.QueryJSONIntent', label='Create Issue Request', params={
+    sc.Action('ke.bou.GizmoPack.QueryJSONIntent', {
+      CustomOutputName: 'Create Issue Request',
       UUID: '8D834350-6F16-4B6F-B724-17809205EA0C',
       input: {
         Value: {
@@ -395,7 +407,8 @@ local _ = lib.anon;
       queryType: 'jq',
     }),
 
-    [_()]: lib.Action('is.workflow.actions.dictionary', label='Create Issue Request', params={
+    sc.Action('is.workflow.actions.dictionary', {
+      CustomOutputName: 'Create Issue Request',
       UUID: 'D0DCBC56-D590-48B3-B37B-BA5E74A5FB7C',
       WFItems: {
         Value: {
@@ -762,7 +775,8 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('is.workflow.actions.runworkflow', label='Create Issue Result', params={
+    sc.Action('is.workflow.actions.runworkflow', {
+      CustomOutputName: 'Create Issue Result',
       UUID: '626C3B68-7142-47C4-BEC8-5C10807319A0',
       WFInput: {
         Value: {
@@ -780,12 +794,12 @@ local _ = lib.anon;
       WFWorkflowName: 'Jira API',
     }),
 
-    [_()]: lib.Action('is.workflow.actions.getdevicedetails', {
+    sc.Action('is.workflow.actions.getdevicedetails', {
       UUID: '520CB083-DCD8-4D42-9A88-A714363CC3F7',
       WFDeviceDetail: 'Device Model',
     }),
 
-    [_()]: lib.Action('is.workflow.actions.setvalueforkey', {
+    sc.Action('is.workflow.actions.setvalueforkey', {
       UUID: '718CE697-1C85-422E-A987-24A80A642E9B',
       WFDictionary: {
         Value: {
@@ -817,7 +831,7 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('is.workflow.actions.conditional', {
+    sc.Action('is.workflow.actions.conditional', {
       GroupingIdentifier: 'D4AC72F2-B4A7-45F9-9E9D-E4664B6D9B83',
       WFCondition: 5,
       WFConditionalActionString: 'Mac',
@@ -835,7 +849,7 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('is.workflow.actions.runworkflow', {
+    sc.Action('is.workflow.actions.runworkflow', {
       UUID: '41E5AF0C-6525-4378-990F-1B254805D942',
       WFInput: {
         Value: {
@@ -853,7 +867,7 @@ local _ = lib.anon;
       WFWorkflowName: 'Jira - Prompt to Review',
     }),
 
-    [_()]: lib.Action('is.workflow.actions.conditional', {
+    sc.Action('is.workflow.actions.conditional', {
       GroupingIdentifier: '0ADD3BA5-12CD-4D5E-8562-1FF5ACE0856B',
       WFCondition: 101,
       WFControlFlowMode: 0,
@@ -876,7 +890,7 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('is.workflow.actions.dictionary', {
+    sc.Action('is.workflow.actions.dictionary', {
       UUID: '19A9108A-BABC-4DC3-BA96-93F2E01CAF73',
       WFItems: {
         Value: {
@@ -902,7 +916,7 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('is.workflow.actions.setvalueforkey', {
+    sc.Action('is.workflow.actions.setvalueforkey', {
       UUID: '98D8B1CF-CA3A-47CF-93C6-ED3FF304F57A',
       WFDictionary: {
         Value: {
@@ -934,7 +948,7 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('is.workflow.actions.runworkflow', {
+    sc.Action('is.workflow.actions.runworkflow', {
       UUID: '8CA0C493-2B2D-4B75-AD13-548A69ED22BD',
       WFInput: {
         Value: {
@@ -952,19 +966,19 @@ local _ = lib.anon;
       WFWorkflowName: 'Jira - Prompt to Review',
     }),
 
-    [_()]: lib.Action('is.workflow.actions.conditional', {
+    sc.Action('is.workflow.actions.conditional', {
       GroupingIdentifier: '0ADD3BA5-12CD-4D5E-8562-1FF5ACE0856B',
       WFControlFlowMode: 2,
     }),
 
-    [_()]: lib.Action('is.workflow.actions.conditional', {
+    sc.Action('is.workflow.actions.conditional', {
       GroupingIdentifier: 'D4AC72F2-B4A7-45F9-9E9D-E4664B6D9B83',
       WFControlFlowMode: 1,
     }),
 
-    [_()]: lib.Action('is.workflow.actions.exit', {}),
+    sc.Action('is.workflow.actions.exit', {}),
 
-    [_()]: lib.Action('is.workflow.actions.setvalueforkey', {
+    sc.Action('is.workflow.actions.setvalueforkey', {
       UUID: '2D3A587A-31A9-4D6B-8A30-9452FBEF375E',
       WFDictionary: {
         Value: {
@@ -978,7 +992,7 @@ local _ = lib.anon;
       WFDictionaryValue: 'true',
     }),
 
-    [_()]: lib.Action('is.workflow.actions.runworkflow', {
+    sc.Action('is.workflow.actions.runworkflow', {
       UUID: 'F220F8B8-4EFE-495E-B4B4-FDA195FA0522',
       WFInput: {
         Value: {
@@ -996,11 +1010,12 @@ local _ = lib.anon;
       WFWorkflowName: 'Jira - Prompt to Review',
     }),
 
-    [_()]: lib.Action('is.workflow.actions.conditional', {
+    sc.Action('is.workflow.actions.conditional', {
       GroupingIdentifier: 'D4AC72F2-B4A7-45F9-9E9D-E4664B6D9B83',
       WFControlFlowMode: 2,
     }),
-  }),
+
+  ]),
   WFWorkflowClientVersion: '2302.0.4',
   WFWorkflowHasOutputFallback: false,
   WFWorkflowHasShortcutInputVariables: true,

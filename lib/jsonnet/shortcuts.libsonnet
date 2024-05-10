@@ -1,64 +1,42 @@
-local lib = import 'shortcuts.libsonnet';
-
 {
-  _count(ns):: std.native('global_count')(ns),
+  _uuid(ns, name):: std.native('UUIDv5')(ns, name),
 
-  local order_key = std.native('UUIDv5')('actions_order', ''),
-  local ordered() = { [order_key]:: $._count('actions_order') },
+  local _id = 'WFWorkflowActionIdentifier',
+  local _params = 'WFWorkflowActionParameters',
 
-  anon():: std.toString($._count('actionId')),
-
-  uuid(ns, name):: std.native('UUIDv5')(ns, name),
-
-  _action(id):: ordered {
-    WFWorkflowActionIdentifier: id,
-  },
-
-  _params(params):: {
-    WFWorkflowActionParameters+: params,
-  },
-
-  Action(id, params, label=null):: (
+  Action(id, params, name=null):: (
     local unidentifiedAction = (
-      $._action(id) +
-      $._params(params) +
-      (
-        if label != null
-        then $._params({ CustomOutputName: label })
-        else {}
-      )
+      { [_id]: id }
+      { [_params]: params }
     );
-    local UUID = $.uuid('action', std.manifestJsonMinified(unidentifiedAction));
-    unidentifiedAction + $._params({ UUID: UUID })
-  ),
-
-  Actions(actions_obj):: (
-    std.sort(
-      [
-        actions_obj[name] + (
-          // (if name is not hidden)
-          if !std.objectHas(actions_obj, name)
-          then $._params({
-            // only set CustomOutputName if none was defined via label
-            [if super['CustomOutputName'] != null then 'CustomOutputName']: name,
-          })
-          else $._params({})
-        )
-        for name in std.objectFieldsAll(actions_obj)
-      ],
-      function(action) action[order_key],
+    unidentifiedAction + (
+      if name != null
+      then
+        { [_params]+: { CustomOutputName: name } } +
+        { [_params]+: { UUID: $._uuid('action', std.manifestJsonMinified(unidentifiedAction)) } }
+      else
+        {}
     )
   ),
 
-  Ref(outputs, name, aggrandizements=null):: {
+  ActionsSeq(actions, outputs={}):: (
+    if std.length(actions) == 0 then
+      []
+    else (
+      local action = actions[0];
+      local name = std.get(action[_params], 'CustomOutputName');
+      local newOutputs = if name == null then outputs else outputs { [name]: action[_params].UUID };
+      local newAction = { outputs:: newOutputs } + action;
+      local rest = $.ActionsSeq(actions[1:], newOutputs);
+      [newAction] + rest
+    )
+  ),
+
+  Ref(outputs, name, aggs=[]):: {
     Type: 'ActionOutput',
-    OutputUUID: outputs[name].UUID,
-    OutputName: (
-      // required because some CustomOutputNames are set by `Actions` during
-      // transformation into an array, taking into account the field name.
-      local label = outputs[name].WFWorkflowActionParameters.CustomOutputName;
-      if label != null then label else name
-    ),
+    OutputUUID: outputs[name],
+    OutputName: name,
+    Aggrandizements: aggs,
   },
 
 }

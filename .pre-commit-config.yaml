@@ -12,3 +12,6 @@ repos:
   hooks:
   - id: jsonnet-format
   - id: jsonnet-lint
+
+    # work around https://github.com/google/go-jsonnet/issues/591
+    entry: 'parallel jsonnet-lint :::'

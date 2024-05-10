@@ -1,12 +1,10 @@
-local lib = import 'shortcuts.libsonnet';
-local _ = lib.anon;
+local sc = import 'shortcuts.libsonnet';
 
 {
   WFQuickActionSurfaces: [],
-  WFWorkflowActions: lib.Actions({
-    local outputs = self,
+  WFWorkflowActions: sc.ActionsSeq([
 
-    [_()]: lib.Action('is.workflow.actions.runshellscript', {
+    sc.Action('is.workflow.actions.runshellscript', {
       Input: {
         Value: {
           Type: 'ExtensionInput',
@@ -18,7 +16,8 @@ local _ = lib.anon;
       Shell: '/bin/bash',
       UUID: '6F16FCD4-8611-4C46-A4F2-2D76552BF163',
     }),
-  }),
+
+  ]),
   WFWorkflowClientVersion: '2302.0.4',
   WFWorkflowHasOutputFallback: false,
   WFWorkflowHasShortcutInputVariables: true,

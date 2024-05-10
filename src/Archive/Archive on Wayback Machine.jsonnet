@@ -1,12 +1,11 @@
-local lib = import 'shortcuts.libsonnet';
-local _ = lib.anon;
+local sc = import 'shortcuts.libsonnet';
 
 {
   WFQuickActionSurfaces: [],
-  WFWorkflowActions: lib.Actions({
-    local outputs = self,
+  WFWorkflowActions: sc.ActionsSeq([
 
-    [_()]: lib.Action('is.workflow.actions.urlencode', label='Encoded URL', params={
+    sc.Action('is.workflow.actions.urlencode', {
+      CustomOutputName: 'Encoded URL',
       UUID: 'C9099835-7512-4CD7-9490-754E20C55F29',
       WFInput: {
         Value: {
@@ -21,7 +20,8 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('is.workflow.actions.gettext', label='Archive Save URL', params={
+    sc.Action('is.workflow.actions.gettext', {
+      CustomOutputName: 'Archive Save URL',
       UUID: '80190A65-C906-4CC9-8019-0A65C906ECC9',
       WFTextActionText: {
         Value: {
@@ -38,7 +38,7 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('is.workflow.actions.downloadurl', {
+    sc.Action('is.workflow.actions.downloadurl', {
       ShowHeaders: false,
       UUID: '65D93BA0-20BC-4E7E-8513-8A123D03B5C0',
       WFFormValues: {
@@ -87,7 +87,8 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('is.workflow.actions.gettext', label='Archive Root URL', params={
+    sc.Action('is.workflow.actions.gettext', {
+      CustomOutputName: 'Archive Root URL',
       UUID: '6EFE14C8-3F96-41ED-BF54-9B9A85E1AC0E',
       WFTextActionText: {
         Value: {
@@ -104,7 +105,7 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('is.workflow.actions.url.getheaders', {
+    sc.Action('is.workflow.actions.url.getheaders', {
       UUID: '73018831-A7B6-4CC6-A308-A78FC757E71E',
       WFInput: {
         Value: {
@@ -121,7 +122,8 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('is.workflow.actions.getvalueforkey', label='Link Header', params={
+    sc.Action('is.workflow.actions.getvalueforkey', {
+      CustomOutputName: 'Link Header',
       UUID: 'BF44ED2B-F396-4DBE-9FE7-A04EA4A0ECE1',
       WFDictionaryKey: 'Link',
       WFInput: {
@@ -134,7 +136,7 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('is.workflow.actions.previewdocument', {
+    sc.Action('is.workflow.actions.previewdocument', {
       WFInput: {
         Value: {
           OutputName: 'Link Header',
@@ -145,7 +147,8 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('is.workflow.actions.text.match', label='Link Header Matches', params={
+    sc.Action('is.workflow.actions.text.match', {
+      CustomOutputName: 'Link Header Matches',
       UUID: '256220E2-0CB2-4B82-905E-53C98EB58D08',
       WFMatchTextCaseSensitive: false,
       WFMatchTextPattern: '<([^>]+)>; rel="memento"',
@@ -164,7 +167,8 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('is.workflow.actions.text.match.getgroup', label='Archive URL', params={
+    sc.Action('is.workflow.actions.text.match.getgroup', {
+      CustomOutputName: 'Archive URL',
       UUID: 'BA97664E-4A47-4582-8981-D75B4E68C4A5',
       WFGetGroupType: 'Group At Index',
       matches: {
@@ -177,7 +181,7 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('is.workflow.actions.setclipboard', {
+    sc.Action('is.workflow.actions.setclipboard', {
       WFInput: {
         Value: {
           OutputName: 'Archive URL',
@@ -189,7 +193,7 @@ local _ = lib.anon;
       WFLocalOnly: false,
     }),
 
-    [_()]: lib.Action('is.workflow.actions.notification', {
+    sc.Action('is.workflow.actions.notification', {
       UUID: '5E9BC1D6-D980-4843-BD4E-19C9DD0197EC',
       WFInput: {
         Value: {
@@ -201,7 +205,8 @@ local _ = lib.anon;
       },
       WFNotificationActionBody: 'Archive URL copied to clipboard',
     }),
-  }),
+
+  ]),
   WFWorkflowClientVersion: '2302.0.4',
   WFWorkflowHasOutputFallback: false,
   WFWorkflowHasShortcutInputVariables: false,

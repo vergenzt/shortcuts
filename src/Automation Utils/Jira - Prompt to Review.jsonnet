@@ -1,12 +1,10 @@
-local lib = import 'shortcuts.libsonnet';
-local _ = lib.anon;
+local sc = import 'shortcuts.libsonnet';
 
 {
   WFQuickActionSurfaces: [],
-  WFWorkflowActions: lib.Actions({
-    local outputs = self,
+  WFWorkflowActions: sc.ActionsSeq([
 
-    [_()]: lib.Action('is.workflow.actions.dictionary', {
+    sc.Action('is.workflow.actions.dictionary', {
       UUID: '1C65FAB1-F478-4315-900D-777FDEA8EF02',
       WFItems: {
         Value: {
@@ -62,7 +60,8 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('is.workflow.actions.runworkflow', label='Get Issue Result', params={
+    sc.Action('is.workflow.actions.runworkflow', {
+      CustomOutputName: 'Get Issue Result',
       UUID: 'A99B3D6A-D90B-4859-8B7F-4CC8D026CDE1',
       WFInput: {
         Value: {
@@ -80,7 +79,8 @@ local _ = lib.anon;
       WFWorkflowName: 'Jira API',
     }),
 
-    [_()]: lib.Action('is.workflow.actions.getvalueforkey', label='Do you want to review?', params={
+    sc.Action('is.workflow.actions.getvalueforkey', {
+      CustomOutputName: 'Do you want to review?',
       UUID: 'A5BB4DB3-C265-4836-9DF3-B1713FA8E73C',
       WFDictionaryKey: 'review_prompt_optional',
       WFInput: {
@@ -91,7 +91,7 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('is.workflow.actions.conditional', {
+    sc.Action('is.workflow.actions.conditional', {
       GroupingIdentifier: '6C91002C-93EC-4B86-8427-F5C7EE4EC8EF',
       WFCondition: 100,
       WFControlFlowMode: 0,
@@ -108,7 +108,7 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('is.workflow.actions.list', {
+    sc.Action('is.workflow.actions.list', {
       UUID: '7B19EA63-CF1A-4A8C-B394-A3EC6B63BE90',
       WFItems: [
         'Yes',
@@ -116,7 +116,7 @@ local _ = lib.anon;
       ],
     }),
 
-    [_()]: lib.Action('is.workflow.actions.choosefromlist', {
+    sc.Action('is.workflow.actions.choosefromlist', {
       UUID: 'C9107E71-A022-4B3D-AF36-AA871DBE0891',
       WFChooseFromListActionPrompt: {
         Value: {
@@ -171,7 +171,7 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('is.workflow.actions.conditional', {
+    sc.Action('is.workflow.actions.conditional', {
       GroupingIdentifier: '6900C0B4-3E34-4A84-9B58-320F50893101',
       WFCondition: 4,
       WFConditionalActionString: 'No',
@@ -189,20 +189,20 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('is.workflow.actions.exit', {}),
+    sc.Action('is.workflow.actions.exit', {}),
 
-    [_()]: lib.Action('is.workflow.actions.conditional', {
+    sc.Action('is.workflow.actions.conditional', {
       GroupingIdentifier: '6900C0B4-3E34-4A84-9B58-320F50893101',
       WFControlFlowMode: 2,
     }),
 
-    [_()]: lib.Action('is.workflow.actions.conditional', {
+    sc.Action('is.workflow.actions.conditional', {
       GroupingIdentifier: '6C91002C-93EC-4B86-8427-F5C7EE4EC8EF',
       UUID: '81348415-BF8C-40E8-B135-8DF7B567D2F7',
       WFControlFlowMode: 2,
     }),
 
-    [_()]: lib.Action('is.workflow.actions.alert', {
+    sc.Action('is.workflow.actions.alert', {
       WFAlertActionMessage: {
         Value: {
           attachmentsByRange: {
@@ -277,7 +277,8 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('is.workflow.actions.text.replace', label='Browse URL', params={
+    sc.Action('is.workflow.actions.text.replace', {
+      CustomOutputName: 'Browse URL',
       UUID: '5D2E5E83-6C7F-4489-A5ED-CCE29647FF09',
       WFInput: {
         Value: {
@@ -325,7 +326,8 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('is.workflow.actions.getvalueforkey', label='filter', params={
+    sc.Action('is.workflow.actions.getvalueforkey', {
+      CustomOutputName: 'filter',
       UUID: 'C4B88720-8C30-4636-99CC-4D05792657E4',
       WFDictionaryKey: 'filter',
       WFInput: {
@@ -336,7 +338,7 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('is.workflow.actions.conditional', {
+    sc.Action('is.workflow.actions.conditional', {
       GroupingIdentifier: 'AE978332-38D0-467A-BA94-F5D047219387',
       WFCondition: 100,
       WFControlFlowMode: 0,
@@ -353,7 +355,7 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('is.workflow.actions.gettext', {
+    sc.Action('is.workflow.actions.gettext', {
       UUID: 'B4A76837-06F2-4A99-9CB8-DECD999D0466',
       WFTextActionText: {
         Value: {
@@ -378,13 +380,13 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('is.workflow.actions.conditional', {
+    sc.Action('is.workflow.actions.conditional', {
       GroupingIdentifier: 'AE978332-38D0-467A-BA94-F5D047219387',
       UUID: '0AD94A73-F0B0-41C4-AD12-909189ACC5E9',
       WFControlFlowMode: 2,
     }),
 
-    [_()]: lib.Action('is.workflow.actions.url', {
+    sc.Action('is.workflow.actions.url', {
       UUID: '1D064DC3-9619-45D2-AE5C-A405644ED2CB',
       WFURLActionURL: {
         Value: {
@@ -406,7 +408,7 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('is.workflow.actions.openurl', {
+    sc.Action('is.workflow.actions.openurl', {
       UUID: '53990257-DAE7-43A2-8220-DCE11098D224',
       WFInput: {
         Value: {
@@ -418,7 +420,8 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('is.workflow.actions.getvalueforkey', label='skip_return', params={
+    sc.Action('is.workflow.actions.getvalueforkey', {
+      CustomOutputName: 'skip_return',
       UUID: 'F239D23E-CDD4-4C65-B3E5-C38F6D16E614',
       WFDictionaryKey: 'skip_return',
       WFInput: {
@@ -429,7 +432,7 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('is.workflow.actions.conditional', {
+    sc.Action('is.workflow.actions.conditional', {
       GroupingIdentifier: '2DD74F72-F042-47FF-8317-8749CC2A2A5A',
       WFCondition: 101,
       WFControlFlowMode: 0,
@@ -446,13 +449,14 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('is.workflow.actions.waittoreturn', {}),
+    sc.Action('is.workflow.actions.waittoreturn', {}),
 
-    [_()]: lib.Action('is.workflow.actions.conditional', {
+    sc.Action('is.workflow.actions.conditional', {
       GroupingIdentifier: '2DD74F72-F042-47FF-8317-8749CC2A2A5A',
       WFControlFlowMode: 2,
     }),
-  }),
+
+  ]),
   WFWorkflowClientVersion: '2302.0.4',
   WFWorkflowHasOutputFallback: false,
   WFWorkflowHasShortcutInputVariables: true,

@@ -1,12 +1,11 @@
-local lib = import 'shortcuts.libsonnet';
-local _ = lib.anon;
+local sc = import 'shortcuts.libsonnet';
 
 {
   WFQuickActionSurfaces: [],
-  WFWorkflowActions: lib.Actions({
-    local outputs = self,
+  WFWorkflowActions: sc.ActionsSeq([
 
-    [_()]: lib.Action('is.workflow.actions.runworkflow', label='Google OAuth', params={
+    sc.Action('is.workflow.actions.runworkflow', {
+      CustomOutputName: 'Google OAuth',
       UUID: '09C69E37-59F0-4E5B-B93E-534E039A893A',
       WFWorkflow: {
         isSelf: false,
@@ -16,12 +15,12 @@ local _ = lib.anon;
       WFWorkflowName: 'Google OAuth',
     }),
 
-    [_()]: lib.Action('dk.simonbs.DataJar.GetValueIntent', {
+    sc.Action('dk.simonbs.DataJar.GetValueIntent', {
       UUID: '57353387-EAC4-4E94-BC79-77002F6DC116',
       keyPath: 'dose-recorder',
     }),
 
-    [_()]: lib.Action('is.workflow.actions.url', {
+    sc.Action('is.workflow.actions.url', {
       UUID: '348BBF71-FD66-4818-B93C-DFDA9AB2C3CF',
       WFURLActionURL: {
         Value: {
@@ -48,7 +47,8 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('is.workflow.actions.urlencode', label='menuRange', params={
+    sc.Action('is.workflow.actions.urlencode', {
+      CustomOutputName: 'menuRange',
       UUID: 'DD6409FC-FC37-4E71-9134-A39743C3603E',
       WFInput: {
         Value: {
@@ -75,7 +75,7 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('is.workflow.actions.downloadurl', {
+    sc.Action('is.workflow.actions.downloadurl', {
       ShowHeaders: false,
       UUID: 'C47AC355-7C70-48B0-9F56-2FADFEB4A019',
       WFHTTPHeaders: {
@@ -127,7 +127,7 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('is.workflow.actions.repeat.each', {
+    sc.Action('is.workflow.actions.repeat.each', {
       GroupingIdentifier: '12455693-4B6E-4486-BAD9-730E939E6984',
       WFControlFlowMode: 0,
       WFInput: {
@@ -150,7 +150,7 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('is.workflow.actions.getitemfromlist', {
+    sc.Action('is.workflow.actions.getitemfromlist', {
       UUID: '796988DD-F959-4F01-A4C9-EBBD16E96167',
       WFInput: {
         Value: {
@@ -161,13 +161,13 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('is.workflow.actions.repeat.each', {
+    sc.Action('is.workflow.actions.repeat.each', {
       GroupingIdentifier: '12455693-4B6E-4486-BAD9-730E939E6984',
       UUID: '7F605F6F-7084-4C8F-A3FB-E345647B513F',
       WFControlFlowMode: 2,
     }),
 
-    [_()]: lib.Action('is.workflow.actions.choosefromlist', {
+    sc.Action('is.workflow.actions.choosefromlist', {
       UUID: '309641A0-9081-4DD8-A60F-7E142B3E4E46',
       WFInput: {
         Value: {
@@ -179,7 +179,7 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('is.workflow.actions.text.match', {
+    sc.Action('is.workflow.actions.text.match', {
       UUID: 'FFC33375-004B-4559-961D-04E90725DD0F',
       WFMatchTextPattern: 'Other',
       text: {
@@ -197,7 +197,7 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('is.workflow.actions.conditional', {
+    sc.Action('is.workflow.actions.conditional', {
       GroupingIdentifier: 'FF4D8839-949A-412C-9955-483681D84092',
       WFCondition: 100,
       WFConditionalActionString: 'Other',
@@ -215,12 +215,12 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('is.workflow.actions.ask', {
+    sc.Action('is.workflow.actions.ask', {
       UUID: '11D25B5E-144E-407B-96D2-4E6483D62DBE',
       WFAskActionPrompt: 'Other',
     }),
 
-    [_()]: lib.Action('is.workflow.actions.setvariable', {
+    sc.Action('is.workflow.actions.setvariable', {
       WFInput: {
         Value: {
           OutputName: 'Provided Input',
@@ -232,12 +232,12 @@ local _ = lib.anon;
       WFVariableName: 'Med',
     }),
 
-    [_()]: lib.Action('is.workflow.actions.conditional', {
+    sc.Action('is.workflow.actions.conditional', {
       GroupingIdentifier: 'FF4D8839-949A-412C-9955-483681D84092',
       WFControlFlowMode: 1,
     }),
 
-    [_()]: lib.Action('is.workflow.actions.setvariable', {
+    sc.Action('is.workflow.actions.setvariable', {
       WFInput: {
         Value: {
           OutputName: 'Chosen Item',
@@ -249,19 +249,19 @@ local _ = lib.anon;
       WFVariableName: 'Med',
     }),
 
-    [_()]: lib.Action('is.workflow.actions.conditional', {
+    sc.Action('is.workflow.actions.conditional', {
       GroupingIdentifier: 'FF4D8839-949A-412C-9955-483681D84092',
       UUID: '5F07A628-CD45-4254-B2AB-87684FEB9F38',
       WFControlFlowMode: 2,
     }),
 
-    [_()]: lib.Action('is.workflow.actions.ask', {
+    sc.Action('is.workflow.actions.ask', {
       UUID: 'E870D204-6D15-45AF-8A7D-302D211C8E25',
       WFAskActionDefaultAnswerDateAndTime: '',
       WFInputType: 'Date and Time',
     }),
 
-    [_()]: lib.Action('is.workflow.actions.format.date', {
+    sc.Action('is.workflow.actions.format.date', {
       UUID: '43212188-F76D-40D5-A3F5-FF573F34800C',
       WFDate: {
         Value: {
@@ -282,7 +282,7 @@ local _ = lib.anon;
       WFTimeFormatStyle: 'Long',
     }),
 
-    [_()]: lib.Action('is.workflow.actions.ask', {
+    sc.Action('is.workflow.actions.ask', {
       UUID: '1671F713-DC49-4D7C-9A15-3BF2F559587A',
       WFAskActionDefaultAnswer: {
         Value: {
@@ -311,7 +311,7 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('is.workflow.actions.setvariable', {
+    sc.Action('is.workflow.actions.setvariable', {
       WFInput: {
         Value: {
           OutputName: 'Provided Input',
@@ -323,7 +323,8 @@ local _ = lib.anon;
       WFVariableName: 'Med',
     }),
 
-    [_()]: lib.Action('is.workflow.actions.urlencode', label='dataRange', params={
+    sc.Action('is.workflow.actions.urlencode', {
+      CustomOutputName: 'dataRange',
       UUID: '14227708-44D7-4EC8-AEAB-71AA558092E8',
       WFInput: {
         Value: {
@@ -350,7 +351,7 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('is.workflow.actions.downloadurl', {
+    sc.Action('is.workflow.actions.downloadurl', {
       ShowHeaders: true,
       UUID: '4AB123A5-1C39-42B0-9264-BBC6DFB7DE2F',
       WFFormValues: {
@@ -470,7 +471,7 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('is.workflow.actions.alert', {
+    sc.Action('is.workflow.actions.alert', {
       WFAlertActionTitle: {
         Value: {
           attachmentsByRange: {
@@ -486,7 +487,7 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('is.workflow.actions.runworkflow', {
+    sc.Action('is.workflow.actions.runworkflow', {
       UUID: 'F004584E-2AC9-4A66-A039-0C5A8255D4BE',
       WFWorkflow: {
         isSelf: false,
@@ -496,7 +497,7 @@ local _ = lib.anon;
       WFWorkflowName: 'Dose History',
     }),
 
-    [_()]: lib.Action('is.workflow.actions.choosefrommenu', {
+    sc.Action('is.workflow.actions.choosefrommenu', {
       GroupingIdentifier: '0937D1D5-A680-418A-AD7E-0EE31DBAA43B',
       WFControlFlowMode: 0,
       WFMenuItems: [
@@ -506,15 +507,15 @@ local _ = lib.anon;
       WFMenuPrompt: 'Would you like to set an alarm?',
     }),
 
-    [_()]: lib.Action('is.workflow.actions.choosefrommenu', {
+    sc.Action('is.workflow.actions.choosefrommenu', {
       GroupingIdentifier: '0937D1D5-A680-418A-AD7E-0EE31DBAA43B',
       WFControlFlowMode: 1,
       WFMenuItemTitle: 'I’d like an alarm. I’ll copy the time to clipboard and return to Shortcuts.',
     }),
 
-    [_()]: lib.Action('is.workflow.actions.waittoreturn', {}),
+    sc.Action('is.workflow.actions.waittoreturn', {}),
 
-    [_()]: lib.Action('is.workflow.actions.alert', {
+    sc.Action('is.workflow.actions.alert', {
       WFAlertActionTitle: {
         Value: {
           attachmentsByRange: {
@@ -540,7 +541,7 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('is.workflow.actions.format.date', {
+    sc.Action('is.workflow.actions.format.date', {
       UUID: 'B1E271A1-E39F-464A-AEF5-32DCDBCB756A',
       WFDate: {
         Value: {
@@ -570,7 +571,7 @@ local _ = lib.anon;
       WFISO8601IncludeTime: false,
     }),
 
-    [_()]: lib.Action('is.workflow.actions.alert', {
+    sc.Action('is.workflow.actions.alert', {
       WFAlertActionTitle: {
         Value: {
           attachmentsByRange: {
@@ -586,7 +587,7 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('is.workflow.actions.ask', {
+    sc.Action('is.workflow.actions.ask', {
       UUID: '3CF87CAB-7F31-4867-B6AC-3CD889F413BC',
       WFAskActionDefaultAnswerDateAndTime: {
         Value: {
@@ -618,7 +619,7 @@ local _ = lib.anon;
       WFInputType: 'Time',
     }),
 
-    [_()]: lib.Action('com.apple.mobiletimer-framework.MobileTimerIntents.MTCreateAlarmIntent', {
+    sc.Action('com.apple.mobiletimer-framework.MobileTimerIntents.MTCreateAlarmIntent', {
       AppIntentDescriptor: {
         AppIntentIdentifier: 'CreateAlarmIntent',
         BundleIdentifier: 'com.apple.clock',
@@ -657,19 +658,19 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('is.workflow.actions.choosefrommenu', {
+    sc.Action('is.workflow.actions.choosefrommenu', {
       GroupingIdentifier: '0937D1D5-A680-418A-AD7E-0EE31DBAA43B',
       WFControlFlowMode: 1,
       WFMenuItemTitle: 'No alarm please.',
     }),
 
-    [_()]: lib.Action('is.workflow.actions.choosefrommenu', {
+    sc.Action('is.workflow.actions.choosefrommenu', {
       GroupingIdentifier: '0937D1D5-A680-418A-AD7E-0EE31DBAA43B',
       UUID: '389490C3-0427-4320-A79C-E3605929C7BD',
       WFControlFlowMode: 2,
     }),
 
-    [_()]: lib.Action('is.workflow.actions.detect.date', {
+    sc.Action('is.workflow.actions.detect.date', {
       WFInput: {
         Value: {
           OutputName: 'Menu Result',
@@ -679,7 +680,8 @@ local _ = lib.anon;
         WFSerializationType: 'WFTextTokenAttachment',
       },
     }),
-  }),
+
+  ]),
   WFWorkflowClientVersion: '2302.0.4',
   WFWorkflowHasOutputFallback: false,
   WFWorkflowHasShortcutInputVariables: false,

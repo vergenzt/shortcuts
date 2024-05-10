@@ -1,12 +1,11 @@
-local lib = import 'shortcuts.libsonnet';
-local _ = lib.anon;
+local sc = import 'shortcuts.libsonnet';
 
 {
   WFQuickActionSurfaces: [],
-  WFWorkflowActions: lib.Actions({
-    local outputs = self,
+  WFWorkflowActions: sc.ActionsSeq([
 
-    [_()]: lib.Action('is.workflow.actions.detect.dictionary', label='Input Dict', params={
+    sc.Action('is.workflow.actions.detect.dictionary', {
+      CustomOutputName: 'Input Dict',
       UUID: '89C08046-311F-4B52-90E3-C2A3DBFCF024',
       WFInput: {
         Value: {
@@ -16,7 +15,7 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('is.workflow.actions.url', {
+    sc.Action('is.workflow.actions.url', {
       UUID: 'DE2D34E7-B006-4765-AB65-4526D023CDE9',
       WFURLActionURL: {
         Value: {
@@ -39,7 +38,8 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('is.workflow.actions.getvalueforkey', label='Request Method', params={
+    sc.Action('is.workflow.actions.getvalueforkey', {
+      CustomOutputName: 'Request Method',
       UUID: 'EDED189D-5D86-40A2-9470-42DB612B15D2',
       WFDictionaryKey: 'method',
       WFInput: {
@@ -52,12 +52,13 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('dk.simonbs.DataJar.GetValueIntent', label='Toggl Track API Token', params={
+    sc.Action('dk.simonbs.DataJar.GetValueIntent', {
+      CustomOutputName: 'Toggl Track API Token',
       UUID: '89A86341-ECE8-4BBA-B75E-EC3E951D9F57',
       keyPath: 'Toggl Track.api_token',
     }),
 
-    [_()]: lib.Action('is.workflow.actions.gettext', {
+    sc.Action('is.workflow.actions.gettext', {
       UUID: 'C8E53456-5DEE-4F2F-B813-77F344DF8EC4',
       WFTextActionText: {
         Value: {
@@ -74,7 +75,7 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('is.workflow.actions.base64encode', {
+    sc.Action('is.workflow.actions.base64encode', {
       UUID: '4B219ECF-AB3E-4392-B8E9-56BD3299316C',
       WFBase64LineBreakMode: 'None',
       WFInput: {
@@ -87,7 +88,8 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('is.workflow.actions.getvalueforkey', label='Query Params', params={
+    sc.Action('is.workflow.actions.getvalueforkey', {
+      CustomOutputName: 'Query Params',
       UUID: 'E768C8B5-9633-48CC-AB3F-5733EEB2306A',
       WFDictionaryKey: 'params',
       WFInput: {
@@ -100,7 +102,7 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('is.workflow.actions.conditional', {
+    sc.Action('is.workflow.actions.conditional', {
       GroupingIdentifier: '4C6CDAC1-3AF6-4835-87D8-C5348FA88848',
       WFCondition: 100,
       WFControlFlowMode: 0,
@@ -117,7 +119,7 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('is.workflow.actions.repeat.each', {
+    sc.Action('is.workflow.actions.repeat.each', {
       GroupingIdentifier: 'CB0F08F7-D254-42C4-933F-CDCE8DCF4415',
       WFControlFlowMode: 0,
       WFInput: {
@@ -140,7 +142,8 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('is.workflow.actions.urlencode', label='Key', params={
+    sc.Action('is.workflow.actions.urlencode', {
+      CustomOutputName: 'Key',
       UUID: '62069FEA-E890-412F-8DDB-6CE84248AB8E',
       WFInput: {
         Value: {
@@ -156,7 +159,8 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('is.workflow.actions.getvalueforkey', label='Value', params={
+    sc.Action('is.workflow.actions.getvalueforkey', {
+      CustomOutputName: 'Value',
       UUID: '54430E5A-9071-464D-820F-9AAD04CF1865',
       WFDictionaryKey: {
         Value: {
@@ -180,7 +184,8 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('is.workflow.actions.urlencode', label='Value', params={
+    sc.Action('is.workflow.actions.urlencode', {
+      CustomOutputName: 'Value',
       UUID: '76C067DF-D86D-4617-8551-3F18A4FDA349',
       WFInput: {
         Value: {
@@ -197,7 +202,7 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('is.workflow.actions.gettext', {
+    sc.Action('is.workflow.actions.gettext', {
       UUID: '0A2FB96F-DDF1-493F-AF2D-53684A01A077',
       WFTextActionText: {
         Value: {
@@ -219,13 +224,13 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('is.workflow.actions.repeat.each', {
+    sc.Action('is.workflow.actions.repeat.each', {
       GroupingIdentifier: 'CB0F08F7-D254-42C4-933F-CDCE8DCF4415',
       UUID: '6EB1C80A-F18C-474B-B085-71DBF93D3894',
       WFControlFlowMode: 2,
     }),
 
-    [_()]: lib.Action('is.workflow.actions.text.combine', {
+    sc.Action('is.workflow.actions.text.combine', {
       UUID: '338434BD-529B-4AFD-AE22-B4B476F14066',
       WFTextCustomSeparator: '&',
       WFTextSeparator: 'Custom',
@@ -239,13 +244,14 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('is.workflow.actions.conditional', label='Query', params={
+    sc.Action('is.workflow.actions.conditional', {
+      CustomOutputName: 'Query',
       GroupingIdentifier: '4C6CDAC1-3AF6-4835-87D8-C5348FA88848',
       UUID: '42A2218F-381B-42D3-B44D-E2B4D060246F',
       WFControlFlowMode: 2,
     }),
 
-    [_()]: lib.Action('is.workflow.actions.list', {
+    sc.Action('is.workflow.actions.list', {
       UUID: '4F45D58D-5C50-4014-AF98-195EF3FBE96B',
       WFItems: [
         {
@@ -283,7 +289,8 @@ local _ = lib.anon;
       ],
     }),
 
-    [_()]: lib.Action('is.workflow.actions.text.combine', label='Combined URL', params={
+    sc.Action('is.workflow.actions.text.combine', {
+      CustomOutputName: 'Combined URL',
       UUID: 'A5749BCB-5258-4A9A-8ED7-4ED4FAFC72B3',
       WFTextCustomSeparator: '?',
       WFTextSeparator: 'Custom',
@@ -297,7 +304,7 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('is.workflow.actions.downloadurl', {
+    sc.Action('is.workflow.actions.downloadurl', {
       ShowHeaders: true,
       UUID: '2B70C5DA-D255-41E1-ABB9-44F8303B5180',
       WFHTTPBodyType: 'File',
@@ -381,7 +388,8 @@ local _ = lib.anon;
         WFSerializationType: 'WFTextTokenString',
       },
     }),
-  }),
+
+  ]),
   WFWorkflowClientVersion: '2302.0.4',
   WFWorkflowHasOutputFallback: false,
   WFWorkflowHasShortcutInputVariables: true,

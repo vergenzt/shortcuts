@@ -1,17 +1,15 @@
-local lib = import 'shortcuts.libsonnet';
-local _ = lib.anon;
+local sc = import 'shortcuts.libsonnet';
 
 {
   WFQuickActionSurfaces: [],
-  WFWorkflowActions: lib.Actions({
-    local outputs = self,
+  WFWorkflowActions: sc.ActionsSeq([
 
-    [_()]: lib.Action('dk.simonbs.DataJar.GetValueIntent', {
+    sc.Action('dk.simonbs.DataJar.GetValueIntent', {
       UUID: '83331DE5-C36A-4DF3-82A2-48E9CA993A0D',
       keyPath: 'Created Colorful.Amanda',
     }),
 
-    [_()]: lib.Action('is.workflow.actions.openurl', {
+    sc.Action('is.workflow.actions.openurl', {
       UUID: 'CA8D8206-2020-4B4A-8925-B89A33BE494D',
       WFInput: {
         Value: {
@@ -22,7 +20,8 @@ local _ = lib.anon;
         WFSerializationType: 'WFTextTokenAttachment',
       },
     }),
-  }),
+
+  ]),
   WFWorkflowClientVersion: '2302.0.4',
   WFWorkflowHasOutputFallback: false,
   WFWorkflowHasShortcutInputVariables: false,

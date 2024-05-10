@@ -1,18 +1,17 @@
-local lib = import 'shortcuts.libsonnet';
-local _ = lib.anon;
+local sc = import 'shortcuts.libsonnet';
 
 {
   WFQuickActionSurfaces: [],
-  WFWorkflowActions: lib.Actions({
-    local outputs = self,
+  WFWorkflowActions: sc.ActionsSeq([
 
-    [_()]: lib.Action('com.apple.reminders.TTRCreateListAppIntent', {
+    sc.Action('com.apple.reminders.TTRCreateListAppIntent', {
       AppIntentDescriptor: {
         AppIntentIdentifier: 'TTRCreateListAppIntent',
         BundleIdentifier: 'com.apple.reminders',
         Name: 'Reminders',
         TeamIdentifier: '0000000000',
       },
+      UUID: '5B7D73D3-A688-4DC3-88B0-06F72E622408',
       name: {
         Value: {
           attachmentsByRange: {
@@ -25,7 +24,8 @@ local _ = lib.anon;
         WFSerializationType: 'WFTextTokenString',
       },
     }),
-  }),
+
+  ]),
   WFWorkflowClientVersion: '2302.0.4',
   WFWorkflowHasOutputFallback: false,
   WFWorkflowHasShortcutInputVariables: false,

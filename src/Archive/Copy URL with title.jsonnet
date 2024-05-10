@@ -1,12 +1,10 @@
-local lib = import 'shortcuts.libsonnet';
-local _ = lib.anon;
+local sc = import 'shortcuts.libsonnet';
 
 {
   WFQuickActionSurfaces: [],
-  WFWorkflowActions: lib.Actions({
-    local outputs = self,
+  WFWorkflowActions: sc.ActionsSeq([
 
-    [_()]: lib.Action('is.workflow.actions.getarticle', {
+    sc.Action('is.workflow.actions.getarticle', {
       UUID: '1B4A9A3E-E59C-413E-AF6A-1F2627C46F42',
       WFWebPage: {
         Value: {
@@ -21,7 +19,7 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('is.workflow.actions.gettext', {
+    sc.Action('is.workflow.actions.gettext', {
       UUID: '58084029-5B88-4AE9-95C7-0506CA89C45D',
       WFTextActionText: {
         Value: {
@@ -47,7 +45,7 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('is.workflow.actions.setclipboard', {
+    sc.Action('is.workflow.actions.setclipboard', {
       UUID: 'F3D25BD5-457B-4392-975B-8354AFEC33D7',
       WFInput: {
         Value: {
@@ -58,7 +56,8 @@ local _ = lib.anon;
         WFSerializationType: 'WFTextTokenAttachment',
       },
     }),
-  }),
+
+  ]),
   WFWorkflowClientVersion: '2302.0.4',
   WFWorkflowHasOutputFallback: false,
   WFWorkflowHasShortcutInputVariables: true,

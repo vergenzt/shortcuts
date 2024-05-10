@@ -1,7 +1,7 @@
 customLanguages:
   jsonnet:
     libraryPath: lib/ast-grep/custom-language/tree-sitter-jsonnet.dylib
-    extensions: [jsonnet, libsonnet]
+    extensions: [jsonnet]
     expandoChar: _
 
 ruleDirs:

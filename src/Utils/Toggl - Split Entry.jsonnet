@@ -1,18 +1,18 @@
-local lib = import 'shortcuts.libsonnet';
-local _ = lib.anon;
+local sc = import 'shortcuts.libsonnet';
 
 {
   WFQuickActionSurfaces: [],
-  WFWorkflowActions: lib.Actions({
-    local outputs = self,
+  WFWorkflowActions: sc.ActionsSeq([
 
-    [_()]: lib.Action('is.workflow.actions.ask', label='Split Time', params={
+    sc.Action('is.workflow.actions.ask', {
+      CustomOutputName: 'Split Time',
       UUID: 'A811604E-CC89-44DD-A385-8E5DED2C743B',
       WFAskActionPrompt: 'At what date/time would you like to split the active Toggl Track entry?',
       WFInputType: 'Date and Time',
     }),
 
-    [_()]: lib.Action('is.workflow.actions.converttimezone', label='Split Time (UTC)', params={
+    sc.Action('is.workflow.actions.converttimezone', {
+      CustomOutputName: 'Split Time (UTC)',
       Date: {
         Value: {
           attachmentsByRange: {
@@ -34,7 +34,7 @@ local _ = lib.anon;
       UUID: 'EF98993B-F786-4D94-AF6E-5B91C94FB57D',
     }),
 
-    [_()]: lib.Action('is.workflow.actions.dictionary', {
+    sc.Action('is.workflow.actions.dictionary', {
       UUID: '75415028-8D0D-4C67-9FA9-AF434C27DBD1',
       WFItems: {
         Value: {
@@ -123,7 +123,8 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('is.workflow.actions.runworkflow', label='Time Entries', params={
+    sc.Action('is.workflow.actions.runworkflow', {
+      CustomOutputName: 'Time Entries',
       UUID: '9AA600EA-135E-475F-A6CA-2722D17ED7EA',
       WFInput: {
         Value: {
@@ -141,7 +142,7 @@ local _ = lib.anon;
       WFWorkflowName: 'Toggl API',
     }),
 
-    [_()]: lib.Action('is.workflow.actions.repeat.each', {
+    sc.Action('is.workflow.actions.repeat.each', {
       GroupingIdentifier: 'D9C206AD-C252-455D-A994-9C52097C95F0',
       WFControlFlowMode: 0,
       WFInput: {
@@ -154,7 +155,8 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('is.workflow.actions.list', label='Endpoint Keys', params={
+    sc.Action('is.workflow.actions.list', {
+      CustomOutputName: 'Endpoint Keys',
       UUID: 'F9E57020-1F00-4D8C-885B-2A6AA5EE5F9C',
       WFItems: [
         'start',
@@ -162,7 +164,7 @@ local _ = lib.anon;
       ],
     }),
 
-    [_()]: lib.Action('is.workflow.actions.repeat.each', {
+    sc.Action('is.workflow.actions.repeat.each', {
       GroupingIdentifier: 'B6878FDB-F12E-4BE9-8FA0-198D4A57DA40',
       WFControlFlowMode: 0,
       WFInput: {
@@ -175,7 +177,8 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('is.workflow.actions.getvalueforkey', label='Endpoint Text', params={
+    sc.Action('is.workflow.actions.getvalueforkey', {
+      CustomOutputName: 'Endpoint Text',
       UUID: '7433DD8B-C783-4CD3-8DB0-C75E0ED2636C',
       WFDictionaryKey: {
         Value: {
@@ -198,7 +201,7 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('is.workflow.actions.conditional', {
+    sc.Action('is.workflow.actions.conditional', {
       GroupingIdentifier: '96AB6539-120D-4246-A24B-80C6F2F3758E',
       WFCondition: 100,
       WFControlFlowMode: 0,
@@ -215,7 +218,8 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('is.workflow.actions.detect.date', label='Endpoint', params={
+    sc.Action('is.workflow.actions.detect.date', {
+      CustomOutputName: 'Endpoint',
       UUID: 'B126D226-C0C3-4820-9125-18CAF76E43AD',
       WFInput: {
         Value: {
@@ -227,7 +231,8 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('is.workflow.actions.gettimebetweendates', label='Endpoint Interval', params={
+    sc.Action('is.workflow.actions.gettimebetweendates', {
+      CustomOutputName: 'Endpoint Interval',
       UUID: '843C6FDF-BFBA-4984-BE07-61C63A5F6185',
       WFInput: {
         Value: {
@@ -258,7 +263,7 @@ local _ = lib.anon;
       WFTimeUntilUnit: 'Seconds',
     }),
 
-    [_()]: lib.Action('is.workflow.actions.conditional', {
+    sc.Action('is.workflow.actions.conditional', {
       GroupingIdentifier: 'AF919587-F239-4E2F-8061-D205AF6AC302',
       WFCondition: 5,
       WFControlFlowMode: 0,
@@ -276,7 +281,7 @@ local _ = lib.anon;
       WFNumberValue: '0',
     }),
 
-    [_()]: lib.Action('is.workflow.actions.calculateexpression', {
+    sc.Action('is.workflow.actions.calculateexpression', {
       Input: {
         Value: {
           attachmentsByRange: {
@@ -298,28 +303,28 @@ local _ = lib.anon;
       UUID: '1B43C2F8-E577-41C5-BB03-54A8B45FE46E',
     }),
 
-    [_()]: lib.Action('is.workflow.actions.conditional', {
+    sc.Action('is.workflow.actions.conditional', {
       GroupingIdentifier: 'AF919587-F239-4E2F-8061-D205AF6AC302',
       WFControlFlowMode: 1,
     }),
 
-    [_()]: lib.Action('is.workflow.actions.number', {
+    sc.Action('is.workflow.actions.number', {
       WFNumberActionNumber: '0',
     }),
 
-    [_()]: lib.Action('is.workflow.actions.conditional', {
+    sc.Action('is.workflow.actions.conditional', {
       GroupingIdentifier: 'AF919587-F239-4E2F-8061-D205AF6AC302',
       UUID: 'F1EFD8B6-B287-4CF6-81C4-B30E10ED26A5',
       WFControlFlowMode: 2,
     }),
 
-    [_()]: lib.Action('is.workflow.actions.conditional', {
+    sc.Action('is.workflow.actions.conditional', {
       GroupingIdentifier: '96AB6539-120D-4246-A24B-80C6F2F3758E',
       UUID: '0C50116D-E13F-4EB7-86BB-235F6F3F738A',
       WFControlFlowMode: 2,
     }),
 
-    [_()]: lib.Action('is.workflow.actions.gettext', {
+    sc.Action('is.workflow.actions.gettext', {
       WFTextActionText: {
         Value: {
           attachmentsByRange: {
@@ -339,13 +344,13 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('is.workflow.actions.repeat.each', {
+    sc.Action('is.workflow.actions.repeat.each', {
       GroupingIdentifier: 'B6878FDB-F12E-4BE9-8FA0-198D4A57DA40',
       UUID: '6419CC18-A1A5-40BA-8264-34FF8E213420',
       WFControlFlowMode: 2,
     }),
 
-    [_()]: lib.Action('is.workflow.actions.text.combine', {
+    sc.Action('is.workflow.actions.text.combine', {
       UUID: '3E40CF90-EA78-4A73-8A11-F4EC4FF7DAB1',
       WFTextCustomSeparator: ', ',
       WFTextSeparator: 'Custom',
@@ -359,7 +364,7 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('is.workflow.actions.dictionary', {
+    sc.Action('is.workflow.actions.dictionary', {
       UUID: 'C5D3AD5D-CBFA-4C5A-B385-377BD20A14C9',
       WFItems: {
         Value: {
@@ -400,7 +405,7 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('is.workflow.actions.getvalueforkey', {
+    sc.Action('is.workflow.actions.getvalueforkey', {
       UUID: '4B850803-62ED-4746-8871-D18DEEB15110',
       WFDictionaryKey: {
         Value: {
@@ -425,7 +430,7 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('is.workflow.actions.conditional', {
+    sc.Action('is.workflow.actions.conditional', {
       GroupingIdentifier: '4FAF4B8F-8164-4849-B48A-32D3A32C12FC',
       WFCondition: 100,
       WFControlFlowMode: 0,
@@ -442,11 +447,12 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('is.workflow.actions.comment', {
+    sc.Action('is.workflow.actions.comment', {
       WFCommentActionText: 'Split Time splits Repeat Item\n→ create new pre-split entry\n→ update Repeat Item entry to set start time to Split Time',
     }),
 
-    [_()]: lib.Action('is.workflow.actions.dictionary', label='New Entry Request', params={
+    sc.Action('is.workflow.actions.dictionary', {
+      CustomOutputName: 'New Entry Request',
       UUID: '48641CD5-6BD1-435A-AB85-8DC42F13D91E',
       WFItems: {
         Value: {
@@ -647,7 +653,8 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('is.workflow.actions.setvalueforkey', label='Updated JSON', params={
+    sc.Action('is.workflow.actions.setvalueforkey', {
+      CustomOutputName: 'Updated JSON',
       UUID: '857FD33C-3955-48A3-B1A5-2BFF26C31275',
       WFDictionary: {
         Value: {
@@ -688,7 +695,8 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('is.workflow.actions.setvalueforkey', label='Updated New Entry Request', params={
+    sc.Action('is.workflow.actions.setvalueforkey', {
+      CustomOutputName: 'Updated New Entry Request',
       UUID: '4A06E49F-E7DB-413A-BCBB-1A0E80778567',
       WFDictionary: {
         Value: {
@@ -714,7 +722,8 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('is.workflow.actions.dictionary', label='New Entry Request', params={
+    sc.Action('is.workflow.actions.dictionary', {
+      CustomOutputName: 'New Entry Request',
       UUID: '60DB5854-C6D2-409A-AE94-0402E8C31850',
       WFItems: {
         Value: {
@@ -980,7 +989,7 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('is.workflow.actions.runworkflow', {
+    sc.Action('is.workflow.actions.runworkflow', {
       WFInput: {
         Value: {
           OutputName: 'Updated New Entry Request',
@@ -997,18 +1006,19 @@ local _ = lib.anon;
       WFWorkflowName: 'Toggl API',
     }),
 
-    [_()]: lib.Action('is.workflow.actions.conditional', {
+    sc.Action('is.workflow.actions.conditional', {
       GroupingIdentifier: '4FAF4B8F-8164-4849-B48A-32D3A32C12FC',
       UUID: '3CA70578-5B32-40D1-99EB-2F22E6EF67E3',
       WFControlFlowMode: 2,
     }),
 
-    [_()]: lib.Action('is.workflow.actions.repeat.each', {
+    sc.Action('is.workflow.actions.repeat.each', {
       GroupingIdentifier: 'D9C206AD-C252-455D-A994-9C52097C95F0',
       UUID: 'A67CC02F-0ACC-4D93-A430-F4B5DEBE59F2',
       WFControlFlowMode: 2,
     }),
-  }),
+
+  ]),
   WFWorkflowClientVersion: '2302.0.4',
   WFWorkflowHasOutputFallback: false,
   WFWorkflowHasShortcutInputVariables: false,

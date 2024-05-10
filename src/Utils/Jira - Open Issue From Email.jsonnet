@@ -1,12 +1,10 @@
-local lib = import 'shortcuts.libsonnet';
-local _ = lib.anon;
+local sc = import 'shortcuts.libsonnet';
 
 {
   WFQuickActionSurfaces: [],
-  WFWorkflowActions: lib.Actions({
-    local outputs = self,
+  WFWorkflowActions: sc.ActionsSeq([
 
-    [_()]: lib.Action('is.workflow.actions.text.replace', {
+    sc.Action('is.workflow.actions.text.replace', {
       UUID: '13278899-1561-4A4A-999E-19767E063DB6',
       WFInput: {
         Value: {
@@ -24,7 +22,7 @@ local _ = lib.anon;
       WFReplaceTextRegularExpression: true,
     }),
 
-    [_()]: lib.Action('is.workflow.actions.dictionary', {
+    sc.Action('is.workflow.actions.dictionary', {
       UUID: '246E18EF-0D58-426F-9C1C-A8BCF722743E',
       WFItems: {
         Value: {
@@ -106,7 +104,7 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('is.workflow.actions.runworkflow', {
+    sc.Action('is.workflow.actions.runworkflow', {
       UUID: 'F3CCC957-0D57-43D8-9C9E-C2E5155637B4',
       WFInput: {
         Value: {
@@ -124,7 +122,7 @@ local _ = lib.anon;
       WFWorkflowName: 'Jira API',
     }),
 
-    [_()]: lib.Action('is.workflow.actions.repeat.each', {
+    sc.Action('is.workflow.actions.repeat.each', {
       GroupingIdentifier: '9A814540-129A-4AE3-A0FA-CCA13EBE28DC',
       WFControlFlowMode: 0,
       WFInput: {
@@ -147,11 +145,11 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('is.workflow.actions.dictionary', {
+    sc.Action('is.workflow.actions.dictionary', {
       UUID: '8BDE32CA-93CB-4386-A0CF-E5CEB856517B',
     }),
 
-    [_()]: lib.Action('is.workflow.actions.setvalueforkey', {
+    sc.Action('is.workflow.actions.setvalueforkey', {
       UUID: '79E8DADA-59AB-4780-BC35-884415545438',
       WFDictionary: {
         Value: {
@@ -176,7 +174,7 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('is.workflow.actions.runworkflow', {
+    sc.Action('is.workflow.actions.runworkflow', {
       UUID: '991068DD-ABE6-4C1A-83CF-7CBD3C9D26BD',
       WFInput: {
         Value: {
@@ -194,11 +192,12 @@ local _ = lib.anon;
       WFWorkflowName: 'Jira - Prompt to Review',
     }),
 
-    [_()]: lib.Action('is.workflow.actions.repeat.each', {
+    sc.Action('is.workflow.actions.repeat.each', {
       GroupingIdentifier: '9A814540-129A-4AE3-A0FA-CCA13EBE28DC',
       WFControlFlowMode: 2,
     }),
-  }),
+
+  ]),
   WFWorkflowClientVersion: '2302.0.4',
   WFWorkflowHasOutputFallback: false,
   WFWorkflowHasShortcutInputVariables: true,

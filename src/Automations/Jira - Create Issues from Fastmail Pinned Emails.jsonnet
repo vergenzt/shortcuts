@@ -1,12 +1,11 @@
-local lib = import 'shortcuts.libsonnet';
-local _ = lib.anon;
+local sc = import 'shortcuts.libsonnet';
 
 {
   WFQuickActionSurfaces: [],
-  WFWorkflowActions: lib.Actions({
-    local outputs = self,
+  WFWorkflowActions: sc.ActionsSeq([
 
-    [_()]: lib.Action('is.workflow.actions.runworkflow', label='Jira API Config', params={
+    sc.Action('is.workflow.actions.runworkflow', {
+      CustomOutputName: 'Jira API Config',
       UUID: '3AA2C372-5227-4E9A-9941-DF5BAB93E16F',
       WFWorkflow: {
         isSelf: false,
@@ -16,7 +15,8 @@ local _ = lib.anon;
       WFWorkflowName: 'Jira Auth',
     }),
 
-    [_()]: lib.Action('is.workflow.actions.runworkflow', label='Fastmail Auth', params={
+    sc.Action('is.workflow.actions.runworkflow', {
+      CustomOutputName: 'Fastmail Auth',
       UUID: '7A1515E8-1853-4E94-9390-785941AFAB96',
       WFInput: {
         Value: {
@@ -34,7 +34,7 @@ local _ = lib.anon;
       WFWorkflowName: 'Fastmail Auth',
     }),
 
-    [_()]: lib.Action('is.workflow.actions.gettext', {
+    sc.Action('is.workflow.actions.gettext', {
       UUID: 'B98CCD44-FE23-4C66-BF69-075831D6BDAD',
       WFTextActionText: {
         Value: {
@@ -76,7 +76,7 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('is.workflow.actions.downloadurl', {
+    sc.Action('is.workflow.actions.downloadurl', {
       ShowHeaders: true,
       UUID: '460ABA80-0981-4C8C-9E51-45EFA42D53F1',
       WFHTTPBodyType: 'File',
@@ -216,7 +216,7 @@ local _ = lib.anon;
       WFURL: 'https://api.fastmail.com/jmap/api',
     }),
 
-    [_()]: lib.Action('ke.bou.GizmoPack.QueryJSONIntent', {
+    sc.Action('ke.bou.GizmoPack.QueryJSONIntent', {
       UUID: '2C0A6BB1-92BF-4E8D-89B8-E584E3205541',
       input: {
         Value: {
@@ -230,7 +230,7 @@ local _ = lib.anon;
       queryType: 'jq',
     }),
 
-    [_()]: lib.Action('is.workflow.actions.repeat.each', {
+    sc.Action('is.workflow.actions.repeat.each', {
       GroupingIdentifier: '690887DA-1DDA-448F-B8E8-AED755477B11',
       WFControlFlowMode: 0,
       WFInput: {
@@ -243,7 +243,8 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('is.workflow.actions.getvalueforkey', label='from', params={
+    sc.Action('is.workflow.actions.getvalueforkey', {
+      CustomOutputName: 'from',
       UUID: '5FFB9C89-F126-4ACB-9F51-F92A6575E36F',
       WFDictionaryKey: 'from',
       WFInput: {
@@ -255,7 +256,8 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('is.workflow.actions.getitemfromlist', label='from[0]', params={
+    sc.Action('is.workflow.actions.getitemfromlist', {
+      CustomOutputName: 'from[0]',
       UUID: 'C1AA495B-3781-48FF-BE63-4106C9686512',
       WFInput: {
         Value: {
@@ -267,7 +269,7 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('is.workflow.actions.conditional', {
+    sc.Action('is.workflow.actions.conditional', {
       GroupingIdentifier: 'C8492311-4C65-4A50-BAA1-5C18CAC7EF4F',
       WFCondition: 100,
       WFControlFlowMode: 0,
@@ -294,7 +296,7 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('is.workflow.actions.getvalueforkey', {
+    sc.Action('is.workflow.actions.getvalueforkey', {
       WFDictionaryKey: 'name',
       WFInput: {
         Value: {
@@ -306,12 +308,12 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('is.workflow.actions.conditional', {
+    sc.Action('is.workflow.actions.conditional', {
       GroupingIdentifier: 'C8492311-4C65-4A50-BAA1-5C18CAC7EF4F',
       WFControlFlowMode: 1,
     }),
 
-    [_()]: lib.Action('is.workflow.actions.getvalueforkey', {
+    sc.Action('is.workflow.actions.getvalueforkey', {
       WFDictionaryKey: 'email',
       WFInput: {
         Value: {
@@ -323,13 +325,15 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('is.workflow.actions.conditional', label='From', params={
+    sc.Action('is.workflow.actions.conditional', {
+      CustomOutputName: 'From',
       GroupingIdentifier: 'C8492311-4C65-4A50-BAA1-5C18CAC7EF4F',
       UUID: '942B0EF6-2704-4F96-A283-4BCBB9B78F76',
       WFControlFlowMode: 2,
     }),
 
-    [_()]: lib.Action('is.workflow.actions.getitemfromlist', label='messageId', params={
+    sc.Action('is.workflow.actions.getitemfromlist', {
+      CustomOutputName: 'messageId',
       UUID: 'A4D81673-3D44-4FDB-BF2C-C9F19942B7BD',
       WFInput: {
         Value: {
@@ -350,7 +354,7 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('is.workflow.actions.url', {
+    sc.Action('is.workflow.actions.url', {
       UUID: 'F2E98093-2B12-4F73-BAC0-3AD2259B9DFF',
       WFURLActionURL: {
         Value: {
@@ -405,7 +409,8 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('is.workflow.actions.downloadurl', label='Create Issue Result', params={
+    sc.Action('is.workflow.actions.downloadurl', {
+      CustomOutputName: 'Create Issue Result',
       ShowHeaders: true,
       UUID: 'F8810E44-2873-4869-8A33-838B2C551216',
       WFHTTPBodyType: 'JSON',
@@ -774,7 +779,7 @@ local _ = lib.anon;
       WFURL: 'https://vergenz.atlassian.net/rest/api/3/issue',
     }),
 
-    [_()]: lib.Action('is.workflow.actions.gettext', {
+    sc.Action('is.workflow.actions.gettext', {
       UUID: 'A11FCCAD-2441-4104-8F98-64CF71741DDD',
       WFTextActionText: {
         Value: {
@@ -815,7 +820,7 @@ local _ = lib.anon;
       },
     }),
 
-    [_()]: lib.Action('is.workflow.actions.downloadurl', {
+    sc.Action('is.workflow.actions.downloadurl', {
       ShowHeaders: true,
       UUID: '459B4E7F-38A9-4C92-8B8F-DD83A72F2798',
       WFHTTPBodyType: 'File',
@@ -955,12 +960,13 @@ local _ = lib.anon;
       WFURL: 'https://api.fastmail.com/jmap/api',
     }),
 
-    [_()]: lib.Action('is.workflow.actions.repeat.each', {
+    sc.Action('is.workflow.actions.repeat.each', {
       GroupingIdentifier: '690887DA-1DDA-448F-B8E8-AED755477B11',
       UUID: 'E085D4AC-E5A5-4C77-A953-F1DA36D52468',
       WFControlFlowMode: 2,
     }),
-  }),
+
+  ]),
   WFWorkflowClientVersion: '2302.0.4',
   WFWorkflowHasOutputFallback: false,
   WFWorkflowHasShortcutInputVariables: false,

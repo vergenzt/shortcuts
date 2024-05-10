@@ -14,38 +14,38 @@ tasks:
       vars:
         SHORTCUT_PATH: '{{.SHORTCUT_PATH}}'
 
-  export-all:
+  export-from-account:
+    internal: true
     run: once
     cmds:
     - shortcuts run 'Export Shortcuts'
 
   default:
     desc: Imports a single Apple Shortcut at {{"{{.SHORTCUT_PATH}}"}} into `{{.SOURCE_DIR}}`.
-    deps: [export-all]
+    deps: [export-from-account]
     requires:
       vars: ["SOURCE_DIR", "BUILD_DIR", "SHORTCUT_PATH"]
-    # sources:
-    # - '{{.IMPORT_PATH}}'
-    # generates:
-    # - '{{.SOURCE_PATH}}'
 
     cmds:
-    - { silent: true, cmd: 'mkdir -p {{q .BUILD_DIR}}/{{q .SHORTCUT_PATH}}' }
-    - { silent: true, cmd: 'mkdir -p {{q .SOURCE_DIR}}/{{q .SHORTCUT_PATH}}' }
+    - { silent: true, cmd: 'mkdir -p {{q .BUILD_DIR}}/{{q (dir .SHORTCUT_PATH)}}' }
+    - { silent: true, cmd: 'mkdir -p {{q .SOURCE_DIR}}/{{q (dir .SHORTCUT_PATH)}}' }
 
     # https://github.com/0xilis/libshortcutsign/blob/753da95f42945ea76bc9ac8f5cccdfa31cc300cc/libshortcutsign.m#L330-L388
     # `fq` below is https://github.com/wader/fq.
     - >
+      tmp=$(mktemp -d);
       cat {{q .IMPORT_DIR}}/{{q .SHORTCUT_PATH}}.shortcut
       | tee {{q .BUILD_DIR}}/{{q .SHORTCUT_PATH}}.shortcut
       | fq -r -d bytes '.[((.[0x8:0xC] | explode | reverse | tobytes | tonumber) + 0x495c):] | print'
       | lzfse -decode
-      | aa extract -d {{q .BUILD_DIR}}/{{q .SHORTCUT_PATH}}
+      | aa extract -d "$tmp"
       &&
-      cat {{q .BUILD_DIR}}/{{q .SHORTCUT_PATH}}/Shortcut.wflow
+      mv "$tmp"/Shortcut.wflow {{q .BUILD_DIR}}/{{q .SHORTCUT_PATH}}.wflow
+      &&
+      cat {{q .BUILD_DIR}}/{{q .SHORTCUT_PATH}}.wflow
       | plutil -convert json -o - -
       | jq --sort-keys '(.WFWorkflowTypes, .WFWorkflowOutputContentItemClasses) |= sort'
-      | tee {{q .BUILD_DIR}}/{{q .SHORTCUT_PATH}}/Shortcut.json
+      | tee {{q .BUILD_DIR}}/{{q .SHORTCUT_PATH}}.json
       | jsonnetfmt /dev/stdin
       > {{q .SOURCE_DIR}}/{{q .SHORTCUT_PATH}}.jsonnet
 
