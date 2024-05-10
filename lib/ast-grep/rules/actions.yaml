@@ -5,60 +5,28 @@ rule:
   matches: actions-list
   pattern: '[ $$$ACTIONS ]'
 
-utils:
-  has-custom-output-label:
-    has:
-      kind: field
-      stopBy: end
-      has:
-        kind: fieldname
-        regex: CustomOutputName
-        precedes:
-          stopBy: { kind: field }
-          kind: string
-          pattern: $LABEL
-
 rewriters:
 
-- id: labeled-action
-  rule:
-    pattern: |
-      {
-        WFWorkflowActionIdentifier: $ID,
-        WFWorkflowActionParameters: $PARAMS,
-      }
-    matches: has-custom-output-label
-  transform:
-    PARAMS_NO_OUTPUT_LABEL:
-      replace:
-        source: '$PARAMS'
-        replace: 'CustomOutputName: .*,\n'
-        by: ''
-  fix: |-
-    [_()]: lib.Action($ID, label=$LABEL, params=$PARAMS_NO_OUTPUT_LABEL)
-
-- id: unlabeled-action
+- id: action
   rule:
     pattern: |-
       {
         WFWorkflowActionIdentifier: $ID,
         WFWorkflowActionParameters: $PARAMS,
       }
-    not:
-      matches: has-custom-output-label
   fix: |-
-    [_()]: lib.Action($ID, $PARAMS)
+    sc.Action($ID, $PARAMS)
 
 transform:
-  ACTIONS_OBJ:
+  ACTIONS_ARR:
     rewrite:
-      rewriters: [labeled-action, unlabeled-action]
+      rewriters: [action]
       source: '$$$ACTIONS'
       joinBy: ",\n\n"
 
 fix: |-
-  lib.Actions({
-    local outputs = self,
+  sc.ActionsSeq([
 
-    $ACTIONS_OBJ
-  })
+    $ACTIONS_ARR
+
+  ])

@@ -10,7 +10,7 @@ from typing import Iterable
 
 import _jsonnet
 
-import jsonnet_methods
+from . import jsonnet_methods
 
 
 # https://github.com/google/jsonnet/blob/2bca3a02ac3c06e4dac74c10c4b6c650ae53d148/python/_jsonnet_test.py#L22C1-L42C39

@@ -1,0 +1,27 @@
+
+id: action-refs
+
+invalid:
+- >-
+  {
+    WFWorkflowActions: sc.ActionsSeq([
+
+      sc.Action('is.workflow.actions.gettext', {
+        UUID: 'DDC72E39-4309-44F3-9CF8-5363F365A6CE',
+        WFTextActionText: '10096',
+      }),
+
+      sc.Action('is.workflow.actions.setvariable', {
+        WFInput: {
+          Value: {
+            OutputName: 'Text',
+            OutputUUID: 'DDC72E39-4309-44F3-9CF8-5363F365A6CE',
+            Type: 'ActionOutput',
+          },
+          WFSerializationType: 'WFTextTokenAttachment',
+        },
+        WFVariableName: 'FID',
+      }),
+
+    ])
+  }

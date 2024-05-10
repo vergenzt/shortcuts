@@ -1,106 +1,85 @@
 id: action-refs
 language: jsonnet
 
-# context
-rule:
-  pattern: lib.Actions($ACTIONS_OBJ)
-  inside:
-    kind: field
-    has:
-      kind: fieldname
-      regex: WFWorkflowActions
-
 utils:
 
-  # rewrite referees (i.e. actions which are referred to)
   referee:
-    matches: action
-
-    # with a UUID
-    has:
+    pattern: sc.Action($ID, $PARAMS)
+    has: # a UUID
       stopBy: end
       kind: field
       has:
+        stopBy: end
         all:
         - kind: fieldname
           regex: ^UUID$
-        - kind: string
-          pattern: '$UUID'
-
-    all:
-
-      # if it has a name already, then capture it
-    - any:
-      - inside:
-          kind: field
-          has:
-            all:
-            - kind: fieldname
-              not: { regex: '^\[_\(\)\]$' } # i.e. fieldname is NOT '[_()]'
-            - kind: string
-              pattern: $NAME
-      - pattern: $_
-
-      # if it has a label already, then capture it
-    - any:
-      - pattern: lib.Action($_ID, label=$ACT_LABEL, params=$_PARAMS)
-      - pattern: $_
+        - pattern: $UUID
 
   reference:
     any:
     - pattern: >
         {
-          OutputName: $REF_LABEL,
+          OutputName: $REF_NAME,
           OutputUUID: $UUID,
           Type: 'ActionOutput',
         }
     - pattern: >
         {
           Aggrandizements: $AGGS,
-          OutputName: $REF_LABEL,
+          OutputName: $REF_NAME,
           OutputUUID: $UUID,
           Type: 'ActionOutput',
         }
 
+  referrer:
+    pattern: sc.Action($$$)
+    has:
+      matches: reference
+      stopBy: end
+
+# context
+rule:
+  pattern: sc.ActionsSeq($ACTIONS_ARR)
+  has:
+    stopBy: end
+    all:
+    - matches: referee
+    - matches: referrer
+
+
 rewriters:
 
--
-  # rewriter to set referee action names based on their labels
-  id: add-referee-names
+- id: add-referee-names
   rule:
-    kind: field
-    has:
-      all:
-      - kind: fieldname
-        regex: '^\[_\(\)\]$'
-      - matches: action
-        pattern: $ACTION
+    matches: referee
+    precedes:
+      matches: referrer
+      stopBy: end
+  transform:
+    PARAMS_NO_UUID:
+      replace:
+        source: $PARAMS
+        replace: '^\s*UUID: .*\n'
+        by: ''
   fix: >-
-    [$ACT_LABEL]: $ACTION
+    sc.Action($ID, name=$REF_NAME, params=$PARAMS)
 
--
-  # rewriter to
-  id: rewrite-references
+- id: rewrite-references
   rule:
     matches: reference
-    inside:
-      stopBy: { matches: action }
-      matches: action
-      follows:
-        matches: referee
   transform:
     AGGS_ARG:
       replace:
         source: $AGGS
         replace: '^'
         by: ', aggs='
-  fix: lib.Ref(outputs, $NAME$AGGS_ARG)
+  fix: sc.Ref(outputs, $NAME$AGGS_ARG)
 
 transform:
-  ACTIONS_OBJ_WITH_REFS:
+  ACTIONS_ARR_WITH_REFS:
     rewrite:
       rewriters: [add-referee-names, rewrite-references]
-      source: '$ACTIONS_OBJ'
+      source: '$ACTIONS_ARR'
 
 fix: >-
-  lib.Actions($ACTIONS_OBJ_WITH_REFS)
+  sc.ActionsSeq($ACTIONS_ARR_WITH_REFS)
