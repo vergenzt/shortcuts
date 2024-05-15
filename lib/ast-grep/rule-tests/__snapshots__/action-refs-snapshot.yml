@@ -1,0 +1,95 @@
+id: action-refs
+snapshots:
+  ? |-
+    {
+      WFWorkflowActions: sc.ActionsSeq([
+
+        sc.Action('is.workflow.actions.gettext', {
+          UUID: 'DDC72E39-4309-44F3-9CF8-5363F365A6CE',
+          WFTextActionText: '10096',
+        }),
+
+        sc.Action('is.workflow.actions.setvariable', {
+          WFInput: {
+            Value: {
+              OutputName: 'Text',
+              OutputUUID: 'DDC72E39-4309-44F3-9CF8-5363F365A6CE',
+              Type: 'ActionOutput',
+            },
+            WFSerializationType: 'WFTextTokenAttachment',
+          },
+          WFVariableName: 'FID',
+        }),
+
+      ])
+    }
+  : fixed: "{\n  WFWorkflowActions: sc.ActionsSeq([\n  \n      sc.Action('is.workflow.actions.gettext', name='Text', params={\n                  WFTextActionText: '10096',\n          }),\n  \n      sc.Action('is.workflow.actions.setvariable', {\n        WFInput: {\n          Value: sc.Ref(outputs, 'Text'),\n          WFSerializationType: 'WFTextTokenAttachment',\n        },\n        WFVariableName: 'FID',\n      }),\n  \n    ])\n}"
+    labels:
+    - source: |-
+        sc.ActionsSeq([
+
+            sc.Action('is.workflow.actions.gettext', {
+              UUID: 'DDC72E39-4309-44F3-9CF8-5363F365A6CE',
+              WFTextActionText: '10096',
+            }),
+
+            sc.Action('is.workflow.actions.setvariable', {
+              WFInput: {
+                Value: {
+                  OutputName: 'Text',
+                  OutputUUID: 'DDC72E39-4309-44F3-9CF8-5363F365A6CE',
+                  Type: 'ActionOutput',
+                },
+                WFSerializationType: 'WFTextTokenAttachment',
+              },
+              WFVariableName: 'FID',
+            }),
+
+          ])
+      style: primary
+      start: 23
+      end: 506
+    - source: UUID
+      style: secondary
+      start: 93
+      end: 97
+    - source: '''DDC72E39-4309-44F3-9CF8-5363F365A6CE'''
+      style: secondary
+      start: 99
+      end: 137
+    - source: 'UUID: ''DDC72E39-4309-44F3-9CF8-5363F365A6CE'''
+      style: secondary
+      start: 93
+      end: 137
+    - source: |-
+        sc.Action('is.workflow.actions.gettext', {
+              UUID: 'DDC72E39-4309-44F3-9CF8-5363F365A6CE',
+              WFTextActionText: '10096',
+            })
+      style: secondary
+      start: 44
+      end: 178
+    - source: |-
+        {
+                  OutputName: 'Text',
+                  OutputUUID: 'DDC72E39-4309-44F3-9CF8-5363F365A6CE',
+                  Type: 'ActionOutput',
+                }
+      style: secondary
+      start: 264
+      end: 399
+    - source: |-
+        sc.Action('is.workflow.actions.setvariable', {
+              WFInput: {
+                Value: {
+                  OutputName: 'Text',
+                  OutputUUID: 'DDC72E39-4309-44F3-9CF8-5363F365A6CE',
+                  Type: 'ActionOutput',
+                },
+                WFSerializationType: 'WFTextTokenAttachment',
+              },
+              WFVariableName: 'FID',
+            })
+      style: secondary
+      start: 185
+      end: 499

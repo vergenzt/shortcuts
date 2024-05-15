@@ -49,9 +49,8 @@ tasks:
       | jsonnetfmt /dev/stdin
       > {{q .SOURCE_DIR}}/{{q .SHORTCUT_PATH}}.jsonnet
 
-    - sg scan --update-all {{q .SOURCE_DIR}}/{{q .SHORTCUT_PATH}}.jsonnet
-    - jsonnetfmt -i {{q .SOURCE_DIR}}/{{q .SHORTCUT_PATH}}.jsonnet
-    - sg scan --update-all {{q .SOURCE_DIR}}/{{q .SHORTCUT_PATH}}.jsonnet
-    - jsonnetfmt -i {{q .SOURCE_DIR}}/{{q .SHORTCUT_PATH}}.jsonnet
-    - sg scan --update-all {{q .SOURCE_DIR}}/{{q .SHORTCUT_PATH}}.jsonnet
-    - jsonnetfmt -i {{q .SOURCE_DIR}}/{{q .SHORTCUT_PATH}}.jsonnet
+    - >-
+      for i in $(seq 5); do
+      sg scan --update-all {{q .SOURCE_DIR}}/{{q .SHORTCUT_PATH}}.jsonnet &&
+      jsonnetfmt -i {{q .SOURCE_DIR}}/{{q .SHORTCUT_PATH}}.jsonnet;
+      done

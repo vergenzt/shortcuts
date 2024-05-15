@@ -24,14 +24,6 @@ tasks:
     - for: { var: dirs, as: dir, split: "\n" }
       cmd: find "{{.dir}}" -depth -mindepth 1 -delete
 
-  export-all:
-    deps: [clean]
-    cmds:
-    - >
-      find "{{.SOURCE_DIR}}" -type f -name "*.{{.SOURCE_EXT}}" -printf "%H	%P	{{.EXPORT_DIR|replace "%" "%%"}}	{{.EXPORT_EXT}}\0"
-      | parallel -0 --colsep='	' 'echo "exporting: "{2} && mkdir -p {3}/{2//} && scripts/export {1}/{2} > {3}/{2.}.{4}'
-    - task: open-all
-
   open-all:
     prompt: Would you like to re-import built Shortcuts?
     cmds:

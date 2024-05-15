@@ -3,19 +3,20 @@ language: jsonnet
 
 utils:
 
-  referee:
+  referee: &referee
     pattern: sc.Action($ID, $PARAMS)
     has: # a UUID
       stopBy: end
       kind: field
       has:
-        stopBy: end
-        all:
-        - kind: fieldname
-          regex: ^UUID$
-        - pattern: $UUID
+        kind: fieldname
+        regex: ^UUID$
+        precedes:
+          stopBy: end
+          kind: string
+          pattern: $UUID
 
-  reference:
+  reference: &reference
     any:
     - pattern: >
         {
@@ -31,55 +32,53 @@ utils:
           Type: 'ActionOutput',
         }
 
-  referrer:
+  referrer: &referrer
     pattern: sc.Action($$$)
     has:
-      matches: reference
       stopBy: end
+      any: [*reference]
 
-# context
-rule:
+rule: #*referee
   pattern: sc.ActionsSeq($ACTIONS_ARR)
   has:
     stopBy: end
-    all:
-    - matches: referee
-    - matches: referrer
-
+    any: [*referee]
+    # precedes:
+    #   stopBy: end
+    #   any: [*referrer]
 
 rewriters:
 
 - id: add-referee-names
   rule:
-    matches: referee
+    any: [*referee]
     precedes:
-      matches: referrer
       stopBy: end
+      any: [*referrer]
   transform:
-    PARAMS_NO_UUID:
+    PARAMS_NO_OUTPUT:
       replace:
         source: $PARAMS
-        replace: '^\s*UUID: .*\n'
+        replace: "\\b(UUID|CustomOutputName): .*\n"
         by: ''
   fix: >-
-    sc.Action($ID, name=$REF_NAME, params=$PARAMS)
+    sc.Action($ID, name=$REF_NAME, params=$PARAMS_NO_OUTPUT)
 
 - id: rewrite-references
-  rule:
-    matches: reference
+  rule: *reference
   transform:
     AGGS_ARG:
       replace:
         source: $AGGS
         replace: '^'
         by: ', aggs='
-  fix: sc.Ref(outputs, $NAME$AGGS_ARG)
+  fix: sc.Ref(outputs, $REF_NAME$AGGS_ARG)
 
-transform:
-  ACTIONS_ARR_WITH_REFS:
-    rewrite:
-      rewriters: [add-referee-names, rewrite-references]
-      source: '$ACTIONS_ARR'
+# transform:
+#   ACTIONS_ARR_WITH_REFS:
+#     rewrite:
+#       rewriters: [add-referee-names, rewrite-references]
+#       source: $ACTIONS_ARR
 
-fix: >-
-  sc.ActionsSeq($ACTIONS_ARR_WITH_REFS)
+# fix: >-
+#   sc.ActionsSeq($ACTIONS_ARR_WITH_REFS)

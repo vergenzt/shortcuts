@@ -2,15 +2,15 @@
 # dependencies = ["jsonnet"]
 # ///
 
-from inspect import signature
 import os
-from pathlib import Path
 import sys
+from inspect import signature
+from pathlib import Path
 from typing import Iterable
 
 import _jsonnet
 
-from . import jsonnet_methods
+import jsonnet_methods
 
 
 # https://github.com/google/jsonnet/blob/2bca3a02ac3c06e4dac74c10c4b6c650ae53d148/python/_jsonnet_test.py#L22C1-L42C39

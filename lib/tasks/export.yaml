@@ -1,5 +1,8 @@
 version: '3'
 
+env:
+  PYTHONPATH: lib/python:{{env "PYTHONPATH"}}
+
 vars:
   IMPORT_DIR: '{{.HOME}}/Library/Mobile Documents/iCloud~is~workflow~my~workflows/Documents'
   SHORTCUT_PATHS:
