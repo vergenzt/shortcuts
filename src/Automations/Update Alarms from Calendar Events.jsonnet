@@ -4,8 +4,9 @@ local sc = import 'shortcuts.libsonnet';
   WFQuickActionSurfaces: [],
   WFWorkflowActions: sc.ActionsSeq([
 
-    sc.Action('is.workflow.actions.dictionary', name='Calendars', params={
-      UUID: 'E17254C9-251D-4D01-BA9D-CCA53796AF37',
+    sc.Action('is.workflow.actions.dictionary', {
+      CustomOutputName: 'Calendars',
+      UUID: 'B4A1A6C8-5152-5283-A5FD-A26647CFBD61',
       WFItems: {
         Value: {
           WFDictionaryFieldValueItems: [
@@ -88,7 +89,7 @@ local sc = import 'shortcuts.libsonnet';
             },
           ],
           OutputName: 'Calendars',
-          OutputUUID: 'E17254C9-251D-4D01-BA9D-CCA53796AF37',
+          OutputUUID: 'B4A1A6C8-5152-5283-A5FD-A26647CFBD61',
           Type: 'ActionOutput',
         },
         WFSerializationType: 'WFTextTokenAttachment',
@@ -228,11 +229,13 @@ local sc = import 'shortcuts.libsonnet';
       WFVariableName: 'Matched Calendar Alarm Indices',
     }),
 
-    sc.Action('is.workflow.actions.date', name='Current Datetime', params={
+    sc.Action('is.workflow.actions.date', {
+      CustomOutputName: 'Current Datetime',
       UUID: 'F1E39DC9-CAE8-458C-8B72-450D09704C59',
     }),
 
-    sc.Action('is.workflow.actions.adjustdate', name='4 Hours Ago', params={
+    sc.Action('is.workflow.actions.adjustdate', {
+      CustomOutputName: '4 Hours Ago',
       UUID: '9D0897C6-4877-4C09-B387-90503CC88144',
       WFAdjustOperation: 'Subtract',
       WFDate: {
@@ -257,7 +260,8 @@ local sc = import 'shortcuts.libsonnet';
       },
     }),
 
-    sc.Action('is.workflow.actions.adjustdate', name='24 Hours Out', params={
+    sc.Action('is.workflow.actions.adjustdate', {
+      CustomOutputName: '24 Hours Out',
       UUID: '382EC078-69E3-4231-BBAC-6B1BC371D3BE',
       WFDate: {
         Value: {
@@ -359,7 +363,8 @@ local sc = import 'shortcuts.libsonnet';
       },
     }),
 
-    sc.Action('is.workflow.actions.getvalueforkey', name='Calendar Label', params={
+    sc.Action('is.workflow.actions.getvalueforkey', {
+      CustomOutputName: 'Calendar Label',
       UUID: 'A7586AA4-688F-4160-9D7F-704FACF79C8B',
       WFDictionaryKey: {
         Value: {
@@ -377,7 +382,7 @@ local sc = import 'shortcuts.libsonnet';
       WFInput: {
         Value: {
           OutputName: 'Calendars',
-          OutputUUID: 'E17254C9-251D-4D01-BA9D-CCA53796AF37',
+          OutputUUID: 'B4A1A6C8-5152-5283-A5FD-A26647CFBD61',
           Type: 'ActionOutput',
         },
         WFSerializationType: 'WFTextTokenAttachment',
@@ -425,7 +430,8 @@ local sc = import 'shortcuts.libsonnet';
       },
     }),
 
-    sc.Action('is.workflow.actions.adjustdate', name='Desired Alarm Time', params={
+    sc.Action('is.workflow.actions.adjustdate', {
+      CustomOutputName: 'Desired Alarm Time',
       UUID: 'DBB8C07D-7933-4F5D-B072-778D1E32AA10',
       WFAdjustOperation: 'Subtract',
       WFDate: {
@@ -450,7 +456,8 @@ local sc = import 'shortcuts.libsonnet';
       },
     }),
 
-    sc.Action('is.workflow.actions.gettext', name='Desired Alarm Name', params={
+    sc.Action('is.workflow.actions.gettext', {
+      CustomOutputName: 'Desired Alarm Name',
       UUID: '827F3DBE-29D3-467B-8F7A-12F602A9389E',
       WFTextActionText: {
         Value: {
@@ -1103,6 +1110,7 @@ local sc = import 'shortcuts.libsonnet';
       UUID: '5A089C94-0944-459D-958C-1B72D48C0304',
       WFControlFlowMode: 2,
     }),
+
   ]),
   WFWorkflowClientVersion: '2302.0.4',
   WFWorkflowHasOutputFallback: false,
@@ -1116,5 +1124,7 @@ local sc = import 'shortcuts.libsonnet';
   WFWorkflowMinimumClientVersion: 900,
   WFWorkflowMinimumClientVersionString: '900',
   WFWorkflowOutputContentItemClasses: [],
-  WFWorkflowTypes: [],
+  WFWorkflowTypes: [
+    'Watch',
+  ],
 }
