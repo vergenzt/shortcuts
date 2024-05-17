@@ -4,79 +4,44 @@ local sc = import 'shortcuts.libsonnet';
   WFQuickActionSurfaces: [],
   WFWorkflowActions: sc.ActionsSeq([
 
-    sc.Action('is.workflow.actions.takephoto', {
-      UUID: 'E5EEEC27-9961-4BA0-B494-2B5058A36E02',
+    sc.Action('is.workflow.actions.takephoto', name='Photo', params={
       WFCameraCaptureShowPreview: true,
     }),
 
-    sc.Action('is.workflow.actions.extracttextfromimage', {
-      UUID: '2F5C059E-4286-4620-A2CB-4F546115B199',
+    sc.Action('is.workflow.actions.extracttextfromimage', name='Text from Image', params={
+      local outputs = super.outputs,
       WFImage: {
-        Value: {
-          OutputName: 'Photo',
-          OutputUUID: 'E5EEEC27-9961-4BA0-B494-2B5058A36E02',
-          Type: 'ActionOutput',
-        },
+        Value: sc.Ref(outputs, 'Photo'),
         WFSerializationType: 'WFTextTokenAttachment',
       },
     }),
 
-    sc.Action('is.workflow.actions.text.match', {
-      UUID: '458A2E62-B389-4BC6-8588-628C795D0A48',
+    sc.Action('is.workflow.actions.text.match', name='Matches', params={
+      local outputs = super.outputs,
       WFMatchTextPattern: 'CARD-(\\d+)',
-      text: {
-        Value: {
-          attachmentsByRange: {
-            '{0, 1}': {
-              OutputName: 'Text from Image',
-              OutputUUID: '2F5C059E-4286-4620-A2CB-4F546115B199',
-              Type: 'ActionOutput',
-            },
-          },
-          string: '￼',
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
+      text: sc.Val('${Text from Image}', outputs),
     }),
 
     sc.Action('is.workflow.actions.runworkflow', {
+      local outputs = super.outputs,
       WFInput: {
-        Value: {
-          OutputName: 'Matches',
-          OutputUUID: '458A2E62-B389-4BC6-8588-628C795D0A48',
-          Type: 'ActionOutput',
-        },
+        Value: sc.Ref(outputs, 'Matches'),
         WFSerializationType: 'WFTextTokenAttachment',
       },
     }),
 
-    sc.Action('com.atlassian.jira.app.GetIssueIntent', {
-      UUID: 'EC39AC83-4A91-45CA-8289-8DA1A5F1B284',
+    sc.Action('com.atlassian.jira.app.GetIssueIntent', name='Issue', params={
+      local outputs = super.outputs,
       account: 'vergenzt@gmail.com',
-      issueKey: {
-        Value: {
-          attachmentsByRange: {
-            '{0, 1}': {
-              OutputName: 'Matches',
-              OutputUUID: '458A2E62-B389-4BC6-8588-628C795D0A48',
-              Type: 'ActionOutput',
-            },
-          },
-          string: '￼',
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
+      issueKey: sc.Val('${Matches}', outputs),
       site: 'vergenz',
     }),
 
     sc.Action('com.atlassian.jira.app.OpenIssueIntent', {
+      local outputs = super.outputs,
       UUID: 'D8CDAE08-ED1E-4814-8EB1-AB8E73B25C29',
       issue: {
-        Value: {
-          OutputName: 'Issue',
-          OutputUUID: 'EC39AC83-4A91-45CA-8289-8DA1A5F1B284',
-          Type: 'ActionOutput',
-        },
+        Value: sc.Ref(outputs, 'Issue'),
         WFSerializationType: 'WFTextTokenAttachment',
       },
     }),

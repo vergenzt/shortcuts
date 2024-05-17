@@ -4,8 +4,7 @@ local sc = import 'shortcuts.libsonnet';
   WFQuickActionSurfaces: [],
   WFWorkflowActions: sc.ActionsSeq([
 
-    sc.Action('is.workflow.actions.ask', {
-      UUID: '08745925-9D0E-4887-A37A-6DF8CCA06249',
+    sc.Action('is.workflow.actions.ask', name='Provided Input', params={
       WFAskActionDefaultAnswer: {
         Value: {
           attachmentsByRange: {
@@ -21,53 +20,34 @@ local sc = import 'shortcuts.libsonnet';
       WFInputType: 'Text',
     }),
 
-    sc.Action('is.workflow.actions.text.match', {
-      UUID: 'AF8E2A17-3E43-4DDA-B9EF-449A886431AE',
+    sc.Action('is.workflow.actions.text.match', name='Matches', params={
+      local outputs = super.outputs,
       WFMatchTextCaseSensitive: false,
       WFMatchTextPattern: '(?<=\\{\\{)[\\w ]+(?=\\}\\})',
-      text: {
-        Value: {
-          attachmentsByRange: {
-            '{0, 1}': {
-              OutputName: 'Provided Input',
-              OutputUUID: '08745925-9D0E-4887-A37A-6DF8CCA06249',
-              Type: 'ActionOutput',
-            },
-          },
-          string: '￼',
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
+      text: sc.Val('${Provided Input}', outputs),
     }),
 
-    sc.Action('is.workflow.actions.selectcontacts', {
-      UUID: '72B1CB92-840C-4804-9B47-3AD68EB93C3F',
+    sc.Action('is.workflow.actions.selectcontacts', name='Contacts', params={
       WFSelectMultiple: true,
     }),
 
     sc.Action('is.workflow.actions.repeat.each', {
+      local outputs = super.outputs,
       GroupingIdentifier: '4CC0F7FC-67E5-4A99-9E5B-355E2F0B56ED',
       UUID: 'DADB7B38-37DE-47A8-AB9C-553B4DC5052F',
       WFControlFlowMode: 0,
       WFInput: {
-        Value: {
-          OutputName: 'Contacts',
-          OutputUUID: '72B1CB92-840C-4804-9B47-3AD68EB93C3F',
-          Type: 'ActionOutput',
-        },
+        Value: sc.Ref(outputs, 'Contacts'),
         WFSerializationType: 'WFTextTokenAttachment',
       },
     }),
 
     sc.Action('is.workflow.actions.repeat.each', {
+      local outputs = super.outputs,
       GroupingIdentifier: '55D8D462-8872-4045-9F46-91174853FBC0',
       WFControlFlowMode: 0,
       WFInput: {
-        Value: {
-          OutputName: 'Matches',
-          OutputUUID: 'AF8E2A17-3E43-4DDA-B9EF-449A886431AE',
-          Type: 'ActionOutput',
-        },
+        Value: sc.Ref(outputs, 'Matches'),
         WFSerializationType: 'WFTextTokenAttachment',
       },
     }),
@@ -91,20 +71,9 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.text.replace', {
+      local outputs = super.outputs,
       UUID: 'D313D4E3-013F-4C4D-91F6-8E428F076FF5',
-      WFInput: {
-        Value: {
-          attachmentsByRange: {
-            '{0, 1}': {
-              OutputName: 'Provided Input',
-              OutputUUID: '08745925-9D0E-4887-A37A-6DF8CCA06249',
-              Type: 'ActionOutput',
-            },
-          },
-          string: '￼',
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
+      WFInput: sc.Val('${Provided Input}', outputs),
       WFReplaceTextCaseSensitive: false,
       WFReplaceTextFind: {
         Value: {

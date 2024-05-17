@@ -4,9 +4,7 @@ local sc = import 'shortcuts.libsonnet';
   WFQuickActionSurfaces: [],
   WFWorkflowActions: sc.ActionsSeq([
 
-    sc.Action('is.workflow.actions.dictionary', {
-      CustomOutputName: 'Calendars',
-      UUID: 'B4A1A6C8-5152-5283-A5FD-A26647CFBD61',
+    sc.Action('is.workflow.actions.dictionary', name='Calendars', params={
       WFItems: {
         Value: {
           WFDictionaryFieldValueItems: [
@@ -76,29 +74,23 @@ local sc = import 'shortcuts.libsonnet';
       },
     }),
 
-    sc.Action('is.workflow.actions.text.combine', {
-      UUID: 'CAAB610A-9E1B-42F1-8BEC-ED595EC07840',
+    sc.Action('is.workflow.actions.text.combine', name='Combined Text', params={
+      local outputs = super.outputs,
       WFTextCustomSeparator: '|',
       WFTextSeparator: 'Custom',
       text: {
-        Value: {
-          Aggrandizements: [
-            {
-              PropertyName: 'Values',
-              Type: 'WFPropertyVariableAggrandizement',
-            },
-          ],
-          OutputName: 'Calendars',
-          OutputUUID: 'B4A1A6C8-5152-5283-A5FD-A26647CFBD61',
-          Type: 'ActionOutput',
-        },
+        Value: sc.Ref(outputs, 'Calendars', aggs=[
+          {
+            PropertyName: 'Values',
+            Type: 'WFPropertyVariableAggrandizement',
+          },
+        ]),
         WFSerializationType: 'WFTextTokenAttachment',
       },
     }),
 
-    sc.Action('com.apple.mobiletimer-framework.MobileTimerIntents.MTGetAlarmsIntent', {
+    sc.Action('com.apple.mobiletimer-framework.MobileTimerIntents.MTGetAlarmsIntent', name='Alarm', params={
       ShowWhenRun: false,
-      UUID: '96BFA7D2-40FE-48DE-A762-72BB69134F34',
       WFContentItemFilter: {
         Value: {
           WFActionParameterFilterPrefix: 1,
@@ -110,28 +102,21 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.repeat.each', {
+      local outputs = super.outputs,
       GroupingIdentifier: '25CDD183-1362-42B9-8712-863F0F571C6B',
       WFControlFlowMode: 0,
       WFInput: {
-        Value: {
-          OutputName: 'Alarm',
-          OutputUUID: '96BFA7D2-40FE-48DE-A762-72BB69134F34',
-          Type: 'ActionOutput',
-        },
+        Value: sc.Ref(outputs, 'Alarm'),
         WFSerializationType: 'WFTextTokenAttachment',
       },
     }),
 
-    sc.Action('is.workflow.actions.text.match', {
-      UUID: '5424F246-989D-4B1D-862D-48CE6D8A7B04',
+    sc.Action('is.workflow.actions.text.match', name='Matches', params={
+      local outputs = super.outputs,
       WFMatchTextPattern: {
         Value: {
           attachmentsByRange: {
-            '{1, 1}': {
-              OutputName: 'Combined Text',
-              OutputUUID: 'CAAB610A-9E1B-42F1-8BEC-ED595EC07840',
-              Type: 'ActionOutput',
-            },
+            '{1, 1}': sc.Ref(outputs, 'Combined Text'),
           },
           string: '(￼) 🗓️: (.*) at ([0-9: APM]+)',
         },
@@ -163,17 +148,14 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.conditional', {
+      local outputs = super.outputs,
       GroupingIdentifier: '06187FD3-4E72-47D2-8626-3DFC096A3334',
       WFCondition: 100,
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
         Variable: {
-          Value: {
-            OutputName: 'Matches',
-            OutputUUID: '5424F246-989D-4B1D-862D-48CE6D8A7B04',
-            Type: 'ActionOutput',
-          },
+          Value: sc.Ref(outputs, 'Matches'),
           WFSerializationType: 'WFTextTokenAttachment',
         },
       },
@@ -364,6 +346,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.getvalueforkey', {
+      local outputs = super.outputs,
       CustomOutputName: 'Calendar Label',
       UUID: 'A7586AA4-688F-4160-9D7F-704FACF79C8B',
       WFDictionaryKey: {
@@ -380,11 +363,12 @@ local sc = import 'shortcuts.libsonnet';
         WFSerializationType: 'WFTextTokenString',
       },
       WFInput: {
-        Value: {
-          OutputName: 'Calendars',
-          OutputUUID: 'B4A1A6C8-5152-5283-A5FD-A26647CFBD61',
-          Type: 'ActionOutput',
-        },
+        Value: sc.Ref(outputs, 'Calendars', aggs=[
+          {
+            PropertyName: 'Values',
+            Type: 'WFPropertyVariableAggrandizement',
+          },
+        ]),
         WFSerializationType: 'WFTextTokenAttachment',
       },
     }),
@@ -454,6 +438,18 @@ local sc = import 'shortcuts.libsonnet';
         },
         WFSerializationType: 'WFQuantityFieldValue',
       },
+    }),
+
+    sc.Action('is.workflow.actions.setvariable', {
+      WFInput: {
+        Value: {
+          OutputName: 'Desired Alarm Time',
+          OutputUUID: 'DBB8C07D-7933-4F5D-B072-778D1E32AA10',
+          Type: 'ActionOutput',
+        },
+        WFSerializationType: 'WFTextTokenAttachment',
+      },
+      WFVariableName: 'Desired Alarm Time',
     }),
 
     sc.Action('is.workflow.actions.gettext', {
@@ -713,7 +709,53 @@ local sc = import 'shortcuts.libsonnet';
 
     sc.Action('is.workflow.actions.repeat.each', {
       GroupingIdentifier: '96494FE3-384B-4E3D-A6BB-E7397D7E6D39',
+      UUID: '27FCCD84-E2B5-466B-B47D-9B3CAC1968F7',
       WFControlFlowMode: 2,
+    }),
+
+    sc.Action('is.workflow.actions.gettimebetweendates', {
+      UUID: '8FDC9435-1399-48A4-9F42-81436B2E2ADD',
+      WFInput: {
+        Value: {
+          attachmentsByRange: {
+            '{0, 1}': {
+              Type: 'Variable',
+              VariableName: 'Desired Alarm Time',
+            },
+          },
+          string: '￼',
+        },
+        WFSerializationType: 'WFTextTokenString',
+      },
+      WFTimeUntilFromDate: {
+        Value: {
+          attachmentsByRange: {
+            '{0, 1}': {
+              Type: 'CurrentDate',
+            },
+          },
+          string: '￼',
+        },
+        WFSerializationType: 'WFTextTokenString',
+      },
+    }),
+
+    sc.Action('is.workflow.actions.conditional', {
+      GroupingIdentifier: '61CA7EFD-5FDA-4C9C-A3F2-FEB84FA5E80C',
+      WFCondition: 2,
+      WFControlFlowMode: 0,
+      WFInput: {
+        Type: 'Variable',
+        Variable: {
+          Value: {
+            OutputName: 'Time Between Dates',
+            OutputUUID: '8FDC9435-1399-48A4-9F42-81436B2E2ADD',
+            Type: 'ActionOutput',
+          },
+          WFSerializationType: 'WFTextTokenAttachment',
+        },
+      },
+      WFNumberValue: '0',
     }),
 
     sc.Action('is.workflow.actions.conditional', {
@@ -826,6 +868,17 @@ local sc = import 'shortcuts.libsonnet';
       },
     }),
 
+    sc.Action('is.workflow.actions.conditional', {
+      GroupingIdentifier: '2A08F09E-877D-4A80-BE67-91123BE8A71A',
+      UUID: 'AF3D58A7-32B2-40FB-8355-EDF7065E7EB6',
+      WFControlFlowMode: 2,
+    }),
+
+    sc.Action('is.workflow.actions.conditional', {
+      GroupingIdentifier: '61CA7EFD-5FDA-4C9C-A3F2-FEB84FA5E80C',
+      WFControlFlowMode: 2,
+    }),
+
     sc.Action('is.workflow.actions.setvalueforkey', {
       UUID: '8AC4C390-058D-4FA0-8DD8-3025C6C81A83',
       WFDictionary: {
@@ -860,12 +913,6 @@ local sc = import 'shortcuts.libsonnet';
         WFSerializationType: 'WFTextTokenAttachment',
       },
       WFVariableName: 'Matched Calendar Alarm Indices',
-    }),
-
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '2A08F09E-877D-4A80-BE67-91123BE8A71A',
-      UUID: 'AF3D58A7-32B2-40FB-8355-EDF7065E7EB6',
-      WFControlFlowMode: 2,
     }),
 
     sc.Action('is.workflow.actions.conditional', {
@@ -944,7 +991,7 @@ local sc = import 'shortcuts.libsonnet';
       },
     }),
 
-    sc.Action('is.workflow.actions.nothing', {}),
+    sc.Action('is.workflow.actions.nothing'),
 
     sc.Action('is.workflow.actions.conditional', {
       GroupingIdentifier: '671D206A-4570-40B9-BB1A-11FC898D8925',

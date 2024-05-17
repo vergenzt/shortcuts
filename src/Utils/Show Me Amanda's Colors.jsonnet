@@ -4,19 +4,15 @@ local sc = import 'shortcuts.libsonnet';
   WFQuickActionSurfaces: [],
   WFWorkflowActions: sc.ActionsSeq([
 
-    sc.Action('dk.simonbs.DataJar.GetValueIntent', {
-      UUID: '83331DE5-C36A-4DF3-82A2-48E9CA993A0D',
+    sc.Action('dk.simonbs.DataJar.GetValueIntent', name='Value', params={
       keyPath: 'Created Colorful.Amanda',
     }),
 
     sc.Action('is.workflow.actions.openurl', {
+      local outputs = super.outputs,
       UUID: 'CA8D8206-2020-4B4A-8925-B89A33BE494D',
       WFInput: {
-        Value: {
-          OutputName: 'Value',
-          OutputUUID: '83331DE5-C36A-4DF3-82A2-48E9CA993A0D',
-          Type: 'ActionOutput',
-        },
+        Value: sc.Ref(outputs, 'Value'),
         WFSerializationType: 'WFTextTokenAttachment',
       },
     }),

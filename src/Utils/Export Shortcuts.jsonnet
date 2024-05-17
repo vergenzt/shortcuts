@@ -4,19 +4,14 @@ local sc = import 'shortcuts.libsonnet';
   WFQuickActionSurfaces: [],
   WFWorkflowActions: sc.ActionsSeq([
 
-    sc.Action('is.workflow.actions.getmyworkflows', {
-      UUID: '55A615C7-CCA1-473F-94D8-8894F9C6D59C',
-    }),
+    sc.Action('is.workflow.actions.getmyworkflows', name='My Shortcuts'),
 
     sc.Action('is.workflow.actions.repeat.each', {
+      local outputs = super.outputs,
       GroupingIdentifier: '3C39F304-C709-4042-8340-B48B1B383EB8',
       WFControlFlowMode: 0,
       WFInput: {
-        Value: {
-          OutputName: 'My Shortcuts',
-          OutputUUID: '55A615C7-CCA1-473F-94D8-8894F9C6D59C',
-          Type: 'ActionOutput',
-        },
+        Value: sc.Ref(outputs, 'My Shortcuts'),
         WFSerializationType: 'WFTextTokenAttachment',
       },
     }),

@@ -1,0 +1,119 @@
+id: 2-action-refs
+language: jsonnet
+
+utils:
+
+  referee: &referee
+    kind: functioncall
+    pattern: sc.Action($ID, $PARAMS)
+    has: # a UUID
+      stopBy: end
+      kind: field
+      has:
+        kind: fieldname
+        regex: ^UUID$
+        precedes:
+          stopBy: end
+          kind: string
+          pattern: $UUID
+
+  reference: &reference
+    any:
+    - pattern: >
+        {
+          OutputName: $REF_NAME,
+          OutputUUID: $UUID,
+          Type: 'ActionOutput',
+        }
+    - pattern: >
+        {
+          Aggrandizements: $AGGS,
+          OutputName: $REF_NAME,
+          OutputUUID: $UUID,
+          Type: 'ActionOutput',
+        }
+
+  referrer: &referrer
+    kind: functioncall
+    pattern: sc.Action($$$)
+    has:
+      stopBy: end
+      any: [*reference]
+
+rule:
+  pattern: sc.ActionsSeq($ACTIONS_ARR)
+  has:
+    stopBy: end
+    all:
+    - any: [*referee]
+    - any:
+      - precedes: &p1  { stopBy: end, any: [*referrer] }
+      # - precedes: &p2  { stopBy: end, any: [*referrer], precedes: *p1 }
+      # - precedes: &p3  { stopBy: end, any: [*referrer], precedes: *p2 }
+      # - precedes: &p4  { stopBy: end, any: [*referrer], precedes: *p3 }
+      # - precedes: &p5  { stopBy: end, any: [*referrer], precedes: *p4 }
+      # - precedes: &p6  { stopBy: end, any: [*referrer], precedes: *p5 }
+      # - precedes: &p7  { stopBy: end, any: [*referrer], precedes: *p6 }
+      # - precedes: &p8  { stopBy: end, any: [*referrer], precedes: *p7 }
+      # - precedes: &p9  { stopBy: end, any: [*referrer], precedes: *p8 }
+      # - precedes: &p10 { stopBy: end, any: [*referrer], precedes: *p9 }
+
+# rewriters:
+
+# - id: rewrite-references
+#   rule: *reference
+#   transform:
+#     AGGS_ARG:
+#       replace:
+#         source: $AGGS
+#         replace: '^'
+#         by: ', aggs='
+#   fix: sc.Ref(outputs, $REF_NAME$AGGS_ARG)
+
+# - id: rewrite-referrers
+#   rule:
+#     any: [*referrer]
+#     pattern: $REFERRER
+#   transform:
+#     REFERRER_WITH_REFS:
+#       rewrite:
+#         source: $REFERRER
+#         rewriters: [rewrite-references]
+#     REFERRER_WITH_LOCAL_OUTPUTS:
+#       replace:
+#         source: $REFERRER_WITH_REFS
+#         replace: ', (params=)?\{'
+#         by: "$0\nlocal outputs = super.outputs,"
+#     REFERRER_WITH_DEDUPED_LOCAL_OUTPUTS:
+#       replace:
+#         source: $REFERRER_WITH_LOCAL_OUTPUTS
+#         replace: "(\\s*local outputs = super.outputs,\n)+"
+#         by:       "\nlocal outputs = super.outputs,\n"
+#   fix: >-
+#     $REFERRER_WITH_DEDUPED_LOCAL_OUTPUTS
+
+# - id: rewrite-referees
+#   rule:
+#     any: [*referee]
+#     precedes:
+#       stopBy: end
+#       any: [*referrer]
+#   transform:
+#     PARAMS_NO_OUTPUT:
+#       replace:
+#         source: $PARAMS
+#         replace: "(?m)^\\s*(UUID|CustomOutputName): .*\n"
+#         by: ''
+#   fix: >-
+#     sc.Action($ID, name=$REF_NAME, params=$PARAMS_NO_OUTPUT)
+
+# transform:
+#   ACTIONS_ARR_WITH_REFS:
+#     rewrite:
+#       rewriters:
+#       - rewrite-referees
+#       - rewrite-referrers
+#       source: $ACTIONS_ARR
+
+# fix: >-
+#   sc.ActionsSeq($ACTIONS_ARR_WITH_REFS)

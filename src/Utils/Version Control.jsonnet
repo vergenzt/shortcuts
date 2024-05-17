@@ -4,12 +4,12 @@ local sc = import 'shortcuts.libsonnet';
   WFQuickActionSurfaces: [],
   WFWorkflowActions: sc.ActionsSeq([
 
-    sc.Action('dk.simonbs.DataJar.CheckIfValueExistsIntent', {
-      UUID: '5204022D-FB4D-4E7A-B522-03CE1B6914DE',
+    sc.Action('dk.simonbs.DataJar.CheckIfValueExistsIntent', name='Value Exists', params={
       keyPath: 'Version Control',
     }),
 
     sc.Action('is.workflow.actions.conditional', {
+      local outputs = super.outputs,
       GroupingIdentifier: 'FF33CBB3-BE80-4AA1-AED9-3A5752F93CA6',
       WFCondition: 4,
       WFConditionalActionString: 'No',
@@ -17,25 +17,19 @@ local sc = import 'shortcuts.libsonnet';
       WFInput: {
         Type: 'Variable',
         Variable: {
-          Value: {
-            Aggrandizements: [
-              {
-                PropertyName: 'Name',
-                PropertyUserInfo: 'WFItemName',
-                Type: 'WFPropertyVariableAggrandizement',
-              },
-            ],
-            OutputName: 'Value Exists',
-            OutputUUID: '5204022D-FB4D-4E7A-B522-03CE1B6914DE',
-            Type: 'ActionOutput',
-          },
+          Value: sc.Ref(outputs, 'Value Exists', aggs=[
+            {
+              PropertyName: 'Name',
+              PropertyUserInfo: 'WFItemName',
+              Type: 'WFPropertyVariableAggrandizement',
+            },
+          ]),
           WFSerializationType: 'WFTextTokenAttachment',
         },
       },
     }),
 
-    sc.Action('is.workflow.actions.dictionary', {
-      UUID: '3DA074DC-6D05-452D-803D-1A8130D6990D',
+    sc.Action('is.workflow.actions.dictionary', name='Dictionary', params={
       WFItems: {
         Value: {
           WFDictionaryFieldValueItems: [
@@ -64,20 +58,17 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('dk.simonbs.DataJar.SetValueIntent', {
+      local outputs = super.outputs,
       UUID: 'BB445F37-584B-4250-8BEA-47F0903EFCFF',
       keyPath: 'Version Control',
       overwriteStrategy: 'alwaysAllow',
       values: {
-        Value: {
-          OutputName: 'Dictionary',
-          OutputUUID: '3DA074DC-6D05-452D-803D-1A8130D6990D',
-          Type: 'ActionOutput',
-        },
+        Value: sc.Ref(outputs, 'Dictionary'),
         WFSerializationType: 'WFTextTokenAttachment',
       },
     }),
 
-    sc.Action('is.workflow.actions.delay', {}),
+    sc.Action('is.workflow.actions.delay'),
 
     sc.Action('dk.simonbs.DataJar.DeleteValueIntent', {
       UUID: 'A6457EBB-BD44-435A-B05B-952F5388940E',
@@ -210,7 +201,7 @@ local sc = import 'shortcuts.libsonnet';
       WFAlertActionMessage: 'No shortcut link was found in the clipboard. Please go to the shortcut, hit the share icon and copy the link then run this shortcut again.',
     }),
 
-    sc.Action('is.workflow.actions.exit', {}),
+    sc.Action('is.workflow.actions.exit'),
 
     sc.Action('is.workflow.actions.conditional', {
       GroupingIdentifier: 'BD667D5A-E1F5-4FE7-A782-38C314E4F4AF',
@@ -1975,7 +1966,7 @@ local sc = import 'shortcuts.libsonnet';
       },
     }),
 
-    sc.Action('is.workflow.actions.delay', {}),
+    sc.Action('is.workflow.actions.delay'),
 
     sc.Action('dk.simonbs.DataJar.GetValueIntent', {
       UUID: '08B5D4C0-5361-483D-8230-54D990295776',
@@ -2853,7 +2844,7 @@ local sc = import 'shortcuts.libsonnet';
       },
     }),
 
-    sc.Action('is.workflow.actions.exit', {}),
+    sc.Action('is.workflow.actions.exit'),
 
     sc.Action('is.workflow.actions.conditional', {
       GroupingIdentifier: '53C04CCA-3A14-4CC7-A7D5-3C28AC23E4B3',

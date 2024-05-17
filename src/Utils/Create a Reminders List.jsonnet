@@ -4,39 +4,22 @@ local sc = import 'shortcuts.libsonnet';
   WFQuickActionSurfaces: [],
   WFWorkflowActions: sc.ActionsSeq([
 
-    sc.Action('dk.simonbs.DataJar.GetValueIntent', name='Jira Config', params={
-      keyPath: 'jira-config',
-    }),
-
-    sc.Action('ke.bou.GizmoPack.QueryJSONIntent', name='Result', params={
-      local outputs = super.outputs,
-      input: {
-        Value: sc.Ref(outputs, 'Jira Config'),
-        WFSerializationType: 'WFTextTokenAttachment',
+    sc.Action('com.apple.reminders.TTRCreateListAppIntent', {
+      AppIntentDescriptor: {
+        AppIntentIdentifier: 'TTRCreateListAppIntent',
+        BundleIdentifier: 'com.apple.reminders',
+        Name: 'Reminders',
+        TeamIdentifier: '0000000000',
       },
-      jqQuery: '"\\(.username):\\(.api_token)" | @base64',
-      queryType: 'jq',
-    }),
-
-    sc.Action('is.workflow.actions.setvalueforkey', {
-      local outputs = super.outputs,
-      UUID: 'DB9762D8-746F-4B5A-BF6E-B933A7E1C055',
-      WFDictionary: {
-        Value: sc.Ref(outputs, 'Jira Config', aggs=[
-          {
-            CoercionItemClass: 'WFDictionaryContentItem',
-            Type: 'WFCoercionVariableAggrandizement',
-          },
-        ]),
-        WFSerializationType: 'WFTextTokenAttachment',
-      },
-      WFDictionaryKey: 'authorization',
-      WFDictionaryValue: {
+      UUID: '5B7D73D3-A688-4DC3-88B0-06F72E622408',
+      name: {
         Value: {
           attachmentsByRange: {
-            '{6, 1}': sc.Ref(outputs, 'Result'),
+            '{0, 1}': {
+              Type: 'Ask',
+            },
           },
-          string: 'Basic ￼',
+          string: '￼',
         },
         WFSerializationType: 'WFTextTokenString',
       },
@@ -47,11 +30,12 @@ local sc = import 'shortcuts.libsonnet';
   WFWorkflowHasOutputFallback: false,
   WFWorkflowHasShortcutInputVariables: false,
   WFWorkflowIcon: {
-    WFWorkflowIconGlyphNumber: 59749,
-    WFWorkflowIconStartColor: 2071128575,
+    WFWorkflowIconGlyphNumber: 61440,
+    WFWorkflowIconStartColor: -314141441,
   },
   WFWorkflowImportQuestions: [],
   WFWorkflowInputContentItemClasses: [
+    'WFAppContentItem',
     'WFAppStoreAppContentItem',
     'WFArticleContentItem',
     'WFContactContentItem',

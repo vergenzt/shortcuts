@@ -4,21 +4,14 @@ local sc = import 'shortcuts.libsonnet';
   WFQuickActionSurfaces: [],
   WFWorkflowActions: sc.ActionsSeq([
 
-    sc.Action('dk.simonbs.DataJar.GetValueIntent', {
-      CustomOutputName: 'config',
-      UUID: '84D26323-BCD6-4B0A-B5AF-B5DD07DC4D47',
+    sc.Action('dk.simonbs.DataJar.GetValueIntent', name='config', params={
       keyPath: 'google-oauth',
     }),
 
-    sc.Action('ke.bou.GizmoPack.QueryJSONIntent', {
-      CustomOutputName: 'existing unexpired token',
-      UUID: 'DEC1146C-9821-4B3C-87A0-EC348E12AA9F',
+    sc.Action('ke.bou.GizmoPack.QueryJSONIntent', name='existing unexpired token', params={
+      local outputs = super.outputs,
       input: {
-        Value: {
-          OutputName: 'config',
-          OutputUUID: '84D26323-BCD6-4B0A-B5AF-B5DD07DC4D47',
-          Type: 'ActionOutput',
-        },
+        Value: sc.Ref(outputs, 'config'),
         WFSerializationType: 'WFTextTokenAttachment',
       },
       jqQuery: 'if .token.expires_at > (now | todate) and .token.access_token then .token else empty end',
@@ -26,58 +19,46 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.conditional', {
+      local outputs = super.outputs,
       GroupingIdentifier: '2A79BC9F-64D3-4E75-9B83-A2D758932D7B',
       WFCondition: 100,
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
         Variable: {
-          Value: {
-            OutputName: 'existing unexpired token',
-            OutputUUID: 'DEC1146C-9821-4B3C-87A0-EC348E12AA9F',
-            Type: 'ActionOutput',
-          },
+          Value: sc.Ref(outputs, 'existing unexpired token'),
           WFSerializationType: 'WFTextTokenAttachment',
         },
       },
     }),
 
     sc.Action('is.workflow.actions.output', {
+      local outputs = super.outputs,
       UUID: 'A039CBB8-A415-4C45-8F41-F48FD5109FFA',
       WFNoOutputSurfaceBehavior: 'Respond',
       WFOutput: {
         Value: {
           attachmentsByRange: {
-            '{0, 1}': {
-              Aggrandizements: [
-                {
-                  CoercionItemClass: 'WFDictionaryContentItem',
-                  Type: 'WFCoercionVariableAggrandizement',
-                },
-                {
-                  DictionaryKey: 'token_type',
-                  Type: 'WFDictionaryValueVariableAggrandizement',
-                },
-              ],
-              OutputName: 'existing unexpired token',
-              OutputUUID: 'DEC1146C-9821-4B3C-87A0-EC348E12AA9F',
-              Type: 'ActionOutput',
-            },
-            '{2, 1}': {
-              Aggrandizements: [
-                {
-                  CoercionItemClass: 'WFDictionaryContentItem',
-                  Type: 'WFCoercionVariableAggrandizement',
-                },
-                {
-                  DictionaryKey: 'access_token',
-                  Type: 'WFDictionaryValueVariableAggrandizement',
-                },
-              ],
-              OutputName: 'existing unexpired token',
-              OutputUUID: 'DEC1146C-9821-4B3C-87A0-EC348E12AA9F',
-              Type: 'ActionOutput',
-            },
+            '{0, 1}': sc.Ref(outputs, 'existing unexpired token', aggs=[
+              {
+                CoercionItemClass: 'WFDictionaryContentItem',
+                Type: 'WFCoercionVariableAggrandizement',
+              },
+              {
+                DictionaryKey: 'token_type',
+                Type: 'WFDictionaryValueVariableAggrandizement',
+              },
+            ]),
+            '{2, 1}': sc.Ref(outputs, 'existing unexpired token', aggs=[
+              {
+                CoercionItemClass: 'WFDictionaryContentItem',
+                Type: 'WFCoercionVariableAggrandizement',
+              },
+              {
+                DictionaryKey: 'access_token',
+                Type: 'WFDictionaryValueVariableAggrandizement',
+              },
+            ]),
           },
           string: '￼ ￼',
         },
@@ -93,14 +74,11 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('ke.bou.GizmoPack.QueryJSONIntent', {
+      local outputs = super.outputs,
       CustomOutputName: 'refresh_uri',
       UUID: 'CC3A7B19-F8E9-492A-8449-C67FBC94BAFD',
       input: {
-        Value: {
-          OutputName: 'config',
-          OutputUUID: '84D26323-BCD6-4B0A-B5AF-B5DD07DC4D47',
-          Type: 'ActionOutput',
-        },
+        Value: sc.Ref(outputs, 'config'),
         WFSerializationType: 'WFTextTokenAttachment',
       },
       jqQuery: 'if .token.expires_at <= (now | todate) and .token.refresh_token then .token_uri + "?" + (.params + (.token | {refresh_token}) + { grant_type: "refresh_token" } | to_entries | map(map(@uri) | join("=")) | join("&")) else empty end',
@@ -144,6 +122,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('ke.bou.GizmoPack.QueryJSONIntent', {
+      local outputs = super.outputs,
       CustomOutputName: 'timestamped_token',
       UUID: '668D8032-4727-427E-8D4B-EAA5C4BA8941',
       input: {
@@ -157,21 +136,16 @@ local sc = import 'shortcuts.libsonnet';
       jqQuery: {
         Value: {
           attachmentsByRange: {
-            '{0, 1}': {
-              Aggrandizements: [
-                {
-                  CoercionItemClass: 'WFDictionaryContentItem',
-                  Type: 'WFCoercionVariableAggrandizement',
-                },
-                {
-                  DictionaryKey: 'token',
-                  Type: 'WFDictionaryValueVariableAggrandizement',
-                },
-              ],
-              OutputName: 'config',
-              OutputUUID: '84D26323-BCD6-4B0A-B5AF-B5DD07DC4D47',
-              Type: 'ActionOutput',
-            },
+            '{0, 1}': sc.Ref(outputs, 'config', aggs=[
+              {
+                CoercionItemClass: 'WFDictionaryContentItem',
+                Type: 'WFCoercionVariableAggrandizement',
+              },
+              {
+                DictionaryKey: 'token',
+                Type: 'WFDictionaryValueVariableAggrandizement',
+              },
+            ]),
           },
           string: '￼ + . + { refreshed_at: (now | todate), expires_at: (now + .expires_in | todate) }',
         },
@@ -290,14 +264,11 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('ke.bou.GizmoPack.QueryJSONIntent', {
+      local outputs = super.outputs,
       CustomOutputName: 'auth_uri',
       UUID: '8D8036AD-0DC7-4E4E-B882-62CE84B55BE8',
       input: {
-        Value: {
-          OutputName: 'config',
-          OutputUUID: '84D26323-BCD6-4B0A-B5AF-B5DD07DC4D47',
-          Type: 'ActionOutput',
-        },
+        Value: sc.Ref(outputs, 'config'),
         WFSerializationType: 'WFTextTokenAttachment',
       },
       jqQuery: {
@@ -378,14 +349,11 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('ke.bou.GizmoPack.QueryJSONIntent', {
+      local outputs = super.outputs,
       CustomOutputName: 'token_uri',
       UUID: '9B9A24AE-B2CE-4BF6-A6D5-68174D4F2A4C',
       input: {
-        Value: {
-          OutputName: 'config',
-          OutputUUID: '84D26323-BCD6-4B0A-B5AF-B5DD07DC4D47',
-          Type: 'ActionOutput',
-        },
+        Value: sc.Ref(outputs, 'config'),
         WFSerializationType: 'WFTextTokenAttachment',
       },
       jqQuery: {

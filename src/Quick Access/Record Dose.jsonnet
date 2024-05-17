@@ -4,9 +4,7 @@ local sc = import 'shortcuts.libsonnet';
   WFQuickActionSurfaces: [],
   WFWorkflowActions: sc.ActionsSeq([
 
-    sc.Action('is.workflow.actions.runworkflow', {
-      CustomOutputName: 'Google OAuth',
-      UUID: '09C69E37-59F0-4E5B-B93E-534E039A893A',
+    sc.Action('is.workflow.actions.runworkflow', name='Google OAuth', params={
       WFWorkflow: {
         isSelf: false,
         workflowIdentifier: '410F7B2D-3951-4BAE-A70D-514A8986662E',
@@ -15,31 +13,25 @@ local sc = import 'shortcuts.libsonnet';
       WFWorkflowName: 'Google OAuth',
     }),
 
-    sc.Action('dk.simonbs.DataJar.GetValueIntent', {
-      UUID: '57353387-EAC4-4E94-BC79-77002F6DC116',
+    sc.Action('dk.simonbs.DataJar.GetValueIntent', name='Value', params={
       keyPath: 'dose-recorder',
     }),
 
-    sc.Action('is.workflow.actions.url', {
-      UUID: '348BBF71-FD66-4818-B93C-DFDA9AB2C3CF',
+    sc.Action('is.workflow.actions.url', name='URL', params={
+      local outputs = super.outputs,
       WFURLActionURL: {
         Value: {
           attachmentsByRange: {
-            '{46, 1}': {
-              Aggrandizements: [
-                {
-                  CoercionItemClass: 'WFDictionaryContentItem',
-                  Type: 'WFCoercionVariableAggrandizement',
-                },
-                {
-                  DictionaryKey: 'spreadsheetId',
-                  Type: 'WFDictionaryValueVariableAggrandizement',
-                },
-              ],
-              OutputName: 'Value',
-              OutputUUID: '57353387-EAC4-4E94-BC79-77002F6DC116',
-              Type: 'ActionOutput',
-            },
+            '{46, 1}': sc.Ref(outputs, 'Value', aggs=[
+              {
+                CoercionItemClass: 'WFDictionaryContentItem',
+                Type: 'WFCoercionVariableAggrandizement',
+              },
+              {
+                DictionaryKey: 'spreadsheetId',
+                Type: 'WFDictionaryValueVariableAggrandizement',
+              },
+            ]),
           },
           string: 'https://sheets.googleapis.com/v4/spreadsheets/￼/values',
         },
@@ -47,9 +39,7 @@ local sc = import 'shortcuts.libsonnet';
       },
     }),
 
-    sc.Action('is.workflow.actions.urlencode', {
-      CustomOutputName: 'menuRange',
-      UUID: 'DD6409FC-FC37-4E71-9134-A39743C3603E',
+    sc.Action('is.workflow.actions.urlencode', name='menuRange', params={
       WFInput: {
         Value: {
           attachmentsByRange: {
@@ -75,9 +65,9 @@ local sc = import 'shortcuts.libsonnet';
       },
     }),
 
-    sc.Action('is.workflow.actions.downloadurl', {
+    sc.Action('is.workflow.actions.downloadurl', name='Contents of URL', params={
+      local outputs = super.outputs,
       ShowHeaders: false,
-      UUID: 'C47AC355-7C70-48B0-9F56-2FADFEB4A019',
       WFHTTPHeaders: {
         Value: {
           WFDictionaryFieldValueItems: [
@@ -89,19 +79,7 @@ local sc = import 'shortcuts.libsonnet';
                 },
                 WFSerializationType: 'WFTextTokenString',
               },
-              WFValue: {
-                Value: {
-                  attachmentsByRange: {
-                    '{0, 1}': {
-                      OutputName: 'Google OAuth',
-                      OutputUUID: '09C69E37-59F0-4E5B-B93E-534E039A893A',
-                      Type: 'ActionOutput',
-                    },
-                  },
-                  string: '￼',
-                },
-                WFSerializationType: 'WFTextTokenString',
-              },
+              WFValue: sc.Val('${Google OAuth}', outputs),
             },
           ],
         },
@@ -110,16 +88,8 @@ local sc = import 'shortcuts.libsonnet';
       WFURL: {
         Value: {
           attachmentsByRange: {
-            '{0, 1}': {
-              OutputName: 'URL',
-              OutputUUID: '348BBF71-FD66-4818-B93C-DFDA9AB2C3CF',
-              Type: 'ActionOutput',
-            },
-            '{2, 1}': {
-              OutputName: 'menuRange',
-              OutputUUID: 'DD6409FC-FC37-4E71-9134-A39743C3603E',
-              Type: 'ActionOutput',
-            },
+            '{0, 1}': sc.Ref(outputs, 'URL'),
+            '{2, 1}': sc.Ref(outputs, 'menuRange'),
           },
           string: '￼/￼?valueRenderOption=FORMATTED_VALUE',
         },
@@ -128,24 +98,20 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.repeat.each', {
+      local outputs = super.outputs,
       GroupingIdentifier: '12455693-4B6E-4486-BAD9-730E939E6984',
       WFControlFlowMode: 0,
       WFInput: {
-        Value: {
-          Aggrandizements: [
-            {
-              CoercionItemClass: 'WFDictionaryContentItem',
-              Type: 'WFCoercionVariableAggrandizement',
-            },
-            {
-              DictionaryKey: 'values',
-              Type: 'WFDictionaryValueVariableAggrandizement',
-            },
-          ],
-          OutputName: 'Contents of URL',
-          OutputUUID: 'C47AC355-7C70-48B0-9F56-2FADFEB4A019',
-          Type: 'ActionOutput',
-        },
+        Value: sc.Ref(outputs, 'Contents of URL', aggs=[
+          {
+            CoercionItemClass: 'WFDictionaryContentItem',
+            Type: 'WFCoercionVariableAggrandizement',
+          },
+          {
+            DictionaryKey: 'values',
+            Type: 'WFDictionaryValueVariableAggrandizement',
+          },
+        ]),
         WFSerializationType: 'WFTextTokenAttachment',
       },
     }),
@@ -352,6 +318,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.downloadurl', {
+      local outputs = super.outputs,
       ShowHeaders: true,
       UUID: '4AB123A5-1C39-42B0-9264-BBC6DFB7DE2F',
       WFFormValues: {
@@ -372,19 +339,7 @@ local sc = import 'shortcuts.libsonnet';
                 },
                 WFSerializationType: 'WFTextTokenString',
               },
-              WFValue: {
-                Value: {
-                  attachmentsByRange: {
-                    '{0, 1}': {
-                      OutputName: 'Google OAuth',
-                      OutputUUID: '09C69E37-59F0-4E5B-B93E-534E039A893A',
-                      Type: 'ActionOutput',
-                    },
-                  },
-                  string: '￼',
-                },
-                WFSerializationType: 'WFTextTokenString',
-              },
+              WFValue: sc.Val('${Google OAuth}', outputs),
             },
           ],
         },
@@ -454,11 +409,7 @@ local sc = import 'shortcuts.libsonnet';
       WFURL: {
         Value: {
           attachmentsByRange: {
-            '{0, 1}': {
-              OutputName: 'URL',
-              OutputUUID: '348BBF71-FD66-4818-B93C-DFDA9AB2C3CF',
-              Type: 'ActionOutput',
-            },
+            '{0, 1}': sc.Ref(outputs, 'URL'),
             '{2, 1}': {
               OutputName: 'dataRange',
               OutputUUID: '14227708-44D7-4EC8-AEAB-71AA558092E8',
@@ -513,7 +464,7 @@ local sc = import 'shortcuts.libsonnet';
       WFMenuItemTitle: 'I’d like an alarm. I’ll copy the time to clipboard and return to Shortcuts.',
     }),
 
-    sc.Action('is.workflow.actions.waittoreturn', {}),
+    sc.Action('is.workflow.actions.waittoreturn'),
 
     sc.Action('is.workflow.actions.alert', {
       WFAlertActionTitle: {

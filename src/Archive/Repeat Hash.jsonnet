@@ -4,88 +4,50 @@ local sc = import 'shortcuts.libsonnet';
   WFQuickActionSurfaces: [],
   WFWorkflowActions: sc.ActionsSeq([
 
-    sc.Action('is.workflow.actions.gettext', {
-      CustomOutputName: 'Input',
-      UUID: '557C0901-48F1-4406-BB48-9BF1D341FDAC',
+    sc.Action('is.workflow.actions.gettext', name='Input', params={
       WFTextActionText: 'Screen Time Passcode',
     }),
 
-    sc.Action('is.workflow.actions.gettext', {
-      CustomOutputName: 'Num Repetitions',
-      UUID: '13CD3D97-5F7C-460E-9E3C-B8C08DE7EB67',
+    sc.Action('is.workflow.actions.gettext', name='Num Repetitions', params={
       WFTextActionText: '500_000_000',
     }),
 
-    sc.Action('is.workflow.actions.getdevicedetails', {
-      UUID: '8099AC4C-6BB9-4F62-A650-AA5B22EE4C55',
+    sc.Action('is.workflow.actions.getdevicedetails', name='Device Model', params={
       WFDeviceDetail: 'Device Model',
     }),
 
-    sc.Action('is.workflow.actions.date', {
-      UUID: '192673B0-AC02-4FB9-8BA0-32844BE3836C',
-    }),
+    sc.Action('is.workflow.actions.date', name='Date'),
 
     sc.Action('dk.simonbs.DataJar.SetValueIntent', {
+      local outputs = super.outputs,
       UUID: '7FF4C2E6-FF50-47C3-B483-C1173C3D2986',
       keyPath: {
         Value: {
           attachmentsByRange: {
-            '{23, 1}': {
-              OutputName: 'Device Model',
-              OutputUUID: '8099AC4C-6BB9-4F62-A650-AA5B22EE4C55',
-              Type: 'ActionOutput',
-            },
+            '{23, 1}': sc.Ref(outputs, 'Device Model'),
           },
           string: 'Repeat Hash Signatures.￼.started_at',
         },
         WFSerializationType: 'WFTextTokenString',
       },
       values: {
-        Value: {
-          Aggrandizements: [
-            {
-              Type: 'WFDateFormatVariableAggrandizement',
-              WFDateFormatStyle: 'ISO 8601',
-              WFISO8601IncludeTime: true,
-            },
-          ],
-          OutputName: 'Date',
-          OutputUUID: '192673B0-AC02-4FB9-8BA0-32844BE3836C',
-          Type: 'ActionOutput',
-        },
+        Value: sc.Ref(outputs, 'Date', aggs=[
+          {
+            Type: 'WFDateFormatVariableAggrandizement',
+            WFDateFormatStyle: 'ISO 8601',
+            WFISO8601IncludeTime: true,
+          },
+        ]),
         WFSerializationType: 'WFTextTokenAttachment',
       },
     }),
 
     sc.Action('ch.marcela.ada.Pyto.RunCodeIntent', {
+      local outputs = super.outputs,
       UUID: 'F9DFD763-FD68-42E7-AFF7-EC9AB00F46CB',
       arguments: [
-        {
-          Value: {
-            attachmentsByRange: {
-              '{0, 1}': {
-                OutputName: 'Input',
-                OutputUUID: '557C0901-48F1-4406-BB48-9BF1D341FDAC',
-                Type: 'ActionOutput',
-              },
-            },
-            string: '￼',
-          },
-          WFSerializationType: 'WFTextTokenString',
-        },
-        {
-          Value: {
-            attachmentsByRange: {
-              '{0, 1}': {
-                OutputName: 'Num Repetitions',
-                OutputUUID: '13CD3D97-5F7C-460E-9E3C-B8C08DE7EB67',
-                Type: 'ActionOutput',
-              },
-            },
-            string: '￼',
-          },
-          WFSerializationType: 'WFTextTokenString',
-        },
+        sc.Val('${Input}', outputs),
+        sc.Val('${Num Repetitions}', outputs),
       ],
       code: 'import sys, ast, hashlib\n\ndata = sys.argv[1]\nn = int(ast.literal_eval(sys.argv[2]))\n\nfor i in range(n):\n  data = hashlib.sha1(data.encode()).hexdigest()\n\nprint(data)',
       input: '',
@@ -96,6 +58,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.gettimebetweendates', {
+      local outputs = super.outputs,
       UUID: '37C27230-8F02-4D84-A441-B10A14AB5F6A',
       WFInput: {
         Value: {
@@ -108,19 +71,7 @@ local sc = import 'shortcuts.libsonnet';
         },
         WFSerializationType: 'WFTextTokenString',
       },
-      WFTimeUntilFromDate: {
-        Value: {
-          attachmentsByRange: {
-            '{0, 1}': {
-              OutputName: 'Date',
-              OutputUUID: '192673B0-AC02-4FB9-8BA0-32844BE3836C',
-              Type: 'ActionOutput',
-            },
-          },
-          string: '￼',
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
+      WFTimeUntilFromDate: sc.Val('${Date}', outputs),
       WFTimeUntilUnit: 'Seconds',
     }),
 
@@ -146,16 +97,13 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.gettext', {
+      local outputs = super.outputs,
       CustomOutputName: 'Result',
       UUID: 'A825FF52-2759-4E67-BD28-583C27388967',
       WFTextActionText: {
         Value: {
           attachmentsByRange: {
-            '{18, 1}': {
-              OutputName: 'Num Repetitions',
-              OutputUUID: '13CD3D97-5F7C-460E-9E3C-B8C08DE7EB67',
-              Type: 'ActionOutput',
-            },
+            '{18, 1}': sc.Ref(outputs, 'Num Repetitions'),
             '{32, 1}': {
               OutputName: 'Time Between Dates',
               OutputUUID: '37C27230-8F02-4D84-A441-B10A14AB5F6A',
@@ -166,18 +114,13 @@ local sc = import 'shortcuts.libsonnet';
               OutputUUID: 'F5A841DE-858A-43A2-A55A-8197EBCA5811',
               Type: 'ActionOutput',
             },
-            '{62, 1}': {
-              Aggrandizements: [
-                {
-                  Type: 'WFDateFormatVariableAggrandizement',
-                  WFDateFormatStyle: 'ISO 8601',
-                  WFISO8601IncludeTime: true,
-                },
-              ],
-              OutputName: 'Date',
-              OutputUUID: '192673B0-AC02-4FB9-8BA0-32844BE3836C',
-              Type: 'ActionOutput',
-            },
+            '{62, 1}': sc.Ref(outputs, 'Date', aggs=[
+              {
+                Type: 'WFDateFormatVariableAggrandizement',
+                WFDateFormatStyle: 'ISO 8601',
+                WFISO8601IncludeTime: true,
+              },
+            ]),
           },
           string: 'Hash repetitions: ￼\nTotal time: ￼s\nHash suffix: ￼\nStarted at: ￼',
         },
@@ -186,15 +129,12 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('dk.simonbs.DataJar.SetValueIntent', {
+      local outputs = super.outputs,
       UUID: '4C321391-C11D-4FD2-A0E2-062638082243',
       keyPath: {
         Value: {
           attachmentsByRange: {
-            '{23, 1}': {
-              OutputName: 'Device Model',
-              OutputUUID: '8099AC4C-6BB9-4F62-A650-AA5B22EE4C55',
-              Type: 'ActionOutput',
-            },
+            '{23, 1}': sc.Ref(outputs, 'Device Model'),
           },
           string: 'Repeat Hash Signatures.￼.result',
         },

@@ -4,8 +4,7 @@ local sc = import 'shortcuts.libsonnet';
   WFQuickActionSurfaces: [],
   WFWorkflowActions: sc.ActionsSeq([
 
-    sc.Action('is.workflow.actions.filter.reminders', {
-      UUID: '1B8B463C-7805-4FAD-ADAD-A620A3FF6580',
+    sc.Action('is.workflow.actions.filter.reminders', name='Reminders', params={
       WFContentItemFilter: {
         Value: {
           WFActionParameterFilterPrefix: 1,
@@ -38,20 +37,16 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.repeat.each', {
+      local outputs = super.outputs,
       GroupingIdentifier: '06C7177F-0DD0-4EF7-8354-638BF3E43DE8',
       WFControlFlowMode: 0,
       WFInput: {
-        Value: {
-          OutputName: 'Reminders',
-          OutputUUID: '1B8B463C-7805-4FAD-ADAD-A620A3FF6580',
-          Type: 'ActionOutput',
-        },
+        Value: sc.Ref(outputs, 'Reminders'),
         WFSerializationType: 'WFTextTokenAttachment',
       },
     }),
 
-    sc.Action('com.atlassian.jira.app.CreateIssueIntent', {
-      UUID: 'E860BDA0-451E-43E4-A596-885F0FC20C24',
+    sc.Action('com.atlassian.jira.app.CreateIssueIntent', name='Issue', params={
       account: 'vergenzt@gmail.com',
       issueType: {
         displayString: 'Task',
@@ -76,8 +71,7 @@ local sc = import 'shortcuts.libsonnet';
       },
     }),
 
-    sc.Action('is.workflow.actions.gettext', {
-      UUID: '151FEADD-B4FF-4B9F-81BE-9584E7D95578',
+    sc.Action('is.workflow.actions.gettext', name='Text', params={
       WFTextActionText: {
         Value: {
           attachmentsByRange: {
@@ -118,30 +112,14 @@ local sc = import 'shortcuts.libsonnet';
       },
     }),
 
-    sc.Action('com.atlassian.jira.app.SetIssueFieldIntent', {
-      UUID: '59B2D1C3-7557-4932-9EAF-BADCDC0C77B8',
+    sc.Action('com.atlassian.jira.app.SetIssueFieldIntent', name='Issue', params={
+      local outputs = super.outputs,
       issue: {
-        Value: {
-          OutputName: 'Issue',
-          OutputUUID: 'E860BDA0-451E-43E4-A596-885F0FC20C24',
-          Type: 'ActionOutput',
-        },
+        Value: sc.Ref(outputs, 'Issue'),
         WFSerializationType: 'WFTextTokenAttachment',
       },
       setFieldName: 'Description',
-      setFieldValue: {
-        Value: {
-          attachmentsByRange: {
-            '{0, 1}': {
-              OutputName: 'Text',
-              OutputUUID: '151FEADD-B4FF-4B9F-81BE-9584E7D95578',
-              Type: 'ActionOutput',
-            },
-          },
-          string: '￼',
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
+      setFieldValue: sc.Val('${Text}', outputs),
     }),
 
     sc.Action('is.workflow.actions.setters.reminders', {
@@ -159,6 +137,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.gettext', {
+      local outputs = super.outputs,
       UUID: '7AFF23E1-2035-4D5B-AF32-A6222A5BA909',
       WFTextActionText: {
         Value: {
@@ -173,17 +152,12 @@ local sc = import 'shortcuts.libsonnet';
               Type: 'Variable',
               VariableName: 'Repeat Item',
             },
-            '{11, 1}': {
-              Aggrandizements: [
-                {
-                  PropertyName: 'site',
-                  Type: 'WFPropertyVariableAggrandizement',
-                },
-              ],
-              OutputName: 'Issue',
-              OutputUUID: '59B2D1C3-7557-4932-9EAF-BADCDC0C77B8',
-              Type: 'ActionOutput',
-            },
+            '{11, 1}': sc.Ref(outputs, 'Issue', aggs=[
+              {
+                PropertyName: 'site',
+                Type: 'WFPropertyVariableAggrandizement',
+              },
+            ]),
             '{34, 1}': {
               Aggrandizements: [
                 {

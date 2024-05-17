@@ -1,4 +1,4 @@
-id: top-level-imports
+id: 1-import-lib
 language: jsonnet
 
 rule:

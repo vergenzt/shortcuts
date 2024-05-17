@@ -20,19 +20,24 @@ tasks:
     cmds:
     - shortcuts run 'Export Shortcuts'
 
-  default:
-    desc: Imports a single Apple Shortcut at {{"{{.SHORTCUT_PATH}}"}} into `{{.SOURCE_DIR}}`.
+  extract-all:
+    desc: Just extract .json files from account into `{{.BUILD_DIR}}`.
+    deps:
+    - for: { var: SHORTCUT_PATHS, split: "\n", as: SHORTCUT_PATH }
+      task: extract
+      vars:
+        SHORTCUT_PATH: '{{.SHORTCUT_PATH}}'
+
+  extract:
     deps: [export-from-account]
     requires:
-      vars: ["SOURCE_DIR", "BUILD_DIR", "SHORTCUT_PATH"]
-
+      vars: ["BUILD_DIR", "SHORTCUT_PATH"]
     cmds:
     - { silent: true, cmd: 'mkdir -p {{q .BUILD_DIR}}/{{q (dir .SHORTCUT_PATH)}}' }
-    - { silent: true, cmd: 'mkdir -p {{q .SOURCE_DIR}}/{{q (dir .SHORTCUT_PATH)}}' }
 
     # https://github.com/0xilis/libshortcutsign/blob/753da95f42945ea76bc9ac8f5cccdfa31cc300cc/libshortcutsign.m#L330-L388
     # `fq` below is https://github.com/wader/fq.
-    - >
+    - >-
       tmp=$(mktemp -d);
       cat {{q .IMPORT_DIR}}/{{q .SHORTCUT_PATH}}.shortcut
       | tee {{q .BUILD_DIR}}/{{q .SHORTCUT_PATH}}.shortcut
@@ -45,12 +50,34 @@ tasks:
       cat {{q .BUILD_DIR}}/{{q .SHORTCUT_PATH}}.wflow
       | plutil -convert json -o - -
       | jq --sort-keys '(.WFWorkflowTypes, .WFWorkflowOutputContentItemClasses) |= sort'
-      | tee {{q .BUILD_DIR}}/{{q .SHORTCUT_PATH}}.json
-      | jsonnetfmt /dev/stdin
-      > {{q .SOURCE_DIR}}/{{q .SHORTCUT_PATH}}.jsonnet
+      > {{q .BUILD_DIR}}/{{q .SHORTCUT_PATH}}-in.json
+
+  default:
+    desc: Imports a single Apple Shortcut at {{"{{.SHORTCUT_PATH}}"}} into `{{.SOURCE_DIR}}`.
+    deps:
+    - task: extract
+      vars:
+        SHORTCUT_PATH: '{{.SHORTCUT_PATH}}'
+    requires:
+      vars: ["SOURCE_DIR", "BUILD_DIR", "SHORTCUT_PATH"]
+
+    cmds:
+    - { silent: true, cmd: 'mkdir -p {{q .SOURCE_DIR}}/{{q (dir .SHORTCUT_PATH)}}' }
 
     - >-
-      for i in $(seq 5); do
-      sg scan --update-all {{q .SOURCE_DIR}}/{{q .SHORTCUT_PATH}}.jsonnet &&
+      jsonnetfmt
+      {{q .BUILD_DIR}}/{{q .SHORTCUT_PATH}}-in.json
+      >
+      {{q .SOURCE_DIR}}/{{q .SHORTCUT_PATH}}.jsonnet
+
+    - >-
+      for phase in $(seq 3); do 
+      seen=();
+      while ! printf '%s\n' "${seen[@]}" | grep -qF -e "${next_sha:=next}"; do
+      seen+=("${next_sha:-}");
+      sg scan --update-all --filter="$phase-" {{q .SOURCE_DIR}}/{{q .SHORTCUT_PATH}}.jsonnet
+      &&
       jsonnetfmt -i {{q .SOURCE_DIR}}/{{q .SHORTCUT_PATH}}.jsonnet;
-      done
+      next_sha=$(sha1sum {{q .SOURCE_DIR}}/{{q .SHORTCUT_PATH}}.jsonnet | awk '{print $1}');
+      done;
+      done;

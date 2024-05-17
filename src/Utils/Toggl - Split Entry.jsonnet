@@ -4,38 +4,23 @@ local sc = import 'shortcuts.libsonnet';
   WFQuickActionSurfaces: [],
   WFWorkflowActions: sc.ActionsSeq([
 
-    sc.Action('is.workflow.actions.ask', {
-      CustomOutputName: 'Split Time',
-      UUID: 'A811604E-CC89-44DD-A385-8E5DED2C743B',
+    sc.Action('is.workflow.actions.ask', name='Split Time', params={
       WFAskActionPrompt: 'At what date/time would you like to split the active Toggl Track entry?',
       WFInputType: 'Date and Time',
     }),
 
-    sc.Action('is.workflow.actions.converttimezone', {
-      CustomOutputName: 'Split Time (UTC)',
-      Date: {
-        Value: {
-          attachmentsByRange: {
-            '{0, 1}': {
-              OutputName: 'Split Time',
-              OutputUUID: 'A811604E-CC89-44DD-A385-8E5DED2C743B',
-              Type: 'ActionOutput',
-            },
-          },
-          string: '￼',
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
+    sc.Action('is.workflow.actions.converttimezone', name='Split Time (UTC)', params={
+      local outputs = super.outputs,
+      Date: sc.Val('${Split Time}', outputs),
       DestinationTimeZone: {
         alCityIdentifier: 302,
         localizedCityName: 'UTC',
         timeZone: 'GMT',
       },
-      UUID: 'EF98993B-F786-4D94-AF6E-5B91C94FB57D',
     }),
 
-    sc.Action('is.workflow.actions.dictionary', {
-      UUID: '75415028-8D0D-4C67-9FA9-AF434C27DBD1',
+    sc.Action('is.workflow.actions.dictionary', name='Dictionary', params={
+      local outputs = super.outputs,
       WFItems: {
         Value: {
           WFDictionaryFieldValueItems: [
@@ -89,26 +74,7 @@ local sc = import 'shortcuts.libsonnet';
                           },
                           WFSerializationType: 'WFTextTokenString',
                         },
-                        WFValue: {
-                          Value: {
-                            attachmentsByRange: {
-                              '{0, 1}': {
-                                Aggrandizements: [
-                                  {
-                                    Type: 'WFDateFormatVariableAggrandizement',
-                                    WFDateFormatStyle: 'ISO 8601',
-                                    WFISO8601IncludeTime: true,
-                                  },
-                                ],
-                                OutputName: 'Split Time (UTC)',
-                                OutputUUID: 'EF98993B-F786-4D94-AF6E-5B91C94FB57D',
-                                Type: 'ActionOutput',
-                              },
-                            },
-                            string: '￼',
-                          },
-                          WFSerializationType: 'WFTextTokenString',
-                        },
+                        WFValue: sc.Val('${Split Time (UTC)}', outputs),
                       },
                     ],
                   },
@@ -123,15 +89,10 @@ local sc = import 'shortcuts.libsonnet';
       },
     }),
 
-    sc.Action('is.workflow.actions.runworkflow', {
-      CustomOutputName: 'Time Entries',
-      UUID: '9AA600EA-135E-475F-A6CA-2722D17ED7EA',
+    sc.Action('is.workflow.actions.runworkflow', name='Time Entries', params={
+      local outputs = super.outputs,
       WFInput: {
-        Value: {
-          OutputName: 'Dictionary',
-          OutputUUID: '75415028-8D0D-4C67-9FA9-AF434C27DBD1',
-          Type: 'ActionOutput',
-        },
+        Value: sc.Ref(outputs, 'Dictionary'),
         WFSerializationType: 'WFTextTokenAttachment',
       },
       WFWorkflow: {
@@ -143,21 +104,16 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.repeat.each', {
+      local outputs = super.outputs,
       GroupingIdentifier: 'D9C206AD-C252-455D-A994-9C52097C95F0',
       WFControlFlowMode: 0,
       WFInput: {
-        Value: {
-          OutputName: 'Time Entries',
-          OutputUUID: '9AA600EA-135E-475F-A6CA-2722D17ED7EA',
-          Type: 'ActionOutput',
-        },
+        Value: sc.Ref(outputs, 'Time Entries'),
         WFSerializationType: 'WFTextTokenAttachment',
       },
     }),
 
-    sc.Action('is.workflow.actions.list', {
-      CustomOutputName: 'Endpoint Keys',
-      UUID: 'F9E57020-1F00-4D8C-885B-2A6AA5EE5F9C',
+    sc.Action('is.workflow.actions.list', name='Endpoint Keys', params={
       WFItems: [
         'start',
         'stop',
@@ -165,21 +121,16 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.repeat.each', {
+      local outputs = super.outputs,
       GroupingIdentifier: 'B6878FDB-F12E-4BE9-8FA0-198D4A57DA40',
       WFControlFlowMode: 0,
       WFInput: {
-        Value: {
-          OutputName: 'Endpoint Keys',
-          OutputUUID: 'F9E57020-1F00-4D8C-885B-2A6AA5EE5F9C',
-          Type: 'ActionOutput',
-        },
+        Value: sc.Ref(outputs, 'Endpoint Keys'),
         WFSerializationType: 'WFTextTokenAttachment',
       },
     }),
 
-    sc.Action('is.workflow.actions.getvalueforkey', {
-      CustomOutputName: 'Endpoint Text',
-      UUID: '7433DD8B-C783-4CD3-8DB0-C75E0ED2636C',
+    sc.Action('is.workflow.actions.getvalueforkey', name='Endpoint Text', params={
       WFDictionaryKey: {
         Value: {
           attachmentsByRange: {
@@ -202,79 +153,43 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.conditional', {
+      local outputs = super.outputs,
       GroupingIdentifier: '96AB6539-120D-4246-A24B-80C6F2F3758E',
       WFCondition: 100,
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
         Variable: {
-          Value: {
-            OutputName: 'Endpoint Text',
-            OutputUUID: '7433DD8B-C783-4CD3-8DB0-C75E0ED2636C',
-            Type: 'ActionOutput',
-          },
+          Value: sc.Ref(outputs, 'Endpoint Text'),
           WFSerializationType: 'WFTextTokenAttachment',
         },
       },
     }),
 
-    sc.Action('is.workflow.actions.detect.date', {
-      CustomOutputName: 'Endpoint',
-      UUID: 'B126D226-C0C3-4820-9125-18CAF76E43AD',
+    sc.Action('is.workflow.actions.detect.date', name='Endpoint', params={
+      local outputs = super.outputs,
       WFInput: {
-        Value: {
-          OutputName: 'Endpoint Text',
-          OutputUUID: '7433DD8B-C783-4CD3-8DB0-C75E0ED2636C',
-          Type: 'ActionOutput',
-        },
+        Value: sc.Ref(outputs, 'Endpoint Text'),
         WFSerializationType: 'WFTextTokenAttachment',
       },
     }),
 
-    sc.Action('is.workflow.actions.gettimebetweendates', {
-      CustomOutputName: 'Endpoint Interval',
-      UUID: '843C6FDF-BFBA-4984-BE07-61C63A5F6185',
-      WFInput: {
-        Value: {
-          attachmentsByRange: {
-            '{0, 1}': {
-              OutputName: 'Split Time (UTC)',
-              OutputUUID: 'EF98993B-F786-4D94-AF6E-5B91C94FB57D',
-              Type: 'ActionOutput',
-            },
-          },
-          string: '￼',
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
-      WFTimeUntilFromDate: {
-        Value: {
-          attachmentsByRange: {
-            '{0, 1}': {
-              OutputName: 'Endpoint',
-              OutputUUID: 'B126D226-C0C3-4820-9125-18CAF76E43AD',
-              Type: 'ActionOutput',
-            },
-          },
-          string: '￼',
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
+    sc.Action('is.workflow.actions.gettimebetweendates', name='Endpoint Interval', params={
+      local outputs = super.outputs,
+      WFInput: sc.Val('${Split Time (UTC)}', outputs),
+      WFTimeUntilFromDate: sc.Val('${Endpoint}', outputs),
       WFTimeUntilUnit: 'Seconds',
     }),
 
     sc.Action('is.workflow.actions.conditional', {
+      local outputs = super.outputs,
       GroupingIdentifier: 'AF919587-F239-4E2F-8061-D205AF6AC302',
       WFCondition: 5,
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
         Variable: {
-          Value: {
-            OutputName: 'Endpoint Interval',
-            OutputUUID: '843C6FDF-BFBA-4984-BE07-61C63A5F6185',
-            Type: 'ActionOutput',
-          },
+          Value: sc.Ref(outputs, 'Endpoint Interval'),
           WFSerializationType: 'WFTextTokenAttachment',
         },
       },
@@ -282,19 +197,12 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.calculateexpression', {
+      local outputs = super.outputs,
       Input: {
         Value: {
           attachmentsByRange: {
-            '{0, 1}': {
-              OutputName: 'Endpoint Interval',
-              OutputUUID: '843C6FDF-BFBA-4984-BE07-61C63A5F6185',
-              Type: 'ActionOutput',
-            },
-            '{8, 1}': {
-              OutputName: 'Endpoint Interval',
-              OutputUUID: '843C6FDF-BFBA-4984-BE07-61C63A5F6185',
-              Type: 'ActionOutput',
-            },
+            '{0, 1}': sc.Ref(outputs, 'Endpoint Interval'),
+            '{8, 1}': sc.Ref(outputs, 'Endpoint Interval'),
           },
           string: '￼ / abs(￼)',
         },
@@ -452,6 +360,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.dictionary', {
+      local outputs = super.outputs,
       CustomOutputName: 'New Entry Request',
       UUID: '48641CD5-6BD1-435A-AB85-8DC42F13D91E',
       WFItems: {
@@ -496,19 +405,7 @@ local sc = import 'shortcuts.libsonnet';
                 },
                 WFSerializationType: 'WFTextTokenString',
               },
-              WFValue: {
-                Value: {
-                  attachmentsByRange: {
-                    '{0, 1}': {
-                      OutputName: 'Split Time (UTC)',
-                      OutputUUID: 'EF98993B-F786-4D94-AF6E-5B91C94FB57D',
-                      Type: 'ActionOutput',
-                    },
-                  },
-                  string: '￼',
-                },
-                WFSerializationType: 'WFTextTokenString',
-              },
+              WFValue: sc.Val('${Split Time (UTC)}', outputs),
             },
             {
               WFItemType: 0,
@@ -723,6 +620,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.dictionary', {
+      local outputs = super.outputs,
       CustomOutputName: 'New Entry Request',
       UUID: '60DB5854-C6D2-409A-AE94-0402E8C31850',
       WFItems: {
@@ -794,19 +692,7 @@ local sc = import 'shortcuts.libsonnet';
                           },
                           WFSerializationType: 'WFTextTokenString',
                         },
-                        WFValue: {
-                          Value: {
-                            attachmentsByRange: {
-                              '{0, 1}': {
-                                OutputName: 'Split Time (UTC)',
-                                OutputUUID: 'EF98993B-F786-4D94-AF6E-5B91C94FB57D',
-                                Type: 'ActionOutput',
-                              },
-                            },
-                            string: '￼',
-                          },
-                          WFSerializationType: 'WFTextTokenString',
-                        },
+                        WFValue: sc.Val('${Split Time (UTC)}', outputs),
                       },
                       {
                         WFItemType: 0,

@@ -27,7 +27,7 @@ tasks:
 
     - >
       pip-run lib/python/jsonnet_render.py {{q .SOURCE_DIR}}/{{q .SHORTCUT_PATH}}.jsonnet
-      | tee {{q .BUILD_DIR}}/{{q .SHORTCUT_PATH}}.json
+      | tee {{q .BUILD_DIR}}/{{q .SHORTCUT_PATH}}-out.json
       | plutil -convert xml1 - -o {{q .BUILD_DIR}}/{{q .SHORTCUT_PATH}}.wflow
 
     - >

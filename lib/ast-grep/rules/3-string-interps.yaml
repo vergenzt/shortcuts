@@ -1,0 +1,29 @@
+id: 3-string-interps
+language: jsonnet
+
+rule:
+  pattern: >-
+    {
+      Value: {
+        attachmentsByRange: {
+          '{0, 1}': sc.Ref(outputs, $NAME),
+        },
+        string: $STR,
+      },
+      WFSerializationType: 'WFTextTokenString',
+    }
+
+constraints:
+  STR:
+    regex: ^'￼'$
+
+transform:
+  NAME_UNQUOTED:
+    substring:
+      source: $NAME
+      startChar: 1
+      endChar: -1
+
+fix: >-
+  sc.Val('${$NAME_UNQUOTED}', outputs)
+

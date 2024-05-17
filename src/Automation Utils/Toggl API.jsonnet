@@ -4,9 +4,7 @@ local sc = import 'shortcuts.libsonnet';
   WFQuickActionSurfaces: [],
   WFWorkflowActions: sc.ActionsSeq([
 
-    sc.Action('is.workflow.actions.detect.dictionary', {
-      CustomOutputName: 'Input Dict',
-      UUID: '89C08046-311F-4B52-90E3-C2A3DBFCF024',
+    sc.Action('is.workflow.actions.detect.dictionary', name='Input Dict', params={
       WFInput: {
         Value: {
           Type: 'ExtensionInput',
@@ -15,22 +13,17 @@ local sc = import 'shortcuts.libsonnet';
       },
     }),
 
-    sc.Action('is.workflow.actions.url', {
-      UUID: 'DE2D34E7-B006-4765-AB65-4526D023CDE9',
+    sc.Action('is.workflow.actions.url', name='URL', params={
+      local outputs = super.outputs,
       WFURLActionURL: {
         Value: {
           attachmentsByRange: {
-            '{35, 1}': {
-              Aggrandizements: [
-                {
-                  DictionaryKey: 'path',
-                  Type: 'WFDictionaryValueVariableAggrandizement',
-                },
-              ],
-              OutputName: 'Input Dict',
-              OutputUUID: '89C08046-311F-4B52-90E3-C2A3DBFCF024',
-              Type: 'ActionOutput',
-            },
+            '{35, 1}': sc.Ref(outputs, 'Input Dict', aggs=[
+              {
+                DictionaryKey: 'path',
+                Type: 'WFDictionaryValueVariableAggrandizement',
+              },
+            ]),
           },
           string: 'https://api.track.toggl.com/api/v9/￼',
         },
@@ -38,36 +31,30 @@ local sc = import 'shortcuts.libsonnet';
       },
     }),
 
-    sc.Action('is.workflow.actions.getvalueforkey', {
-      CustomOutputName: 'Request Method',
-      UUID: 'EDED189D-5D86-40A2-9470-42DB612B15D2',
+    sc.Action('is.workflow.actions.getvalueforkey', name='Request Method', params={
+      local outputs = super.outputs,
       WFDictionaryKey: 'method',
       WFInput: {
-        Value: {
-          OutputName: 'Input Dict',
-          OutputUUID: '89C08046-311F-4B52-90E3-C2A3DBFCF024',
-          Type: 'ActionOutput',
-        },
+        Value: sc.Ref(outputs, 'Input Dict', aggs=[
+          {
+            DictionaryKey: 'path',
+            Type: 'WFDictionaryValueVariableAggrandizement',
+          },
+        ]),
         WFSerializationType: 'WFTextTokenAttachment',
       },
     }),
 
-    sc.Action('dk.simonbs.DataJar.GetValueIntent', {
-      CustomOutputName: 'Toggl Track API Token',
-      UUID: '89A86341-ECE8-4BBA-B75E-EC3E951D9F57',
+    sc.Action('dk.simonbs.DataJar.GetValueIntent', name='Toggl Track API Token', params={
       keyPath: 'Toggl Track.api_token',
     }),
 
-    sc.Action('is.workflow.actions.gettext', {
-      UUID: 'C8E53456-5DEE-4F2F-B813-77F344DF8EC4',
+    sc.Action('is.workflow.actions.gettext', name='Text', params={
+      local outputs = super.outputs,
       WFTextActionText: {
         Value: {
           attachmentsByRange: {
-            '{0, 1}': {
-              OutputName: 'Toggl Track API Token',
-              OutputUUID: '89A86341-ECE8-4BBA-B75E-EC3E951D9F57',
-              Type: 'ActionOutput',
-            },
+            '{0, 1}': sc.Ref(outputs, 'Toggl Track API Token'),
           },
           string: '￼:api_token',
         },
@@ -75,76 +62,63 @@ local sc = import 'shortcuts.libsonnet';
       },
     }),
 
-    sc.Action('is.workflow.actions.base64encode', {
-      UUID: '4B219ECF-AB3E-4392-B8E9-56BD3299316C',
+    sc.Action('is.workflow.actions.base64encode', name='Base64 Encoded', params={
+      local outputs = super.outputs,
       WFBase64LineBreakMode: 'None',
       WFInput: {
-        Value: {
-          OutputName: 'Text',
-          OutputUUID: 'C8E53456-5DEE-4F2F-B813-77F344DF8EC4',
-          Type: 'ActionOutput',
-        },
+        Value: sc.Ref(outputs, 'Text'),
         WFSerializationType: 'WFTextTokenAttachment',
       },
     }),
 
-    sc.Action('is.workflow.actions.getvalueforkey', {
-      CustomOutputName: 'Query Params',
-      UUID: 'E768C8B5-9633-48CC-AB3F-5733EEB2306A',
+    sc.Action('is.workflow.actions.getvalueforkey', name='Query Params', params={
+      local outputs = super.outputs,
       WFDictionaryKey: 'params',
       WFInput: {
-        Value: {
-          OutputName: 'Input Dict',
-          OutputUUID: '89C08046-311F-4B52-90E3-C2A3DBFCF024',
-          Type: 'ActionOutput',
-        },
+        Value: sc.Ref(outputs, 'Input Dict', aggs=[
+          {
+            DictionaryKey: 'path',
+            Type: 'WFDictionaryValueVariableAggrandizement',
+          },
+        ]),
         WFSerializationType: 'WFTextTokenAttachment',
       },
     }),
 
     sc.Action('is.workflow.actions.conditional', {
+      local outputs = super.outputs,
       GroupingIdentifier: '4C6CDAC1-3AF6-4835-87D8-C5348FA88848',
       WFCondition: 100,
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
         Variable: {
-          Value: {
-            OutputName: 'Query Params',
-            OutputUUID: 'E768C8B5-9633-48CC-AB3F-5733EEB2306A',
-            Type: 'ActionOutput',
-          },
+          Value: sc.Ref(outputs, 'Query Params'),
           WFSerializationType: 'WFTextTokenAttachment',
         },
       },
     }),
 
     sc.Action('is.workflow.actions.repeat.each', {
+      local outputs = super.outputs,
       GroupingIdentifier: 'CB0F08F7-D254-42C4-933F-CDCE8DCF4415',
       WFControlFlowMode: 0,
       WFInput: {
-        Value: {
-          Aggrandizements: [
-            {
-              CoercionItemClass: 'WFDictionaryContentItem',
-              Type: 'WFCoercionVariableAggrandizement',
-            },
-            {
-              PropertyName: 'Keys',
-              Type: 'WFPropertyVariableAggrandizement',
-            },
-          ],
-          OutputName: 'Query Params',
-          OutputUUID: 'E768C8B5-9633-48CC-AB3F-5733EEB2306A',
-          Type: 'ActionOutput',
-        },
+        Value: sc.Ref(outputs, 'Query Params', aggs=[
+          {
+            CoercionItemClass: 'WFDictionaryContentItem',
+            Type: 'WFCoercionVariableAggrandizement',
+          },
+          {
+            PropertyName: 'Keys',
+            Type: 'WFPropertyVariableAggrandizement',
+          },
+        ]),
         WFSerializationType: 'WFTextTokenAttachment',
       },
     }),
 
-    sc.Action('is.workflow.actions.urlencode', {
-      CustomOutputName: 'Key',
-      UUID: '62069FEA-E890-412F-8DDB-6CE84248AB8E',
+    sc.Action('is.workflow.actions.urlencode', name='Key', params={
       WFInput: {
         Value: {
           attachmentsByRange: {
@@ -159,9 +133,8 @@ local sc = import 'shortcuts.libsonnet';
       },
     }),
 
-    sc.Action('is.workflow.actions.getvalueforkey', {
-      CustomOutputName: 'Value',
-      UUID: '54430E5A-9071-464D-820F-9AAD04CF1865',
+    sc.Action('is.workflow.actions.getvalueforkey', name='Value', params={
+      local outputs = super.outputs,
       WFDictionaryKey: {
         Value: {
           attachmentsByRange: {
@@ -175,48 +148,24 @@ local sc = import 'shortcuts.libsonnet';
         WFSerializationType: 'WFTextTokenString',
       },
       WFInput: {
-        Value: {
-          OutputName: 'Query Params',
-          OutputUUID: 'E768C8B5-9633-48CC-AB3F-5733EEB2306A',
-          Type: 'ActionOutput',
-        },
+        Value: sc.Ref(outputs, 'Query Params'),
         WFSerializationType: 'WFTextTokenAttachment',
       },
     }),
 
-    sc.Action('is.workflow.actions.urlencode', {
-      CustomOutputName: 'Value',
-      UUID: '76C067DF-D86D-4617-8551-3F18A4FDA349',
-      WFInput: {
-        Value: {
-          attachmentsByRange: {
-            '{0, 1}': {
-              OutputName: 'Value',
-              OutputUUID: '54430E5A-9071-464D-820F-9AAD04CF1865',
-              Type: 'ActionOutput',
-            },
-          },
-          string: '￼',
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
+    sc.Action('is.workflow.actions.urlencode', name='Value', params={
+      local outputs = super.outputs,
+      WFInput: sc.Val('${Value}', outputs),
     }),
 
     sc.Action('is.workflow.actions.gettext', {
+      local outputs = super.outputs,
       UUID: '0A2FB96F-DDF1-493F-AF2D-53684A01A077',
       WFTextActionText: {
         Value: {
           attachmentsByRange: {
-            '{0, 1}': {
-              OutputName: 'Key',
-              OutputUUID: '62069FEA-E890-412F-8DDB-6CE84248AB8E',
-              Type: 'ActionOutput',
-            },
-            '{2, 1}': {
-              OutputName: 'Value',
-              OutputUUID: '76C067DF-D86D-4617-8551-3F18A4FDA349',
-              Type: 'ActionOutput',
-            },
+            '{0, 1}': sc.Ref(outputs, 'Key'),
+            '{2, 1}': sc.Ref(outputs, 'Value'),
           },
           string: '￼=￼',
         },
@@ -252,23 +201,12 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.list', {
+      local outputs = super.outputs,
       UUID: '4F45D58D-5C50-4014-AF98-195EF3FBE96B',
       WFItems: [
         {
           WFItemType: 0,
-          WFValue: {
-            Value: {
-              attachmentsByRange: {
-                '{0, 1}': {
-                  OutputName: 'URL',
-                  OutputUUID: 'DE2D34E7-B006-4765-AB65-4526D023CDE9',
-                  Type: 'ActionOutput',
-                },
-              },
-              string: '￼',
-            },
-            WFSerializationType: 'WFTextTokenString',
-          },
+          WFValue: sc.Val('${URL}', outputs),
         },
         {
           WFItemType: 0,
@@ -305,6 +243,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.downloadurl', {
+      local outputs = super.outputs,
       ShowHeaders: true,
       UUID: '2B70C5DA-D255-41E1-ABB9-44F8303B5180',
       WFHTTPBodyType: 'File',
@@ -322,11 +261,7 @@ local sc = import 'shortcuts.libsonnet';
               WFValue: {
                 Value: {
                   attachmentsByRange: {
-                    '{6, 1}': {
-                      OutputName: 'Base64 Encoded',
-                      OutputUUID: '4B219ECF-AB3E-4392-B8E9-56BD3299316C',
-                      Type: 'ActionOutput',
-                    },
+                    '{6, 1}': sc.Ref(outputs, 'Base64 Encoded'),
                   },
                   string: 'Basic ￼',
                 },
@@ -353,11 +288,7 @@ local sc = import 'shortcuts.libsonnet';
         WFSerializationType: 'WFDictionaryFieldValue',
       },
       WFHTTPMethod: {
-        Value: {
-          OutputName: 'Request Method',
-          OutputUUID: 'EDED189D-5D86-40A2-9470-42DB612B15D2',
-          Type: 'ActionOutput',
-        },
+        Value: sc.Ref(outputs, 'Request Method'),
         WFSerializationType: 'WFTextTokenAttachment',
       },
       WFRequestVariable: {

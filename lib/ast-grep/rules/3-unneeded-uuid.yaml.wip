@@ -1,0 +1,23 @@
+id: 3-unneeded-uuid
+language: jsonnet
+
+rule:
+  all:
+  - pattern: sc.Action($$$)
+  - pattern: $ACTION
+  has:
+    stopBy: end
+    kind: field
+    has:
+      kind: fieldname
+      regex: ^UUID$
+
+transform:
+  ACTION_NO_UUID_OR_OUTPUT_NAME:
+    replace:
+      source: $ACTION
+      replace: "(?m)^\\s*(UUID|CustomOutputName): .*\n"
+      by: ''
+
+fix: >-
+  $ACTION_NO_UUID_OR_OUTPUT_NAME

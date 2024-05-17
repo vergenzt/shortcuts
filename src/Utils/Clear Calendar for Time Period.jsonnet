@@ -36,7 +36,7 @@ local sc = import 'shortcuts.libsonnet';
       },
     }),
 
-    sc.Action('is.workflow.actions.waittoreturn', {}),
+    sc.Action('is.workflow.actions.waittoreturn'),
 
     sc.Action('is.workflow.actions.choosefrommenu', {
       GroupingIdentifier: '2862782E-41E9-4DD1-B0E8-1A8D520D17A6',
@@ -50,7 +50,7 @@ local sc = import 'shortcuts.libsonnet';
       WFMenuItemTitle: 'Cancel',
     }),
 
-    sc.Action('is.workflow.actions.exit', {}),
+    sc.Action('is.workflow.actions.exit'),
 
     sc.Action('is.workflow.actions.choosefrommenu', {
       GroupingIdentifier: '2862782E-41E9-4DD1-B0E8-1A8D520D17A6',
@@ -608,7 +608,7 @@ local sc = import 'shortcuts.libsonnet';
       WFControlFlowMode: 1,
     }),
 
-    sc.Action('is.workflow.actions.nothing', {}),
+    sc.Action('is.workflow.actions.nothing'),
 
     sc.Action('is.workflow.actions.conditional', {
       GroupingIdentifier: 'CCFFDFAE-73C1-4ADD-BB35-FAA95260BB8D',

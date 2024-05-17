@@ -4,39 +4,44 @@ local sc = import 'shortcuts.libsonnet';
   WFQuickActionSurfaces: [],
   WFWorkflowActions: sc.ActionsSeq([
 
-    sc.Action('dk.simonbs.DataJar.GetValueIntent', name='Jira Config', params={
-      keyPath: 'jira-config',
+    sc.Action('is.workflow.actions.date', name='Date'),
+
+    sc.Action('is.workflow.actions.ask', name='N', params={
+      WFAskActionPrompt: 'How many days?',
+      WFInputType: 'Number',
     }),
 
-    sc.Action('ke.bou.GizmoPack.QueryJSONIntent', name='Result', params={
+    sc.Action('is.workflow.actions.adjustdate', name='Adjusted Date', params={
       local outputs = super.outputs,
-      input: {
-        Value: sc.Ref(outputs, 'Jira Config'),
-        WFSerializationType: 'WFTextTokenAttachment',
+      WFDate: sc.Val('${Date}', outputs),
+      WFDuration: {
+        Value: {
+          Magnitude: sc.Ref(outputs, 'N'),
+          Unit: 'days',
+        },
+        WFSerializationType: 'WFQuantityFieldValue',
       },
-      jqQuery: '"\\(.username):\\(.api_token)" | @base64',
-      queryType: 'jq',
     }),
 
-    sc.Action('is.workflow.actions.setvalueforkey', {
+    sc.Action('is.workflow.actions.addnewreminder', {
       local outputs = super.outputs,
-      UUID: 'DB9762D8-746F-4B5A-BF6E-B933A7E1C055',
-      WFDictionary: {
-        Value: sc.Ref(outputs, 'Jira Config', aggs=[
-          {
-            CoercionItemClass: 'WFDictionaryContentItem',
-            Type: 'WFCoercionVariableAggrandizement',
-          },
-        ]),
-        WFSerializationType: 'WFTextTokenAttachment',
+      UUID: '1DC33832-5163-4CF7-85F8-4939EAFDBE96',
+      WFAlertCustomTime: sc.Val('${Adjusted Date}', outputs),
+      WFAlertEnabled: 'Alert',
+      WFCalendarDescriptor: {
+        Identifier: '<x-apple-reminderkit://REMCDList/0D507F24-D632-477A-BEF2-AFC7E49CB18D>',
+        IsAllCalendar: false,
+        Title: 'Perishable Food',
       },
-      WFDictionaryKey: 'authorization',
-      WFDictionaryValue: {
+      WFCalendarItemCalendar: 'Perishable Food',
+      WFCalendarItemTitle: {
         Value: {
           attachmentsByRange: {
-            '{6, 1}': sc.Ref(outputs, 'Result'),
+            '{0, 1}': {
+              Type: 'Ask',
+            },
           },
-          string: 'Basic ￼',
+          string: '￼',
         },
         WFSerializationType: 'WFTextTokenString',
       },
@@ -47,11 +52,12 @@ local sc = import 'shortcuts.libsonnet';
   WFWorkflowHasOutputFallback: false,
   WFWorkflowHasShortcutInputVariables: false,
   WFWorkflowIcon: {
-    WFWorkflowIconGlyphNumber: 59749,
+    WFWorkflowIconGlyphNumber: 61440,
     WFWorkflowIconStartColor: 2071128575,
   },
   WFWorkflowImportQuestions: [],
   WFWorkflowInputContentItemClasses: [
+    'WFAppContentItem',
     'WFAppStoreAppContentItem',
     'WFArticleContentItem',
     'WFContactContentItem',

@@ -4,29 +4,24 @@ local sc = import 'shortcuts.libsonnet';
   WFQuickActionSurfaces: [],
   WFWorkflowActions: sc.ActionsSeq([
 
-    sc.Action('dk.simonbs.DataJar.GetValueIntent', {
-      UUID: '33258B4E-F713-463A-BB6A-44039131D019',
+    sc.Action('dk.simonbs.DataJar.GetValueIntent', name='Value', params={
       keyPath: 'dose-recorder',
     }),
 
     sc.Action('is.workflow.actions.runworkflow', {
+      local outputs = super.outputs,
       UUID: '1CEEAC73-E5EA-4E73-BD39-B5F7F2B05175',
       WFInput: {
-        Value: {
-          Aggrandizements: [
-            {
-              CoercionItemClass: 'WFDictionaryContentItem',
-              Type: 'WFCoercionVariableAggrandizement',
-            },
-            {
-              DictionaryKey: 'spreadsheetId',
-              Type: 'WFDictionaryValueVariableAggrandizement',
-            },
-          ],
-          OutputName: 'Value',
-          OutputUUID: '33258B4E-F713-463A-BB6A-44039131D019',
-          Type: 'ActionOutput',
-        },
+        Value: sc.Ref(outputs, 'Value', aggs=[
+          {
+            CoercionItemClass: 'WFDictionaryContentItem',
+            Type: 'WFCoercionVariableAggrandizement',
+          },
+          {
+            DictionaryKey: 'spreadsheetId',
+            Type: 'WFDictionaryValueVariableAggrandizement',
+          },
+        ]),
         WFSerializationType: 'WFTextTokenAttachment',
       },
       WFWorkflow: {

@@ -1,4 +1,4 @@
-id: actions
+id: 1-actions-seq
 language: jsonnet
 
 rule:

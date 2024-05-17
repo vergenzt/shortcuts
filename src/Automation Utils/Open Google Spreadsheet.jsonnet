@@ -4,12 +4,12 @@ local sc = import 'shortcuts.libsonnet';
   WFQuickActionSurfaces: [],
   WFWorkflowActions: sc.ActionsSeq([
 
-    sc.Action('is.workflow.actions.getdevicedetails', {
-      UUID: '70BF179B-0520-4404-9E01-FB6D891D5536',
+    sc.Action('is.workflow.actions.getdevicedetails', name='Device Model', params={
       WFDeviceDetail: 'Device Model',
     }),
 
     sc.Action('is.workflow.actions.conditional', {
+      local outputs = super.outputs,
       GroupingIdentifier: '2607D75E-2498-4367-B38D-ECE360DB437F',
       WFCondition: 4,
       WFConditionalActionString: 'Mac',
@@ -17,11 +17,7 @@ local sc = import 'shortcuts.libsonnet';
       WFInput: {
         Type: 'Variable',
         Variable: {
-          Value: {
-            OutputName: 'Device Model',
-            OutputUUID: '70BF179B-0520-4404-9E01-FB6D891D5536',
-            Type: 'ActionOutput',
-          },
+          Value: sc.Ref(outputs, 'Device Model'),
           WFSerializationType: 'WFTextTokenAttachment',
         },
       },

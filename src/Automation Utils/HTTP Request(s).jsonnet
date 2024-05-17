@@ -4,12 +4,12 @@ local sc = import 'shortcuts.libsonnet';
   WFQuickActionSurfaces: [],
   WFWorkflowActions: sc.ActionsSeq([
 
-    sc.Action('is.workflow.actions.getdevicedetails', {
-      UUID: '3841D6D9-62A4-4686-9B3B-736A9FF4C347',
+    sc.Action('is.workflow.actions.getdevicedetails', name='Device Model', params={
       WFDeviceDetail: 'Device Model',
     }),
 
     sc.Action('is.workflow.actions.conditional', {
+      local outputs = super.outputs,
       GroupingIdentifier: '6C16A978-32F1-45D5-A028-BFFC2A301E17',
       WFCondition: 4,
       WFConditionalActionString: 'Mac',
@@ -17,22 +17,18 @@ local sc = import 'shortcuts.libsonnet';
       WFInput: {
         Type: 'Variable',
         Variable: {
-          Value: {
-            OutputName: 'Device Model',
-            OutputUUID: '3841D6D9-62A4-4686-9B3B-736A9FF4C347',
-            Type: 'ActionOutput',
-          },
+          Value: sc.Ref(outputs, 'Device Model'),
           WFSerializationType: 'WFTextTokenAttachment',
         },
       },
     }),
 
-    sc.Action('is.workflow.actions.gettext', {
-      UUID: 'F09D65FC-95AB-4B6F-BE23-1E0A1044ED9E',
+    sc.Action('is.workflow.actions.gettext', name='Text', params={
       WFTextActionText: "jq -c 'if type == \"array\" then .[] else . end' \\\n| parallel '\\\n  curl \\\n  --no-progress-meter \\\n  --fail-with-body \\\n  --url {[ [.base_url, .path] | join(\"/\") ]} \\\n  {[ .method // empty | \"--request\", . ]} \\\n  {[ .params // empty | to_entries | map(\"--url-query\", \"\\(.key)=\\(.value)\")[] ]} \\\n  {[ .data // empty | to_entries | map(\"--data-urlencode\", \"(\\.key)=\\(.value)\")[] ]} \\\n  {[ .form // empty | to_entries | map(\"--form-string\", \"(\\.key)=\\(.value)\")[] ]} \\\n  {[ .json // empty | \"--json\", . ]}",
     }),
 
-    sc.Action('is.workflow.actions.runshellscript', {
+    sc.Action('is.workflow.actions.runshellscript', name='Shell Script Result', params={
+      local outputs = super.outputs,
       Input: {
         Value: {
           Type: 'ExtensionInput',
@@ -40,29 +36,13 @@ local sc = import 'shortcuts.libsonnet';
         WFSerializationType: 'WFTextTokenAttachment',
       },
       InputMode: 'to stdin',
-      Script: {
-        Value: {
-          attachmentsByRange: {
-            '{0, 1}': {
-              OutputName: 'Text',
-              OutputUUID: 'F09D65FC-95AB-4B6F-BE23-1E0A1044ED9E',
-              Type: 'ActionOutput',
-            },
-          },
-          string: '￼',
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
-      UUID: '31196EFE-1490-4D96-B658-F07F732CC855',
+      Script: sc.Val('${Text}', outputs),
     }),
 
     sc.Action('is.workflow.actions.previewdocument', {
+      local outputs = super.outputs,
       WFInput: {
-        Value: {
-          OutputName: 'Shell Script Result',
-          OutputUUID: '31196EFE-1490-4D96-B658-F07F732CC855',
-          Type: 'ActionOutput',
-        },
+        Value: sc.Ref(outputs, 'Shell Script Result'),
         WFSerializationType: 'WFTextTokenAttachment',
       },
     }),
@@ -74,6 +54,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.conditional', {
+      local outputs = super.outputs,
       GroupingIdentifier: 'B4F4A155-D1B9-4A89-AA17-1A9CBA5CFE54',
       WFCondition: 4,
       WFConditionalActionString: 'iPhone',
@@ -81,11 +62,7 @@ local sc = import 'shortcuts.libsonnet';
       WFInput: {
         Type: 'Variable',
         Variable: {
-          Value: {
-            OutputName: 'Device Model',
-            OutputUUID: '3841D6D9-62A4-4686-9B3B-736A9FF4C347',
-            Type: 'ActionOutput',
-          },
+          Value: sc.Ref(outputs, 'Device Model'),
           WFSerializationType: 'WFTextTokenAttachment',
         },
       },

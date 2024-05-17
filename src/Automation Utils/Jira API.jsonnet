@@ -4,9 +4,7 @@ local sc = import 'shortcuts.libsonnet';
   WFQuickActionSurfaces: [],
   WFWorkflowActions: sc.ActionsSeq([
 
-    sc.Action('is.workflow.actions.detect.dictionary', {
-      CustomOutputName: 'Input Dict',
-      UUID: '89C08046-311F-4B52-90E3-C2A3DBFCF024',
+    sc.Action('is.workflow.actions.detect.dictionary', name='Input Dict', params={
       WFInput: {
         Value: {
           Type: 'ExtensionInput',
@@ -15,38 +13,23 @@ local sc = import 'shortcuts.libsonnet';
       },
     }),
 
-    sc.Action('dk.simonbs.DataJar.GetValueIntent', {
-      CustomOutputName: 'Jira Config',
-      UUID: '89A86341-ECE8-4BBA-B75E-EC3E951D9F57',
+    sc.Action('dk.simonbs.DataJar.GetValueIntent', name='Jira Config', params={
       keyPath: 'jira-config',
     }),
 
-    sc.Action('ke.bou.GizmoPack.RandomDataIntent', {
-      CustomOutputName: 'Error Nonce',
-      UUID: '996788C8-83B7-43C2-AB00-1BA590A2A85F',
+    sc.Action('ke.bou.GizmoPack.RandomDataIntent', name='Error Nonce', params={
       outputEncoding: 'hex',
     }),
 
     sc.Action('ch.marcela.ada.Pyto.RunCodeIntent', {
+      local outputs = super.outputs,
       UUID: '94BD3C02-F0B8-4EA3-B793-51A53A09FE97',
       code: {
         Value: {
           attachmentsByRange: {
-            '{65, 1}': {
-              OutputName: 'Input Dict',
-              OutputUUID: '89C08046-311F-4B52-90E3-C2A3DBFCF024',
-              Type: 'ActionOutput',
-            },
-            '{68, 1}': {
-              OutputName: 'Jira Config',
-              OutputUUID: '89A86341-ECE8-4BBA-B75E-EC3E951D9F57',
-              Type: 'ActionOutput',
-            },
-            '{72, 1}': {
-              OutputName: 'Error Nonce',
-              OutputUUID: '996788C8-83B7-43C2-AB00-1BA590A2A85F',
-              Type: 'ActionOutput',
-            },
+            '{65, 1}': sc.Ref(outputs, 'Input Dict'),
+            '{68, 1}': sc.Ref(outputs, 'Jira Config'),
+            '{72, 1}': sc.Ref(outputs, 'Error Nonce'),
           },
           string: 'import json, requests\n\nargs, cfg, err_nonce = json.loads(r"""\n  [￼, ￼, "￼"]\n""")\n\nresp = requests.request(\n  url=cfg["base_url"] + args.pop("path"),\n  **args,\n  auth=requests.auth.HTTPBasicAuth(\n    cfg["username"],\n    cfg["api_token"]\n  ),\n)\n\nif not resp.ok:\n  print(err_nonce)\n  print("On", resp.request.method, resp.request.path_url)\n  print("Error", resp.status_code, resp.reason)\n\nprint(resp.text)',
         },
@@ -85,21 +68,10 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.conditional', {
+      local outputs = super.outputs,
       GroupingIdentifier: 'B8B9F0F6-0B7F-4C5D-9FF3-1256A1C48B93',
       WFCondition: 4,
-      WFConditionalActionString: {
-        Value: {
-          attachmentsByRange: {
-            '{0, 1}': {
-              OutputName: 'Error Nonce',
-              OutputUUID: '996788C8-83B7-43C2-AB00-1BA590A2A85F',
-              Type: 'ActionOutput',
-            },
-          },
-          string: '￼',
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
+      WFConditionalActionString: sc.Val('${Error Nonce}', outputs),
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',

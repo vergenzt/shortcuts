@@ -4,14 +4,9 @@ local sc = import 'shortcuts.libsonnet';
   WFQuickActionSurfaces: [],
   WFWorkflowActions: sc.ActionsSeq([
 
-    sc.Action('is.workflow.actions.dictionary', {
-      CustomOutputName: 'Empty Dictionary',
-      UUID: 'D99BCD84-949B-49F8-9FF9-6C3335D183D2',
-    }),
+    sc.Action('is.workflow.actions.dictionary', name='Empty Dictionary'),
 
-    sc.Action('is.workflow.actions.detect.dictionary', {
-      CustomOutputName: 'Input As Dict',
-      UUID: '2AD3A488-0CEF-4445-AB44-9959DAC1472F',
+    sc.Action('is.workflow.actions.detect.dictionary', name='Input As Dict', params={
       WFInput: {
         Value: {
           Type: 'ExtensionInput',
@@ -21,31 +16,25 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.conditional', {
+      local outputs = super.outputs,
       GroupingIdentifier: 'AA47C097-218D-48E1-8EC2-CE887F3EA1C4',
       WFCondition: 100,
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
         Variable: {
-          Value: {
-            OutputName: 'Input As Dict',
-            OutputUUID: '2AD3A488-0CEF-4445-AB44-9959DAC1472F',
-            Type: 'ActionOutput',
-          },
+          Value: sc.Ref(outputs, 'Input As Dict'),
           WFSerializationType: 'WFTextTokenAttachment',
         },
       },
     }),
 
     sc.Action('is.workflow.actions.getvalueforkey', {
+      local outputs = super.outputs,
       UUID: '8BAFECD7-A17E-4FCC-8DBF-89A4B292C18F',
       WFDictionaryKey: 'issue_key',
       WFInput: {
-        Value: {
-          OutputName: 'Input As Dict',
-          OutputUUID: '2AD3A488-0CEF-4445-AB44-9959DAC1472F',
-          Type: 'ActionOutput',
-        },
+        Value: sc.Ref(outputs, 'Input As Dict'),
         WFSerializationType: 'WFTextTokenAttachment',
       },
     }),
@@ -800,13 +789,10 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.setvalueforkey', {
+      local outputs = super.outputs,
       UUID: '718CE697-1C85-422E-A987-24A80A642E9B',
       WFDictionary: {
-        Value: {
-          OutputName: 'Empty Dictionary',
-          OutputUUID: 'D99BCD84-949B-49F8-9FF9-6C3335D183D2',
-          Type: 'ActionOutput',
-        },
+        Value: sc.Ref(outputs, 'Empty Dictionary'),
         WFSerializationType: 'WFTextTokenAttachment',
       },
       WFDictionaryKey: 'issue',
@@ -868,23 +854,19 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.conditional', {
+      local outputs = super.outputs,
       GroupingIdentifier: '0ADD3BA5-12CD-4D5E-8562-1FF5ACE0856B',
       WFCondition: 101,
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
         Variable: {
-          Value: {
-            Aggrandizements: [
-              {
-                DictionaryKey: 'skip_base_rereview',
-                Type: 'WFDictionaryValueVariableAggrandizement',
-              },
-            ],
-            OutputName: 'Input As Dict',
-            OutputUUID: '2AD3A488-0CEF-4445-AB44-9959DAC1472F',
-            Type: 'ActionOutput',
-          },
+          Value: sc.Ref(outputs, 'Input As Dict', aggs=[
+            {
+              DictionaryKey: 'skip_base_rereview',
+              Type: 'WFDictionaryValueVariableAggrandizement',
+            },
+          ]),
           WFSerializationType: 'WFTextTokenAttachment',
         },
       },
@@ -976,7 +958,7 @@ local sc = import 'shortcuts.libsonnet';
       WFControlFlowMode: 1,
     }),
 
-    sc.Action('is.workflow.actions.exit', {}),
+    sc.Action('is.workflow.actions.exit'),
 
     sc.Action('is.workflow.actions.setvalueforkey', {
       UUID: '2D3A587A-31A9-4D6B-8A30-9452FBEF375E',

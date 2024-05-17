@@ -4,8 +4,7 @@ local sc = import 'shortcuts.libsonnet';
   WFQuickActionSurfaces: [],
   WFWorkflowActions: sc.ActionsSeq([
 
-    sc.Action('is.workflow.actions.getarticle', {
-      UUID: '9D80FFB9-5ECC-495A-9CD5-5C04A03E09DA',
+    sc.Action('is.workflow.actions.getarticle', name='Article', params={
       WFWebPage: {
         Value: {
           attachmentsByRange: {
@@ -20,12 +19,9 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.previewdocument', {
+      local outputs = super.outputs,
       WFInput: {
-        Value: {
-          OutputName: 'Article',
-          OutputUUID: '9D80FFB9-5ECC-495A-9CD5-5C04A03E09DA',
-          Type: 'ActionOutput',
-        },
+        Value: sc.Ref(outputs, 'Article'),
         WFSerializationType: 'WFTextTokenAttachment',
       },
     }),

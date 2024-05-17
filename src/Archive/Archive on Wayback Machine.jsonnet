@@ -4,9 +4,7 @@ local sc = import 'shortcuts.libsonnet';
   WFQuickActionSurfaces: [],
   WFWorkflowActions: sc.ActionsSeq([
 
-    sc.Action('is.workflow.actions.urlencode', {
-      CustomOutputName: 'Encoded URL',
-      UUID: 'C9099835-7512-4CD7-9490-754E20C55F29',
+    sc.Action('is.workflow.actions.urlencode', name='Encoded URL', params={
       WFInput: {
         Value: {
           attachmentsByRange: {
@@ -20,17 +18,12 @@ local sc = import 'shortcuts.libsonnet';
       },
     }),
 
-    sc.Action('is.workflow.actions.gettext', {
-      CustomOutputName: 'Archive Save URL',
-      UUID: '80190A65-C906-4CC9-8019-0A65C906ECC9',
+    sc.Action('is.workflow.actions.gettext', name='Archive Save URL', params={
+      local outputs = super.outputs,
       WFTextActionText: {
         Value: {
           attachmentsByRange: {
-            '{29, 1}': {
-              OutputName: 'Encoded URL',
-              OutputUUID: 'C9099835-7512-4CD7-9490-754E20C55F29',
-              Type: 'ActionOutput',
-            },
+            '{29, 1}': sc.Ref(outputs, 'Encoded URL'),
           },
           string: 'https://web.archive.org/save/￼',
         },
@@ -39,6 +32,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.downloadurl', {
+      local outputs = super.outputs,
       ShowHeaders: false,
       UUID: '65D93BA0-20BC-4E7E-8513-8A123D03B5C0',
       WFFormValues: {
@@ -72,32 +66,17 @@ local sc = import 'shortcuts.libsonnet';
       },
       WFHTTPBodyType: 'Form',
       WFHTTPMethod: 'POST',
-      WFURL: {
-        Value: {
-          attachmentsByRange: {
-            '{0, 1}': {
-              OutputName: 'Archive Save URL',
-              OutputUUID: '80190A65-C906-4CC9-8019-0A65C906ECC9',
-              Type: 'ActionOutput',
-            },
-          },
-          string: '￼',
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
+      WFURL: sc.Val('${Archive Save URL}', outputs),
     }),
 
     sc.Action('is.workflow.actions.gettext', {
+      local outputs = super.outputs,
       CustomOutputName: 'Archive Root URL',
       UUID: '6EFE14C8-3F96-41ED-BF54-9B9A85E1AC0E',
       WFTextActionText: {
         Value: {
           attachmentsByRange: {
-            '{28, 1}': {
-              OutputName: 'Encoded URL',
-              OutputUUID: 'C9099835-7512-4CD7-9490-754E20C55F29',
-              Type: 'ActionOutput',
-            },
+            '{28, 1}': sc.Ref(outputs, 'Encoded URL'),
           },
           string: 'https://web.archive.org/web/￼',
         },

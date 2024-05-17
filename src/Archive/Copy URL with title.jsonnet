@@ -4,8 +4,7 @@ local sc = import 'shortcuts.libsonnet';
   WFQuickActionSurfaces: [],
   WFWorkflowActions: sc.ActionsSeq([
 
-    sc.Action('is.workflow.actions.getarticle', {
-      UUID: '1B4A9A3E-E59C-413E-AF6A-1F2627C46F42',
+    sc.Action('is.workflow.actions.getarticle', name='Article', params={
       WFWebPage: {
         Value: {
           attachmentsByRange: {
@@ -19,22 +18,17 @@ local sc = import 'shortcuts.libsonnet';
       },
     }),
 
-    sc.Action('is.workflow.actions.gettext', {
-      UUID: '58084029-5B88-4AE9-95C7-0506CA89C45D',
+    sc.Action('is.workflow.actions.gettext', name='Text', params={
+      local outputs = super.outputs,
       WFTextActionText: {
         Value: {
           attachmentsByRange: {
-            '{0, 1}': {
-              Aggrandizements: [
-                {
-                  PropertyName: 'Title',
-                  Type: 'WFPropertyVariableAggrandizement',
-                },
-              ],
-              OutputName: 'Article',
-              OutputUUID: '1B4A9A3E-E59C-413E-AF6A-1F2627C46F42',
-              Type: 'ActionOutput',
-            },
+            '{0, 1}': sc.Ref(outputs, 'Article', aggs=[
+              {
+                PropertyName: 'Title',
+                Type: 'WFPropertyVariableAggrandizement',
+              },
+            ]),
             '{3, 1}': {
               Type: 'ExtensionInput',
             },
@@ -46,13 +40,10 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.setclipboard', {
+      local outputs = super.outputs,
       UUID: 'F3D25BD5-457B-4392-975B-8354AFEC33D7',
       WFInput: {
-        Value: {
-          OutputName: 'Text',
-          OutputUUID: '58084029-5B88-4AE9-95C7-0506CA89C45D',
-          Type: 'ActionOutput',
-        },
+        Value: sc.Ref(outputs, 'Text'),
         WFSerializationType: 'WFTextTokenAttachment',
       },
     }),
