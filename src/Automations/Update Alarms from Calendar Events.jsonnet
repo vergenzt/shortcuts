@@ -874,11 +874,6 @@ local sc = import 'shortcuts.libsonnet';
       WFControlFlowMode: 2,
     }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '61CA7EFD-5FDA-4C9C-A3F2-FEB84FA5E80C',
-      WFControlFlowMode: 2,
-    }),
-
     sc.Action('is.workflow.actions.setvalueforkey', {
       UUID: '8AC4C390-058D-4FA0-8DD8-3025C6C81A83',
       WFDictionary: {
@@ -913,6 +908,11 @@ local sc = import 'shortcuts.libsonnet';
         WFSerializationType: 'WFTextTokenAttachment',
       },
       WFVariableName: 'Matched Calendar Alarm Indices',
+    }),
+
+    sc.Action('is.workflow.actions.conditional', {
+      GroupingIdentifier: '61CA7EFD-5FDA-4C9C-A3F2-FEB84FA5E80C',
+      WFControlFlowMode: 2,
     }),
 
     sc.Action('is.workflow.actions.conditional', {
