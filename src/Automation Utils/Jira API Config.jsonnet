@@ -9,15 +9,15 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('ke.bou.GizmoPack.QueryJSONIntent', name='Result', params={
-      local outputs = super.outputs,
-      input: sc.Ref(outputs, 'Jira Config', att=true),
+      local state = super.state,
+      input: sc.Ref(state, 'Jira Config', att=true),
       jqQuery: '"\\(.username):\\(.api_token)" | @base64',
       queryType: 'jq',
     }),
 
     sc.Action('is.workflow.actions.setvalueforkey', {
-      local outputs = super.outputs,
-      WFDictionary: sc.Ref(outputs, 'Jira Config', aggs=[
+      local state = super.state,
+      WFDictionary: sc.Ref(state, 'Jira Config', aggs=[
         {
           CoercionItemClass: 'WFDictionaryContentItem',
           Type: 'WFCoercionVariableAggrandizement',
@@ -27,7 +27,7 @@ local sc = import 'shortcuts.libsonnet';
       WFDictionaryValue: {
         Value: {
           attachmentsByRange: {
-            '{6, 1}': sc.Ref(outputs, 'Result'),
+            '{6, 1}': sc.Ref(state, 'Result'),
           },
           string: 'Basic ￼',
         },

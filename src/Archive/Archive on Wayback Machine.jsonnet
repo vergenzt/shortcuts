@@ -5,15 +5,15 @@ local sc = import 'shortcuts.libsonnet';
   WFWorkflowActions: sc.ActionsSeq([
 
     sc.Action('is.workflow.actions.urlencode', name='Encoded URL', params={
-      WFInput: sc.Val('${Shortcut Input}', outputs),
+      WFInput: sc.Val('${Shortcut Input}', state),
     }),
 
     sc.Action('is.workflow.actions.gettext', name='Archive Save URL', params={
-      local outputs = super.outputs,
+      local state = super.state,
       WFTextActionText: {
         Value: {
           attachmentsByRange: {
-            '{29, 1}': sc.Ref(outputs, 'Encoded URL'),
+            '{29, 1}': sc.Ref(state, 'Encoded URL'),
           },
           string: 'https://web.archive.org/save/￼',
         },
@@ -22,7 +22,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.downloadurl', {
-      local outputs = super.outputs,
+      local state = super.state,
       ShowHeaders: false,
       WFFormValues: {
         Value: {
@@ -36,7 +36,7 @@ local sc = import 'shortcuts.libsonnet';
                 },
                 WFSerializationType: 'WFTextTokenString',
               },
-              WFValue: sc.Val('${Vars.URL}', outputs),
+              WFValue: sc.Val('${Vars.URL}', state),
             },
           ],
         },
@@ -44,15 +44,15 @@ local sc = import 'shortcuts.libsonnet';
       },
       WFHTTPBodyType: 'Form',
       WFHTTPMethod: 'POST',
-      WFURL: sc.Val('${Archive Save URL}', outputs),
+      WFURL: sc.Val('${Archive Save URL}', state),
     }),
 
     sc.Action('is.workflow.actions.gettext', name='Archive Root URL', params={
-      local outputs = super.outputs,
+      local state = super.state,
       WFTextActionText: {
         Value: {
           attachmentsByRange: {
-            '{28, 1}': sc.Ref(outputs, 'Encoded URL'),
+            '{28, 1}': sc.Ref(state, 'Encoded URL'),
           },
           string: 'https://web.archive.org/web/￼',
         },
@@ -61,43 +61,43 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.url.getheaders', name='Headers of URL', params={
-      local outputs = super.outputs,
-      WFInput: sc.Val('${Archive Root URL}', outputs),
+      local state = super.state,
+      WFInput: sc.Val('${Archive Root URL}', state),
     }),
 
     sc.Action('is.workflow.actions.getvalueforkey', name='Link Header', params={
-      local outputs = super.outputs,
+      local state = super.state,
       WFDictionaryKey: 'Link',
-      WFInput: sc.Ref(outputs, 'Headers of URL', att=true),
+      WFInput: sc.Ref(state, 'Headers of URL', att=true),
     }),
 
     sc.Action('is.workflow.actions.previewdocument', {
-      local outputs = super.outputs,
-      WFInput: sc.Ref(outputs, 'Link Header', att=true),
+      local state = super.state,
+      WFInput: sc.Ref(state, 'Link Header', att=true),
     }),
 
     sc.Action('is.workflow.actions.text.match', name='Link Header Matches', params={
-      local outputs = super.outputs,
+      local state = super.state,
       WFMatchTextCaseSensitive: false,
       WFMatchTextPattern: '<([^>]+)>; rel="memento"',
-      text: sc.Val('${Link Header}', outputs),
+      text: sc.Val('${Link Header}', state),
     }),
 
     sc.Action('is.workflow.actions.text.match.getgroup', name='Archive URL', params={
-      local outputs = super.outputs,
+      local state = super.state,
       WFGetGroupType: 'Group At Index',
-      matches: sc.Ref(outputs, 'Link Header Matches', att=true),
+      matches: sc.Ref(state, 'Link Header Matches', att=true),
     }),
 
     sc.Action('is.workflow.actions.setclipboard', {
-      local outputs = super.outputs,
-      WFInput: sc.Ref(outputs, 'Archive URL', att=true),
+      local state = super.state,
+      WFInput: sc.Ref(state, 'Archive URL', att=true),
       WFLocalOnly: false,
     }),
 
     sc.Action('is.workflow.actions.notification', {
-      local outputs = super.outputs,
-      WFInput: sc.Ref(outputs, 'Archive URL', att=true),
+      local state = super.state,
+      WFInput: sc.Ref(state, 'Archive URL', att=true),
       WFNotificationActionBody: 'Archive URL copied to clipboard',
     }),
 

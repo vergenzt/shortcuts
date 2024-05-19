@@ -12,7 +12,7 @@ local sc = import 'shortcuts.libsonnet';
       WFTextActionText: {
         Value: {
           attachmentsByRange: {
-            '{8, 1}': sc.Ref(outputs, 'Shortcut Input'),
+            '{8, 1}': sc.Ref(state, 'Shortcut Input'),
           },
           string: 'Foo bar ￼',
         },

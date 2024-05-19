@@ -7,10 +7,10 @@ local sc = import 'shortcuts.libsonnet';
     sc.Action('is.workflow.actions.getmyworkflows', name='My Shortcuts'),
 
     sc.Action('is.workflow.actions.repeat.each', {
-      local outputs = super.outputs,
+      local state = super.state,
       GroupingIdentifier: '3C39F304-C709-4042-8340-B48B1B383EB8',
       WFControlFlowMode: 0,
-      WFInput: sc.Ref(outputs, 'My Shortcuts', att=true),
+      WFInput: sc.Ref(state, 'My Shortcuts', att=true),
     }),
 
     sc.Action('is.workflow.actions.documentpicker.save', {
@@ -28,13 +28,13 @@ local sc = import 'shortcuts.libsonnet';
               Type: 'Variable',
               VariableName: 'Repeat Item',
             },
-            '{3, 1}': sc.Ref(outputs, 'Vars.Repeat Item'),
+            '{3, 1}': sc.Ref(state, 'Vars.Repeat Item'),
           },
           string: '/￼/￼',
         },
         WFSerializationType: 'WFTextTokenString',
       },
-      WFInput: sc.Ref(outputs, 'Vars.Repeat Item', att=true),
+      WFInput: sc.Ref(state, 'Vars.Repeat Item', att=true),
       WFSaveFileOverwrite: true,
     }),
 
@@ -44,8 +44,8 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.output', {
-      local outputs = super.outputs,
-      WFOutput: sc.Val('${Repeat Results}', outputs),
+      local state = super.state,
+      WFOutput: sc.Val('${Repeat Results}', state),
     }),
 
   ]),

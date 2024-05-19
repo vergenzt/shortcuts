@@ -19,16 +19,16 @@
     )
   ),
 
-  ActionsSeq(actions, outputs={}):: (
+  ActionsSeq(actions, state={}):: (
     local actions_flat = std.flattenArrays(actions);
     if std.length(actions_flat) == 0 then
       []
     else (
       local action = actions_flat[0];
       local name = std.get(action[_params], 'CustomOutputName');
-      local newOutputs = if name == null then outputs else outputs { [name]: action[_params].UUID };
-      local newAction = { outputs:: newOutputs } + action;
-      local rest = $.ActionsSeq(actions_flat[1:], newOutputs);
+      local newState = if name == null then state else state { [name]: action[_params].UUID };
+      local newAction = { state:: newState } + action;
+      local rest = $.ActionsSeq(actions_flat[1:], newState);
       [newAction] + rest
     )
   ),
@@ -54,7 +54,7 @@
         $._findNextNotEscaped(s, pat, start + 1, unescAcc) tailstrict
   ),
 
-  Ref(outputs, name, aggs=[], att=false):: (
+  Ref(state, name, aggs=[], att=false):: (
     local ref = (
       if std.startsWith(name, "Vars.") then {
         Type: 'Variable',
@@ -65,7 +65,7 @@
       }
       else {
         Type: 'ActionOutput',
-        OutputUUID: outputs[name],
+        OutputUUID: state[name],
         OutputName: name,
         [if aggs == [] then null else 'Aggrandizements']: aggs,
       }
@@ -77,11 +77,11 @@
     else ref
   ),
 
-  _resolveAttachment(var, outputs=null):: (
-    if outputs == null then error ('Interpolation of `%s` missing outputs var' % var)
+  _resolveAttachment(var, state=null):: (
+    if state == null then error ('Interpolation of `%s` missing state var' % var)
     else
       if var == '!Input' then { Type: 'ExtensionInput' }
-      else sc.Ref(var, outputs)
+      else sc.Ref(var, state)
   ),
 
   _joiner: std.char(65532),
@@ -95,16 +95,16 @@
       else
         local nextEnd = $._findNextNotEscaped(s, '}', start), jNext = nextEnd[0], varNext = nextEnd[1];
         if jNext == null then error ('Missing end `%s` for start `%s` at %d in `%s`' % [']', '${', iNext, s])
-        else if varNext == '' then error ('Empty interpolation at %d in `%s`' % iNext, s)
+        else if varNext == '' then error ('Empty interpolation at %d in `%s`' % [iNext, s])
         else
           // add interpoltation
           local startNext = jNext + 1;
           local strAccNext = strAcc + strNext + joiner;
           local attsAccNext = attsAcc + { ['{%d, 1}' % (std.length(strAccNext) - 1)]: resolver(varNext) };
           $._replaceAttachments(s, joiner, startNext, strAccNext, attsAccNext) tailstrict
-  )
+  ),
 
-  _wrapItem(f, outputs=null, key=null):: {
+  _wrapItem(f, state=null, key=null):: {
     [if key != null then 'WFKey']: $.Val(key),
     WFItemType: {
       string: 0,
@@ -115,17 +115,17 @@
       'null': error 'Cannot produce Shortcuts value for null',
     }[std.type(f)],
     WFValue: {
-      string: $.Val(f, outputs),
+      string: $.Val(f, state),
       number: ...,
       boolean: {
         WFSerializationType: 'WFNumberSubstitutableState',
-        Value: $.Val(f, outputs)
+        Value: $.Val(f, state)
       },
       object: {
         WFSerializationType: 'WFDictionaryFieldValue',
         Value: {
           WFDictionaryFieldValueItems: [
-            $._wrapItem(item.value, outputs, key=item.key)
+            $._wrapItem(item.value, state, key=item.key)
             for item in std.objectKeysValues(f)
           ],
         },
@@ -137,11 +137,11 @@
     }[std.type(f)],
   },
 
-  Val(x, outputs=null):: {
+  Val(x, state=null):: {
 
     // string serialization
     string: (
-      local resolver = function(var) $._resolveAttachment(var, outputs); // close over Val's outputs
+      local resolver = function(var) $._resolveAttachment(var, state); // close over Val's state
       local xWithAtts = $._replaceAttachments(x, resolver), xUnesc = xWithAtts[0], xAtts = xWithAtts[1];
         local attsObj = if xAtts == {} then { attachmentsbyRange: xAtts } else {};
         {
@@ -191,7 +191,7 @@
   //     WFInput: {
   //       Type: 'Variable',
   //       Variable: {
-  //         Value: sc.Ref(outputs, 'Matches'),
+  //         Value: sc.Ref(state, 'Matches'),
   //         WFSerializationType: 'WFTextTokenAttachment',
   //       },
   //     },

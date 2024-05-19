@@ -9,14 +9,14 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.conditional', {
-      local outputs = super.outputs,
+      local state = super.state,
       GroupingIdentifier: '2607D75E-2498-4367-B38D-ECE360DB437F',
       WFCondition: 4,
       WFConditionalActionString: 'Mac',
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: sc.Ref(outputs, 'Device Model', att=true),
+        Variable: sc.Ref(state, 'Device Model', att=true),
       },
     }),
 
@@ -39,13 +39,13 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.url', name='URL', params={
-      local outputs = super.outputs,
+      local state = super.state,
       'Show-WFURLActionURL': true,
       WFURLActionURL: {
         Value: {
           attachmentsByRange: {
-            '{0, 1}': sc.Ref(outputs, 'Scheme'),
-            '{35, 1}': sc.Ref(outputs, 'Shortcut Input'),
+            '{0, 1}': sc.Ref(state, 'Scheme'),
+            '{35, 1}': sc.Ref(state, 'Shortcut Input'),
           },
           string: '￼://docs.google.com/spreadsheets/d/￼/edit',
         },
@@ -54,9 +54,9 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.openurl', {
-      local outputs = super.outputs,
+      local state = super.state,
       'Show-WFInput': true,
-      WFInput: sc.Ref(outputs, 'URL', att=true),
+      WFInput: sc.Ref(state, 'URL', att=true),
     }),
 
   ]),

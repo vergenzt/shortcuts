@@ -23,14 +23,14 @@ rewriters:
       {
         Value: {
           attachmentsByRange: {
-            '{0, 1}': sc.Ref(outputs, '$NAME'),
+            '{0, 1}': sc.Ref(state, '$NAME'),
           },
           string: '￼',
         },
         WFSerializationType: 'WFTextTokenString',
       }
   fix: >-
-    sc.Val('${$NAME}', outputs)
+    sc.Val('${$NAME}', state)
 
 - id: &3 ref-input
   rule:
@@ -39,7 +39,7 @@ rewriters:
         Type: 'ExtensionInput',
       }
   fix: >-
-    sc.Ref(outputs, 'Shortcut Input')
+    sc.Ref(state, 'Shortcut Input')
 
 - id: &4 ref-var
   rule:
@@ -49,7 +49,7 @@ rewriters:
         VariableName: '$NAME',
       }
   fix: >-
-    sc.Ref(outputs, 'Vars.$NAME')
+    sc.Ref(state, 'Vars.$NAME')
 
 - id: &5 ref-att
   rule:

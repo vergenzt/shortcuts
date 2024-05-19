@@ -9,8 +9,8 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.runworkflow', {
-      local outputs = super.outputs,
-      WFInput: sc.Ref(outputs, 'Value', aggs=[
+      local state = super.state,
+      WFInput: sc.Ref(state, 'Value', aggs=[
         {
           CoercionItemClass: 'WFDictionaryContentItem',
           Type: 'WFCoercionVariableAggrandizement',

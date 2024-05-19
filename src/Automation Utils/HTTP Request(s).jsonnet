@@ -9,14 +9,14 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.conditional', {
-      local outputs = super.outputs,
+      local state = super.state,
       GroupingIdentifier: '6C16A978-32F1-45D5-A028-BFFC2A301E17',
       WFCondition: 4,
       WFConditionalActionString: 'Mac',
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: sc.Ref(outputs, 'Device Model', att=true),
+        Variable: sc.Ref(state, 'Device Model', att=true),
       },
     }),
 
@@ -25,15 +25,15 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.runshellscript', name='Shell Script Result', params={
-      local outputs = super.outputs,
-      Input: sc.Ref(outputs, 'Shortcut Input', att=true),
+      local state = super.state,
+      Input: sc.Ref(state, 'Shortcut Input', att=true),
       InputMode: 'to stdin',
-      Script: sc.Val('${Text}', outputs),
+      Script: sc.Val('${Text}', state),
     }),
 
     sc.Action('is.workflow.actions.previewdocument', {
-      local outputs = super.outputs,
-      WFInput: sc.Ref(outputs, 'Shell Script Result', att=true),
+      local state = super.state,
+      WFInput: sc.Ref(state, 'Shell Script Result', att=true),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
@@ -42,27 +42,27 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.conditional', {
-      local outputs = super.outputs,
+      local state = super.state,
       GroupingIdentifier: 'B4F4A155-D1B9-4A89-AA17-1A9CBA5CFE54',
       WFCondition: 4,
       WFConditionalActionString: 'iPhone',
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: sc.Ref(outputs, 'Device Model', att=true),
+        Variable: sc.Ref(state, 'Device Model', att=true),
       },
     }),
 
     sc.Action('is.workflow.actions.gettext', name='Text'),
 
     sc.Action('dk.simonbs.Scriptable.RunScriptInlineIntent', {
-      local outputs = super.outputs,
+      local state = super.state,
       'Show-texts': false,
       'Show-urls': false,
       ShowWhenRun: false,
       parameter: [],
-      script: sc.Val('${Text}', outputs),
-      texts: sc.Val('${Input Dict}', outputs),
+      script: sc.Val('${Text}', state),
+      texts: sc.Val('${Input Dict}', state),
     }),
 
     sc.Action('is.workflow.actions.conditional', {

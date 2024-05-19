@@ -5,21 +5,21 @@ local sc = import 'shortcuts.libsonnet';
   WFWorkflowActions: sc.ActionsSeq([
 
     sc.Action('is.workflow.actions.getarticle', name='Article', params={
-      WFWebPage: sc.Val('${Shortcut Input}', outputs),
+      WFWebPage: sc.Val('${Shortcut Input}', state),
     }),
 
     sc.Action('is.workflow.actions.gettext', name='Text', params={
-      local outputs = super.outputs,
+      local state = super.state,
       WFTextActionText: {
         Value: {
           attachmentsByRange: {
-            '{0, 1}': sc.Ref(outputs, 'Article', aggs=[
+            '{0, 1}': sc.Ref(state, 'Article', aggs=[
               {
                 PropertyName: 'Title',
                 Type: 'WFPropertyVariableAggrandizement',
               },
             ]),
-            '{3, 1}': sc.Ref(outputs, 'Shortcut Input'),
+            '{3, 1}': sc.Ref(state, 'Shortcut Input'),
           },
           string: '￼: ￼',
         },
@@ -28,8 +28,8 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.setclipboard', {
-      local outputs = super.outputs,
-      WFInput: sc.Ref(outputs, 'Text', att=true),
+      local state = super.state,
+      WFInput: sc.Ref(state, 'Text', att=true),
     }),
 
   ]),

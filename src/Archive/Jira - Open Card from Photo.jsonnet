@@ -9,31 +9,31 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.extracttextfromimage', name='Text from Image', params={
-      local outputs = super.outputs,
-      WFImage: sc.Ref(outputs, 'Photo', att=true),
+      local state = super.state,
+      WFImage: sc.Ref(state, 'Photo', att=true),
     }),
 
     sc.Action('is.workflow.actions.text.match', name='Matches', params={
-      local outputs = super.outputs,
+      local state = super.state,
       WFMatchTextPattern: 'CARD-(\\d+)',
-      text: sc.Val('${Text from Image}', outputs),
+      text: sc.Val('${Text from Image}', state),
     }),
 
     sc.Action('is.workflow.actions.runworkflow', {
-      local outputs = super.outputs,
-      WFInput: sc.Ref(outputs, 'Matches', att=true),
+      local state = super.state,
+      WFInput: sc.Ref(state, 'Matches', att=true),
     }),
 
     sc.Action('com.atlassian.jira.app.GetIssueIntent', name='Issue', params={
-      local outputs = super.outputs,
+      local state = super.state,
       account: 'vergenzt@gmail.com',
-      issueKey: sc.Val('${Matches}', outputs),
+      issueKey: sc.Val('${Matches}', state),
       site: 'vergenz',
     }),
 
     sc.Action('com.atlassian.jira.app.OpenIssueIntent', {
-      local outputs = super.outputs,
-      issue: sc.Ref(outputs, 'Issue', att=true),
+      local state = super.state,
+      issue: sc.Ref(state, 'Issue', att=true),
     }),
 
   ]),

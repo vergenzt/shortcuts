@@ -23,7 +23,7 @@ snapshots:
 
       ])
     }
-  : fixed: "{\n  WFWorkflowActions: sc.ActionsSeq([\n  \n      sc.Action('is.workflow.actions.gettext', name='Text', params={\n                  WFTextActionText: '10096',\n          }),\n  \n      sc.Action('is.workflow.actions.setvariable', {\n        WFInput: {\n          Value: sc.Ref(outputs, 'Text'),\n          WFSerializationType: 'WFTextTokenAttachment',\n        },\n        WFVariableName: 'FID',\n      }),\n  \n    ])\n}"
+  : fixed: "{\n  WFWorkflowActions: sc.ActionsSeq([\n  \n      sc.Action('is.workflow.actions.gettext', name='Text', params={\n                  WFTextActionText: '10096',\n          }),\n  \n      sc.Action('is.workflow.actions.setvariable', {\n        WFInput: {\n          Value: sc.Ref(state, 'Text'),\n          WFSerializationType: 'WFTextTokenAttachment',\n        },\n        WFVariableName: 'FID',\n      }),\n  \n    ])\n}"
     labels:
     - source: |-
         sc.ActionsSeq([

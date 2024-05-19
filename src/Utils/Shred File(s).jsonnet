@@ -5,7 +5,7 @@ local sc = import 'shortcuts.libsonnet';
   WFWorkflowActions: sc.ActionsSeq([
 
     sc.Action('is.workflow.actions.runshellscript', {
-      Input: sc.Ref(outputs, 'Shortcut Input', att=true),
+      Input: sc.Ref(state, 'Shortcut Input', att=true),
       InputMode: 'as arguments',
       Script: 'gshred -u "$@"',
       Shell: '/bin/bash',

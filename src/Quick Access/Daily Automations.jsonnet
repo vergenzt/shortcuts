@@ -12,16 +12,16 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.repeat.each', {
-      local outputs = super.outputs,
+      local state = super.state,
       GroupingIdentifier: 'B4F3CD09-4BC6-4CBD-B8AC-2DC99998DBF2',
       WFControlFlowMode: 0,
-      WFInput: sc.Ref(outputs, 'My Shortcuts', att=true),
+      WFInput: sc.Ref(state, 'My Shortcuts', att=true),
     }),
 
     sc.Action('is.workflow.actions.runworkflow', {
-      WFInput: sc.Ref(outputs, 'Vars.Repeat Item', att=true),
-      WFWorkflow: sc.Ref(outputs, 'Vars.Repeat Item', att=true),
-      WFWorkflowName: sc.Ref(outputs, 'Vars.Repeat Item', att=true),
+      WFInput: sc.Ref(state, 'Vars.Repeat Item', att=true),
+      WFWorkflow: sc.Ref(state, 'Vars.Repeat Item', att=true),
+      WFWorkflowName: sc.Ref(state, 'Vars.Repeat Item', att=true),
     }),
 
     sc.Action('is.workflow.actions.repeat.each', {

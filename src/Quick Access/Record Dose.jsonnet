@@ -18,11 +18,11 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.url', name='URL', params={
-      local outputs = super.outputs,
+      local state = super.state,
       WFURLActionURL: {
         Value: {
           attachmentsByRange: {
-            '{46, 1}': sc.Ref(outputs, 'Value', aggs=[
+            '{46, 1}': sc.Ref(state, 'Value', aggs=[
               {
                 CoercionItemClass: 'WFDictionaryContentItem',
                 Type: 'WFCoercionVariableAggrandizement',
@@ -40,12 +40,12 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.urlencode', name='menuRange', params={
-      local outputs = super.outputs,
-      WFInput: sc.Val('${Value}', outputs),
+      local state = super.state,
+      WFInput: sc.Val('${Value}', state),
     }),
 
     sc.Action('is.workflow.actions.downloadurl', name='Contents of URL', params={
-      local outputs = super.outputs,
+      local state = super.state,
       ShowHeaders: false,
       WFHTTPHeaders: {
         Value: {
@@ -53,7 +53,7 @@ local sc = import 'shortcuts.libsonnet';
             {
               WFItemType: 0,
               WFKey: sc.Val('Authorization'),
-              WFValue: sc.Val('${Google OAuth}', outputs),
+              WFValue: sc.Val('${Google OAuth}', state),
             },
           ],
         },
@@ -62,8 +62,8 @@ local sc = import 'shortcuts.libsonnet';
       WFURL: {
         Value: {
           attachmentsByRange: {
-            '{0, 1}': sc.Ref(outputs, 'URL'),
-            '{2, 1}': sc.Ref(outputs, 'menuRange'),
+            '{0, 1}': sc.Ref(state, 'URL'),
+            '{2, 1}': sc.Ref(state, 'menuRange'),
           },
           string: '￼/￼?valueRenderOption=FORMATTED_VALUE',
         },
@@ -72,10 +72,10 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.repeat.each', {
-      local outputs = super.outputs,
+      local state = super.state,
       GroupingIdentifier: '12455693-4B6E-4486-BAD9-730E939E6984',
       WFControlFlowMode: 0,
-      WFInput: sc.Ref(outputs, 'Contents of URL', aggs=[
+      WFInput: sc.Ref(state, 'Contents of URL', aggs=[
         {
           CoercionItemClass: 'WFDictionaryContentItem',
           Type: 'WFCoercionVariableAggrandizement',
@@ -88,7 +88,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.getitemfromlist', {
-      WFInput: sc.Ref(outputs, 'Vars.Repeat Item', att=true),
+      WFInput: sc.Ref(state, 'Vars.Repeat Item', att=true),
     }),
 
     sc.Action('is.workflow.actions.repeat.each', name='Repeat Results', params={
@@ -97,25 +97,25 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.choosefromlist', name='Chosen Item', params={
-      local outputs = super.outputs,
-      WFInput: sc.Ref(outputs, 'Repeat Results', att=true),
+      local state = super.state,
+      WFInput: sc.Ref(state, 'Repeat Results', att=true),
     }),
 
     sc.Action('is.workflow.actions.text.match', name='Matches', params={
-      local outputs = super.outputs,
+      local state = super.state,
       WFMatchTextPattern: 'Other',
-      text: sc.Val('${Chosen Item}', outputs),
+      text: sc.Val('${Chosen Item}', state),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
-      local outputs = super.outputs,
+      local state = super.state,
       GroupingIdentifier: 'FF4D8839-949A-412C-9955-483681D84092',
       WFCondition: 100,
       WFConditionalActionString: 'Other',
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: sc.Ref(outputs, 'Matches', att=true),
+        Variable: sc.Ref(state, 'Matches', att=true),
       },
     }),
 
@@ -124,8 +124,8 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.setvariable', {
-      local outputs = super.outputs,
-      WFInput: sc.Ref(outputs, 'Provided Input', att=true),
+      local state = super.state,
+      WFInput: sc.Ref(state, 'Provided Input', att=true),
       WFVariableName: 'Med',
     }),
 
@@ -135,8 +135,8 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.setvariable', {
-      local outputs = super.outputs,
-      WFInput: sc.Ref(outputs, 'Chosen Item', att=true),
+      local state = super.state,
+      WFInput: sc.Ref(state, 'Chosen Item', att=true),
       WFVariableName: 'Med',
     }),
 
@@ -151,8 +151,8 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.format.date', name='Formatted Date', params={
-      local outputs = super.outputs,
-      WFDate: sc.Val('${Provided Input}', outputs),
+      local state = super.state,
+      WFDate: sc.Val('${Provided Input}', state),
       WFDateFormat: 'yyyy-MM-dd HH:mm',
       WFDateFormatStyle: 'Custom',
       WFISO8601IncludeTime: true,
@@ -160,12 +160,12 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.ask', name='Provided Input', params={
-      local outputs = super.outputs,
-      WFAskActionDefaultAnswer: sc.Val('${Vars.Med}', outputs),
+      local state = super.state,
+      WFAskActionDefaultAnswer: sc.Val('${Vars.Med}', state),
       WFAskActionPrompt: {
         Value: {
           attachmentsByRange: {
-            '{13, 1}': sc.Ref(outputs, 'Formatted Date'),
+            '{13, 1}': sc.Ref(state, 'Formatted Date'),
           },
           string: 'Record dose? ￼',
         },
@@ -174,18 +174,18 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.setvariable', {
-      local outputs = super.outputs,
-      WFInput: sc.Ref(outputs, 'Provided Input', att=true),
+      local state = super.state,
+      WFInput: sc.Ref(state, 'Provided Input', att=true),
       WFVariableName: 'Med',
     }),
 
     sc.Action('is.workflow.actions.urlencode', name='dataRange', params={
-      local outputs = super.outputs,
-      WFInput: sc.Val('${Value}', outputs),
+      local state = super.state,
+      WFInput: sc.Val('${Value}', state),
     }),
 
     sc.Action('is.workflow.actions.downloadurl', name='Contents of URL', params={
-      local outputs = super.outputs,
+      local state = super.state,
       ShowHeaders: true,
       WFFormValues: {
         Value: {
@@ -200,7 +200,7 @@ local sc = import 'shortcuts.libsonnet';
             {
               WFItemType: 0,
               WFKey: sc.Val('Authorization'),
-              WFValue: sc.Val('${Google OAuth}', outputs),
+              WFValue: sc.Val('${Google OAuth}', state),
             },
           ],
         },
@@ -221,11 +221,11 @@ local sc = import 'shortcuts.libsonnet';
                       Value: [
                         {
                           WFItemType: 0,
-                          WFValue: sc.Val('${Formatted Date}', outputs),
+                          WFValue: sc.Val('${Formatted Date}', state),
                         },
                         {
                           WFItemType: 0,
-                          WFValue: sc.Val('${Vars.Med}', outputs),
+                          WFValue: sc.Val('${Vars.Med}', state),
                         },
                       ],
                       WFSerializationType: 'WFArrayParameterState',
@@ -242,8 +242,8 @@ local sc = import 'shortcuts.libsonnet';
       WFURL: {
         Value: {
           attachmentsByRange: {
-            '{0, 1}': sc.Ref(outputs, 'URL'),
-            '{2, 1}': sc.Ref(outputs, 'dataRange'),
+            '{0, 1}': sc.Ref(state, 'URL'),
+            '{2, 1}': sc.Ref(state, 'dataRange'),
           },
           string: '￼/￼:append?valueInputOption=USER_ENTERED',
         },
@@ -252,8 +252,8 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.alert', {
-      local outputs = super.outputs,
-      WFAlertActionTitle: sc.Val('${Contents of URL}', outputs),
+      local state = super.state,
+      WFAlertActionTitle: sc.Val('${Contents of URL}', state),
     }),
 
     sc.Action('is.workflow.actions.runworkflow', {
@@ -339,28 +339,28 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.alert', {
-      local outputs = super.outputs,
-      WFAlertActionTitle: sc.Val('${Formatted Date}', outputs),
+      local state = super.state,
+      WFAlertActionTitle: sc.Val('${Formatted Date}', state),
     }),
 
     sc.Action('is.workflow.actions.ask', name='Provided Input', params={
-      local outputs = super.outputs,
-      WFAskActionDefaultAnswerDateAndTime: sc.Val('${Formatted Date}', outputs),
-      WFAskActionDefaultAnswerTime: sc.Val('${Formatted Date}', outputs),
+      local state = super.state,
+      WFAskActionDefaultAnswerDateAndTime: sc.Val('${Formatted Date}', state),
+      WFAskActionDefaultAnswerTime: sc.Val('${Formatted Date}', state),
       WFAskActionPrompt: 'Alarm time',
       WFInputType: 'Time',
     }),
 
     sc.Action('com.apple.mobiletimer-framework.MobileTimerIntents.MTCreateAlarmIntent', {
-      local outputs = super.outputs,
+      local state = super.state,
       AppIntentDescriptor: {
         AppIntentIdentifier: 'CreateAlarmIntent',
         BundleIdentifier: 'com.apple.clock',
         Name: 'Clock',
         TeamIdentifier: '0000000000',
       },
-      dateComponents: sc.Val('${Provided Input}', outputs),
-      label: sc.Val('${Vars.Med}', outputs),
+      dateComponents: sc.Val('${Provided Input}', state),
+      label: sc.Val('${Vars.Med}', state),
       repeatSchedule: {
         displayString: 'Never',
         value: 0,
@@ -379,8 +379,8 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.detect.date', {
-      local outputs = super.outputs,
-      WFInput: sc.Ref(outputs, 'Menu Result', att=true),
+      local state = super.state,
+      WFInput: sc.Ref(state, 'Menu Result', att=true),
     }),
 
   ]),

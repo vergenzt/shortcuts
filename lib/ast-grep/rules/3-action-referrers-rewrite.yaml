@@ -40,7 +40,7 @@ rewriters:
         replace: '^'
         by: ', aggs='
   fix: >-
-    sc.Ref(outputs, $REF_NAME$AGGS_ARG)
+    sc.Ref(state, $REF_NAME$AGGS_ARG)
 
 - id: rewrite-referrers
   rule:
@@ -55,12 +55,12 @@ rewriters:
       replace:
         source: $REFERRER_2
         replace: ', (params=)?\{'
-        by: "$0\nlocal outputs = super.outputs,"
+        by: "$0\nlocal state = super.state,"
     REFERRER_4:
       replace:
         source: $REFERRER_3
-        replace: "(\\s*local outputs = super.outputs,\n)+"
-        by:       "\nlocal outputs = super.outputs,\n"
+        replace: "(\\s*local state = super.state,\n)+"
+        by:       "\nlocal state = super.state,\n"
   fix: >-
     $REFERRER_4
 
