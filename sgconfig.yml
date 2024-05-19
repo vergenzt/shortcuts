@@ -9,6 +9,3 @@ ruleDirs:
 
 testConfigs:
 - testDir: ./lib/ast-grep/rule-tests
-
-utilDirs:
-- ./lib/ast-grep/utils

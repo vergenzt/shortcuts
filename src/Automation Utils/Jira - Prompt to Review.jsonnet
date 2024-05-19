@@ -10,27 +10,12 @@ local sc = import 'shortcuts.libsonnet';
           WFDictionaryFieldValueItems: [
             {
               WFItemType: 0,
-              WFKey: {
-                Value: {
-                  string: 'method',
-                },
-                WFSerializationType: 'WFTextTokenString',
-              },
-              WFValue: {
-                Value: {
-                  string: 'GET',
-                },
-                WFSerializationType: 'WFTextTokenString',
-              },
+              WFKey: sc.Val('method'),
+              WFValue: sc.Val('GET'),
             },
             {
               WFItemType: 0,
-              WFKey: {
-                Value: {
-                  string: 'path',
-                },
-                WFSerializationType: 'WFTextTokenString',
-              },
+              WFKey: sc.Val('path'),
               WFValue: {
                 Value: {
                   attachmentsByRange: {
@@ -61,10 +46,7 @@ local sc = import 'shortcuts.libsonnet';
 
     sc.Action('is.workflow.actions.runworkflow', name='Get Issue Result', params={
       local outputs = super.outputs,
-      WFInput: {
-        Value: sc.Ref(outputs, 'Dictionary'),
-        WFSerializationType: 'WFTextTokenAttachment',
-      },
+      WFInput: sc.Ref(outputs, 'Dictionary', att=true),
       WFWorkflow: {
         isSelf: false,
         workflowIdentifier: 'B245F907-CA3B-4273-B2B7-BE1A4BAE3F79',
@@ -75,12 +57,7 @@ local sc = import 'shortcuts.libsonnet';
 
     sc.Action('is.workflow.actions.getvalueforkey', name='Do you want to review?', params={
       WFDictionaryKey: 'review_prompt_optional',
-      WFInput: {
-        Value: {
-          Type: 'ExtensionInput',
-        },
-        WFSerializationType: 'WFTextTokenAttachment',
-      },
+      WFInput: sc.Ref(outputs, 'Shortcut Input', att=true),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
@@ -90,10 +67,7 @@ local sc = import 'shortcuts.libsonnet';
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: {
-          Value: sc.Ref(outputs, 'Do you want to review?'),
-          WFSerializationType: 'WFTextTokenAttachment',
-        },
+        Variable: sc.Ref(outputs, 'Do you want to review?', att=true),
       },
     }),
 
@@ -120,30 +94,22 @@ local sc = import 'shortcuts.libsonnet';
                 Type: 'WFDictionaryValueVariableAggrandizement',
               },
             ]),
-            '{6, 1}': {
-              Aggrandizements: [
-                {
-                  CoercionItemClass: 'WFDictionaryContentItem',
-                  Type: 'WFCoercionVariableAggrandizement',
-                },
-                {
-                  DictionaryKey: 'fields.summary',
-                  Type: 'WFDictionaryValueVariableAggrandizement',
-                },
-              ],
-              OutputName: 'Get Issue Result',
-              OutputUUID: 'A99B3D6A-D90B-4859-8B7F-4CC8D026CDE1',
-              Type: 'ActionOutput',
-            },
+            '{6, 1}': sc.Ref(outputs, 'Get Issue Result', aggs=[
+              {
+                CoercionItemClass: 'WFDictionaryContentItem',
+                Type: 'WFCoercionVariableAggrandizement',
+              },
+              {
+                DictionaryKey: 'fields.summary',
+                Type: 'WFDictionaryValueVariableAggrandizement',
+              },
+            ]),
           },
           string: '￼ [￼] ￼',
         },
         WFSerializationType: 'WFTextTokenString',
       },
-      WFInput: {
-        Value: sc.Ref(outputs, 'List'),
-        WFSerializationType: 'WFTextTokenAttachment',
-      },
+      WFInput: sc.Ref(outputs, 'List', att=true),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
@@ -154,10 +120,7 @@ local sc = import 'shortcuts.libsonnet';
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: {
-          Value: sc.Ref(outputs, 'Chosen Item'),
-          WFSerializationType: 'WFTextTokenAttachment',
-        },
+        Variable: sc.Ref(outputs, 'Chosen Item', att=true),
       },
     }),
 
@@ -170,7 +133,6 @@ local sc = import 'shortcuts.libsonnet';
 
     sc.Action('is.workflow.actions.conditional', {
       GroupingIdentifier: '6C91002C-93EC-4B86-8427-F5C7EE4EC8EF',
-      UUID: '81348415-BF8C-40E8-B135-8DF7B567D2F7',
       WFControlFlowMode: 2,
     }),
 
@@ -223,21 +185,16 @@ local sc = import 'shortcuts.libsonnet';
                 Type: 'WFDictionaryValueVariableAggrandizement',
               },
             ]),
-            '{5, 1}': {
-              Aggrandizements: [
-                {
-                  CoercionItemClass: 'WFDictionaryContentItem',
-                  Type: 'WFCoercionVariableAggrandizement',
-                },
-                {
-                  DictionaryKey: 'fields.summary',
-                  Type: 'WFDictionaryValueVariableAggrandizement',
-                },
-              ],
-              OutputName: 'Get Issue Result',
-              OutputUUID: 'A99B3D6A-D90B-4859-8B7F-4CC8D026CDE1',
-              Type: 'ActionOutput',
-            },
+            '{5, 1}': sc.Ref(outputs, 'Get Issue Result', aggs=[
+              {
+                CoercionItemClass: 'WFDictionaryContentItem',
+                Type: 'WFCoercionVariableAggrandizement',
+              },
+              {
+                DictionaryKey: 'fields.summary',
+                Type: 'WFDictionaryValueVariableAggrandizement',
+              },
+            ]),
           },
           string: '￼[￼] ￼',
         },
@@ -245,9 +202,7 @@ local sc = import 'shortcuts.libsonnet';
       },
     }),
 
-    sc.Action('is.workflow.actions.text.replace', {
-      CustomOutputName: 'Browse URL',
-      UUID: '5D2E5E83-6C7F-4489-A5ED-CCE29647FF09',
+    sc.Action('is.workflow.actions.text.replace', name='Browse URL', params={
       WFInput: {
         Value: {
           attachmentsByRange: {
@@ -294,37 +249,23 @@ local sc = import 'shortcuts.libsonnet';
       },
     }),
 
-    sc.Action('is.workflow.actions.getvalueforkey', {
-      CustomOutputName: 'filter',
-      UUID: 'C4B88720-8C30-4636-99CC-4D05792657E4',
+    sc.Action('is.workflow.actions.getvalueforkey', name='filter', params={
       WFDictionaryKey: 'filter',
-      WFInput: {
-        Value: {
-          Type: 'ExtensionInput',
-        },
-        WFSerializationType: 'WFTextTokenAttachment',
-      },
+      WFInput: sc.Ref(outputs, 'Shortcut Input', att=true),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
+      local outputs = super.outputs,
       GroupingIdentifier: 'AE978332-38D0-467A-BA94-F5D047219387',
       WFCondition: 100,
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: {
-          Value: {
-            OutputName: 'filter',
-            OutputUUID: 'C4B88720-8C30-4636-99CC-4D05792657E4',
-            Type: 'ActionOutput',
-          },
-          WFSerializationType: 'WFTextTokenAttachment',
-        },
+        Variable: sc.Ref(outputs, 'filter', att=true),
       },
     }),
 
     sc.Action('is.workflow.actions.gettext', {
-      UUID: 'B4A76837-06F2-4A99-9CB8-DECD999D0466',
       WFTextActionText: {
         Value: {
           attachmentsByRange: {
@@ -348,27 +289,18 @@ local sc = import 'shortcuts.libsonnet';
       },
     }),
 
-    sc.Action('is.workflow.actions.conditional', {
+    sc.Action('is.workflow.actions.conditional', name='If Result', params={
       GroupingIdentifier: 'AE978332-38D0-467A-BA94-F5D047219387',
-      UUID: '0AD94A73-F0B0-41C4-AD12-909189ACC5E9',
       WFControlFlowMode: 2,
     }),
 
-    sc.Action('is.workflow.actions.url', {
-      UUID: '1D064DC3-9619-45D2-AE5C-A405644ED2CB',
+    sc.Action('is.workflow.actions.url', name='URL', params={
+      local outputs = super.outputs,
       WFURLActionURL: {
         Value: {
           attachmentsByRange: {
-            '{0, 1}': {
-              OutputName: 'Browse URL',
-              OutputUUID: '5D2E5E83-6C7F-4489-A5ED-CCE29647FF09',
-              Type: 'ActionOutput',
-            },
-            '{1, 1}': {
-              OutputName: 'If Result',
-              OutputUUID: '0AD94A73-F0B0-41C4-AD12-909189ACC5E9',
-              Type: 'ActionOutput',
-            },
+            '{0, 1}': sc.Ref(outputs, 'Browse URL'),
+            '{1, 1}': sc.Ref(outputs, 'If Result'),
           },
           string: '￼￼',
         },
@@ -377,43 +309,23 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.openurl', {
-      UUID: '53990257-DAE7-43A2-8220-DCE11098D224',
-      WFInput: {
-        Value: {
-          OutputName: 'URL',
-          OutputUUID: '1D064DC3-9619-45D2-AE5C-A405644ED2CB',
-          Type: 'ActionOutput',
-        },
-        WFSerializationType: 'WFTextTokenAttachment',
-      },
+      local outputs = super.outputs,
+      WFInput: sc.Ref(outputs, 'URL', att=true),
     }),
 
-    sc.Action('is.workflow.actions.getvalueforkey', {
-      CustomOutputName: 'skip_return',
-      UUID: 'F239D23E-CDD4-4C65-B3E5-C38F6D16E614',
+    sc.Action('is.workflow.actions.getvalueforkey', name='skip_return', params={
       WFDictionaryKey: 'skip_return',
-      WFInput: {
-        Value: {
-          Type: 'ExtensionInput',
-        },
-        WFSerializationType: 'WFTextTokenAttachment',
-      },
+      WFInput: sc.Ref(outputs, 'Shortcut Input', att=true),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
+      local outputs = super.outputs,
       GroupingIdentifier: '2DD74F72-F042-47FF-8317-8749CC2A2A5A',
       WFCondition: 101,
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: {
-          Value: {
-            OutputName: 'skip_return',
-            OutputUUID: 'F239D23E-CDD4-4C65-B3E5-C38F6D16E614',
-            Type: 'ActionOutput',
-          },
-          WFSerializationType: 'WFTextTokenAttachment',
-        },
+        Variable: sc.Ref(outputs, 'skip_return', att=true),
       },
     }),
 

@@ -40,29 +40,8 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.urlencode', name='menuRange', params={
-      WFInput: {
-        Value: {
-          attachmentsByRange: {
-            '{0, 1}': {
-              Aggrandizements: [
-                {
-                  CoercionItemClass: 'WFDictionaryContentItem',
-                  Type: 'WFCoercionVariableAggrandizement',
-                },
-                {
-                  DictionaryKey: 'menuRange',
-                  Type: 'WFDictionaryValueVariableAggrandizement',
-                },
-              ],
-              OutputName: 'Value',
-              OutputUUID: '57353387-EAC4-4E94-BC79-77002F6DC116',
-              Type: 'ActionOutput',
-            },
-          },
-          string: '￼',
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
+      local outputs = super.outputs,
+      WFInput: sc.Val('${Value}', outputs),
     }),
 
     sc.Action('is.workflow.actions.downloadurl', name='Contents of URL', params={
@@ -73,12 +52,7 @@ local sc = import 'shortcuts.libsonnet';
           WFDictionaryFieldValueItems: [
             {
               WFItemType: 0,
-              WFKey: {
-                Value: {
-                  string: 'Authorization',
-                },
-                WFSerializationType: 'WFTextTokenString',
-              },
+              WFKey: sc.Val('Authorization'),
               WFValue: sc.Val('${Google OAuth}', outputs),
             },
           ],
@@ -101,100 +75,57 @@ local sc = import 'shortcuts.libsonnet';
       local outputs = super.outputs,
       GroupingIdentifier: '12455693-4B6E-4486-BAD9-730E939E6984',
       WFControlFlowMode: 0,
-      WFInput: {
-        Value: sc.Ref(outputs, 'Contents of URL', aggs=[
-          {
-            CoercionItemClass: 'WFDictionaryContentItem',
-            Type: 'WFCoercionVariableAggrandizement',
-          },
-          {
-            DictionaryKey: 'values',
-            Type: 'WFDictionaryValueVariableAggrandizement',
-          },
-        ]),
-        WFSerializationType: 'WFTextTokenAttachment',
-      },
+      WFInput: sc.Ref(outputs, 'Contents of URL', aggs=[
+        {
+          CoercionItemClass: 'WFDictionaryContentItem',
+          Type: 'WFCoercionVariableAggrandizement',
+        },
+        {
+          DictionaryKey: 'values',
+          Type: 'WFDictionaryValueVariableAggrandizement',
+        },
+      ], att=true),
     }),
 
     sc.Action('is.workflow.actions.getitemfromlist', {
-      UUID: '796988DD-F959-4F01-A4C9-EBBD16E96167',
-      WFInput: {
-        Value: {
-          Type: 'Variable',
-          VariableName: 'Repeat Item',
-        },
-        WFSerializationType: 'WFTextTokenAttachment',
-      },
+      WFInput: sc.Ref(outputs, 'Vars.Repeat Item', att=true),
     }),
 
-    sc.Action('is.workflow.actions.repeat.each', {
+    sc.Action('is.workflow.actions.repeat.each', name='Repeat Results', params={
       GroupingIdentifier: '12455693-4B6E-4486-BAD9-730E939E6984',
-      UUID: '7F605F6F-7084-4C8F-A3FB-E345647B513F',
       WFControlFlowMode: 2,
     }),
 
-    sc.Action('is.workflow.actions.choosefromlist', {
-      UUID: '309641A0-9081-4DD8-A60F-7E142B3E4E46',
-      WFInput: {
-        Value: {
-          OutputName: 'Repeat Results',
-          OutputUUID: '7F605F6F-7084-4C8F-A3FB-E345647B513F',
-          Type: 'ActionOutput',
-        },
-        WFSerializationType: 'WFTextTokenAttachment',
-      },
+    sc.Action('is.workflow.actions.choosefromlist', name='Chosen Item', params={
+      local outputs = super.outputs,
+      WFInput: sc.Ref(outputs, 'Repeat Results', att=true),
     }),
 
-    sc.Action('is.workflow.actions.text.match', {
-      UUID: 'FFC33375-004B-4559-961D-04E90725DD0F',
+    sc.Action('is.workflow.actions.text.match', name='Matches', params={
+      local outputs = super.outputs,
       WFMatchTextPattern: 'Other',
-      text: {
-        Value: {
-          attachmentsByRange: {
-            '{0, 1}': {
-              OutputName: 'Chosen Item',
-              OutputUUID: '309641A0-9081-4DD8-A60F-7E142B3E4E46',
-              Type: 'ActionOutput',
-            },
-          },
-          string: '￼',
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
+      text: sc.Val('${Chosen Item}', outputs),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
+      local outputs = super.outputs,
       GroupingIdentifier: 'FF4D8839-949A-412C-9955-483681D84092',
       WFCondition: 100,
       WFConditionalActionString: 'Other',
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: {
-          Value: {
-            OutputName: 'Matches',
-            OutputUUID: 'FFC33375-004B-4559-961D-04E90725DD0F',
-            Type: 'ActionOutput',
-          },
-          WFSerializationType: 'WFTextTokenAttachment',
-        },
+        Variable: sc.Ref(outputs, 'Matches', att=true),
       },
     }),
 
-    sc.Action('is.workflow.actions.ask', {
-      UUID: '11D25B5E-144E-407B-96D2-4E6483D62DBE',
+    sc.Action('is.workflow.actions.ask', name='Provided Input', params={
       WFAskActionPrompt: 'Other',
     }),
 
     sc.Action('is.workflow.actions.setvariable', {
-      WFInput: {
-        Value: {
-          OutputName: 'Provided Input',
-          OutputUUID: '11D25B5E-144E-407B-96D2-4E6483D62DBE',
-          Type: 'ActionOutput',
-        },
-        WFSerializationType: 'WFTextTokenAttachment',
-      },
+      local outputs = super.outputs,
+      WFInput: sc.Ref(outputs, 'Provided Input', att=true),
       WFVariableName: 'Med',
     }),
 
@@ -204,72 +135,37 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.setvariable', {
-      WFInput: {
-        Value: {
-          OutputName: 'Chosen Item',
-          OutputUUID: '309641A0-9081-4DD8-A60F-7E142B3E4E46',
-          Type: 'ActionOutput',
-        },
-        WFSerializationType: 'WFTextTokenAttachment',
-      },
+      local outputs = super.outputs,
+      WFInput: sc.Ref(outputs, 'Chosen Item', att=true),
       WFVariableName: 'Med',
     }),
 
     sc.Action('is.workflow.actions.conditional', {
       GroupingIdentifier: 'FF4D8839-949A-412C-9955-483681D84092',
-      UUID: '5F07A628-CD45-4254-B2AB-87684FEB9F38',
       WFControlFlowMode: 2,
     }),
 
-    sc.Action('is.workflow.actions.ask', {
-      UUID: 'E870D204-6D15-45AF-8A7D-302D211C8E25',
+    sc.Action('is.workflow.actions.ask', name='Provided Input', params={
       WFAskActionDefaultAnswerDateAndTime: '',
       WFInputType: 'Date and Time',
     }),
 
-    sc.Action('is.workflow.actions.format.date', {
-      UUID: '43212188-F76D-40D5-A3F5-FF573F34800C',
-      WFDate: {
-        Value: {
-          attachmentsByRange: {
-            '{0, 1}': {
-              OutputName: 'Provided Input',
-              OutputUUID: 'E870D204-6D15-45AF-8A7D-302D211C8E25',
-              Type: 'ActionOutput',
-            },
-          },
-          string: '￼',
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
+    sc.Action('is.workflow.actions.format.date', name='Formatted Date', params={
+      local outputs = super.outputs,
+      WFDate: sc.Val('${Provided Input}', outputs),
       WFDateFormat: 'yyyy-MM-dd HH:mm',
       WFDateFormatStyle: 'Custom',
       WFISO8601IncludeTime: true,
       WFTimeFormatStyle: 'Long',
     }),
 
-    sc.Action('is.workflow.actions.ask', {
-      UUID: '1671F713-DC49-4D7C-9A15-3BF2F559587A',
-      WFAskActionDefaultAnswer: {
-        Value: {
-          attachmentsByRange: {
-            '{0, 1}': {
-              Type: 'Variable',
-              VariableName: 'Med',
-            },
-          },
-          string: '￼',
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
+    sc.Action('is.workflow.actions.ask', name='Provided Input', params={
+      local outputs = super.outputs,
+      WFAskActionDefaultAnswer: sc.Val('${Vars.Med}', outputs),
       WFAskActionPrompt: {
         Value: {
           attachmentsByRange: {
-            '{13, 1}': {
-              OutputName: 'Formatted Date',
-              OutputUUID: '43212188-F76D-40D5-A3F5-FF573F34800C',
-              Type: 'ActionOutput',
-            },
+            '{13, 1}': sc.Ref(outputs, 'Formatted Date'),
           },
           string: 'Record dose? ￼',
         },
@@ -278,49 +174,19 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.setvariable', {
-      WFInput: {
-        Value: {
-          OutputName: 'Provided Input',
-          OutputUUID: '1671F713-DC49-4D7C-9A15-3BF2F559587A',
-          Type: 'ActionOutput',
-        },
-        WFSerializationType: 'WFTextTokenAttachment',
-      },
+      local outputs = super.outputs,
+      WFInput: sc.Ref(outputs, 'Provided Input', att=true),
       WFVariableName: 'Med',
     }),
 
-    sc.Action('is.workflow.actions.urlencode', {
-      CustomOutputName: 'dataRange',
-      UUID: '14227708-44D7-4EC8-AEAB-71AA558092E8',
-      WFInput: {
-        Value: {
-          attachmentsByRange: {
-            '{0, 1}': {
-              Aggrandizements: [
-                {
-                  CoercionItemClass: 'WFDictionaryContentItem',
-                  Type: 'WFCoercionVariableAggrandizement',
-                },
-                {
-                  DictionaryKey: 'dataRange',
-                  Type: 'WFDictionaryValueVariableAggrandizement',
-                },
-              ],
-              OutputName: 'Value',
-              OutputUUID: '57353387-EAC4-4E94-BC79-77002F6DC116',
-              Type: 'ActionOutput',
-            },
-          },
-          string: '￼',
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
+    sc.Action('is.workflow.actions.urlencode', name='dataRange', params={
+      local outputs = super.outputs,
+      WFInput: sc.Val('${Value}', outputs),
     }),
 
-    sc.Action('is.workflow.actions.downloadurl', {
+    sc.Action('is.workflow.actions.downloadurl', name='Contents of URL', params={
       local outputs = super.outputs,
       ShowHeaders: true,
-      UUID: '4AB123A5-1C39-42B0-9264-BBC6DFB7DE2F',
       WFFormValues: {
         Value: {
           WFDictionaryFieldValueItems: [],
@@ -333,12 +199,7 @@ local sc = import 'shortcuts.libsonnet';
           WFDictionaryFieldValueItems: [
             {
               WFItemType: 0,
-              WFKey: {
-                Value: {
-                  string: 'Authorization',
-                },
-                WFSerializationType: 'WFTextTokenString',
-              },
+              WFKey: sc.Val('Authorization'),
               WFValue: sc.Val('${Google OAuth}', outputs),
             },
           ],
@@ -351,12 +212,7 @@ local sc = import 'shortcuts.libsonnet';
           WFDictionaryFieldValueItems: [
             {
               WFItemType: 2,
-              WFKey: {
-                Value: {
-                  string: 'values',
-                },
-                WFSerializationType: 'WFTextTokenString',
-              },
+              WFKey: sc.Val('values'),
               WFValue: {
                 Value: [
                   {
@@ -365,34 +221,11 @@ local sc = import 'shortcuts.libsonnet';
                       Value: [
                         {
                           WFItemType: 0,
-                          WFValue: {
-                            Value: {
-                              attachmentsByRange: {
-                                '{0, 1}': {
-                                  OutputName: 'Formatted Date',
-                                  OutputUUID: '43212188-F76D-40D5-A3F5-FF573F34800C',
-                                  Type: 'ActionOutput',
-                                },
-                              },
-                              string: '￼',
-                            },
-                            WFSerializationType: 'WFTextTokenString',
-                          },
+                          WFValue: sc.Val('${Formatted Date}', outputs),
                         },
                         {
                           WFItemType: 0,
-                          WFValue: {
-                            Value: {
-                              attachmentsByRange: {
-                                '{0, 1}': {
-                                  Type: 'Variable',
-                                  VariableName: 'Med',
-                                },
-                              },
-                              string: '￼',
-                            },
-                            WFSerializationType: 'WFTextTokenString',
-                          },
+                          WFValue: sc.Val('${Vars.Med}', outputs),
                         },
                       ],
                       WFSerializationType: 'WFArrayParameterState',
@@ -410,11 +243,7 @@ local sc = import 'shortcuts.libsonnet';
         Value: {
           attachmentsByRange: {
             '{0, 1}': sc.Ref(outputs, 'URL'),
-            '{2, 1}': {
-              OutputName: 'dataRange',
-              OutputUUID: '14227708-44D7-4EC8-AEAB-71AA558092E8',
-              Type: 'ActionOutput',
-            },
+            '{2, 1}': sc.Ref(outputs, 'dataRange'),
           },
           string: '￼/￼:append?valueInputOption=USER_ENTERED',
         },
@@ -423,23 +252,11 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.alert', {
-      WFAlertActionTitle: {
-        Value: {
-          attachmentsByRange: {
-            '{0, 1}': {
-              OutputName: 'Contents of URL',
-              OutputUUID: '4AB123A5-1C39-42B0-9264-BBC6DFB7DE2F',
-              Type: 'ActionOutput',
-            },
-          },
-          string: '￼',
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
+      local outputs = super.outputs,
+      WFAlertActionTitle: sc.Val('${Contents of URL}', outputs),
     }),
 
     sc.Action('is.workflow.actions.runworkflow', {
-      UUID: 'F004584E-2AC9-4A66-A039-0C5A8255D4BE',
       WFWorkflow: {
         isSelf: false,
         workflowIdentifier: 'D5DEBDFA-5540-4CBE-A707-122DDBF6E907',
@@ -492,8 +309,7 @@ local sc = import 'shortcuts.libsonnet';
       },
     }),
 
-    sc.Action('is.workflow.actions.format.date', {
-      UUID: 'B1E271A1-E39F-464A-AEF5-32DCDBCB756A',
+    sc.Action('is.workflow.actions.format.date', name='Formatted Date', params={
       WFDate: {
         Value: {
           attachmentsByRange: {
@@ -523,86 +339,28 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.alert', {
-      WFAlertActionTitle: {
-        Value: {
-          attachmentsByRange: {
-            '{0, 1}': {
-              OutputName: 'Formatted Date',
-              OutputUUID: 'B1E271A1-E39F-464A-AEF5-32DCDBCB756A',
-              Type: 'ActionOutput',
-            },
-          },
-          string: '￼',
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
+      local outputs = super.outputs,
+      WFAlertActionTitle: sc.Val('${Formatted Date}', outputs),
     }),
 
-    sc.Action('is.workflow.actions.ask', {
-      UUID: '3CF87CAB-7F31-4867-B6AC-3CD889F413BC',
-      WFAskActionDefaultAnswerDateAndTime: {
-        Value: {
-          attachmentsByRange: {
-            '{0, 1}': {
-              OutputName: 'Formatted Date',
-              OutputUUID: 'B1E271A1-E39F-464A-AEF5-32DCDBCB756A',
-              Type: 'ActionOutput',
-            },
-          },
-          string: '￼',
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
-      WFAskActionDefaultAnswerTime: {
-        Value: {
-          attachmentsByRange: {
-            '{0, 1}': {
-              OutputName: 'Formatted Date',
-              OutputUUID: 'B1E271A1-E39F-464A-AEF5-32DCDBCB756A',
-              Type: 'ActionOutput',
-            },
-          },
-          string: '￼',
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
+    sc.Action('is.workflow.actions.ask', name='Provided Input', params={
+      local outputs = super.outputs,
+      WFAskActionDefaultAnswerDateAndTime: sc.Val('${Formatted Date}', outputs),
+      WFAskActionDefaultAnswerTime: sc.Val('${Formatted Date}', outputs),
       WFAskActionPrompt: 'Alarm time',
       WFInputType: 'Time',
     }),
 
     sc.Action('com.apple.mobiletimer-framework.MobileTimerIntents.MTCreateAlarmIntent', {
+      local outputs = super.outputs,
       AppIntentDescriptor: {
         AppIntentIdentifier: 'CreateAlarmIntent',
         BundleIdentifier: 'com.apple.clock',
         Name: 'Clock',
         TeamIdentifier: '0000000000',
       },
-      UUID: '9414FB3E-D730-48FA-B8A0-BBA6F6D1E30B',
-      dateComponents: {
-        Value: {
-          attachmentsByRange: {
-            '{0, 1}': {
-              OutputName: 'Provided Input',
-              OutputUUID: '3CF87CAB-7F31-4867-B6AC-3CD889F413BC',
-              Type: 'ActionOutput',
-            },
-          },
-          string: '￼',
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
-      label: {
-        Value: {
-          attachmentsByRange: {
-            '{0, 1}': {
-              Type: 'Variable',
-              VariableName: 'Med',
-            },
-          },
-          string: '￼',
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
+      dateComponents: sc.Val('${Provided Input}', outputs),
+      label: sc.Val('${Vars.Med}', outputs),
       repeatSchedule: {
         displayString: 'Never',
         value: 0,
@@ -615,21 +373,14 @@ local sc = import 'shortcuts.libsonnet';
       WFMenuItemTitle: 'No alarm please.',
     }),
 
-    sc.Action('is.workflow.actions.choosefrommenu', {
+    sc.Action('is.workflow.actions.choosefrommenu', name='Menu Result', params={
       GroupingIdentifier: '0937D1D5-A680-418A-AD7E-0EE31DBAA43B',
-      UUID: '389490C3-0427-4320-A79C-E3605929C7BD',
       WFControlFlowMode: 2,
     }),
 
     sc.Action('is.workflow.actions.detect.date', {
-      WFInput: {
-        Value: {
-          OutputName: 'Menu Result',
-          OutputUUID: '389490C3-0427-4320-A79C-E3605929C7BD',
-          Type: 'ActionOutput',
-        },
-        WFSerializationType: 'WFTextTokenAttachment',
-      },
+      local outputs = super.outputs,
+      WFInput: sc.Ref(outputs, 'Menu Result', att=true),
     }),
 
   ]),

@@ -1,4 +1,4 @@
-id: 3-empty-params
+id: empty-params
 language: jsonnet
 
 rule:

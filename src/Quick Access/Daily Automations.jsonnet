@@ -15,40 +15,17 @@ local sc = import 'shortcuts.libsonnet';
       local outputs = super.outputs,
       GroupingIdentifier: 'B4F3CD09-4BC6-4CBD-B8AC-2DC99998DBF2',
       WFControlFlowMode: 0,
-      WFInput: {
-        Value: sc.Ref(outputs, 'My Shortcuts'),
-        WFSerializationType: 'WFTextTokenAttachment',
-      },
+      WFInput: sc.Ref(outputs, 'My Shortcuts', att=true),
     }),
 
     sc.Action('is.workflow.actions.runworkflow', {
-      UUID: 'BE981082-DE33-4103-81E7-3841C8ECFD19',
-      WFInput: {
-        Value: {
-          Type: 'Variable',
-          VariableName: 'Repeat Item',
-        },
-        WFSerializationType: 'WFTextTokenAttachment',
-      },
-      WFWorkflow: {
-        Value: {
-          Type: 'Variable',
-          VariableName: 'Repeat Item',
-        },
-        WFSerializationType: 'WFTextTokenAttachment',
-      },
-      WFWorkflowName: {
-        Value: {
-          Type: 'Variable',
-          VariableName: 'Repeat Item',
-        },
-        WFSerializationType: 'WFTextTokenAttachment',
-      },
+      WFInput: sc.Ref(outputs, 'Vars.Repeat Item', att=true),
+      WFWorkflow: sc.Ref(outputs, 'Vars.Repeat Item', att=true),
+      WFWorkflowName: sc.Ref(outputs, 'Vars.Repeat Item', att=true),
     }),
 
     sc.Action('is.workflow.actions.repeat.each', {
       GroupingIdentifier: 'B4F3CD09-4BC6-4CBD-B8AC-2DC99998DBF2',
-      UUID: 'BACD74D6-7EB6-4E23-84B5-BDCC69BBD6F4',
       WFControlFlowMode: 2,
     }),
 

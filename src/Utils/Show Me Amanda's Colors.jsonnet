@@ -10,11 +10,7 @@ local sc = import 'shortcuts.libsonnet';
 
     sc.Action('is.workflow.actions.openurl', {
       local outputs = super.outputs,
-      UUID: 'CA8D8206-2020-4B4A-8925-B89A33BE494D',
-      WFInput: {
-        Value: sc.Ref(outputs, 'Value'),
-        WFSerializationType: 'WFTextTokenAttachment',
-      },
+      WFInput: sc.Ref(outputs, 'Value', att=true),
     }),
 
   ]),

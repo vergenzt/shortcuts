@@ -5,18 +5,14 @@ local sc = import 'shortcuts.libsonnet';
   WFWorkflowActions: sc.ActionsSeq([
 
     sc.Action('is.workflow.actions.number', {
-      UUID: '24E1A9FB-BFC9-49E6-A403-654F64E342FF',
       WFNumberActionNumber: '42',
     }),
 
     sc.Action('is.workflow.actions.gettext', {
-      UUID: '6F9CA6CB-2E6D-46BA-A52A-14F846971F17',
       WFTextActionText: {
         Value: {
           attachmentsByRange: {
-            '{8, 1}': {
-              Type: 'ExtensionInput',
-            },
+            '{8, 1}': sc.Ref(outputs, 'Shortcut Input'),
           },
           string: 'Foo bar ￼',
         },
@@ -25,66 +21,30 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.dictionary', {
-      UUID: '7B211891-BAA3-4610-A33E-CD17A628F428',
       WFItems: {
         Value: {
           WFDictionaryFieldValueItems: [
             {
               WFItemType: 0,
-              WFKey: {
-                Value: {
-                  string: 'string',
-                },
-                WFSerializationType: 'WFTextTokenString',
-              },
-              WFValue: {
-                Value: {
-                  string: 'value',
-                },
-                WFSerializationType: 'WFTextTokenString',
-              },
+              WFKey: sc.Val('string'),
+              WFValue: sc.Val('value'),
             },
             {
               WFItemType: 3,
-              WFKey: {
-                Value: {
-                  string: 'number',
-                },
-                WFSerializationType: 'WFTextTokenString',
-              },
-              WFValue: {
-                Value: {
-                  string: '5',
-                },
-                WFSerializationType: 'WFTextTokenString',
-              },
+              WFKey: sc.Val('number'),
+              WFValue: sc.Val('5'),
             },
             {
               WFItemType: 1,
-              WFKey: {
-                Value: {
-                  string: 'dict',
-                },
-                WFSerializationType: 'WFTextTokenString',
-              },
+              WFKey: sc.Val('dict'),
               WFValue: {
                 Value: {
                   Value: {
                     WFDictionaryFieldValueItems: [
                       {
                         WFItemType: 0,
-                        WFKey: {
-                          Value: {
-                            string: 'bliz',
-                          },
-                          WFSerializationType: 'WFTextTokenString',
-                        },
-                        WFValue: {
-                          Value: {
-                            string: 'fah',
-                          },
-                          WFSerializationType: 'WFTextTokenString',
-                        },
+                        WFKey: sc.Val('bliz'),
+                        WFValue: sc.Val('fah'),
                       },
                     ],
                   },
@@ -95,12 +55,7 @@ local sc = import 'shortcuts.libsonnet';
             },
             {
               WFItemType: 2,
-              WFKey: {
-                Value: {
-                  string: '',
-                },
-                WFSerializationType: 'WFTextTokenString',
-              },
+              WFKey: sc.Val(''),
               WFValue: {
                 Value: [
                   'foo',
@@ -113,12 +68,7 @@ local sc = import 'shortcuts.libsonnet';
                         'baz',
                         {
                           WFItemType: 3,
-                          WFValue: {
-                            Value: {
-                              string: '0',
-                            },
-                            WFSerializationType: 'WFTextTokenString',
-                          },
+                          WFValue: sc.Val('0'),
                         },
                         {
                           WFItemType: 4,
@@ -135,12 +85,7 @@ local sc = import 'shortcuts.libsonnet';
                                 WFDictionaryFieldValueItems: [
                                   {
                                     WFItemType: 2,
-                                    WFKey: {
-                                      Value: {
-                                        string: 'fizz',
-                                      },
-                                      WFSerializationType: 'WFTextTokenString',
-                                    },
+                                    WFKey: sc.Val('fizz'),
                                     WFValue: {
                                       Value: [
                                         'buzz',

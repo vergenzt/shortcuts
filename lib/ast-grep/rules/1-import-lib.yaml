@@ -1,4 +1,4 @@
-id: 1-import-lib
+id: import-lib
 language: jsonnet
 
 rule:

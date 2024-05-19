@@ -1,0 +1,76 @@
+id: string-interps
+language: jsonnet
+
+rule:
+  kind: object
+  pattern: $X
+
+rewriters:
+
+- id: &1 val-string-lit
+  rule:
+    pattern: >-
+      {
+        Value: { string: $STR, },
+        WFSerializationType: 'WFTextTokenString',
+      }
+  fix: >-
+    sc.Val($STR)
+
+- id: &2 val-string-solo-var
+  rule:
+    pattern: >-
+      {
+        Value: {
+          attachmentsByRange: {
+            '{0, 1}': sc.Ref(outputs, '$NAME'),
+          },
+          string: '￼',
+        },
+        WFSerializationType: 'WFTextTokenString',
+      }
+  fix: >-
+    sc.Val('${$NAME}', outputs)
+
+- id: &3 ref-input
+  rule:
+    pattern: >-
+      {
+        Type: 'ExtensionInput',
+      }
+  fix: >-
+    sc.Ref(outputs, 'Shortcut Input')
+
+- id: &4 ref-var
+  rule:
+    pattern: >-
+      {
+        Type: 'Variable',
+        VariableName: '$NAME',
+      }
+  fix: >-
+    sc.Ref(outputs, 'Vars.$NAME')
+
+- id: &5 ref-att
+  rule:
+    pattern: >-
+      {
+        Value: sc.Ref($$$ARGS),
+        WFSerializationType: 'WFTextTokenAttachment',
+      }
+  fix: >-
+    sc.Ref($$$ARGS, att=true)
+
+transform:
+  X_RE:
+    rewrite:
+      source: $X
+      rewriters:
+      - *1
+      - *2
+      - *3
+      - *4
+      - *5
+
+fix: >-
+  $X_RE

@@ -10,14 +10,10 @@ local sc = import 'shortcuts.libsonnet';
       local outputs = super.outputs,
       GroupingIdentifier: '3C39F304-C709-4042-8340-B48B1B383EB8',
       WFControlFlowMode: 0,
-      WFInput: {
-        Value: sc.Ref(outputs, 'My Shortcuts'),
-        WFSerializationType: 'WFTextTokenAttachment',
-      },
+      WFInput: sc.Ref(outputs, 'My Shortcuts', att=true),
     }),
 
     sc.Action('is.workflow.actions.gettext', {
-      UUID: 'D8381305-B35F-4463-A497-3F7525560D01',
       WFTextActionText: {
         Value: {
           attachmentsByRange: {
@@ -31,10 +27,7 @@ local sc = import 'shortcuts.libsonnet';
               Type: 'Variable',
               VariableName: 'Repeat Item',
             },
-            '{2, 1}': {
-              Type: 'Variable',
-              VariableName: 'Repeat Item',
-            },
+            '{2, 1}': sc.Ref(outputs, 'Vars.Repeat Item'),
           },
           string: '￼/￼',
         },
@@ -42,38 +35,19 @@ local sc = import 'shortcuts.libsonnet';
       },
     }),
 
-    sc.Action('is.workflow.actions.repeat.each', {
+    sc.Action('is.workflow.actions.repeat.each', name='Repeat Results', params={
       GroupingIdentifier: '3C39F304-C709-4042-8340-B48B1B383EB8',
-      UUID: 'DC1645A2-F41F-4792-82B9-63D27E55753E',
       WFControlFlowMode: 2,
     }),
 
-    sc.Action('is.workflow.actions.text.combine', {
-      UUID: '4ED7BCA7-73D1-4E6F-A99F-7B0DF64A5B0C',
-      text: {
-        Value: {
-          OutputName: 'Repeat Results',
-          OutputUUID: 'DC1645A2-F41F-4792-82B9-63D27E55753E',
-          Type: 'ActionOutput',
-        },
-        WFSerializationType: 'WFTextTokenAttachment',
-      },
+    sc.Action('is.workflow.actions.text.combine', name='Combined Text', params={
+      local outputs = super.outputs,
+      text: sc.Ref(outputs, 'Repeat Results', att=true),
     }),
 
     sc.Action('is.workflow.actions.output', {
-      WFOutput: {
-        Value: {
-          attachmentsByRange: {
-            '{0, 1}': {
-              OutputName: 'Combined Text',
-              OutputUUID: '4ED7BCA7-73D1-4E6F-A99F-7B0DF64A5B0C',
-              Type: 'ActionOutput',
-            },
-          },
-          string: '￼',
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
+      local outputs = super.outputs,
+      WFOutput: sc.Val('${Combined Text}', outputs),
     }),
 
   ]),

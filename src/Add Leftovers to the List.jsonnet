@@ -25,7 +25,6 @@ local sc = import 'shortcuts.libsonnet';
 
     sc.Action('is.workflow.actions.addnewreminder', {
       local outputs = super.outputs,
-      UUID: '1DC33832-5163-4CF7-85F8-4939EAFDBE96',
       WFAlertCustomTime: sc.Val('${Adjusted Date}', outputs),
       WFAlertEnabled: 'Alert',
       WFCalendarDescriptor: {

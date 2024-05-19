@@ -5,7 +5,6 @@ local sc = import 'shortcuts.libsonnet';
   WFWorkflowActions: sc.ActionsSeq([
 
     sc.Action('is.workflow.actions.runworkflow', {
-      UUID: '4497936E-1C1E-4C1A-B5CB-4CE2F5C6D206',
       WFWorkflow: {
         isSelf: false,
         workflowIdentifier: '410F7B2D-3951-4BAE-A70D-514A8986662E',
@@ -14,31 +13,25 @@ local sc = import 'shortcuts.libsonnet';
       WFWorkflowName: 'Google OAuth',
     }),
 
-    sc.Action('dk.simonbs.DataJar.GetValueIntent', {
-      UUID: 'AA396E6A-E9EE-4534-BA6E-1D6EF716A83C',
+    sc.Action('dk.simonbs.DataJar.GetValueIntent', name='Value', params={
       keyPath: 'jira-config',
     }),
 
     sc.Action('is.workflow.actions.url', {
-      UUID: '1066C8E0-90E0-4FC0-9B25-BC32FFE55A8F',
+      local outputs = super.outputs,
       WFURLActionURL: {
         Value: {
           attachmentsByRange: {
-            '{46, 1}': {
-              Aggrandizements: [
-                {
-                  CoercionItemClass: 'WFDictionaryContentItem',
-                  Type: 'WFCoercionVariableAggrandizement',
-                },
-                {
-                  DictionaryKey: 'spreadsheet_id',
-                  Type: 'WFDictionaryValueVariableAggrandizement',
-                },
-              ],
-              OutputName: 'Value',
-              OutputUUID: 'AA396E6A-E9EE-4534-BA6E-1D6EF716A83C',
-              Type: 'ActionOutput',
-            },
+            '{46, 1}': sc.Ref(outputs, 'Value', aggs=[
+              {
+                CoercionItemClass: 'WFDictionaryContentItem',
+                Type: 'WFCoercionVariableAggrandizement',
+              },
+              {
+                DictionaryKey: 'spreadsheet_id',
+                Type: 'WFDictionaryValueVariableAggrandizement',
+              },
+            ]),
           },
           string: 'https://sheets.googleapis.com/v4/spreadsheets/￼/values',
         },
@@ -46,34 +39,23 @@ local sc = import 'shortcuts.libsonnet';
       },
     }),
 
-    sc.Action('dk.simonbs.DataJar.GetValueIntent', {
-      CustomOutputName: 'Filters by First Issue Age',
-      UUID: '5B3A3F04-4964-453A-B343-0F4736391F37',
+    sc.Action('dk.simonbs.DataJar.GetValueIntent', name='Filters by First Issue Age', params={
       keyPath: 'jira-cache.Filters & Issues by First Issue Age',
     }),
 
     sc.Action('is.workflow.actions.repeat.each', {
+      local outputs = super.outputs,
       GroupingIdentifier: 'D61B3F28-18FE-47C0-87CB-8F871024AFE9',
       WFControlFlowMode: 0,
-      WFInput: {
-        Value: {
-          Aggrandizements: [
-            {
-              CoercionItemClass: 'WFDictionaryContentItem',
-              Type: 'WFCoercionVariableAggrandizement',
-            },
-          ],
-          OutputName: 'Filters by First Issue Age',
-          OutputUUID: '5B3A3F04-4964-453A-B343-0F4736391F37',
-          Type: 'ActionOutput',
+      WFInput: sc.Ref(outputs, 'Filters by First Issue Age', aggs=[
+        {
+          CoercionItemClass: 'WFDictionaryContentItem',
+          Type: 'WFCoercionVariableAggrandizement',
         },
-        WFSerializationType: 'WFTextTokenAttachment',
-      },
+      ], att=true),
     }),
 
-    sc.Action('is.workflow.actions.detect.dictionary', {
-      CustomOutputName: 'Filter Description Dictionary',
-      UUID: '0FE23374-3316-4C7B-913C-DB6FBC3FBA14',
+    sc.Action('is.workflow.actions.detect.dictionary', name='Filter Description Dictionary', params={
       WFInput: {
         Value: {
           Aggrandizements: [
@@ -115,61 +97,30 @@ local sc = import 'shortcuts.libsonnet';
       },
     }),
 
-    sc.Action('is.workflow.actions.dictionary', {
-      UUID: 'EBB3E40C-3309-4FE9-B471-8238CAE72D50',
+    sc.Action('is.workflow.actions.dictionary', name='Dictionary', params={
       WFItems: {
         Value: {
           WFDictionaryFieldValueItems: [
             {
               WFItemType: 0,
-              WFKey: {
-                Value: {
-                  string: 'method',
-                },
-                WFSerializationType: 'WFTextTokenString',
-              },
-              WFValue: {
-                Value: {
-                  string: 'POST',
-                },
-                WFSerializationType: 'WFTextTokenString',
-              },
+              WFKey: sc.Val('method'),
+              WFValue: sc.Val('POST'),
             },
             {
               WFItemType: 0,
-              WFKey: {
-                Value: {
-                  string: 'path',
-                },
-                WFSerializationType: 'WFTextTokenString',
-              },
-              WFValue: {
-                Value: {
-                  string: 'jql/match',
-                },
-                WFSerializationType: 'WFTextTokenString',
-              },
+              WFKey: sc.Val('path'),
+              WFValue: sc.Val('jql/match'),
             },
             {
               WFItemType: 1,
-              WFKey: {
-                Value: {
-                  string: 'json',
-                },
-                WFSerializationType: 'WFTextTokenString',
-              },
+              WFKey: sc.Val('json'),
               WFValue: {
                 Value: {
                   Value: {
                     WFDictionaryFieldValueItems: [
                       {
                         WFItemType: 2,
-                        WFKey: {
-                          Value: {
-                            string: 'issueIds',
-                          },
-                          WFSerializationType: 'WFTextTokenString',
-                        },
+                        WFKey: sc.Val('issueIds'),
                         WFValue: {
                           Value: [
                             {
@@ -203,12 +154,7 @@ local sc = import 'shortcuts.libsonnet';
                       },
                       {
                         WFItemType: 2,
-                        WFKey: {
-                          Value: {
-                            string: 'jqls',
-                          },
-                          WFSerializationType: 'WFTextTokenString',
-                        },
+                        WFKey: sc.Val('jqls'),
                         WFValue: {
                           Value: [
                             {
@@ -253,17 +199,9 @@ local sc = import 'shortcuts.libsonnet';
       },
     }),
 
-    sc.Action('is.workflow.actions.runworkflow', {
-      CustomOutputName: 'JQL Matches',
-      UUID: '549E2EE9-7E5A-4EDE-8BCF-ED28146943AB',
-      WFInput: {
-        Value: {
-          OutputName: 'Dictionary',
-          OutputUUID: 'EBB3E40C-3309-4FE9-B471-8238CAE72D50',
-          Type: 'ActionOutput',
-        },
-        WFSerializationType: 'WFTextTokenAttachment',
-      },
+    sc.Action('is.workflow.actions.runworkflow', name='JQL Matches', params={
+      local outputs = super.outputs,
+      WFInput: sc.Ref(outputs, 'Dictionary', att=true),
       WFWorkflow: {
         isSelf: false,
         workflowIdentifier: 'B245F907-CA3B-4273-B2B7-BE1A4BAE3F79',
@@ -272,90 +210,47 @@ local sc = import 'shortcuts.libsonnet';
       WFWorkflowName: 'Jira API',
     }),
 
-    sc.Action('ke.bou.GizmoPack.QueryJSONIntent', {
-      UUID: '8155851A-DB07-4452-8C78-BAEBAE5567AB',
-      input: {
-        Value: {
-          Aggrandizements: [
-            {
-              CoercionItemClass: 'WFDictionaryContentItem',
-              Type: 'WFCoercionVariableAggrandizement',
-            },
-          ],
-          OutputName: 'JQL Matches',
-          OutputUUID: '549E2EE9-7E5A-4EDE-8BCF-ED28146943AB',
-          Type: 'ActionOutput',
+    sc.Action('ke.bou.GizmoPack.QueryJSONIntent', name='Result', params={
+      local outputs = super.outputs,
+      input: sc.Ref(outputs, 'JQL Matches', aggs=[
+        {
+          CoercionItemClass: 'WFDictionaryContentItem',
+          Type: 'WFCoercionVariableAggrandizement',
         },
-        WFSerializationType: 'WFTextTokenAttachment',
-      },
+      ], att=true),
       jqQuery: '.matches[].matchedIssues[]',
       queryType: 'jq',
     }),
 
     sc.Action('is.workflow.actions.conditional', {
+      local outputs = super.outputs,
       GroupingIdentifier: 'DDA9A0FE-3ABA-4A9B-A939-1777995CE8E9',
       WFCondition: 100,
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: {
-          Value: {
-            Aggrandizements: [
-              {
-                CoercionItemClass: 'WFNumberContentItem',
-                Type: 'WFCoercionVariableAggrandizement',
-              },
-            ],
-            OutputName: 'Result',
-            OutputUUID: '8155851A-DB07-4452-8C78-BAEBAE5567AB',
-            Type: 'ActionOutput',
+        Variable: sc.Ref(outputs, 'Result', aggs=[
+          {
+            CoercionItemClass: 'WFNumberContentItem',
+            Type: 'WFCoercionVariableAggrandizement',
           },
-          WFSerializationType: 'WFTextTokenAttachment',
-        },
+        ], att=true),
       },
     }),
 
-    sc.Action('is.workflow.actions.dictionary', {
-      UUID: '5F1412EE-D0E1-4722-8E9B-DBB92C30F0F1',
+    sc.Action('is.workflow.actions.dictionary', name='Dictionary', params={
+      local outputs = super.outputs,
       WFItems: {
         Value: {
           WFDictionaryFieldValueItems: [
             {
               WFItemType: 0,
-              WFKey: {
-                Value: {
-                  string: 'review_prompt',
-                },
-                WFSerializationType: 'WFTextTokenString',
-              },
-              WFValue: {
-                Value: {
-                  attachmentsByRange: {
-                    '{0, 1}': {
-                      Aggrandizements: [
-                        {
-                          DictionaryKey: 'prompt',
-                          Type: 'WFDictionaryValueVariableAggrandizement',
-                        },
-                      ],
-                      OutputName: 'Filter Description Dictionary',
-                      OutputUUID: '0FE23374-3316-4C7B-913C-DB6FBC3FBA14',
-                      Type: 'ActionOutput',
-                    },
-                  },
-                  string: '￼',
-                },
-                WFSerializationType: 'WFTextTokenString',
-              },
+              WFKey: sc.Val('review_prompt'),
+              WFValue: sc.Val('${Filter Description Dictionary}', outputs),
             },
             {
               WFItemType: 0,
-              WFKey: {
-                Value: {
-                  string: 'progress_info',
-                },
-                WFSerializationType: 'WFTextTokenString',
-              },
+              WFKey: sc.Val('progress_info'),
               WFValue: {
                 Value: {
                   attachmentsByRange: {
@@ -373,10 +268,7 @@ local sc = import 'shortcuts.libsonnet';
                       Type: 'Variable',
                       VariableName: 'Repeat Item',
                     },
-                    '{3, 1}': {
-                      Type: 'Variable',
-                      VariableName: 'Repeat Index 2',
-                    },
+                    '{3, 1}': sc.Ref(outputs, 'Vars.Repeat Index 2'),
                     '{5, 1}': {
                       Aggrandizements: [
                         {
@@ -403,41 +295,16 @@ local sc = import 'shortcuts.libsonnet';
       },
     }),
 
-    sc.Action('is.workflow.actions.setvalueforkey', {
-      UUID: '3CA9DD17-9B12-4EEB-993F-6F1D0A4A747E',
-      WFDictionary: {
-        Value: {
-          OutputName: 'Dictionary',
-          OutputUUID: '5F1412EE-D0E1-4722-8E9B-DBB92C30F0F1',
-          Type: 'ActionOutput',
-        },
-        WFSerializationType: 'WFTextTokenAttachment',
-      },
+    sc.Action('is.workflow.actions.setvalueforkey', name='Dictionary', params={
+      local outputs = super.outputs,
+      WFDictionary: sc.Ref(outputs, 'Dictionary', att=true),
       WFDictionaryKey: 'filter',
-      WFDictionaryValue: {
-        Value: {
-          attachmentsByRange: {
-            '{0, 1}': {
-              Type: 'Variable',
-              VariableName: 'Repeat Item',
-            },
-          },
-          string: '￼',
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
+      WFDictionaryValue: sc.Val('${Vars.Repeat Item}', outputs),
     }),
 
-    sc.Action('is.workflow.actions.setvalueforkey', {
-      UUID: 'C060FACB-7EC7-4CA8-87C3-01493C679DEF',
-      WFDictionary: {
-        Value: {
-          OutputName: 'Dictionary',
-          OutputUUID: '3CA9DD17-9B12-4EEB-993F-6F1D0A4A747E',
-          Type: 'ActionOutput',
-        },
-        WFSerializationType: 'WFTextTokenAttachment',
-      },
+    sc.Action('is.workflow.actions.setvalueforkey', name='Dictionary', params={
+      local outputs = super.outputs,
+      WFDictionary: sc.Ref(outputs, 'Dictionary', att=true),
       WFDictionaryKey: 'issue',
       WFDictionaryValue: {
         Value: {
@@ -460,15 +327,8 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.runworkflow', {
-      UUID: '358CCB0F-EE50-4B64-8299-12EA1FE50BA3',
-      WFInput: {
-        Value: {
-          OutputName: 'Dictionary',
-          OutputUUID: 'C060FACB-7EC7-4CA8-87C3-01493C679DEF',
-          Type: 'ActionOutput',
-        },
-        WFSerializationType: 'WFTextTokenAttachment',
-      },
+      local outputs = super.outputs,
+      WFInput: sc.Ref(outputs, 'Dictionary', att=true),
       WFWorkflow: {
         isSelf: false,
         workflowIdentifier: 'DE45228B-5A30-4A30-AF37-DA40929C57C2',
@@ -478,37 +338,28 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.conditional', {
+      local outputs = super.outputs,
       GroupingIdentifier: 'A334B26F-D55D-429E-9239-81E9A45C3671',
       WFCondition: 101,
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: {
-          Value: {
-            Aggrandizements: [
-              {
-                DictionaryKey: 'skip_add_connected_issues',
-                Type: 'WFDictionaryValueVariableAggrandizement',
-              },
-            ],
-            OutputName: 'Filter Description Dictionary',
-            OutputUUID: '0FE23374-3316-4C7B-913C-DB6FBC3FBA14',
-            Type: 'ActionOutput',
+        Variable: sc.Ref(outputs, 'Filter Description Dictionary', aggs=[
+          {
+            DictionaryKey: 'skip_add_connected_issues',
+            Type: 'WFDictionaryValueVariableAggrandizement',
           },
-          WFSerializationType: 'WFTextTokenAttachment',
-        },
+        ], att=true),
       },
     }),
 
     sc.Action('is.workflow.actions.conditional', {
       GroupingIdentifier: 'A334B26F-D55D-429E-9239-81E9A45C3671',
-      UUID: '34834033-D933-4DDA-A8C6-3E7765568D4C',
       WFControlFlowMode: 2,
     }),
 
     sc.Action('is.workflow.actions.conditional', {
       GroupingIdentifier: 'DDA9A0FE-3ABA-4A9B-A939-1777995CE8E9',
-      UUID: '94339012-69AA-4BC5-A87A-0E1ACC0FD160',
       WFControlFlowMode: 2,
     }),
 

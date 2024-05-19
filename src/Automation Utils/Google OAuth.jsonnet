@@ -10,10 +10,7 @@ local sc = import 'shortcuts.libsonnet';
 
     sc.Action('ke.bou.GizmoPack.QueryJSONIntent', name='existing unexpired token', params={
       local outputs = super.outputs,
-      input: {
-        Value: sc.Ref(outputs, 'config'),
-        WFSerializationType: 'WFTextTokenAttachment',
-      },
+      input: sc.Ref(outputs, 'config', att=true),
       jqQuery: 'if .token.expires_at > (now | todate) and .token.access_token then .token else empty end',
       queryType: 'jq',
     }),
@@ -25,16 +22,12 @@ local sc = import 'shortcuts.libsonnet';
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: {
-          Value: sc.Ref(outputs, 'existing unexpired token'),
-          WFSerializationType: 'WFTextTokenAttachment',
-        },
+        Variable: sc.Ref(outputs, 'existing unexpired token', att=true),
       },
     }),
 
     sc.Action('is.workflow.actions.output', {
       local outputs = super.outputs,
-      UUID: 'A039CBB8-A415-4C45-8F41-F48FD5109FFA',
       WFNoOutputSurfaceBehavior: 'Respond',
       WFOutput: {
         Value: {
@@ -69,70 +62,36 @@ local sc = import 'shortcuts.libsonnet';
 
     sc.Action('is.workflow.actions.conditional', {
       GroupingIdentifier: '2A79BC9F-64D3-4E75-9B83-A2D758932D7B',
-      UUID: '47C51576-B96D-4A97-AD0C-0352C33DCF49',
       WFControlFlowMode: 2,
     }),
 
-    sc.Action('ke.bou.GizmoPack.QueryJSONIntent', {
+    sc.Action('ke.bou.GizmoPack.QueryJSONIntent', name='refresh_uri', params={
       local outputs = super.outputs,
-      CustomOutputName: 'refresh_uri',
-      UUID: 'CC3A7B19-F8E9-492A-8449-C67FBC94BAFD',
-      input: {
-        Value: sc.Ref(outputs, 'config'),
-        WFSerializationType: 'WFTextTokenAttachment',
-      },
+      input: sc.Ref(outputs, 'config', att=true),
       jqQuery: 'if .token.expires_at <= (now | todate) and .token.refresh_token then .token_uri + "?" + (.params + (.token | {refresh_token}) + { grant_type: "refresh_token" } | to_entries | map(map(@uri) | join("=")) | join("&")) else empty end',
       queryType: 'jq',
     }),
 
     sc.Action('is.workflow.actions.conditional', {
+      local outputs = super.outputs,
       GroupingIdentifier: '22E62798-BDB0-43EE-BE22-F8F025412072',
       WFCondition: 100,
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: {
-          Value: {
-            OutputName: 'refresh_uri',
-            OutputUUID: 'CC3A7B19-F8E9-492A-8449-C67FBC94BAFD',
-            Type: 'ActionOutput',
-          },
-          WFSerializationType: 'WFTextTokenAttachment',
-        },
+        Variable: sc.Ref(outputs, 'refresh_uri', att=true),
       },
     }),
 
-    sc.Action('is.workflow.actions.downloadurl', {
-      CustomOutputName: 'refresh_result',
-      UUID: 'A365AFC6-4FD4-4082-A035-A5CD21C94068',
-      WFHTTPMethod: 'POST',
-      WFURL: {
-        Value: {
-          attachmentsByRange: {
-            '{0, 1}': {
-              OutputName: 'refresh_uri',
-              OutputUUID: 'CC3A7B19-F8E9-492A-8449-C67FBC94BAFD',
-              Type: 'ActionOutput',
-            },
-          },
-          string: '￼',
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
-    }),
-
-    sc.Action('ke.bou.GizmoPack.QueryJSONIntent', {
+    sc.Action('is.workflow.actions.downloadurl', name='refresh_result', params={
       local outputs = super.outputs,
-      CustomOutputName: 'timestamped_token',
-      UUID: '668D8032-4727-427E-8D4B-EAA5C4BA8941',
-      input: {
-        Value: {
-          OutputName: 'refresh_result',
-          OutputUUID: 'A365AFC6-4FD4-4082-A035-A5CD21C94068',
-          Type: 'ActionOutput',
-        },
-        WFSerializationType: 'WFTextTokenAttachment',
-      },
+      WFHTTPMethod: 'POST',
+      WFURL: sc.Val('${refresh_uri}', outputs),
+    }),
+
+    sc.Action('ke.bou.GizmoPack.QueryJSONIntent', name='timestamped_token', params={
+      local outputs = super.outputs,
+      input: sc.Ref(outputs, 'refresh_result', att=true),
       jqQuery: {
         Value: {
           attachmentsByRange: {
@@ -155,49 +114,23 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('dk.simonbs.DataJar.SetValueIntent', {
-      UUID: '64B1C3FA-FFD4-4D37-8079-99E9EF0434DC',
+      local outputs = super.outputs,
       keyPath: 'google-oauth.token',
       overwriteStrategy: 'alwaysAllow',
-      values: {
-        Value: {
-          OutputName: 'timestamped_token',
-          OutputUUID: '668D8032-4727-427E-8D4B-EAA5C4BA8941',
-          Type: 'ActionOutput',
-        },
-        WFSerializationType: 'WFTextTokenAttachment',
-      },
+      values: sc.Ref(outputs, 'timestamped_token', att=true),
     }),
 
-    sc.Action('ke.bou.GizmoPack.QueryJSONIntent', {
-      UUID: '76635C95-C145-47EC-9FBB-3DD2B9985D90',
-      input: {
-        Value: {
-          OutputName: 'timestamped_token',
-          OutputUUID: '668D8032-4727-427E-8D4B-EAA5C4BA8941',
-          Type: 'ActionOutput',
-        },
-        WFSerializationType: 'WFTextTokenAttachment',
-      },
+    sc.Action('ke.bou.GizmoPack.QueryJSONIntent', name='Result', params={
+      local outputs = super.outputs,
+      input: sc.Ref(outputs, 'timestamped_token', att=true),
       jqQuery: '.token_type + " " + .access_token',
       queryType: 'jq',
     }),
 
     sc.Action('is.workflow.actions.output', {
-      UUID: 'D2234AD6-0857-4053-B57F-6246D4D96D77',
+      local outputs = super.outputs,
       WFNoOutputSurfaceBehavior: 'Respond',
-      WFOutput: {
-        Value: {
-          attachmentsByRange: {
-            '{0, 1}': {
-              OutputName: 'Result',
-              OutputUUID: '76635C95-C145-47EC-9FBB-3DD2B9985D90',
-              Type: 'ActionOutput',
-            },
-          },
-          string: '￼',
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
+      WFOutput: sc.Val('${Result}', outputs),
       WFResponse: 'Successfully authenticated to Google. ✅',
     }),
 
@@ -206,56 +139,24 @@ local sc = import 'shortcuts.libsonnet';
       WFControlFlowMode: 1,
     }),
 
-    sc.Action('is.workflow.actions.dictionary', {
-      CustomOutputName: 'auth_params',
-      UUID: '4C5D6E57-01AD-433F-B742-1A5F09AFAC5B',
+    sc.Action('is.workflow.actions.dictionary', name='auth_params', params={
       WFItems: {
         Value: {
           WFDictionaryFieldValueItems: [
             {
               WFItemType: 0,
-              WFKey: {
-                Value: {
-                  string: 'approval_prompt',
-                },
-                WFSerializationType: 'WFTextTokenString',
-              },
-              WFValue: {
-                Value: {
-                  string: 'force',
-                },
-                WFSerializationType: 'WFTextTokenString',
-              },
+              WFKey: sc.Val('approval_prompt'),
+              WFValue: sc.Val('force'),
             },
             {
               WFItemType: 0,
-              WFKey: {
-                Value: {
-                  string: 'access_type',
-                },
-                WFSerializationType: 'WFTextTokenString',
-              },
-              WFValue: {
-                Value: {
-                  string: 'offline',
-                },
-                WFSerializationType: 'WFTextTokenString',
-              },
+              WFKey: sc.Val('access_type'),
+              WFValue: sc.Val('offline'),
             },
             {
               WFItemType: 0,
-              WFKey: {
-                Value: {
-                  string: 'response_type',
-                },
-                WFSerializationType: 'WFTextTokenString',
-              },
-              WFValue: {
-                Value: {
-                  string: 'code',
-                },
-                WFSerializationType: 'WFTextTokenString',
-              },
+              WFKey: sc.Val('response_type'),
+              WFValue: sc.Val('code'),
             },
           ],
         },
@@ -263,22 +164,13 @@ local sc = import 'shortcuts.libsonnet';
       },
     }),
 
-    sc.Action('ke.bou.GizmoPack.QueryJSONIntent', {
+    sc.Action('ke.bou.GizmoPack.QueryJSONIntent', name='auth_uri', params={
       local outputs = super.outputs,
-      CustomOutputName: 'auth_uri',
-      UUID: '8D8036AD-0DC7-4E4E-B882-62CE84B55BE8',
-      input: {
-        Value: sc.Ref(outputs, 'config'),
-        WFSerializationType: 'WFTextTokenAttachment',
-      },
+      input: sc.Ref(outputs, 'config', att=true),
       jqQuery: {
         Value: {
           attachmentsByRange: {
-            '{29, 1}': {
-              OutputName: 'auth_params',
-              OutputUUID: '4C5D6E57-01AD-433F-B742-1A5F09AFAC5B',
-              Type: 'ActionOutput',
-            },
+            '{29, 1}': sc.Ref(outputs, 'auth_params'),
           },
           string: '.auth_uri + "?" + (.params + ￼| del(.client_secret) | to_entries | map(map(@uri) | join("=")) | join("&"))',
         },
@@ -288,59 +180,27 @@ local sc = import 'shortcuts.libsonnet';
       slurp: false,
     }),
 
-    sc.Action('is.workflow.actions.openxcallbackurl', {
-      UUID: '70E940E7-6A39-4C9E-9641-9FB4061A2B1F',
+    sc.Action('is.workflow.actions.openxcallbackurl', name='X-Callback Result', params={
+      local outputs = super.outputs,
       WFXCallbackCustomCallbackEnabled: true,
       WFXCallbackCustomSuccessKey: 'state',
       WFXCallbackCustomSuccessURLEnabled: false,
-      WFXCallbackURL: {
-        Value: {
-          attachmentsByRange: {
-            '{0, 1}': {
-              OutputName: 'auth_uri',
-              OutputUUID: '8D8036AD-0DC7-4E4E-B882-62CE84B55BE8',
-              Type: 'ActionOutput',
-            },
-          },
-          string: '￼',
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
+      WFXCallbackURL: sc.Val('${auth_uri}', outputs),
     }),
 
-    sc.Action('is.workflow.actions.detect.dictionary', {
-      CustomOutputName: 'result',
-      UUID: 'E0894B2F-D51A-4A7A-AD1D-B27C80322D33',
-      WFInput: {
-        Value: {
-          OutputName: 'X-Callback Result',
-          OutputUUID: '70E940E7-6A39-4C9E-9641-9FB4061A2B1F',
-          Type: 'ActionOutput',
-        },
-        WFSerializationType: 'WFTextTokenAttachment',
-      },
+    sc.Action('is.workflow.actions.detect.dictionary', name='result', params={
+      local outputs = super.outputs,
+      WFInput: sc.Ref(outputs, 'X-Callback Result', att=true),
     }),
 
-    sc.Action('is.workflow.actions.dictionary', {
-      CustomOutputName: 'token_params',
-      UUID: '0069A083-78C1-41CB-B483-61B88DACE991',
+    sc.Action('is.workflow.actions.dictionary', name='token_params', params={
       WFItems: {
         Value: {
           WFDictionaryFieldValueItems: [
             {
               WFItemType: 0,
-              WFKey: {
-                Value: {
-                  string: 'grant_type',
-                },
-                WFSerializationType: 'WFTextTokenString',
-              },
-              WFValue: {
-                Value: {
-                  string: 'authorization_code',
-                },
-                WFSerializationType: 'WFTextTokenString',
-              },
+              WFKey: sc.Val('grant_type'),
+              WFValue: sc.Val('authorization_code'),
             },
           ],
         },
@@ -348,27 +208,14 @@ local sc = import 'shortcuts.libsonnet';
       },
     }),
 
-    sc.Action('ke.bou.GizmoPack.QueryJSONIntent', {
+    sc.Action('ke.bou.GizmoPack.QueryJSONIntent', name='token_uri', params={
       local outputs = super.outputs,
-      CustomOutputName: 'token_uri',
-      UUID: '9B9A24AE-B2CE-4BF6-A6D5-68174D4F2A4C',
-      input: {
-        Value: sc.Ref(outputs, 'config'),
-        WFSerializationType: 'WFTextTokenAttachment',
-      },
+      input: sc.Ref(outputs, 'config', att=true),
       jqQuery: {
         Value: {
           attachmentsByRange: {
-            '{20, 1}': {
-              OutputName: 'token_params',
-              OutputUUID: '0069A083-78C1-41CB-B483-61B88DACE991',
-              Type: 'ActionOutput',
-            },
-            '{24, 1}': {
-              OutputName: 'result',
-              OutputUUID: 'E0894B2F-D51A-4A7A-AD1D-B27C80322D33',
-              Type: 'ActionOutput',
-            },
+            '{20, 1}': sc.Ref(outputs, 'token_params'),
+            '{24, 1}': sc.Ref(outputs, 'result'),
           },
           string: '.token_uri + "?" + (￼ + ￼ + .params | to_entries | map(map(@uri | gsub("\\\\+"; "%20")) | join("=")) | join("&"))',
         },
@@ -378,105 +225,50 @@ local sc = import 'shortcuts.libsonnet';
       slurp: false,
     }),
 
-    sc.Action('is.workflow.actions.url', {
+    sc.Action('is.workflow.actions.url', name='URL', params={
+      local outputs = super.outputs,
       'Show-WFURLActionURL': true,
-      UUID: 'F4EF10F0-DF9E-44BD-AD8B-82026C0DA33A',
-      WFURLActionURL: {
-        Value: {
-          OutputName: 'token_uri',
-          OutputUUID: '9B9A24AE-B2CE-4BF6-A6D5-68174D4F2A4C',
-          Type: 'ActionOutput',
-        },
-        WFSerializationType: 'WFTextTokenAttachment',
-      },
+      WFURLActionURL: sc.Ref(outputs, 'token_uri', att=true),
     }),
 
-    sc.Action('is.workflow.actions.downloadurl', {
+    sc.Action('is.workflow.actions.downloadurl', name='token', params={
+      local outputs = super.outputs,
       Advanced: true,
-      CustomOutputName: 'token',
       ShowHeaders: false,
-      UUID: '28548D2F-D810-43D4-87E7-B9C925A91E03',
       WFHTTPMethod: 'POST',
-      WFURL: {
-        Value: {
-          attachmentsByRange: {
-            '{0, 1}': {
-              OutputName: 'URL',
-              OutputUUID: 'F4EF10F0-DF9E-44BD-AD8B-82026C0DA33A',
-              Type: 'ActionOutput',
-            },
-          },
-          string: '￼',
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
+      WFURL: sc.Val('${URL}', outputs),
     }),
 
-    sc.Action('ke.bou.GizmoPack.QueryJSONIntent', {
-      CustomOutputName: 'timestamped_token',
-      UUID: '7DCCE61E-A062-49C6-9905-E9D5A86014E7',
-      input: {
-        Value: {
-          OutputName: 'token',
-          OutputUUID: '28548D2F-D810-43D4-87E7-B9C925A91E03',
-          Type: 'ActionOutput',
-        },
-        WFSerializationType: 'WFTextTokenAttachment',
-      },
+    sc.Action('ke.bou.GizmoPack.QueryJSONIntent', name='timestamped_token', params={
+      local outputs = super.outputs,
+      input: sc.Ref(outputs, 'token', att=true),
       jqQuery: '. + { refreshed_at: (now | todate), expires_at: (now + .expires_in | todate) }',
       queryType: 'jq',
     }),
 
     sc.Action('dk.simonbs.DataJar.SetValueIntent', {
-      UUID: '329B8DDA-EA20-4512-B06E-12DFCCDC0A4D',
+      local outputs = super.outputs,
       keyPath: 'google-oauth.token',
       overwriteStrategy: 'alwaysAllow',
-      values: {
-        Value: {
-          OutputName: 'timestamped_token',
-          OutputUUID: '7DCCE61E-A062-49C6-9905-E9D5A86014E7',
-          Type: 'ActionOutput',
-        },
-        WFSerializationType: 'WFTextTokenAttachment',
-      },
+      values: sc.Ref(outputs, 'timestamped_token', att=true),
     }),
 
-    sc.Action('ke.bou.GizmoPack.QueryJSONIntent', {
-      UUID: '639E654E-2FA2-42AA-B0B4-880B56B8984E',
-      input: {
-        Value: {
-          OutputName: 'timestamped_token',
-          OutputUUID: '7DCCE61E-A062-49C6-9905-E9D5A86014E7',
-          Type: 'ActionOutput',
-        },
-        WFSerializationType: 'WFTextTokenAttachment',
-      },
+    sc.Action('ke.bou.GizmoPack.QueryJSONIntent', name='Result', params={
+      local outputs = super.outputs,
+      input: sc.Ref(outputs, 'timestamped_token', att=true),
       jqQuery: '.token_type + " " + .access_token',
       queryType: 'jq',
     }),
 
     sc.Action('is.workflow.actions.output', {
-      UUID: 'D739C597-97BB-4948-9306-2A6A81F05B3C',
+      local outputs = super.outputs,
       WFNoOutputSurfaceBehavior: 'Respond',
-      WFOutput: {
-        Value: {
-          attachmentsByRange: {
-            '{0, 1}': {
-              OutputName: 'Result',
-              OutputUUID: '639E654E-2FA2-42AA-B0B4-880B56B8984E',
-              Type: 'ActionOutput',
-            },
-          },
-          string: '￼',
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
+      WFOutput: sc.Val('${Result}', outputs),
       WFResponse: 'Successfully authenticated to Google. ✅',
     }),
 
     sc.Action('is.workflow.actions.conditional', {
       GroupingIdentifier: '22E62798-BDB0-43EE-BE22-F8F025412072',
-      UUID: '162C4B87-DCFE-4D7B-90F9-01B9B17B1191',
       WFControlFlowMode: 2,
     }),
 

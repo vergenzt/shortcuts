@@ -1,0 +1,73 @@
+id: rewrite-referees
+language: jsonnet
+
+utils:
+
+  referee: &referee
+    kind: functioncall
+    any:
+    - pattern: sc.Action($ID, $PARAMS)
+    - pattern: sc.Action($ID, name=$REF_NAME, params=$PARAMS)
+    has: # a UUID
+      stopBy: end
+      kind: field
+      has:
+        kind: fieldname
+        regex: ^UUID$
+        precedes:
+          stopBy: end
+          kind: string
+          pattern: $UUID
+
+  reference: &reference
+    any:
+    - pattern: >
+        {
+          OutputName: $REF_NAME,
+          OutputUUID: $UUID,
+          Type: 'ActionOutput',
+        }
+    - pattern: >
+        {
+          Aggrandizements: $AGGS,
+          OutputName: $REF_NAME,
+          OutputUUID: $UUID,
+          Type: 'ActionOutput',
+        }
+
+  referrer: &referrer
+    kind: functioncall
+    pattern: sc.Action($$$)
+    has:
+      stopBy: end
+      any: [*reference]
+
+rule:
+  pattern: sc.ActionsSeq($ACTIONS_ARR)
+
+rewriters:
+
+- id: rewrite-referees
+  rule:
+    any: [*referee]
+    precedes:
+      stopBy: end
+      any: [*referrer]
+  transform:
+    PARAMS_NO_OUTPUT:
+      replace:
+        source: $PARAMS
+        replace: "(?m)^\\s*(UUID|CustomOutputName): .*\n"
+        by: ''
+  fix: >-
+    sc.Action($ID, name=$REF_NAME, params=$PARAMS_NO_OUTPUT)
+
+transform:
+  ACTIONS_ARR_WITH_REFS:
+    rewrite:
+      rewriters:
+      - rewrite-referees
+      source: $ACTIONS_ARR
+
+fix: >-
+  sc.ActionsSeq($ACTIONS_ARR_WITH_REFS)

@@ -16,15 +16,11 @@ local sc = import 'shortcuts.libsonnet';
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: {
-          Value: sc.Ref(outputs, 'Device Model'),
-          WFSerializationType: 'WFTextTokenAttachment',
-        },
+        Variable: sc.Ref(outputs, 'Device Model', att=true),
       },
     }),
 
     sc.Action('is.workflow.actions.gettext', {
-      UUID: '4C33B873-50CF-44E1-8A8F-5A6EA03F6C26',
       WFTextActionText: 'https',
     }),
 
@@ -34,31 +30,22 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.gettext', {
-      UUID: 'C32F3A03-E30D-4B85-9944-FEEEF866251E',
       WFTextActionText: 'googlesheets',
     }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      CustomOutputName: 'Scheme',
+    sc.Action('is.workflow.actions.conditional', name='Scheme', params={
       GroupingIdentifier: '2607D75E-2498-4367-B38D-ECE360DB437F',
-      UUID: '316906E6-934C-40B3-8165-F27AFBE00983',
       WFControlFlowMode: 2,
     }),
 
-    sc.Action('is.workflow.actions.url', {
+    sc.Action('is.workflow.actions.url', name='URL', params={
+      local outputs = super.outputs,
       'Show-WFURLActionURL': true,
-      UUID: 'E493CEF0-9ABF-4261-9968-304EC2EE7798',
       WFURLActionURL: {
         Value: {
           attachmentsByRange: {
-            '{0, 1}': {
-              OutputName: 'Scheme',
-              OutputUUID: '316906E6-934C-40B3-8165-F27AFBE00983',
-              Type: 'ActionOutput',
-            },
-            '{35, 1}': {
-              Type: 'ExtensionInput',
-            },
+            '{0, 1}': sc.Ref(outputs, 'Scheme'),
+            '{35, 1}': sc.Ref(outputs, 'Shortcut Input'),
           },
           string: '￼://docs.google.com/spreadsheets/d/￼/edit',
         },
@@ -67,16 +54,9 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.openurl', {
+      local outputs = super.outputs,
       'Show-WFInput': true,
-      UUID: 'D60C6ACE-FD01-47BF-B159-F075667CEBFD',
-      WFInput: {
-        Value: {
-          OutputName: 'URL',
-          OutputUUID: 'E493CEF0-9ABF-4261-9968-304EC2EE7798',
-          Type: 'ActionOutput',
-        },
-        WFSerializationType: 'WFTextTokenAttachment',
-      },
+      WFInput: sc.Ref(outputs, 'URL', att=true),
     }),
 
   ]),

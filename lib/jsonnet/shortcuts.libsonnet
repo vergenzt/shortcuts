@@ -33,13 +33,6 @@
     )
   ),
 
-  Ref(outputs, name, aggs=[]):: {
-    Type: 'ActionOutput',
-    OutputUUID: outputs[name],
-    OutputName: name,
-    Aggrandizements: aggs,
-  },
-
   /**
     returns [i, unesc] where:
      - i is the start pos of next pat (null if no match), and
@@ -61,12 +54,35 @@
         $._findNextNotEscaped(s, pat, start + 1, unescAcc) tailstrict
   ),
 
-  _resolveAttachment(var, outputs=null) {
+  Ref(outputs, name, aggs=[], att=false):: (
+    local ref = (
+      if std.startsWith(name, "Vars.") then {
+        Type: 'Variable',
+        VariableName: std.substr(name, 5, std.length(name)),
+      }
+      else if name == "Shortcut Input" then {
+        Type: 'ExtensionInput',
+      }
+      else {
+        Type: 'ActionOutput',
+        OutputUUID: outputs[name],
+        OutputName: name,
+        [if aggs == [] then null else 'Aggrandizements']: aggs,
+      }
+    );
+    if att then {
+      WFSerializationType: 'WFTextTokenAttachment',
+      Value: ref,
+    }
+    else ref
+  ),
+
+  _resolveAttachment(var, outputs=null):: (
     if outputs == null then error ('Interpolation of `%s` missing outputs var' % var)
     else
       if var == '!Input' then { Type: 'ExtensionInput' }
       else sc.Ref(var, outputs)
-  },
+  ),
 
   _joiner: std.char(65532),
 
@@ -127,13 +143,6 @@
     string: (
       local resolver = function(var) $._resolveAttachment(var, outputs); // close over Val's outputs
       local xWithAtts = $._replaceAttachments(x, resolver), xUnesc = xWithAtts[0], xAtts = xWithAtts[1];
-      if xUnesc == $._joiner then
-        assert std.length(xAtts) == 1 : 'single attachment';
-        {
-          WFSerializationType: 'WFTextTokenAttachment',
-          Value: std.objectValues(xAtts)[0],
-        }
-      else
         local attsObj = if xAtts == {} then { attachmentsbyRange: xAtts } else {};
         {
           WFSerializationType: 'WFTextTokenString',
@@ -155,6 +164,8 @@
     std.type(x)
   ],
 
+  Att(val):: ,
+
   // Cond: {
 	// 	LessThan:       0,
 	// 	LessOrEqual:    1,
@@ -172,7 +183,7 @@
   // },
 
   // If(input, cond, then_acts, else_acts=[], name=null):: (
-    
+
   //   sc.Action('is.workflow.actions.conditional', {
   //     GroupingIdentifier: '...',
   //     WFCondition: 100,
@@ -185,7 +196,7 @@
   //       },
   //     },
   //   }),
-    
+
 
   // ),
 

@@ -20,7 +20,6 @@ local sc = import 'shortcuts.libsonnet';
 
     sc.Action('dk.simonbs.DataJar.SetValueIntent', {
       local outputs = super.outputs,
-      UUID: '7FF4C2E6-FF50-47C3-B483-C1173C3D2986',
       keyPath: {
         Value: {
           attachmentsByRange: {
@@ -30,21 +29,17 @@ local sc = import 'shortcuts.libsonnet';
         },
         WFSerializationType: 'WFTextTokenString',
       },
-      values: {
-        Value: sc.Ref(outputs, 'Date', aggs=[
-          {
-            Type: 'WFDateFormatVariableAggrandizement',
-            WFDateFormatStyle: 'ISO 8601',
-            WFISO8601IncludeTime: true,
-          },
-        ]),
-        WFSerializationType: 'WFTextTokenAttachment',
-      },
+      values: sc.Ref(outputs, 'Date', aggs=[
+        {
+          Type: 'WFDateFormatVariableAggrandizement',
+          WFDateFormatStyle: 'ISO 8601',
+          WFISO8601IncludeTime: true,
+        },
+      ], att=true),
     }),
 
     sc.Action('ch.marcela.ada.Pyto.RunCodeIntent', {
       local outputs = super.outputs,
-      UUID: 'F9DFD763-FD68-42E7-AFF7-EC9AB00F46CB',
       arguments: [
         sc.Val('${Input}', outputs),
         sc.Val('${Num Repetitions}', outputs),
@@ -53,13 +48,10 @@ local sc = import 'shortcuts.libsonnet';
       input: '',
     }),
 
-    sc.Action('ch.marcela.ada.Pyto.GetScriptOutputIntent', {
-      UUID: '2676F0E1-DE77-48AE-B71E-F6208BEADD0F',
-    }),
+    sc.Action('ch.marcela.ada.Pyto.GetScriptOutputIntent', name='Output'),
 
-    sc.Action('is.workflow.actions.gettimebetweendates', {
+    sc.Action('is.workflow.actions.gettimebetweendates', name='Time Between Dates', params={
       local outputs = super.outputs,
-      UUID: '37C27230-8F02-4D84-A441-B10A14AB5F6A',
       WFInput: {
         Value: {
           attachmentsByRange: {
@@ -75,45 +67,22 @@ local sc = import 'shortcuts.libsonnet';
       WFTimeUntilUnit: 'Seconds',
     }),
 
-    sc.Action('is.workflow.actions.text.replace', {
-      CustomOutputName: 'Hash Suffix',
-      UUID: 'F5A841DE-858A-43A2-A55A-8197EBCA5811',
-      WFInput: {
-        Value: {
-          attachmentsByRange: {
-            '{0, 1}': {
-              OutputName: 'Output',
-              OutputUUID: '2676F0E1-DE77-48AE-B71E-F6208BEADD0F',
-              Type: 'ActionOutput',
-            },
-          },
-          string: '￼',
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
+    sc.Action('is.workflow.actions.text.replace', name='Hash Suffix', params={
+      local outputs = super.outputs,
+      WFInput: sc.Val('${Output}', outputs),
       WFReplaceTextFind: '.*?(.{7})$',
       WFReplaceTextRegularExpression: true,
       WFReplaceTextReplace: '...$1',
     }),
 
-    sc.Action('is.workflow.actions.gettext', {
+    sc.Action('is.workflow.actions.gettext', name='Result', params={
       local outputs = super.outputs,
-      CustomOutputName: 'Result',
-      UUID: 'A825FF52-2759-4E67-BD28-583C27388967',
       WFTextActionText: {
         Value: {
           attachmentsByRange: {
             '{18, 1}': sc.Ref(outputs, 'Num Repetitions'),
-            '{32, 1}': {
-              OutputName: 'Time Between Dates',
-              OutputUUID: '37C27230-8F02-4D84-A441-B10A14AB5F6A',
-              Type: 'ActionOutput',
-            },
-            '{48, 1}': {
-              OutputName: 'Hash Suffix',
-              OutputUUID: 'F5A841DE-858A-43A2-A55A-8197EBCA5811',
-              Type: 'ActionOutput',
-            },
+            '{32, 1}': sc.Ref(outputs, 'Time Between Dates'),
+            '{48, 1}': sc.Ref(outputs, 'Hash Suffix'),
             '{62, 1}': sc.Ref(outputs, 'Date', aggs=[
               {
                 Type: 'WFDateFormatVariableAggrandizement',
@@ -130,7 +99,6 @@ local sc = import 'shortcuts.libsonnet';
 
     sc.Action('dk.simonbs.DataJar.SetValueIntent', {
       local outputs = super.outputs,
-      UUID: '4C321391-C11D-4FD2-A0E2-062638082243',
       keyPath: {
         Value: {
           attachmentsByRange: {
@@ -140,27 +108,15 @@ local sc = import 'shortcuts.libsonnet';
         },
         WFSerializationType: 'WFTextTokenString',
       },
-      values: {
-        Value: {
-          OutputName: 'Result',
-          OutputUUID: 'A825FF52-2759-4E67-BD28-583C27388967',
-          Type: 'ActionOutput',
-        },
-        WFSerializationType: 'WFTextTokenAttachment',
-      },
+      values: sc.Ref(outputs, 'Result', att=true),
     }),
 
-    sc.Action('is.workflow.actions.gettext', {
-      CustomOutputName: 'Prompt',
-      UUID: '7216B996-5BBB-4476-A4DA-1096E8B3D668',
+    sc.Action('is.workflow.actions.gettext', name='Prompt', params={
+      local outputs = super.outputs,
       WFTextActionText: {
         Value: {
           attachmentsByRange: {
-            '{0, 1}': {
-              OutputName: 'Result',
-              OutputUUID: 'A825FF52-2759-4E67-BD28-583C27388967',
-              Type: 'ActionOutput',
-            },
+            '{0, 1}': sc.Ref(outputs, 'Result'),
           },
           string: '￼\n\nView leading digits?',
         },
@@ -169,25 +125,14 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.choosefrommenu', {
+      local outputs = super.outputs,
       GroupingIdentifier: '4BD0FCCB-729B-4037-8F49-4582958A0C52',
       WFControlFlowMode: 0,
       WFMenuItems: [
         'Yes',
         'No',
       ],
-      WFMenuPrompt: {
-        Value: {
-          attachmentsByRange: {
-            '{0, 1}': {
-              OutputName: 'Prompt',
-              OutputUUID: '7216B996-5BBB-4476-A4DA-1096E8B3D668',
-              Type: 'ActionOutput',
-            },
-          },
-          string: '￼',
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
+      WFMenuPrompt: sc.Val('${Prompt}', outputs),
     }),
 
     sc.Action('is.workflow.actions.choosefrommenu', {
@@ -196,41 +141,17 @@ local sc = import 'shortcuts.libsonnet';
       WFMenuItemTitle: 'Yes',
     }),
 
-    sc.Action('is.workflow.actions.text.replace', {
-      CustomOutputName: 'Leading Digits',
-      UUID: '46896B58-84DD-4DE4-8793-F7D8C78522CD',
-      WFInput: {
-        Value: {
-          attachmentsByRange: {
-            '{0, 1}': {
-              OutputName: 'Output',
-              OutputUUID: '2676F0E1-DE77-48AE-B71E-F6208BEADD0F',
-              Type: 'ActionOutput',
-            },
-          },
-          string: '￼',
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
+    sc.Action('is.workflow.actions.text.replace', name='Leading Digits', params={
+      local outputs = super.outputs,
+      WFInput: sc.Val('${Output}', outputs),
       WFReplaceTextFind: '.*?(\\d).*?(\\d).*?(\\d).*?(\\d).*',
       WFReplaceTextRegularExpression: true,
       WFReplaceTextReplace: '$1$2$3$4',
     }),
 
     sc.Action('is.workflow.actions.showresult', {
-      Text: {
-        Value: {
-          attachmentsByRange: {
-            '{0, 1}': {
-              OutputName: 'Leading Digits',
-              OutputUUID: '46896B58-84DD-4DE4-8793-F7D8C78522CD',
-              Type: 'ActionOutput',
-            },
-          },
-          string: '￼',
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
+      local outputs = super.outputs,
+      Text: sc.Val('${Leading Digits}', outputs),
     }),
 
     sc.Action('is.workflow.actions.choosefrommenu', {
@@ -240,24 +161,12 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.output', {
-      WFOutput: {
-        Value: {
-          attachmentsByRange: {
-            '{0, 1}': {
-              OutputName: 'Result',
-              OutputUUID: 'A825FF52-2759-4E67-BD28-583C27388967',
-              Type: 'ActionOutput',
-            },
-          },
-          string: '￼',
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
+      local outputs = super.outputs,
+      WFOutput: sc.Val('${Result}', outputs),
     }),
 
     sc.Action('is.workflow.actions.choosefrommenu', {
       GroupingIdentifier: '4BD0FCCB-729B-4037-8F49-4582958A0C52',
-      UUID: '22DE96B7-A742-4E8E-9A23-52ECA914A24F',
       WFControlFlowMode: 2,
     }),
 

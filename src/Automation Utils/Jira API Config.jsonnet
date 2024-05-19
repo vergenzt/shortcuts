@@ -10,26 +10,19 @@ local sc = import 'shortcuts.libsonnet';
 
     sc.Action('ke.bou.GizmoPack.QueryJSONIntent', name='Result', params={
       local outputs = super.outputs,
-      input: {
-        Value: sc.Ref(outputs, 'Jira Config'),
-        WFSerializationType: 'WFTextTokenAttachment',
-      },
+      input: sc.Ref(outputs, 'Jira Config', att=true),
       jqQuery: '"\\(.username):\\(.api_token)" | @base64',
       queryType: 'jq',
     }),
 
     sc.Action('is.workflow.actions.setvalueforkey', {
       local outputs = super.outputs,
-      UUID: 'DB9762D8-746F-4B5A-BF6E-B933A7E1C055',
-      WFDictionary: {
-        Value: sc.Ref(outputs, 'Jira Config', aggs=[
-          {
-            CoercionItemClass: 'WFDictionaryContentItem',
-            Type: 'WFCoercionVariableAggrandizement',
-          },
-        ]),
-        WFSerializationType: 'WFTextTokenAttachment',
-      },
+      WFDictionary: sc.Ref(outputs, 'Jira Config', aggs=[
+        {
+          CoercionItemClass: 'WFDictionaryContentItem',
+          Type: 'WFCoercionVariableAggrandizement',
+        },
+      ], att=true),
       WFDictionaryKey: 'authorization',
       WFDictionaryValue: {
         Value: {

@@ -10,14 +10,10 @@ local sc = import 'shortcuts.libsonnet';
       local outputs = super.outputs,
       GroupingIdentifier: '3C39F304-C709-4042-8340-B48B1B383EB8',
       WFControlFlowMode: 0,
-      WFInput: {
-        Value: sc.Ref(outputs, 'My Shortcuts'),
-        WFSerializationType: 'WFTextTokenAttachment',
-      },
+      WFInput: sc.Ref(outputs, 'My Shortcuts', att=true),
     }),
 
     sc.Action('is.workflow.actions.documentpicker.save', {
-      UUID: '959AFD4B-2BCF-4035-8985-8C5C32037D7F',
       WFAskWhereToSave: false,
       WFFileDestinationPath: {
         Value: {
@@ -32,45 +28,24 @@ local sc = import 'shortcuts.libsonnet';
               Type: 'Variable',
               VariableName: 'Repeat Item',
             },
-            '{3, 1}': {
-              Type: 'Variable',
-              VariableName: 'Repeat Item',
-            },
+            '{3, 1}': sc.Ref(outputs, 'Vars.Repeat Item'),
           },
           string: '/￼/￼',
         },
         WFSerializationType: 'WFTextTokenString',
       },
-      WFInput: {
-        Value: {
-          Type: 'Variable',
-          VariableName: 'Repeat Item',
-        },
-        WFSerializationType: 'WFTextTokenAttachment',
-      },
+      WFInput: sc.Ref(outputs, 'Vars.Repeat Item', att=true),
       WFSaveFileOverwrite: true,
     }),
 
-    sc.Action('is.workflow.actions.repeat.each', {
+    sc.Action('is.workflow.actions.repeat.each', name='Repeat Results', params={
       GroupingIdentifier: '3C39F304-C709-4042-8340-B48B1B383EB8',
-      UUID: 'DC1645A2-F41F-4792-82B9-63D27E55753E',
       WFControlFlowMode: 2,
     }),
 
     sc.Action('is.workflow.actions.output', {
-      WFOutput: {
-        Value: {
-          attachmentsByRange: {
-            '{0, 1}': {
-              OutputName: 'Repeat Results',
-              OutputUUID: 'DC1645A2-F41F-4792-82B9-63D27E55753E',
-              Type: 'ActionOutput',
-            },
-          },
-          string: '￼',
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
+      local outputs = super.outputs,
+      WFOutput: sc.Val('${Repeat Results}', outputs),
     }),
 
   ]),

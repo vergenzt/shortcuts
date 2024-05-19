@@ -16,10 +16,7 @@ local sc = import 'shortcuts.libsonnet';
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: {
-          Value: sc.Ref(outputs, 'Device Model'),
-          WFSerializationType: 'WFTextTokenAttachment',
-        },
+        Variable: sc.Ref(outputs, 'Device Model', att=true),
       },
     }),
 
@@ -29,27 +26,18 @@ local sc = import 'shortcuts.libsonnet';
 
     sc.Action('is.workflow.actions.runshellscript', name='Shell Script Result', params={
       local outputs = super.outputs,
-      Input: {
-        Value: {
-          Type: 'ExtensionInput',
-        },
-        WFSerializationType: 'WFTextTokenAttachment',
-      },
+      Input: sc.Ref(outputs, 'Shortcut Input', att=true),
       InputMode: 'to stdin',
       Script: sc.Val('${Text}', outputs),
     }),
 
     sc.Action('is.workflow.actions.previewdocument', {
       local outputs = super.outputs,
-      WFInput: {
-        Value: sc.Ref(outputs, 'Shell Script Result'),
-        WFSerializationType: 'WFTextTokenAttachment',
-      },
+      WFInput: sc.Ref(outputs, 'Shell Script Result', att=true),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
       GroupingIdentifier: '6C16A978-32F1-45D5-A028-BFFC2A301E17',
-      UUID: '22A61DA6-17F3-4D65-A3FC-93DCAA64C974',
       WFControlFlowMode: 2,
     }),
 
@@ -61,49 +49,20 @@ local sc = import 'shortcuts.libsonnet';
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: {
-          Value: sc.Ref(outputs, 'Device Model'),
-          WFSerializationType: 'WFTextTokenAttachment',
-        },
+        Variable: sc.Ref(outputs, 'Device Model', att=true),
       },
     }),
 
-    sc.Action('is.workflow.actions.gettext', {
-      UUID: 'F6C5BBCC-019A-4FB8-A9C8-9C7B59FD4E38',
-    }),
+    sc.Action('is.workflow.actions.gettext', name='Text'),
 
     sc.Action('dk.simonbs.Scriptable.RunScriptInlineIntent', {
+      local outputs = super.outputs,
       'Show-texts': false,
       'Show-urls': false,
       ShowWhenRun: false,
-      UUID: 'A8CEA644-3421-4760-AE3B-82E3668E8870',
       parameter: [],
-      script: {
-        Value: {
-          attachmentsByRange: {
-            '{0, 1}': {
-              OutputName: 'Text',
-              OutputUUID: 'F6C5BBCC-019A-4FB8-A9C8-9C7B59FD4E38',
-              Type: 'ActionOutput',
-            },
-          },
-          string: '￼',
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
-      texts: {
-        Value: {
-          attachmentsByRange: {
-            '{0, 1}': {
-              OutputName: 'Input Dict',
-              OutputUUID: 'EB495A2F-7586-419E-B8A8-00CA55CBDEE8',
-              Type: 'ActionOutput',
-            },
-          },
-          string: '￼',
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
+      script: sc.Val('${Text}', outputs),
+      texts: sc.Val('${Input Dict}', outputs),
     }),
 
     sc.Action('is.workflow.actions.conditional', {

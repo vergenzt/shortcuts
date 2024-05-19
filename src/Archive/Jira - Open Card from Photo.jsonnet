@@ -10,10 +10,7 @@ local sc = import 'shortcuts.libsonnet';
 
     sc.Action('is.workflow.actions.extracttextfromimage', name='Text from Image', params={
       local outputs = super.outputs,
-      WFImage: {
-        Value: sc.Ref(outputs, 'Photo'),
-        WFSerializationType: 'WFTextTokenAttachment',
-      },
+      WFImage: sc.Ref(outputs, 'Photo', att=true),
     }),
 
     sc.Action('is.workflow.actions.text.match', name='Matches', params={
@@ -24,10 +21,7 @@ local sc = import 'shortcuts.libsonnet';
 
     sc.Action('is.workflow.actions.runworkflow', {
       local outputs = super.outputs,
-      WFInput: {
-        Value: sc.Ref(outputs, 'Matches'),
-        WFSerializationType: 'WFTextTokenAttachment',
-      },
+      WFInput: sc.Ref(outputs, 'Matches', att=true),
     }),
 
     sc.Action('com.atlassian.jira.app.GetIssueIntent', name='Issue', params={
@@ -39,11 +33,7 @@ local sc = import 'shortcuts.libsonnet';
 
     sc.Action('com.atlassian.jira.app.OpenIssueIntent', {
       local outputs = super.outputs,
-      UUID: 'D8CDAE08-ED1E-4814-8EB1-AB8E73B25C29',
-      issue: {
-        Value: sc.Ref(outputs, 'Issue'),
-        WFSerializationType: 'WFTextTokenAttachment',
-      },
+      issue: sc.Ref(outputs, 'Issue', att=true),
     }),
 
   ]),

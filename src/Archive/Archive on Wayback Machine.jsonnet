@@ -5,17 +5,7 @@ local sc = import 'shortcuts.libsonnet';
   WFWorkflowActions: sc.ActionsSeq([
 
     sc.Action('is.workflow.actions.urlencode', name='Encoded URL', params={
-      WFInput: {
-        Value: {
-          attachmentsByRange: {
-            '{0, 1}': {
-              Type: 'ExtensionInput',
-            },
-          },
-          string: '￼',
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
+      WFInput: sc.Val('${Shortcut Input}', outputs),
     }),
 
     sc.Action('is.workflow.actions.gettext', name='Archive Save URL', params={
@@ -34,7 +24,6 @@ local sc = import 'shortcuts.libsonnet';
     sc.Action('is.workflow.actions.downloadurl', {
       local outputs = super.outputs,
       ShowHeaders: false,
-      UUID: '65D93BA0-20BC-4E7E-8513-8A123D03B5C0',
       WFFormValues: {
         Value: {
           WFDictionaryFieldValueItems: [
@@ -47,18 +36,7 @@ local sc = import 'shortcuts.libsonnet';
                 },
                 WFSerializationType: 'WFTextTokenString',
               },
-              WFValue: {
-                Value: {
-                  attachmentsByRange: {
-                    '{0, 1}': {
-                      Type: 'Variable',
-                      VariableName: 'URL',
-                    },
-                  },
-                  string: '￼',
-                },
-                WFSerializationType: 'WFTextTokenString',
-              },
+              WFValue: sc.Val('${Vars.URL}', outputs),
             },
           ],
         },
@@ -69,10 +47,8 @@ local sc = import 'shortcuts.libsonnet';
       WFURL: sc.Val('${Archive Save URL}', outputs),
     }),
 
-    sc.Action('is.workflow.actions.gettext', {
+    sc.Action('is.workflow.actions.gettext', name='Archive Root URL', params={
       local outputs = super.outputs,
-      CustomOutputName: 'Archive Root URL',
-      UUID: '6EFE14C8-3F96-41ED-BF54-9B9A85E1AC0E',
       WFTextActionText: {
         Value: {
           attachmentsByRange: {
@@ -84,104 +60,44 @@ local sc = import 'shortcuts.libsonnet';
       },
     }),
 
-    sc.Action('is.workflow.actions.url.getheaders', {
-      UUID: '73018831-A7B6-4CC6-A308-A78FC757E71E',
-      WFInput: {
-        Value: {
-          attachmentsByRange: {
-            '{0, 1}': {
-              OutputName: 'Archive Root URL',
-              OutputUUID: '6EFE14C8-3F96-41ED-BF54-9B9A85E1AC0E',
-              Type: 'ActionOutput',
-            },
-          },
-          string: '￼',
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
+    sc.Action('is.workflow.actions.url.getheaders', name='Headers of URL', params={
+      local outputs = super.outputs,
+      WFInput: sc.Val('${Archive Root URL}', outputs),
     }),
 
-    sc.Action('is.workflow.actions.getvalueforkey', {
-      CustomOutputName: 'Link Header',
-      UUID: 'BF44ED2B-F396-4DBE-9FE7-A04EA4A0ECE1',
+    sc.Action('is.workflow.actions.getvalueforkey', name='Link Header', params={
+      local outputs = super.outputs,
       WFDictionaryKey: 'Link',
-      WFInput: {
-        Value: {
-          OutputName: 'Headers of URL',
-          OutputUUID: '73018831-A7B6-4CC6-A308-A78FC757E71E',
-          Type: 'ActionOutput',
-        },
-        WFSerializationType: 'WFTextTokenAttachment',
-      },
+      WFInput: sc.Ref(outputs, 'Headers of URL', att=true),
     }),
 
     sc.Action('is.workflow.actions.previewdocument', {
-      WFInput: {
-        Value: {
-          OutputName: 'Link Header',
-          OutputUUID: 'BF44ED2B-F396-4DBE-9FE7-A04EA4A0ECE1',
-          Type: 'ActionOutput',
-        },
-        WFSerializationType: 'WFTextTokenAttachment',
-      },
+      local outputs = super.outputs,
+      WFInput: sc.Ref(outputs, 'Link Header', att=true),
     }),
 
-    sc.Action('is.workflow.actions.text.match', {
-      CustomOutputName: 'Link Header Matches',
-      UUID: '256220E2-0CB2-4B82-905E-53C98EB58D08',
+    sc.Action('is.workflow.actions.text.match', name='Link Header Matches', params={
+      local outputs = super.outputs,
       WFMatchTextCaseSensitive: false,
       WFMatchTextPattern: '<([^>]+)>; rel="memento"',
-      text: {
-        Value: {
-          attachmentsByRange: {
-            '{0, 1}': {
-              OutputName: 'Link Header',
-              OutputUUID: 'BF44ED2B-F396-4DBE-9FE7-A04EA4A0ECE1',
-              Type: 'ActionOutput',
-            },
-          },
-          string: '￼',
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
+      text: sc.Val('${Link Header}', outputs),
     }),
 
-    sc.Action('is.workflow.actions.text.match.getgroup', {
-      CustomOutputName: 'Archive URL',
-      UUID: 'BA97664E-4A47-4582-8981-D75B4E68C4A5',
+    sc.Action('is.workflow.actions.text.match.getgroup', name='Archive URL', params={
+      local outputs = super.outputs,
       WFGetGroupType: 'Group At Index',
-      matches: {
-        Value: {
-          OutputName: 'Link Header Matches',
-          OutputUUID: '256220E2-0CB2-4B82-905E-53C98EB58D08',
-          Type: 'ActionOutput',
-        },
-        WFSerializationType: 'WFTextTokenAttachment',
-      },
+      matches: sc.Ref(outputs, 'Link Header Matches', att=true),
     }),
 
     sc.Action('is.workflow.actions.setclipboard', {
-      WFInput: {
-        Value: {
-          OutputName: 'Archive URL',
-          OutputUUID: 'BA97664E-4A47-4582-8981-D75B4E68C4A5',
-          Type: 'ActionOutput',
-        },
-        WFSerializationType: 'WFTextTokenAttachment',
-      },
+      local outputs = super.outputs,
+      WFInput: sc.Ref(outputs, 'Archive URL', att=true),
       WFLocalOnly: false,
     }),
 
     sc.Action('is.workflow.actions.notification', {
-      UUID: '5E9BC1D6-D980-4843-BD4E-19C9DD0197EC',
-      WFInput: {
-        Value: {
-          OutputName: 'Archive URL',
-          OutputUUID: 'BA97664E-4A47-4582-8981-D75B4E68C4A5',
-          Type: 'ActionOutput',
-        },
-        WFSerializationType: 'WFTextTokenAttachment',
-      },
+      local outputs = super.outputs,
+      WFInput: sc.Ref(outputs, 'Archive URL', att=true),
       WFNotificationActionBody: 'Archive URL copied to clipboard',
     }),
 

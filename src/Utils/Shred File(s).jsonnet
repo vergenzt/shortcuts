@@ -5,16 +5,10 @@ local sc = import 'shortcuts.libsonnet';
   WFWorkflowActions: sc.ActionsSeq([
 
     sc.Action('is.workflow.actions.runshellscript', {
-      Input: {
-        Value: {
-          Type: 'ExtensionInput',
-        },
-        WFSerializationType: 'WFTextTokenAttachment',
-      },
+      Input: sc.Ref(outputs, 'Shortcut Input', att=true),
       InputMode: 'as arguments',
       Script: 'gshred -u "$@"',
       Shell: '/bin/bash',
-      UUID: '6F16FCD4-8611-4C46-A4F2-2D76552BF163',
     }),
 
   ]),

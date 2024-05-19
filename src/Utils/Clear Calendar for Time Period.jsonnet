@@ -27,7 +27,6 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.openapp', {
-      UUID: '29111200-95CC-44C2-918E-DBF113385335',
       WFAppIdentifier: 'com.apple.iCal',
       WFSelectedApp: {
         BundleIdentifier: 'com.apple.iCal',
@@ -54,13 +53,10 @@ local sc = import 'shortcuts.libsonnet';
 
     sc.Action('is.workflow.actions.choosefrommenu', {
       GroupingIdentifier: '2862782E-41E9-4DD1-B0E8-1A8D520D17A6',
-      UUID: 'CA955319-F09C-4154-8780-0E62A39677AB',
       WFControlFlowMode: 2,
     }),
 
-    sc.Action('is.workflow.actions.adjustdate', {
-      CustomOutputName: ' BO Today',
-      UUID: '9C8832BD-D74E-4690-B2BA-B344446E1086',
+    sc.Action('is.workflow.actions.adjustdate', name=' BO Today', params={
       WFAdjustOperation: 'Get Start of Day',
       WFDate: {
         Value: {
@@ -75,61 +71,22 @@ local sc = import 'shortcuts.libsonnet';
       },
     }),
 
-    sc.Action('is.workflow.actions.ask', {
-      CustomOutputName: 'Date',
-      UUID: '751EAB73-C760-4A40-9DDE-50CE049963E8',
-      WFAskActionDefaultAnswerDateAndTime: {
-        Value: {
-          attachmentsByRange: {
-            '{0, 1}': {
-              OutputName: ' BO Today',
-              OutputUUID: '9C8832BD-D74E-4690-B2BA-B344446E1086',
-              Type: 'ActionOutput',
-            },
-          },
-          string: '￼',
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
+    sc.Action('is.workflow.actions.ask', name='Date', params={
+      local outputs = super.outputs,
+      WFAskActionDefaultAnswerDateAndTime: sc.Val('${ BO Today}', outputs),
       WFAskActionPrompt: 'From what starting point would you like to remove calendar event(s)?',
       WFInputType: 'Date and Time',
     }),
 
-    sc.Action('is.workflow.actions.adjustdate', {
-      CustomOutputName: 'BOD',
-      UUID: 'B6227E43-DB3D-4BE7-9434-6FFB2DFBED82',
+    sc.Action('is.workflow.actions.adjustdate', name='BOD', params={
+      local outputs = super.outputs,
       WFAdjustOperation: 'Get Start of Day',
-      WFDate: {
-        Value: {
-          attachmentsByRange: {
-            '{0, 1}': {
-              OutputName: 'Date',
-              OutputUUID: '751EAB73-C760-4A40-9DDE-50CE049963E8',
-              Type: 'ActionOutput',
-            },
-          },
-          string: '￼',
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
+      WFDate: sc.Val('${Date}', outputs),
     }),
 
-    sc.Action('is.workflow.actions.adjustdate', {
-      CustomOutputName: 'EOD',
-      UUID: '50F1238A-5726-4B34-960A-D71A2E8CA595',
-      WFDate: {
-        Value: {
-          attachmentsByRange: {
-            '{0, 1}': {
-              OutputName: 'BOD',
-              OutputUUID: 'B6227E43-DB3D-4BE7-9434-6FFB2DFBED82',
-              Type: 'ActionOutput',
-            },
-          },
-          string: '￼',
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
+    sc.Action('is.workflow.actions.adjustdate', name='EOD', params={
+      local outputs = super.outputs,
+      WFDate: sc.Val('${BOD}', outputs),
       WFDuration: {
         Value: {
           Magnitude: '1',
@@ -139,23 +96,10 @@ local sc = import 'shortcuts.libsonnet';
       },
     }),
 
-    sc.Action('is.workflow.actions.adjustdate', {
-      CustomOutputName: 'EOD-1m',
-      UUID: 'BD071FCA-3F5E-45CD-B083-3D2E4F51BB12',
+    sc.Action('is.workflow.actions.adjustdate', name='EOD-1m', params={
+      local outputs = super.outputs,
       WFAdjustOperation: 'Subtract',
-      WFDate: {
-        Value: {
-          attachmentsByRange: {
-            '{0, 1}': {
-              OutputName: 'EOD',
-              OutputUUID: '50F1238A-5726-4B34-960A-D71A2E8CA595',
-              Type: 'ActionOutput',
-            },
-          },
-          string: '￼',
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
+      WFDate: sc.Val('${EOD}', outputs),
       WFDuration: {
         Value: {
           Magnitude: '1',
@@ -165,30 +109,13 @@ local sc = import 'shortcuts.libsonnet';
       },
     }),
 
-    sc.Action('is.workflow.actions.ask', {
-      CustomOutputName: 'End date',
-      UUID: '3EAB2872-52EE-4793-A13C-E79794D3C722',
-      WFAskActionDefaultAnswerDateAndTime: {
-        Value: {
-          attachmentsByRange: {
-            '{0, 1}': {
-              OutputName: 'EOD-1m',
-              OutputUUID: 'BD071FCA-3F5E-45CD-B083-3D2E4F51BB12',
-              Type: 'ActionOutput',
-            },
-          },
-          string: '￼',
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
+    sc.Action('is.workflow.actions.ask', name='End date', params={
+      local outputs = super.outputs,
+      WFAskActionDefaultAnswerDateAndTime: sc.Val('${EOD-1m}', outputs),
       WFAskActionPrompt: {
         Value: {
           attachmentsByRange: {
-            '{5, 1}': {
-              OutputName: 'Date',
-              OutputUUID: '751EAB73-C760-4A40-9DDE-50CE049963E8',
-              Type: 'ActionOutput',
-            },
+            '{5, 1}': sc.Ref(outputs, 'Date'),
           },
           string: 'From ￼ until when?',
         },
@@ -197,8 +124,8 @@ local sc = import 'shortcuts.libsonnet';
       WFInputType: 'Date and Time',
     }),
 
-    sc.Action('is.workflow.actions.filter.calendarevents', {
-      UUID: '785EA6B4-C792-439A-82BE-4958C8D772B4',
+    sc.Action('is.workflow.actions.filter.calendarevents', name='Calendar Events', params={
+      local outputs = super.outputs,
       WFContentItemFilter: {
         Value: {
           WFActionParameterFilterPrefix: 1,
@@ -209,22 +136,8 @@ local sc = import 'shortcuts.libsonnet';
               Property: 'Start Date',
               Removable: false,
               Values: {
-                AnotherDate: {
-                  Value: {
-                    OutputName: 'End date',
-                    OutputUUID: '3EAB2872-52EE-4793-A13C-E79794D3C722',
-                    Type: 'ActionOutput',
-                  },
-                  WFSerializationType: 'WFTextTokenAttachment',
-                },
-                Date: {
-                  Value: {
-                    OutputName: 'Date',
-                    OutputUUID: '751EAB73-C760-4A40-9DDE-50CE049963E8',
-                    Type: 'ActionOutput',
-                  },
-                  WFSerializationType: 'WFTextTokenAttachment',
-                },
+                AnotherDate: sc.Ref(outputs, 'End date', att=true),
+                Date: sc.Ref(outputs, 'Date', att=true),
                 Number: 7,
                 Unit: 16,
               },
@@ -237,38 +150,22 @@ local sc = import 'shortcuts.libsonnet';
       WFContentItemLimitEnabled: false,
     }),
 
-    sc.Action('is.workflow.actions.dictionary', {
-      CustomOutputName: 'Empty Dictionary',
-      UUID: 'EB9450A0-4C44-4A8C-80EA-32FFD8239363',
-    }),
+    sc.Action('is.workflow.actions.dictionary', name='Empty Dictionary'),
 
     sc.Action('is.workflow.actions.setvariable', {
-      WFInput: {
-        Value: {
-          OutputName: 'Empty Dictionary',
-          OutputUUID: 'EB9450A0-4C44-4A8C-80EA-32FFD8239363',
-          Type: 'ActionOutput',
-        },
-        WFSerializationType: 'WFTextTokenAttachment',
-      },
+      local outputs = super.outputs,
+      WFInput: sc.Ref(outputs, 'Empty Dictionary', att=true),
       WFVariableName: 'Calendars',
     }),
 
     sc.Action('is.workflow.actions.repeat.each', {
+      local outputs = super.outputs,
       GroupingIdentifier: 'CBB4D415-7EAF-43E8-B6A7-1525C5C1C213',
       WFControlFlowMode: 0,
-      WFInput: {
-        Value: {
-          OutputName: 'Calendar Events',
-          OutputUUID: '785EA6B4-C792-439A-82BE-4958C8D772B4',
-          Type: 'ActionOutput',
-        },
-        WFSerializationType: 'WFTextTokenAttachment',
-      },
+      WFInput: sc.Ref(outputs, 'Calendar Events', att=true),
     }),
 
-    sc.Action('is.workflow.actions.getvalueforkey', {
-      UUID: '8A9AF143-77BE-4BC6-AC99-FF8E59E0BA37',
+    sc.Action('is.workflow.actions.getvalueforkey', name='Dictionary Value', params={
       WFDictionaryKey: {
         Value: {
           attachmentsByRange: {
@@ -287,41 +184,23 @@ local sc = import 'shortcuts.libsonnet';
         },
         WFSerializationType: 'WFTextTokenString',
       },
-      WFInput: {
-        Value: {
-          Type: 'Variable',
-          VariableName: 'Calendars',
-        },
-        WFSerializationType: 'WFTextTokenAttachment',
-      },
+      WFInput: sc.Ref(outputs, 'Vars.Calendars', att=true),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
+      local outputs = super.outputs,
       GroupingIdentifier: '907D0584-C928-4F10-AB21-A7932B7DDF58',
       WFCondition: 100,
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: {
-          Value: {
-            OutputName: 'Dictionary Value',
-            OutputUUID: '8A9AF143-77BE-4BC6-AC99-FF8E59E0BA37',
-            Type: 'ActionOutput',
-          },
-          WFSerializationType: 'WFTextTokenAttachment',
-        },
+        Variable: sc.Ref(outputs, 'Dictionary Value', att=true),
       },
     }),
 
     sc.Action('is.workflow.actions.math', {
-      WFInput: {
-        Value: {
-          OutputName: 'Dictionary Value',
-          OutputUUID: '8A9AF143-77BE-4BC6-AC99-FF8E59E0BA37',
-          Type: 'ActionOutput',
-        },
-        WFSerializationType: 'WFTextTokenAttachment',
-      },
+      local outputs = super.outputs,
+      WFInput: sc.Ref(outputs, 'Dictionary Value', att=true),
       WFMathOperand: '1',
     }),
 
@@ -331,25 +210,17 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.number', {
-      UUID: 'A751C30F-98C4-4E65-8D0E-DE48745E3F40',
       WFNumberActionNumber: '1',
     }),
 
-    sc.Action('is.workflow.actions.conditional', {
+    sc.Action('is.workflow.actions.conditional', name='If Result', params={
       GroupingIdentifier: '907D0584-C928-4F10-AB21-A7932B7DDF58',
-      UUID: 'BEADEB7F-5950-494E-8BBB-8677C0BD29B4',
       WFControlFlowMode: 2,
     }),
 
-    sc.Action('is.workflow.actions.setvalueforkey', {
-      UUID: 'EE793AB2-10F6-4BC5-A388-00596589BD6B',
-      WFDictionary: {
-        Value: {
-          Type: 'Variable',
-          VariableName: 'Calendars',
-        },
-        WFSerializationType: 'WFTextTokenAttachment',
-      },
+    sc.Action('is.workflow.actions.setvalueforkey', name='Dictionary', params={
+      local outputs = super.outputs,
+      WFDictionary: sc.Ref(outputs, 'Vars.Calendars', att=true),
       WFDictionaryKey: {
         Value: {
           attachmentsByRange: {
@@ -368,48 +239,23 @@ local sc = import 'shortcuts.libsonnet';
         },
         WFSerializationType: 'WFTextTokenString',
       },
-      WFDictionaryValue: {
-        Value: {
-          attachmentsByRange: {
-            '{0, 1}': {
-              OutputName: 'If Result',
-              OutputUUID: 'BEADEB7F-5950-494E-8BBB-8677C0BD29B4',
-              Type: 'ActionOutput',
-            },
-          },
-          string: '￼',
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
+      WFDictionaryValue: sc.Val('${If Result}', outputs),
     }),
 
     sc.Action('is.workflow.actions.setvariable', {
-      WFInput: {
-        Value: {
-          OutputName: 'Dictionary',
-          OutputUUID: 'EE793AB2-10F6-4BC5-A388-00596589BD6B',
-          Type: 'ActionOutput',
-        },
-        WFSerializationType: 'WFTextTokenAttachment',
-      },
+      local outputs = super.outputs,
+      WFInput: sc.Ref(outputs, 'Dictionary', att=true),
       WFVariableName: 'Calendars',
     }),
 
     sc.Action('is.workflow.actions.repeat.each', {
       GroupingIdentifier: 'CBB4D415-7EAF-43E8-B6A7-1525C5C1C213',
-      UUID: 'D560F024-3B43-4A34-B531-F808298BB40E',
       WFControlFlowMode: 2,
     }),
 
     sc.Action('is.workflow.actions.setvariable', {
-      WFInput: {
-        Value: {
-          OutputName: 'Empty Dictionary',
-          OutputUUID: 'EB9450A0-4C44-4A8C-80EA-32FFD8239363',
-          Type: 'ActionOutput',
-        },
-        WFSerializationType: 'WFTextTokenAttachment',
-      },
+      local outputs = super.outputs,
+      WFInput: sc.Ref(outputs, 'Empty Dictionary', att=true),
       WFVariableName: 'Calendar Labels',
     }),
 
@@ -431,126 +277,57 @@ local sc = import 'shortcuts.libsonnet';
       },
     }),
 
-    sc.Action('is.workflow.actions.getvalueforkey', {
-      CustomOutputName: '# Events',
-      UUID: 'A16846BD-83C8-4B46-B8FB-452A561BD3F4',
-      WFDictionaryKey: {
-        Value: {
-          attachmentsByRange: {
-            '{0, 1}': {
-              Type: 'Variable',
-              VariableName: 'Repeat Item',
-            },
-          },
-          string: '￼',
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
-      WFInput: {
-        Value: {
-          Type: 'Variable',
-          VariableName: 'Calendars',
-        },
-        WFSerializationType: 'WFTextTokenAttachment',
-      },
+    sc.Action('is.workflow.actions.getvalueforkey', name='# Events', params={
+      WFDictionaryKey: sc.Val('${Vars.Repeat Item}', outputs),
+      WFInput: sc.Ref(outputs, 'Vars.Calendars', att=true),
     }),
 
-    sc.Action('is.workflow.actions.setvalueforkey', {
-      UUID: '755FFB2D-A505-47FF-ACE8-9827DAC4F205',
-      WFDictionary: {
-        Value: {
-          Type: 'Variable',
-          VariableName: 'Calendar Labels',
-        },
-        WFSerializationType: 'WFTextTokenAttachment',
-      },
+    sc.Action('is.workflow.actions.setvalueforkey', name='Dictionary', params={
+      local outputs = super.outputs,
+      WFDictionary: sc.Ref(outputs, 'Vars.Calendar Labels', att=true),
       WFDictionaryKey: {
         Value: {
           attachmentsByRange: {
-            '{0, 1}': {
-              Type: 'Variable',
-              VariableName: 'Repeat Item',
-            },
-            '{3, 1}': {
-              OutputName: '# Events',
-              OutputUUID: 'A16846BD-83C8-4B46-B8FB-452A561BD3F4',
-              Type: 'ActionOutput',
-            },
+            '{0, 1}': sc.Ref(outputs, 'Vars.Repeat Item'),
+            '{3, 1}': sc.Ref(outputs, '# Events'),
           },
           string: '￼ (￼ events)',
         },
         WFSerializationType: 'WFTextTokenString',
       },
-      WFDictionaryValue: {
-        Value: {
-          attachmentsByRange: {
-            '{0, 1}': {
-              Type: 'Variable',
-              VariableName: 'Repeat Item',
-            },
-          },
-          string: '￼',
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
+      WFDictionaryValue: sc.Val('${Vars.Repeat Item}', outputs),
     }),
 
     sc.Action('is.workflow.actions.setvariable', {
-      WFInput: {
-        Value: {
-          OutputName: 'Dictionary',
-          OutputUUID: '755FFB2D-A505-47FF-ACE8-9827DAC4F205',
-          Type: 'ActionOutput',
-        },
-        WFSerializationType: 'WFTextTokenAttachment',
-      },
+      local outputs = super.outputs,
+      WFInput: sc.Ref(outputs, 'Dictionary', att=true),
       WFVariableName: 'Calendar Labels',
     }),
 
     sc.Action('is.workflow.actions.repeat.each', {
       GroupingIdentifier: 'EBD046C5-2E6C-466F-99D6-E628B5EEF470',
-      UUID: '9FFD183D-FBC1-483B-8A06-FF02516C9A5E',
       WFControlFlowMode: 2,
     }),
 
-    sc.Action('is.workflow.actions.choosefromlist', {
-      UUID: '8A3CE8F1-2D21-4EF2-A913-F6C5DB2C9A04',
+    sc.Action('is.workflow.actions.choosefromlist', name='Chosen Item', params={
       WFChooseFromListActionPrompt: 'Which calendar(s) would you like to remove events from?',
       WFChooseFromListActionSelectAll: true,
       WFChooseFromListActionSelectMultiple: true,
-      WFInput: {
-        Value: {
-          Type: 'Variable',
-          VariableName: 'Calendar Labels',
-        },
-        WFSerializationType: 'WFTextTokenAttachment',
-      },
+      WFInput: sc.Ref(outputs, 'Vars.Calendar Labels', att=true),
     }),
 
     sc.Action('is.workflow.actions.repeat.each', {
+      local outputs = super.outputs,
       GroupingIdentifier: '786CCF50-3303-4657-9611-7B2E70BC010B',
       WFControlFlowMode: 0,
-      WFInput: {
-        Value: {
-          OutputName: 'Calendar Events',
-          OutputUUID: '785EA6B4-C792-439A-82BE-4958C8D772B4',
-          Type: 'ActionOutput',
-        },
-        WFSerializationType: 'WFTextTokenAttachment',
-      },
+      WFInput: sc.Ref(outputs, 'Calendar Events', att=true),
     }),
 
     sc.Action('is.workflow.actions.repeat.each', {
+      local outputs = super.outputs,
       GroupingIdentifier: 'E0F92588-4F66-4EE0-A829-7CAC87548509',
       WFControlFlowMode: 0,
-      WFInput: {
-        Value: {
-          OutputName: 'Chosen Item',
-          OutputUUID: '8A3CE8F1-2D21-4EF2-A913-F6C5DB2C9A04',
-          Type: 'ActionOutput',
-        },
-        WFSerializationType: 'WFTextTokenAttachment',
-      },
+      WFInput: sc.Ref(outputs, 'Chosen Item', att=true),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
@@ -594,13 +371,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.getvariable', {
-      WFVariable: {
-        Value: {
-          Type: 'Variable',
-          VariableName: 'Repeat Item',
-        },
-        WFSerializationType: 'WFTextTokenAttachment',
-      },
+      WFVariable: sc.Ref(outputs, 'Vars.Repeat Item', att=true),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
@@ -617,40 +388,24 @@ local sc = import 'shortcuts.libsonnet';
 
     sc.Action('is.workflow.actions.repeat.each', {
       GroupingIdentifier: 'E0F92588-4F66-4EE0-A829-7CAC87548509',
-      UUID: 'D7335E23-47E5-4B5B-90CD-DD01D2AC2313',
       WFControlFlowMode: 2,
     }),
 
-    sc.Action('is.workflow.actions.repeat.each', {
+    sc.Action('is.workflow.actions.repeat.each', name='Repeat Results', params={
       GroupingIdentifier: '786CCF50-3303-4657-9611-7B2E70BC010B',
-      UUID: 'E4D5A7B9-020D-4608-9D21-EE3F0E591B5F',
       WFControlFlowMode: 2,
     }),
 
-    sc.Action('is.workflow.actions.choosefromlist', {
-      UUID: '2A0A2510-F2CA-4C51-8DF9-77201E18D859',
+    sc.Action('is.workflow.actions.choosefromlist', name='Chosen Item', params={
+      local outputs = super.outputs,
       WFChooseFromListActionPrompt: 'Which calendar event(s) would you like to delete?',
       WFChooseFromListActionSelectMultiple: true,
-      WFInput: {
-        Value: {
-          OutputName: 'Repeat Results',
-          OutputUUID: 'E4D5A7B9-020D-4608-9D21-EE3F0E591B5F',
-          Type: 'ActionOutput',
-        },
-        WFSerializationType: 'WFTextTokenAttachment',
-      },
+      WFInput: sc.Ref(outputs, 'Repeat Results', att=true),
     }),
 
     sc.Action('is.workflow.actions.removeevents', {
-      UUID: '8D176858-DB61-4DE6-AA23-E749EB2FA5C8',
-      WFInputEvents: {
-        Value: {
-          OutputName: 'Chosen Item',
-          OutputUUID: '2A0A2510-F2CA-4C51-8DF9-77201E18D859',
-          Type: 'ActionOutput',
-        },
-        WFSerializationType: 'WFTextTokenAttachment',
-      },
+      local outputs = super.outputs,
+      WFInputEvents: sc.Ref(outputs, 'Chosen Item', att=true),
     }),
 
   ]),

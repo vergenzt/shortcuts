@@ -11,7 +11,6 @@ local sc = import 'shortcuts.libsonnet';
         Name: 'Reminders',
         TeamIdentifier: '0000000000',
       },
-      UUID: '5B7D73D3-A688-4DC3-88B0-06F72E622408',
       name: {
         Value: {
           attachmentsByRange: {

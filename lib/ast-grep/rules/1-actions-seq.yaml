@@ -1,9 +1,13 @@
-id: 1-actions-seq
+id: actions-seq
 language: jsonnet
 
 rule:
-  matches: actions-list
   pattern: '[ $$$ACTIONS ]'
+  inside:
+    kind: field
+    has:
+      kind: fieldname
+      regex: WFWorkflowActions
 
 rewriters:
 

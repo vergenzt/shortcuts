@@ -1,4 +1,4 @@
-id: 3-unneeded-uuid
+id: unneeded-uuid
 language: jsonnet
 
 rule:

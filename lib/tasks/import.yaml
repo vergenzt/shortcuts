@@ -60,24 +60,26 @@ tasks:
         SHORTCUT_PATH: '{{.SHORTCUT_PATH}}'
     requires:
       vars: ["SOURCE_DIR", "BUILD_DIR", "SHORTCUT_PATH"]
+    vars:
+      SRC: '{{.SOURCE_DIR}}/{{.SHORTCUT_PATH}}.jsonnet'
 
     cmds:
     - { silent: true, cmd: 'mkdir -p {{q .SOURCE_DIR}}/{{q (dir .SHORTCUT_PATH)}}' }
 
-    - >-
-      jsonnetfmt
-      {{q .BUILD_DIR}}/{{q .SHORTCUT_PATH}}-in.json
-      >
-      {{q .SOURCE_DIR}}/{{q .SHORTCUT_PATH}}.jsonnet
+    - jsonnetfmt {{q .BUILD_DIR}}/{{q .SHORTCUT_PATH}}-in.json > {{q .SRC}}
+
 
     - >-
-      for phase in $(seq 3); do 
+      phase=1;
+      while find lib/ast-grep/rules/$phase-* -quit 2>/dev/null; do
       seen=();
       while ! printf '%s\n' "${seen[@]}" | grep -qF -e "${next_sha:=next}"; do
       seen+=("${next_sha:-}");
-      sg scan --update-all --filter="$phase-" {{q .SOURCE_DIR}}/{{q .SHORTCUT_PATH}}.jsonnet
-      &&
-      jsonnetfmt -i {{q .SOURCE_DIR}}/{{q .SHORTCUT_PATH}}.jsonnet;
-      next_sha=$(sha1sum {{q .SOURCE_DIR}}/{{q .SHORTCUT_PATH}}.jsonnet | awk '{print $1}');
+      find lib/ast-grep/rules/$phase-*
+      -exec sg scan --update-all --rule='{}' {{q .SRC}} \;
+      -exec jsonnetfmt -i {{q .SRC}} \;
+      ;
+      next_sha=$(sha1sum {{q .SRC}} | awk '{print $1}');
       done;
+      phase=$((phase+1));
       done;

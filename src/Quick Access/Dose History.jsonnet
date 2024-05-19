@@ -10,20 +10,16 @@ local sc = import 'shortcuts.libsonnet';
 
     sc.Action('is.workflow.actions.runworkflow', {
       local outputs = super.outputs,
-      UUID: '1CEEAC73-E5EA-4E73-BD39-B5F7F2B05175',
-      WFInput: {
-        Value: sc.Ref(outputs, 'Value', aggs=[
-          {
-            CoercionItemClass: 'WFDictionaryContentItem',
-            Type: 'WFCoercionVariableAggrandizement',
-          },
-          {
-            DictionaryKey: 'spreadsheetId',
-            Type: 'WFDictionaryValueVariableAggrandizement',
-          },
-        ]),
-        WFSerializationType: 'WFTextTokenAttachment',
-      },
+      WFInput: sc.Ref(outputs, 'Value', aggs=[
+        {
+          CoercionItemClass: 'WFDictionaryContentItem',
+          Type: 'WFCoercionVariableAggrandizement',
+        },
+        {
+          DictionaryKey: 'spreadsheetId',
+          Type: 'WFDictionaryValueVariableAggrandizement',
+        },
+      ], att=true),
       WFWorkflow: {
         isSelf: false,
         workflowIdentifier: 'B96A6DDC-DDD1-4684-9AC3-BFF4D9C8DC54',

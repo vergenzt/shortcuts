@@ -1,0 +1,75 @@
+id: rewrite-referrers
+language: jsonnet
+
+utils:
+
+  reference: &reference
+    any:
+    - pattern: >
+        {
+          OutputName: $REF_NAME,
+          OutputUUID: $UUID,
+          Type: 'ActionOutput',
+        }
+    - pattern: >
+        {
+          Aggrandizements: $AGGS,
+          OutputName: $REF_NAME,
+          OutputUUID: $UUID,
+          Type: 'ActionOutput',
+        }
+
+  referrer: &referrer
+    kind: functioncall
+    pattern: sc.Action($$$)
+    has:
+      stopBy: end
+      any: [*reference]
+
+rule:
+  pattern: sc.ActionsSeq($ACTIONS_ARR)
+
+rewriters:
+
+- id: rewrite-references
+  rule: *reference
+  transform:
+    AGGS_ARG:
+      replace:
+        source: $AGGS
+        replace: '^'
+        by: ', aggs='
+  fix: >-
+    sc.Ref(outputs, $REF_NAME$AGGS_ARG)
+
+- id: rewrite-referrers
+  rule:
+    any: [*referrer]
+    pattern: $REFERRER
+  transform:
+    REFERRER_2:
+      rewrite:
+        source: $REFERRER
+        rewriters: [rewrite-references]
+    REFERRER_3:
+      replace:
+        source: $REFERRER_2
+        replace: ', (params=)?\{'
+        by: "$0\nlocal outputs = super.outputs,"
+    REFERRER_4:
+      replace:
+        source: $REFERRER_3
+        replace: "(\\s*local outputs = super.outputs,\n)+"
+        by:       "\nlocal outputs = super.outputs,\n"
+  fix: >-
+    $REFERRER_4
+
+transform:
+  ACTIONS_ARR_WITH_REFS:
+    rewrite:
+      source: $ACTIONS_ARR
+      rewriters:
+      - rewrite-referrers
+
+fix: >-
+  sc.ActionsSeq($ACTIONS_ARR_WITH_REFS)

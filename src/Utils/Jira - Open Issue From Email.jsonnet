@@ -5,17 +5,7 @@ local sc = import 'shortcuts.libsonnet';
   WFWorkflowActions: sc.ActionsSeq([
 
     sc.Action('is.workflow.actions.text.replace', name='Updated Text', params={
-      WFInput: {
-        Value: {
-          attachmentsByRange: {
-            '{0, 1}': {
-              Type: 'ExtensionInput',
-            },
-          },
-          string: '￼',
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
+      WFInput: sc.Val('${Shortcut Input}', outputs),
       WFReplaceTextCaseSensitive: false,
       WFReplaceTextFind: '^<|>$',
       WFReplaceTextRegularExpression: true,
@@ -28,54 +18,24 @@ local sc = import 'shortcuts.libsonnet';
           WFDictionaryFieldValueItems: [
             {
               WFItemType: 0,
-              WFKey: {
-                Value: {
-                  string: 'method',
-                },
-                WFSerializationType: 'WFTextTokenString',
-              },
-              WFValue: {
-                Value: {
-                  string: 'GET',
-                },
-                WFSerializationType: 'WFTextTokenString',
-              },
+              WFKey: sc.Val('method'),
+              WFValue: sc.Val('GET'),
             },
             {
               WFItemType: 0,
-              WFKey: {
-                Value: {
-                  string: 'path',
-                },
-                WFSerializationType: 'WFTextTokenString',
-              },
-              WFValue: {
-                Value: {
-                  string: 'search',
-                },
-                WFSerializationType: 'WFTextTokenString',
-              },
+              WFKey: sc.Val('path'),
+              WFValue: sc.Val('search'),
             },
             {
               WFItemType: 1,
-              WFKey: {
-                Value: {
-                  string: 'params',
-                },
-                WFSerializationType: 'WFTextTokenString',
-              },
+              WFKey: sc.Val('params'),
               WFValue: {
                 Value: {
                   Value: {
                     WFDictionaryFieldValueItems: [
                       {
                         WFItemType: 0,
-                        WFKey: {
-                          Value: {
-                            string: 'jql',
-                          },
-                          WFSerializationType: 'WFTextTokenString',
-                        },
+                        WFKey: sc.Val('jql'),
                         WFValue: {
                           Value: {
                             attachmentsByRange: {
@@ -101,10 +61,7 @@ local sc = import 'shortcuts.libsonnet';
 
     sc.Action('is.workflow.actions.runworkflow', name='Shortcut Result', params={
       local outputs = super.outputs,
-      WFInput: {
-        Value: sc.Ref(outputs, 'Dictionary'),
-        WFSerializationType: 'WFTextTokenAttachment',
-      },
+      WFInput: sc.Ref(outputs, 'Dictionary', att=true),
       WFWorkflow: {
         isSelf: false,
         workflowIdentifier: 'B245F907-CA3B-4273-B2B7-BE1A4BAE3F79',
@@ -117,51 +74,30 @@ local sc = import 'shortcuts.libsonnet';
       local outputs = super.outputs,
       GroupingIdentifier: '9A814540-129A-4AE3-A0FA-CCA13EBE28DC',
       WFControlFlowMode: 0,
-      WFInput: {
-        Value: sc.Ref(outputs, 'Shortcut Result', aggs=[
-          {
-            CoercionItemClass: 'WFDictionaryContentItem',
-            Type: 'WFCoercionVariableAggrandizement',
-          },
-          {
-            DictionaryKey: 'issues',
-            Type: 'WFDictionaryValueVariableAggrandizement',
-          },
-        ]),
-        WFSerializationType: 'WFTextTokenAttachment',
-      },
+      WFInput: sc.Ref(outputs, 'Shortcut Result', aggs=[
+        {
+          CoercionItemClass: 'WFDictionaryContentItem',
+          Type: 'WFCoercionVariableAggrandizement',
+        },
+        {
+          DictionaryKey: 'issues',
+          Type: 'WFDictionaryValueVariableAggrandizement',
+        },
+      ], att=true),
     }),
 
     sc.Action('is.workflow.actions.dictionary', name='Dictionary'),
 
     sc.Action('is.workflow.actions.setvalueforkey', name='Dictionary', params={
       local outputs = super.outputs,
-      WFDictionary: {
-        Value: sc.Ref(outputs, 'Dictionary'),
-        WFSerializationType: 'WFTextTokenAttachment',
-      },
+      WFDictionary: sc.Ref(outputs, 'Dictionary', att=true),
       WFDictionaryKey: 'issue',
-      WFDictionaryValue: {
-        Value: {
-          attachmentsByRange: {
-            '{0, 1}': {
-              Type: 'Variable',
-              VariableName: 'Repeat Item',
-            },
-          },
-          string: '￼',
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
+      WFDictionaryValue: sc.Val('${Vars.Repeat Item}', outputs),
     }),
 
     sc.Action('is.workflow.actions.runworkflow', {
       local outputs = super.outputs,
-      UUID: '991068DD-ABE6-4C1A-83CF-7CBD3C9D26BD',
-      WFInput: {
-        Value: sc.Ref(outputs, 'Dictionary'),
-        WFSerializationType: 'WFTextTokenAttachment',
-      },
+      WFInput: sc.Ref(outputs, 'Dictionary', att=true),
       WFWorkflow: {
         isSelf: false,
         workflowIdentifier: 'DE45228B-5A30-4A30-AF37-DA40929C57C2',
