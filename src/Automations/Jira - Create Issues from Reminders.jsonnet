@@ -5,6 +5,7 @@ local sc = import 'shortcuts.libsonnet';
   WFWorkflowActions: sc.ActionsSeq([
 
     sc.Action('is.workflow.actions.filter.reminders', name='Reminders', params={
+      local state = super.state,
       WFContentItemFilter: {
         Value: {
           WFActionParameterFilterPrefix: 1,
@@ -44,6 +45,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('com.atlassian.jira.app.CreateIssueIntent', name='Issue', params={
+      local state = super.state,
       account: 'vergenzt@gmail.com',
       issueType: {
         displayString: 'Task',
@@ -58,6 +60,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.gettext', name='Text', params={
+      local state = super.state,
       WFTextActionText: {
         Value: {
           attachmentsByRange: {
@@ -106,6 +109,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.setters.reminders', {
+      local state = super.state,
       Mode: 'Set',
       WFContentItemPropertyName: 'List',
       WFInput: sc.Ref(state, 'Vars.Repeat Item', att=true),
@@ -165,6 +169,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.repeat.each', {
+      local state = super.state,
       GroupingIdentifier: '06C7177F-0DD0-4EF7-8354-638BF3E43DE8',
       WFControlFlowMode: 2,
     }),

@@ -5,6 +5,7 @@ local sc = import 'shortcuts.libsonnet';
   WFWorkflowActions: sc.ActionsSeq([
 
     sc.Action('is.workflow.actions.choosefrommenu', {
+      local state = super.state,
       GroupingIdentifier: '2862782E-41E9-4DD1-B0E8-1A8D520D17A6',
       WFControlFlowMode: 0,
       WFMenuItems: [
@@ -16,17 +17,20 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.choosefrommenu', {
+      local state = super.state,
       GroupingIdentifier: '2862782E-41E9-4DD1-B0E8-1A8D520D17A6',
       WFControlFlowMode: 1,
       WFMenuItemTitle: 'Yes',
     }),
 
     sc.Action('is.workflow.actions.alert', {
+      local state = super.state,
       WFAlertActionMessage: "Click Continue to open the calendar app and review the time period you'd like to clear. When you're ready, return to Shortcuts to continue.",
       WFAlertActionTitle: 'Clear Calendar for Time Period',
     }),
 
     sc.Action('is.workflow.actions.openapp', {
+      local state = super.state,
       WFAppIdentifier: 'com.apple.iCal',
       WFSelectedApp: {
         BundleIdentifier: 'com.apple.iCal',
@@ -38,12 +42,14 @@ local sc = import 'shortcuts.libsonnet';
     sc.Action('is.workflow.actions.waittoreturn'),
 
     sc.Action('is.workflow.actions.choosefrommenu', {
+      local state = super.state,
       GroupingIdentifier: '2862782E-41E9-4DD1-B0E8-1A8D520D17A6',
       WFControlFlowMode: 1,
       WFMenuItemTitle: 'No',
     }),
 
     sc.Action('is.workflow.actions.choosefrommenu', {
+      local state = super.state,
       GroupingIdentifier: '2862782E-41E9-4DD1-B0E8-1A8D520D17A6',
       WFControlFlowMode: 1,
       WFMenuItemTitle: 'Cancel',
@@ -52,11 +58,13 @@ local sc = import 'shortcuts.libsonnet';
     sc.Action('is.workflow.actions.exit'),
 
     sc.Action('is.workflow.actions.choosefrommenu', {
+      local state = super.state,
       GroupingIdentifier: '2862782E-41E9-4DD1-B0E8-1A8D520D17A6',
       WFControlFlowMode: 2,
     }),
 
     sc.Action('is.workflow.actions.adjustdate', name=' BO Today', params={
+      local state = super.state,
       WFAdjustOperation: 'Get Start of Day',
       WFDate: {
         Value: {
@@ -166,6 +174,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.getvalueforkey', name='Dictionary Value', params={
+      local state = super.state,
       WFDictionaryKey: {
         Value: {
           attachmentsByRange: {
@@ -205,15 +214,18 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.conditional', {
+      local state = super.state,
       GroupingIdentifier: '907D0584-C928-4F10-AB21-A7932B7DDF58',
       WFControlFlowMode: 1,
     }),
 
     sc.Action('is.workflow.actions.number', {
+      local state = super.state,
       WFNumberActionNumber: '1',
     }),
 
     sc.Action('is.workflow.actions.conditional', name='If Result', params={
+      local state = super.state,
       GroupingIdentifier: '907D0584-C928-4F10-AB21-A7932B7DDF58',
       WFControlFlowMode: 2,
     }),
@@ -249,6 +261,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.repeat.each', {
+      local state = super.state,
       GroupingIdentifier: 'CBB4D415-7EAF-43E8-B6A7-1525C5C1C213',
       WFControlFlowMode: 2,
     }),
@@ -260,6 +273,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.repeat.each', {
+      local state = super.state,
       GroupingIdentifier: 'EBD046C5-2E6C-466F-99D6-E628B5EEF470',
       WFControlFlowMode: 0,
       WFInput: {
@@ -278,6 +292,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.getvalueforkey', name='# Events', params={
+      local state = super.state,
       WFDictionaryKey: sc.Val('${Vars.Repeat Item}', state),
       WFInput: sc.Ref(state, 'Vars.Calendars', att=true),
     }),
@@ -305,11 +320,13 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.repeat.each', {
+      local state = super.state,
       GroupingIdentifier: 'EBD046C5-2E6C-466F-99D6-E628B5EEF470',
       WFControlFlowMode: 2,
     }),
 
     sc.Action('is.workflow.actions.choosefromlist', name='Chosen Item', params={
+      local state = super.state,
       WFChooseFromListActionPrompt: 'Which calendar(s) would you like to remove events from?',
       WFChooseFromListActionSelectAll: true,
       WFChooseFromListActionSelectMultiple: true,
@@ -331,6 +348,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.conditional', {
+      local state = super.state,
       GroupingIdentifier: 'CCFFDFAE-73C1-4ADD-BB35-FAA95260BB8D',
       WFCondition: 4,
       WFConditionalActionString: {
@@ -371,10 +389,12 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.getvariable', {
+      local state = super.state,
       WFVariable: sc.Ref(state, 'Vars.Repeat Item', att=true),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
+      local state = super.state,
       GroupingIdentifier: 'CCFFDFAE-73C1-4ADD-BB35-FAA95260BB8D',
       WFControlFlowMode: 1,
     }),
@@ -382,16 +402,19 @@ local sc = import 'shortcuts.libsonnet';
     sc.Action('is.workflow.actions.nothing'),
 
     sc.Action('is.workflow.actions.conditional', {
+      local state = super.state,
       GroupingIdentifier: 'CCFFDFAE-73C1-4ADD-BB35-FAA95260BB8D',
       WFControlFlowMode: 2,
     }),
 
     sc.Action('is.workflow.actions.repeat.each', {
+      local state = super.state,
       GroupingIdentifier: 'E0F92588-4F66-4EE0-A829-7CAC87548509',
       WFControlFlowMode: 2,
     }),
 
     sc.Action('is.workflow.actions.repeat.each', name='Repeat Results', params={
+      local state = super.state,
       GroupingIdentifier: '786CCF50-3303-4657-9611-7B2E70BC010B',
       WFControlFlowMode: 2,
     }),

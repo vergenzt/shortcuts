@@ -5,6 +5,7 @@ local sc = import 'shortcuts.libsonnet';
   WFWorkflowActions: sc.ActionsSeq([
 
     sc.Action('is.workflow.actions.urlencode', name='Encoded URL', params={
+      local state = super.state,
       WFInput: sc.Val('${Shortcut Input}', state),
     }),
 

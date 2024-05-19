@@ -5,6 +5,7 @@ local sc = import 'shortcuts.libsonnet';
   WFWorkflowActions: sc.ActionsSeq([
 
     sc.Action('is.workflow.actions.ask', name='Provided Input', params={
+      local state = super.state,
       WFAskActionDefaultAnswer: {
         Value: {
           attachmentsByRange: {
@@ -26,6 +27,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.selectcontacts', name='Contacts', params={
+      local state = super.state,
       WFSelectMultiple: true,
     }),
 
@@ -44,6 +46,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.properties.contacts', name='Group', params={
+      local state = super.state,
       WFContentItemPropertyName: sc.Ref(state, 'Vars.Repeat Item 2', att=true),
       WFInput: sc.Ref(state, 'Vars.Repeat Item', att=true),
     }),
@@ -65,6 +68,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.repeat.each', {
+      local state = super.state,
       GroupingIdentifier: '55D8D462-8872-4045-9F46-91174853FBC0',
       WFControlFlowMode: 2,
     }),
@@ -81,6 +85,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.repeat.each', {
+      local state = super.state,
       GroupingIdentifier: '4CC0F7FC-67E5-4A99-9E5B-355E2F0B56ED',
       WFControlFlowMode: 2,
     }),

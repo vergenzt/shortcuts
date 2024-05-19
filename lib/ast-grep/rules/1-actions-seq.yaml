@@ -18,8 +18,17 @@ rewriters:
         WFWorkflowActionIdentifier: $ID,
         WFWorkflowActionParameters: $PARAMS,
       }
+  transform:
+    PARAMS_INNER:
+      replace:
+        source: $PARAMS
+        replace: ^\{\s*|\s*\}$
+        by: ''
   fix: |-
-    sc.Action($ID, $PARAMS)
+    sc.Action($ID, {
+      local state = super.state,
+      $PARAMS_INNER
+    })
 
 transform:
   ACTIONS_ARR:

@@ -5,6 +5,7 @@ local sc = import 'shortcuts.libsonnet';
   WFWorkflowActions: sc.ActionsSeq([
 
     sc.Action('is.workflow.actions.runworkflow', {
+      local state = super.state,
       WFWorkflow: {
         isSelf: false,
         workflowIdentifier: '410F7B2D-3951-4BAE-A70D-514A8986662E',
@@ -14,6 +15,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('dk.simonbs.DataJar.GetValueIntent', name='Value', params={
+      local state = super.state,
       keyPath: 'jira-config',
     }),
 
@@ -40,6 +42,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('dk.simonbs.DataJar.GetValueIntent', name='Filters by First Issue Age', params={
+      local state = super.state,
       keyPath: 'jira-cache.Filters & Issues by First Issue Age',
     }),
 
@@ -56,6 +59,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.detect.dictionary', name='Filter Description Dictionary', params={
+      local state = super.state,
       WFInput: {
         Value: {
           Aggrandizements: [
@@ -76,6 +80,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.repeat.each', {
+      local state = super.state,
       GroupingIdentifier: 'E0CA601A-6D60-4670-B03D-08FB3BEAA176',
       WFControlFlowMode: 0,
       WFInput: {
@@ -98,6 +103,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.dictionary', name='Dictionary', params={
+      local state = super.state,
       WFItems: {
         Value: {
           WFDictionaryFieldValueItems: [
@@ -354,21 +360,25 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.conditional', {
+      local state = super.state,
       GroupingIdentifier: 'A334B26F-D55D-429E-9239-81E9A45C3671',
       WFControlFlowMode: 2,
     }),
 
     sc.Action('is.workflow.actions.conditional', {
+      local state = super.state,
       GroupingIdentifier: 'DDA9A0FE-3ABA-4A9B-A939-1777995CE8E9',
       WFControlFlowMode: 2,
     }),
 
     sc.Action('is.workflow.actions.repeat.each', {
+      local state = super.state,
       GroupingIdentifier: 'E0CA601A-6D60-4670-B03D-08FB3BEAA176',
       WFControlFlowMode: 2,
     }),
 
     sc.Action('is.workflow.actions.repeat.each', {
+      local state = super.state,
       GroupingIdentifier: 'D61B3F28-18FE-47C0-87CB-8F871024AFE9',
       WFControlFlowMode: 2,
     }),

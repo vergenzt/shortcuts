@@ -5,6 +5,7 @@ local sc = import 'shortcuts.libsonnet';
   WFWorkflowActions: sc.ActionsSeq([
 
     sc.Action('is.workflow.actions.dictionary', name='Calendars', params={
+      local state = super.state,
       WFItems: {
         Value: {
           WFDictionaryFieldValueItems: [
@@ -47,6 +48,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('com.apple.mobiletimer-framework.MobileTimerIntents.MTGetAlarmsIntent', name='Alarm', params={
+      local state = super.state,
       ShowWhenRun: false,
       WFContentItemFilter: {
         Value: {
@@ -113,15 +115,18 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.getvariable', {
+      local state = super.state,
       WFVariable: sc.Ref(state, 'Vars.Repeat Item', att=true),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
+      local state = super.state,
       GroupingIdentifier: '06187FD3-4E72-47D2-8626-3DFC096A3334',
       WFControlFlowMode: 2,
     }),
 
     sc.Action('is.workflow.actions.repeat.each', name='Repeat Results', params={
+      local state = super.state,
       GroupingIdentifier: '25CDD183-1362-42B9-8712-863F0F571C6B',
       WFControlFlowMode: 2,
     }),
@@ -210,10 +215,12 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.setvariable', {
+      local state = super.state,
       WFVariableName: 'Alarm',
     }),
 
     sc.Action('is.workflow.actions.properties.calendarevents', name='Calendar', params={
+      local state = super.state,
       WFContentItemPropertyName: 'Calendar',
       WFInput: sc.Ref(state, 'Vars.Repeat Item', att=true),
     }),
@@ -236,11 +243,13 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.properties.calendarevents', name='Title', params={
+      local state = super.state,
       WFContentItemPropertyName: 'Title',
       WFInput: sc.Ref(state, 'Vars.Repeat Item', att=true),
     }),
 
     sc.Action('is.workflow.actions.properties.calendarevents', name='Start Date', params={
+      local state = super.state,
       WFContentItemPropertyName: 'Start Date',
       WFInput: sc.Ref(state, 'Vars.Repeat Item', att=true),
     }),
@@ -287,12 +296,14 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.repeat.each', {
+      local state = super.state,
       GroupingIdentifier: '96494FE3-384B-4E3D-A6BB-E7397D7E6D39',
       WFControlFlowMode: 0,
       WFInput: sc.Ref(state, 'Vars.Calendar Alarms', att=true),
     }),
 
     sc.Action('is.workflow.actions.setvariable', {
+      local state = super.state,
       WFInput: sc.Ref(state, 'Vars.Repeat Item 2', att=true),
       WFVariableName: 'Candidate Alarm',
     }),
@@ -323,11 +334,13 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.setvariable', {
+      local state = super.state,
       WFInput: sc.Ref(state, 'Vars.Candidate Alarm', att=true),
       WFVariableName: 'Alarm',
     }),
 
     sc.Action('is.workflow.actions.setvariable', {
+      local state = super.state,
       WFInput: sc.Ref(state, 'Vars.Repeat Index 2', att=true),
       WFVariableName: 'Alarm Index',
     }),
@@ -376,11 +389,13 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.conditional', {
+      local state = super.state,
       GroupingIdentifier: '39E438DD-244C-452F-A903-9705E3730F13',
       WFControlFlowMode: 1,
     }),
 
     sc.Action('is.workflow.actions.alert', {
+      local state = super.state,
       WFAlertActionMessage: {
         Value: {
           attachmentsByRange: {
@@ -403,6 +418,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.conditional', name='If Result', params={
+      local state = super.state,
       GroupingIdentifier: '39E438DD-244C-452F-A903-9705E3730F13',
       WFControlFlowMode: 2,
     }),
@@ -413,16 +429,19 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.conditional', {
+      local state = super.state,
       GroupingIdentifier: '158A4D5F-D62E-4F00-9F76-3C5B2B144588',
       WFControlFlowMode: 2,
     }),
 
     sc.Action('is.workflow.actions.repeat.each', {
+      local state = super.state,
       GroupingIdentifier: '96494FE3-384B-4E3D-A6BB-E7397D7E6D39',
       WFControlFlowMode: 2,
     }),
 
     sc.Action('is.workflow.actions.gettimebetweendates', name='Time Between Dates', params={
+      local state = super.state,
       WFInput: sc.Val('${Vars.Desired Alarm Time}', state),
       WFTimeUntilFromDate: {
         Value: {
@@ -450,6 +469,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.conditional', {
+      local state = super.state,
       GroupingIdentifier: '2A08F09E-877D-4A80-BE67-91123BE8A71A',
       WFCondition: 101,
       WFControlFlowMode: 0,
@@ -491,11 +511,13 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.conditional', {
+      local state = super.state,
       GroupingIdentifier: '2A08F09E-877D-4A80-BE67-91123BE8A71A',
       WFControlFlowMode: 1,
     }),
 
     sc.Action('com.apple.mobiletimer-framework.MobileTimerIntents.MTToggleAlarmIntent', {
+      local state = super.state,
       AppIntentDescriptor: {
         AppIntentIdentifier: 'ToggleAlarmIntent',
         BundleIdentifier: 'com.apple.mobiletimer',
@@ -507,11 +529,13 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.conditional', {
+      local state = super.state,
       GroupingIdentifier: '2A08F09E-877D-4A80-BE67-91123BE8A71A',
       WFControlFlowMode: 2,
     }),
 
     sc.Action('is.workflow.actions.setvalueforkey', name='Dictionary', params={
+      local state = super.state,
       WFDictionary: sc.Ref(state, 'Vars.Matched Calendar Alarm Indices', att=true),
       WFDictionaryKey: sc.Val('${Vars.Alarm Index}', state),
       WFDictionaryValue: 'yes',
@@ -524,21 +548,25 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.conditional', {
+      local state = super.state,
       GroupingIdentifier: '61CA7EFD-5FDA-4C9C-A3F2-FEB84FA5E80C',
       WFControlFlowMode: 2,
     }),
 
     sc.Action('is.workflow.actions.conditional', {
+      local state = super.state,
       GroupingIdentifier: '427BCD5D-36BB-4074-BB69-2550C082A88F',
       WFControlFlowMode: 2,
     }),
 
     sc.Action('is.workflow.actions.repeat.each', {
+      local state = super.state,
       GroupingIdentifier: '3A666097-90F9-4E2A-BBDC-A7A2F903EB04',
       WFControlFlowMode: 2,
     }),
 
     sc.Action('is.workflow.actions.count', name='Count', params={
+      local state = super.state,
       Input: sc.Ref(state, 'Vars.Calendar Alarms', att=true),
     }),
 
@@ -550,6 +578,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.getvalueforkey', name='Dictionary Value', params={
+      local state = super.state,
       WFDictionaryKey: sc.Val('${Vars.Repeat Index}', state),
       WFInput: sc.Ref(state, 'Vars.Matched Calendar Alarm Indices', att=true),
     }),
@@ -568,20 +597,24 @@ local sc = import 'shortcuts.libsonnet';
     sc.Action('is.workflow.actions.nothing'),
 
     sc.Action('is.workflow.actions.conditional', {
+      local state = super.state,
       GroupingIdentifier: '671D206A-4570-40B9-BB1A-11FC898D8925',
       WFControlFlowMode: 1,
     }),
 
     sc.Action('is.workflow.actions.getvariable', {
+      local state = super.state,
       WFVariable: sc.Ref(state, 'Vars.Repeat Index', att=true),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
+      local state = super.state,
       GroupingIdentifier: '671D206A-4570-40B9-BB1A-11FC898D8925',
       WFControlFlowMode: 2,
     }),
 
     sc.Action('is.workflow.actions.repeat.count', name='Repeat Results', params={
+      local state = super.state,
       GroupingIdentifier: '70AA4591-58E4-4CB5-8C7E-09A82EB1495D',
       WFControlFlowMode: 2,
     }),
@@ -593,12 +626,14 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.repeat.each', {
+      local state = super.state,
       GroupingIdentifier: 'FA4A18C4-308D-44AC-8E2E-31906FCC518F',
       WFControlFlowMode: 0,
       WFInput: sc.Ref(state, 'Vars.Unmatched Calendar Alarm Indices', att=true),
     }),
 
     sc.Action('is.workflow.actions.getitemfromlist', name='Item from List', params={
+      local state = super.state,
       WFInput: sc.Ref(state, 'Vars.Calendar Alarms', att=true),
       WFItemIndex: sc.Ref(state, 'Vars.Repeat Item', att=true),
       WFItemSpecifier: 'Item At Index',
@@ -611,6 +646,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.conditional', {
+      local state = super.state,
       GroupingIdentifier: '56DB22FA-EAD3-4625-A55E-D318797D0672',
       WFCondition: 4,
       WFControlFlowMode: 0,
@@ -658,6 +694,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('com.apple.mobiletimer-framework.MobileTimerIntents.MTToggleAlarmIntent', {
+      local state = super.state,
       AppIntentDescriptor: {
         AppIntentIdentifier: 'ToggleAlarmIntent',
         BundleIdentifier: 'com.apple.mobiletimer',
@@ -670,11 +707,13 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.conditional', {
+      local state = super.state,
       GroupingIdentifier: '56DB22FA-EAD3-4625-A55E-D318797D0672',
       WFControlFlowMode: 2,
     }),
 
     sc.Action('is.workflow.actions.repeat.each', {
+      local state = super.state,
       GroupingIdentifier: 'FA4A18C4-308D-44AC-8E2E-31906FCC518F',
       WFControlFlowMode: 2,
     }),

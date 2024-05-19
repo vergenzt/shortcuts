@@ -14,6 +14,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.gettext', {
+      local state = super.state,
       WFTextActionText: {
         Value: {
           attachmentsByRange: {
@@ -36,6 +37,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.repeat.each', name='Repeat Results', params={
+      local state = super.state,
       GroupingIdentifier: '3C39F304-C709-4042-8340-B48B1B383EB8',
       WFControlFlowMode: 2,
     }),

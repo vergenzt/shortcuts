@@ -5,6 +5,7 @@ local sc = import 'shortcuts.libsonnet';
   WFWorkflowActions: sc.ActionsSeq([
 
     sc.Action('is.workflow.actions.text.replace', name='Updated Text', params={
+      local state = super.state,
       WFInput: sc.Val('${Shortcut Input}', state),
       WFReplaceTextCaseSensitive: false,
       WFReplaceTextFind: '^<|>$',
@@ -107,6 +108,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.repeat.each', {
+      local state = super.state,
       GroupingIdentifier: '9A814540-129A-4AE3-A0FA-CCA13EBE28DC',
       WFControlFlowMode: 2,
     }),

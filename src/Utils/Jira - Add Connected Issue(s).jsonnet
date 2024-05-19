@@ -7,6 +7,7 @@ local sc = import 'shortcuts.libsonnet';
     sc.Action('is.workflow.actions.dictionary', name='Empty Dictionary'),
 
     sc.Action('is.workflow.actions.detect.dictionary', name='Input As Dict', params={
+      local state = super.state,
       WFInput: sc.Ref(state, 'Shortcut Input', att=true),
     }),
 
@@ -28,11 +29,13 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.conditional', {
+      local state = super.state,
       GroupingIdentifier: 'AA47C097-218D-48E1-8EC2-CE887F3EA1C4',
       WFControlFlowMode: 1,
     }),
 
     sc.Action('is.workflow.actions.text.replace', {
+      local state = super.state,
       WFInput: sc.Val('${Shortcut Input}', state),
       WFReplaceTextFind: '.*\\b([A-Z]+-[1-9][0-9]*)\\b.*',
       WFReplaceTextRegularExpression: true,
@@ -40,6 +43,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.conditional', name='Issue key', params={
+      local state = super.state,
       GroupingIdentifier: 'AA47C097-218D-48E1-8EC2-CE887F3EA1C4',
       WFControlFlowMode: 2,
     }),
@@ -91,6 +95,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.dictionary', name='Dictionary', params={
+      local state = super.state,
       WFItems: {
         Value: {
           WFDictionaryFieldValueItems: [
@@ -415,6 +420,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.getdevicedetails', name='Device Model', params={
+      local state = super.state,
       WFDeviceDetail: 'Device Model',
     }),
 
@@ -465,6 +471,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.dictionary', name='Dictionary', params={
+      local state = super.state,
       WFItems: {
         Value: {
           WFDictionaryFieldValueItems: [
@@ -498,11 +505,13 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.conditional', {
+      local state = super.state,
       GroupingIdentifier: '0ADD3BA5-12CD-4D5E-8562-1FF5ACE0856B',
       WFControlFlowMode: 2,
     }),
 
     sc.Action('is.workflow.actions.conditional', {
+      local state = super.state,
       GroupingIdentifier: 'D4AC72F2-B4A7-45F9-9E9D-E4664B6D9B83',
       WFControlFlowMode: 1,
     }),
@@ -528,6 +537,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.conditional', {
+      local state = super.state,
       GroupingIdentifier: 'D4AC72F2-B4A7-45F9-9E9D-E4664B6D9B83',
       WFControlFlowMode: 2,
     }),

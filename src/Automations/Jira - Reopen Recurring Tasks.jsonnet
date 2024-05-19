@@ -7,6 +7,7 @@ local sc = import 'shortcuts.libsonnet';
     sc.Action('is.workflow.actions.dictionary', name='Empty Dictionary'),
 
     sc.Action('dk.simonbs.DataJar.GetValueIntent', name='Constants', params={
+      local state = super.state,
       keyPath: 'Jira - Reopen Recurring Tasks',
     }),
 
@@ -397,16 +398,19 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.conditional', {
+      local state = super.state,
       GroupingIdentifier: '4EBACF8B-4223-4128-B956-2E3076C9EF95',
       WFControlFlowMode: 2,
     }),
 
     sc.Action('is.workflow.actions.conditional', {
+      local state = super.state,
       GroupingIdentifier: '45D68504-844B-4442-A6C9-E2A4C53E75BC',
       WFControlFlowMode: 2,
     }),
 
     sc.Action('is.workflow.actions.dictionary', name='Issue Edit Dictionary', params={
+      local state = super.state,
       WFItems: {
         Value: {
           WFDictionaryFieldValueItems: [
@@ -473,6 +477,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.repeat.each', {
+      local state = super.state,
       GroupingIdentifier: 'AE423FC4-1D2B-4E43-AA6F-8E7BEDAEAFAB',
       WFControlFlowMode: 2,
     }),

@@ -116,7 +116,7 @@
     }[std.type(f)],
     WFValue: {
       string: $.Val(f, state),
-      number: ...,
+      number: f,
       boolean: {
         WFSerializationType: 'WFNumberSubstitutableState',
         Value: $.Val(f, state)

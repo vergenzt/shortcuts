@@ -5,6 +5,7 @@ local sc = import 'shortcuts.libsonnet';
   WFWorkflowActions: sc.ActionsSeq([
 
     sc.Action('is.workflow.actions.getdevicedetails', name='Device Model', params={
+      local state = super.state,
       WFDeviceDetail: 'Device Model',
     }),
 
@@ -21,19 +22,23 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.gettext', {
+      local state = super.state,
       WFTextActionText: 'https',
     }),
 
     sc.Action('is.workflow.actions.conditional', {
+      local state = super.state,
       GroupingIdentifier: '2607D75E-2498-4367-B38D-ECE360DB437F',
       WFControlFlowMode: 1,
     }),
 
     sc.Action('is.workflow.actions.gettext', {
+      local state = super.state,
       WFTextActionText: 'googlesheets',
     }),
 
     sc.Action('is.workflow.actions.conditional', name='Scheme', params={
+      local state = super.state,
       GroupingIdentifier: '2607D75E-2498-4367-B38D-ECE360DB437F',
       WFControlFlowMode: 2,
     }),

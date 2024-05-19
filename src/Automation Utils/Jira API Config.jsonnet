@@ -5,6 +5,7 @@ local sc = import 'shortcuts.libsonnet';
   WFWorkflowActions: sc.ActionsSeq([
 
     sc.Action('dk.simonbs.DataJar.GetValueIntent', name='Jira Config', params={
+      local state = super.state,
       keyPath: 'jira-config',
     }),
 

@@ -51,18 +51,8 @@ rewriters:
       rewrite:
         source: $REFERRER
         rewriters: [rewrite-references]
-    REFERRER_3:
-      replace:
-        source: $REFERRER_2
-        replace: ', (params=)?\{'
-        by: "$0\nlocal state = super.state,"
-    REFERRER_4:
-      replace:
-        source: $REFERRER_3
-        replace: "(\\s*local state = super.state,\n)+"
-        by:       "\nlocal state = super.state,\n"
   fix: >-
-    $REFERRER_4
+    $REFERRER_2
 
 transform:
   ACTIONS_ARR_WITH_REFS:

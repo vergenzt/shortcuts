@@ -5,6 +5,7 @@ local sc = import 'shortcuts.libsonnet';
   WFWorkflowActions: sc.ActionsSeq([
 
     sc.Action('is.workflow.actions.runworkflow', name='Google OAuth', params={
+      local state = super.state,
       WFWorkflow: {
         isSelf: false,
         workflowIdentifier: '410F7B2D-3951-4BAE-A70D-514A8986662E',
@@ -14,6 +15,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('dk.simonbs.DataJar.GetValueIntent', name='Value', params={
+      local state = super.state,
       keyPath: 'dose-recorder',
     }),
 
@@ -88,10 +90,12 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.getitemfromlist', {
+      local state = super.state,
       WFInput: sc.Ref(state, 'Vars.Repeat Item', att=true),
     }),
 
     sc.Action('is.workflow.actions.repeat.each', name='Repeat Results', params={
+      local state = super.state,
       GroupingIdentifier: '12455693-4B6E-4486-BAD9-730E939E6984',
       WFControlFlowMode: 2,
     }),
@@ -120,6 +124,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.ask', name='Provided Input', params={
+      local state = super.state,
       WFAskActionPrompt: 'Other',
     }),
 
@@ -130,6 +135,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.conditional', {
+      local state = super.state,
       GroupingIdentifier: 'FF4D8839-949A-412C-9955-483681D84092',
       WFControlFlowMode: 1,
     }),
@@ -141,11 +147,13 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.conditional', {
+      local state = super.state,
       GroupingIdentifier: 'FF4D8839-949A-412C-9955-483681D84092',
       WFControlFlowMode: 2,
     }),
 
     sc.Action('is.workflow.actions.ask', name='Provided Input', params={
+      local state = super.state,
       WFAskActionDefaultAnswerDateAndTime: '',
       WFInputType: 'Date and Time',
     }),
@@ -257,6 +265,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.runworkflow', {
+      local state = super.state,
       WFWorkflow: {
         isSelf: false,
         workflowIdentifier: 'D5DEBDFA-5540-4CBE-A707-122DDBF6E907',
@@ -266,6 +275,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.choosefrommenu', {
+      local state = super.state,
       GroupingIdentifier: '0937D1D5-A680-418A-AD7E-0EE31DBAA43B',
       WFControlFlowMode: 0,
       WFMenuItems: [
@@ -276,6 +286,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.choosefrommenu', {
+      local state = super.state,
       GroupingIdentifier: '0937D1D5-A680-418A-AD7E-0EE31DBAA43B',
       WFControlFlowMode: 1,
       WFMenuItemTitle: 'I’d like an alarm. I’ll copy the time to clipboard and return to Shortcuts.',
@@ -284,6 +295,7 @@ local sc = import 'shortcuts.libsonnet';
     sc.Action('is.workflow.actions.waittoreturn'),
 
     sc.Action('is.workflow.actions.alert', {
+      local state = super.state,
       WFAlertActionTitle: {
         Value: {
           attachmentsByRange: {
@@ -310,6 +322,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.format.date', name='Formatted Date', params={
+      local state = super.state,
       WFDate: {
         Value: {
           attachmentsByRange: {
@@ -368,12 +381,14 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.choosefrommenu', {
+      local state = super.state,
       GroupingIdentifier: '0937D1D5-A680-418A-AD7E-0EE31DBAA43B',
       WFControlFlowMode: 1,
       WFMenuItemTitle: 'No alarm please.',
     }),
 
     sc.Action('is.workflow.actions.choosefrommenu', name='Menu Result', params={
+      local state = super.state,
       GroupingIdentifier: '0937D1D5-A680-418A-AD7E-0EE31DBAA43B',
       WFControlFlowMode: 2,
     }),

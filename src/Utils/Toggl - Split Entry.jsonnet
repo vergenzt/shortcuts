@@ -5,6 +5,7 @@ local sc = import 'shortcuts.libsonnet';
   WFWorkflowActions: sc.ActionsSeq([
 
     sc.Action('is.workflow.actions.ask', name='Split Time', params={
+      local state = super.state,
       WFAskActionPrompt: 'At what date/time would you like to split the active Toggl Track entry?',
       WFInputType: 'Date and Time',
     }),
@@ -78,6 +79,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.list', name='Endpoint Keys', params={
+      local state = super.state,
       WFItems: [
         'start',
         'stop',
@@ -92,6 +94,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.getvalueforkey', name='Endpoint Text', params={
+      local state = super.state,
       WFDictionaryKey: sc.Val('${Vars.Repeat Item 2}', state),
       WFInput: sc.Ref(state, 'Vars.Repeat Item', att=true),
     }),
@@ -146,20 +149,24 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.conditional', {
+      local state = super.state,
       GroupingIdentifier: 'AF919587-F239-4E2F-8061-D205AF6AC302',
       WFControlFlowMode: 1,
     }),
 
     sc.Action('is.workflow.actions.number', {
+      local state = super.state,
       WFNumberActionNumber: '0',
     }),
 
     sc.Action('is.workflow.actions.conditional', {
+      local state = super.state,
       GroupingIdentifier: 'AF919587-F239-4E2F-8061-D205AF6AC302',
       WFControlFlowMode: 2,
     }),
 
     sc.Action('is.workflow.actions.conditional', name='If Result', params={
+      local state = super.state,
       GroupingIdentifier: '96AB6539-120D-4246-A24B-80C6F2F3758E',
       WFControlFlowMode: 2,
     }),
@@ -179,6 +186,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.repeat.each', name='Repeat Results', params={
+      local state = super.state,
       GroupingIdentifier: 'B6878FDB-F12E-4BE9-8FA0-198D4A57DA40',
       WFControlFlowMode: 2,
     }),
@@ -191,6 +199,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.dictionary', name='Dictionary', params={
+      local state = super.state,
       WFItems: {
         Value: {
           WFDictionaryFieldValueItems: [
@@ -228,6 +237,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.comment', {
+      local state = super.state,
       WFCommentActionText: 'Split Time splits Repeat Item\n→ create new pre-split entry\n→ update Repeat Item entry to set start time to Split Time',
     }),
 
@@ -626,11 +636,13 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.conditional', {
+      local state = super.state,
       GroupingIdentifier: '4FAF4B8F-8164-4849-B48A-32D3A32C12FC',
       WFControlFlowMode: 2,
     }),
 
     sc.Action('is.workflow.actions.repeat.each', {
+      local state = super.state,
       GroupingIdentifier: 'D9C206AD-C252-455D-A994-9C52097C95F0',
       WFControlFlowMode: 2,
     }),

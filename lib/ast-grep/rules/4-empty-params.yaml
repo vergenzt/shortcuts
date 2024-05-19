@@ -4,8 +4,8 @@ language: jsonnet
 rule:
   kind: functioncall
   any:
-  - pattern: sc.Action($$$REST, {})
-  - pattern: sc.Action($$$REST, params={})
+  - pattern: sc.Action($$$REST, { local state = super.state, })
+  - pattern: sc.Action($$$REST, params={ local state = super.state, })
 
 fix: >-
   sc.Action($$$REST)
