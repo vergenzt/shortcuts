@@ -1,0 +1,23 @@
+id: unneeded-state
+language: jsonnet
+
+rule:
+  pattern: sc.Action($$$ARGS)
+  not:
+    has:
+      stopBy: end
+      kind: id
+      regex: ^state$
+      not:
+        inside:
+          kind: bind
+          regex: ^state = super.state$
+
+transform:
+  ARGS_NO_STATE:
+    replace:
+      source: $$$ARGS
+      replace: (?m)^\s*local state = super.state,\n
+      by: ''
+
+fix: sc.Action($ARGS_NO_STATE)
