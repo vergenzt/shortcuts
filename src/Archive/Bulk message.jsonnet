@@ -45,7 +45,7 @@ local sc = import 'shortcuts.libsonnet';
       WFInput: sc.Ref(state, 'Matches', att=true),
     }),
 
-    sc.Action('is.workflow.actions.properties.contacts', name='Group', params={
+    sc.Action('is.workflow.actions.properties.contacts', name='Details of Contacts', params={
       local state = super.state,
       WFContentItemPropertyName: sc.Ref(state, 'Vars.Repeat Item 2', att=true),
       WFInput: sc.Ref(state, 'Vars.Repeat Item', att=true),
@@ -64,7 +64,7 @@ local sc = import 'shortcuts.libsonnet';
         },
         WFSerializationType: 'WFTextTokenString',
       },
-      WFReplaceTextReplace: sc.Val('${Group}', state),
+      WFReplaceTextReplace: sc.Val('${Details of Contacts}', state),
     }),
 
     sc.Action('is.workflow.actions.repeat.each', {
@@ -93,7 +93,7 @@ local sc = import 'shortcuts.libsonnet';
   ]),
   WFWorkflowClientVersion: '2302.0.4',
   WFWorkflowHasOutputFallback: false,
-  WFWorkflowHasShortcutInputVariables: false,
+  WFWorkflowHasShortcutInputVariables: true,
   WFWorkflowIcon: {
     WFWorkflowIconGlyphNumber: 61440,
     WFWorkflowIconStartColor: -1263359489,
