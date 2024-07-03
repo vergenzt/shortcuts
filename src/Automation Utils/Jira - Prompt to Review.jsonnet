@@ -4,6 +4,61 @@ local sc = import 'shortcuts.libsonnet';
   WFQuickActionSurfaces: [],
   WFWorkflowActions: sc.ActionsSeq([
 
+    sc.Action('is.workflow.actions.getdevicedetails', name='Device Model', params={
+      local state = super.state,
+      WFDeviceDetail: 'Device Model',
+    }),
+
+    sc.Action('is.workflow.actions.conditional', {
+      local state = super.state,
+      GroupingIdentifier: '02B87892-2116-4AE0-8BE0-9FAC4433A3B7',
+      WFCondition: 4,
+      WFConditionalActionString: 'Mac',
+      WFControlFlowMode: 0,
+      WFInput: {
+        Type: 'Variable',
+        Variable: sc.Ref(state, 'Device Model', att=true),
+      },
+    }),
+
+    sc.Action('is.workflow.actions.url', name='URL', params={
+      local state = super.state,
+      WFURLActionURL: {
+        Value: {
+          attachmentsByRange: {
+            '{37, 1}': {
+              Aggrandizements: [
+                {
+                  CoercionItemClass: 'WFDictionaryContentItem',
+                  Type: 'WFCoercionVariableAggrandizement',
+                },
+                {
+                  DictionaryKey: 'issue.key',
+                  Type: 'WFDictionaryValueVariableAggrandizement',
+                },
+              ],
+              Type: 'ExtensionInput',
+            },
+          },
+          string: 'https://vergenz.atlassian.net/browse/￼',
+        },
+        WFSerializationType: 'WFTextTokenString',
+      },
+    }),
+
+    sc.Action('is.workflow.actions.openurl', {
+      local state = super.state,
+      WFInput: sc.Ref(state, 'URL', att=true),
+    }),
+
+    sc.Action('is.workflow.actions.exit'),
+
+    sc.Action('is.workflow.actions.conditional', {
+      local state = super.state,
+      GroupingIdentifier: '02B87892-2116-4AE0-8BE0-9FAC4433A3B7',
+      WFControlFlowMode: 2,
+    }),
+
     sc.Action('is.workflow.actions.dictionary', name='Dictionary', params={
       local state = super.state,
       WFItems: {

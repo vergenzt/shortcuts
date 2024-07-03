@@ -13,6 +13,18 @@ tasks:
       task: default
       vars:
         SHORTCUT_PATH: '{{.SHORTCUT_PATH}}'
+    - task: clean
+
+  clean:
+    desc: Removes Apple Shortcut source files that no longer exist in account.
+    interactive: true
+    cmds:
+    - >
+      {{$src := .SOURCE_DIR}}
+      find {{q $src}} -name "*.jsonnet" -type f -print0
+      | grep -zZv {{range .SHORTCUT_PATHS | splitList "\n"}} -e {{q $src}}/{{q .}} {{end}}
+      | xargs -0or rm -i
+      || true
 
   export-from-account:
     internal: true

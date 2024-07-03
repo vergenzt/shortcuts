@@ -48,88 +48,40 @@ local sc = import 'shortcuts.libsonnet';
       WFControlFlowMode: 2,
     }),
 
-    sc.Action('is.workflow.actions.dictionary', name='Dictionary', params={
+    sc.Action('is.workflow.actions.conditional', {
       local state = super.state,
-      WFItems: {
-        Value: {
-          WFDictionaryFieldValueItems: [
-            {
-              WFItemType: 0,
-              WFKey: sc.Val('method'),
-              WFValue: sc.Val('GET'),
-            },
-            {
-              WFItemType: 0,
-              WFKey: sc.Val('path'),
-              WFValue: {
-                Value: {
-                  attachmentsByRange: {
-                    '{6, 1}': sc.Ref(state, 'Issue key'),
-                  },
-                  string: 'issue/￼',
-                },
-                WFSerializationType: 'WFTextTokenString',
-              },
-            },
-          ],
-        },
-        WFSerializationType: 'WFDictionaryFieldValue',
+      GroupingIdentifier: '1D9BEA05-EA73-49E7-A495-B0566729ABA0',
+      WFCondition: 101,
+      WFControlFlowMode: 0,
+      WFInput: {
+        Type: 'Variable',
+        Variable: sc.Ref(state, 'Issue key', att=true),
       },
     }),
 
-    sc.Action('is.workflow.actions.runworkflow', name='Get Initial Issue Response', params={
+    sc.Action('is.workflow.actions.notification', {
       local state = super.state,
-      WFInput: sc.Ref(state, 'Dictionary', att=true),
-      WFWorkflow: {
-        isSelf: false,
-        workflowIdentifier: 'B245F907-CA3B-4273-B2B7-BE1A4BAE3F79',
-        workflowName: 'Jira API',
-      },
-      WFWorkflowName: 'Jira API',
+      WFInput: sc.Ref(state, 'Issue key', att=true),
+      WFNotificationActionBody: 'No issue key provided!',
     }),
 
-    sc.Action('is.workflow.actions.getvalueforkey', name='Initial Issue Key', params={
+    sc.Action('is.workflow.actions.exit'),
+
+    sc.Action('is.workflow.actions.conditional', {
       local state = super.state,
-      WFDictionaryKey: 'key',
-      WFInput: sc.Ref(state, 'Get Initial Issue Response', att=true),
+      GroupingIdentifier: '1D9BEA05-EA73-49E7-A495-B0566729ABA0',
+      WFControlFlowMode: 2,
     }),
 
-    sc.Action('is.workflow.actions.dictionary', name='Dictionary', params={
+    sc.Action('dk.simonbs.DataJar.GetValueIntent', name='Value', params={
       local state = super.state,
-      WFItems: {
-        Value: {
-          WFDictionaryFieldValueItems: [
-            {
-              WFItemType: 0,
-              WFKey: sc.Val('method'),
-              WFValue: sc.Val('GET'),
-            },
-            {
-              WFItemType: 0,
-              WFKey: sc.Val('path'),
-              WFValue: sc.Val('issueLinkType'),
-            },
-          ],
-        },
-        WFSerializationType: 'WFDictionaryFieldValue',
-      },
-    }),
-
-    sc.Action('is.workflow.actions.runworkflow', name='Get Link Types Result', params={
-      local state = super.state,
-      WFInput: sc.Ref(state, 'Dictionary', att=true),
-      WFWorkflow: {
-        isSelf: false,
-        workflowIdentifier: 'B245F907-CA3B-4273-B2B7-BE1A4BAE3F79',
-        workflowName: 'Jira API',
-      },
-      WFWorkflowName: 'Jira API',
+      keyPath: 'jira-config.issueLinkTypes',
     }),
 
     sc.Action('ke.bou.GizmoPack.QueryJSONIntent', name='Link Type IDs by Inward String', params={
       local state = super.state,
-      input: sc.Ref(state, 'Get Link Types Result', att=true),
-      jqQuery: '.issueLinkTypes | map(select(.name | contains("*") | not) | { key: .inward, value: .id }) | from_entries',
+      input: sc.Ref(state, 'Value', att=true),
+      jqQuery: '.issueLinkTypes | map(select(.name | contains("*") | not) | { key: .inward, value: { id, name } }) | from_entries',
       queryType: 'jq',
     }),
 
@@ -148,16 +100,57 @@ local sc = import 'shortcuts.libsonnet';
       ], att=true),
     }),
 
-    sc.Action('is.workflow.actions.getvalueforkey', name='Link Type ID', params={
+    sc.Action('is.workflow.actions.getvalueforkey', name='Link Type', params={
       local state = super.state,
       WFDictionaryKey: sc.Val('${Chosen String}', state),
       WFInput: sc.Ref(state, 'Link Type IDs by Inward String', att=true),
     }),
 
-    sc.Action('is.workflow.actions.getvalueforkey', name='fields.summary', params={
+    sc.Action('is.workflow.actions.text.replace', name='Link Type Name', params={
       local state = super.state,
-      WFDictionaryKey: 'fields.summary',
-      WFInput: sc.Ref(state, 'Get Initial Issue Response', att=true),
+      WFInput: sc.Val('${Link Type}', state),
+      WFReplaceTextFind: '^[\\d\\*\\. ]*',
+      WFReplaceTextRegularExpression: true,
+    }),
+
+    sc.Action('is.workflow.actions.dictionary', name='Dictionary', params={
+      local state = super.state,
+      WFItems: {
+        Value: {
+          WFDictionaryFieldValueItems: [
+            {
+              WFItemType: 0,
+              WFKey: sc.Val('path'),
+              WFValue: {
+                Value: {
+                  attachmentsByRange: {
+                    '{6, 1}': sc.Ref(state, 'Issue key'),
+                  },
+                  string: 'issue/￼?fields=summary,parent',
+                },
+                WFSerializationType: 'WFTextTokenString',
+              },
+            },
+            {
+              WFItemType: 0,
+              WFKey: sc.Val('method'),
+              WFValue: sc.Val('GET'),
+            },
+          ],
+        },
+        WFSerializationType: 'WFDictionaryFieldValue',
+      },
+    }),
+
+    sc.Action('is.workflow.actions.runworkflow', name='Origin Issue', params={
+      local state = super.state,
+      WFInput: sc.Ref(state, 'Dictionary', att=true),
+      WFWorkflow: {
+        isSelf: false,
+        workflowIdentifier: 'B245F907-CA3B-4273-B2B7-BE1A4BAE3F79',
+        workflowName: 'Jira API',
+      },
+      WFWorkflowName: 'Jira API',
     }),
 
     sc.Action('is.workflow.actions.ask', name='New Issue Summary', params={
@@ -166,9 +159,19 @@ local sc = import 'shortcuts.libsonnet';
       WFAskActionDefaultAnswer: {
         Value: {
           attachmentsByRange: {
-            '{19, 1}': sc.Ref(state, 'fields.summary'),
+            '{0, 1}': sc.Ref(state, 'Link Type Name'),
+            '{5, 1}': sc.Ref(state, 'Origin Issue', aggs=[
+              {
+                CoercionItemClass: 'WFDictionaryContentItem',
+                Type: 'WFCoercionVariableAggrandizement',
+              },
+              {
+                DictionaryKey: 'fields.summary',
+                Type: 'WFDictionaryValueVariableAggrandizement',
+              },
+            ]),
           },
-          string: 'Issue connected to ￼',
+          string: '￼ to ￼',
         },
         WFSerializationType: 'WFTextTokenString',
       },
@@ -180,36 +183,14 @@ local sc = import 'shortcuts.libsonnet';
       WFInput: sc.Ref(state, 'New Issue Summary', att=true),
     }),
 
-    sc.Action('is.workflow.actions.text.replace', name='Quoted New Issue Summary', params={
+    sc.Action('is.workflow.actions.text.replace', {
       local state = super.state,
       WFInput: sc.Val('${New Issue Summary}', state),
       WFReplaceTextFind: '"',
       WFReplaceTextReplace: '\\"',
     }),
 
-    sc.Action('is.workflow.actions.gettext', name='Query', params={
-      local state = super.state,
-      WFTextActionText: {
-        Value: {
-          attachmentsByRange: {
-            '{144, 1}': sc.Ref(state, 'Quoted New Issue Summary'),
-            '{323, 1}': sc.Ref(state, 'Link Type ID'),
-            '{361, 1}': sc.Ref(state, 'Initial Issue Key'),
-          },
-          string: '{\n  method: "POST",\n  path: "issue",\n  json: {\n    fields: ({\n      project: { key: "TIM" },\n      issuetype: { name: "Task" },\n      summary: "￼"\n    } + (\n      if .fields.parent then (.fields | { parent } | .parent |= { key }) else {} end\n    )),\n    update: {\n      issuelinks: [{\n        add: {\n          type: { id: "￼" },\n          outwardIssue: { key: "￼" },\n        }\n      }]\n    }\n  }\n}',
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
-    }),
-
-    sc.Action('ke.bou.GizmoPack.QueryJSONIntent', name='Create Issue Request', params={
-      local state = super.state,
-      input: sc.Ref(state, 'Get Initial Issue Response', att=true),
-      jqQuery: sc.Val('${Query}', state),
-      queryType: 'jq',
-    }),
-
-    sc.Action('is.workflow.actions.dictionary', {
+    sc.Action('is.workflow.actions.dictionary', name='Create Issue Request', params={
       local state = super.state,
       WFItems: {
         Value: {
@@ -291,7 +272,7 @@ local sc = import 'shortcuts.libsonnet';
                                           {
                                             WFItemType: 0,
                                             WFKey: sc.Val('key'),
-                                            WFValue: sc.Val('${Get Initial Issue Response}', state),
+                                            WFValue: sc.Val('${Origin Issue}', state),
                                           },
                                         ],
                                       },
@@ -342,7 +323,7 @@ local sc = import 'shortcuts.libsonnet';
                                                                     {
                                                                       WFItemType: 0,
                                                                       WFKey: sc.Val('id'),
-                                                                      WFValue: sc.Val('${Link Type ID}', state),
+                                                                      WFValue: sc.Val('${Link Type}', state),
                                                                     },
                                                                   ],
                                                                 },
@@ -361,7 +342,7 @@ local sc = import 'shortcuts.libsonnet';
                                                                     {
                                                                       WFItemType: 0,
                                                                       WFKey: sc.Val('key'),
-                                                                      WFValue: sc.Val('${Initial Issue Key}', state),
+                                                                      WFValue: sc.Val('${Issue key}', state),
                                                                     },
                                                                   ],
                                                                 },
@@ -419,7 +400,7 @@ local sc = import 'shortcuts.libsonnet';
       WFWorkflowName: 'Jira API',
     }),
 
-    sc.Action('is.workflow.actions.getdevicedetails', name='Device Model', params={
+    sc.Action('is.workflow.actions.getdevicedetails', {
       local state = super.state,
       WFDeviceDetail: 'Device Model',
     }),
@@ -431,18 +412,6 @@ local sc = import 'shortcuts.libsonnet';
       WFDictionaryValue: sc.Val('${Create Issue Result}', state),
     }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      local state = super.state,
-      GroupingIdentifier: 'D4AC72F2-B4A7-45F9-9E9D-E4664B6D9B83',
-      WFCondition: 5,
-      WFConditionalActionString: 'Mac',
-      WFControlFlowMode: 0,
-      WFInput: {
-        Type: 'Variable',
-        Variable: sc.Ref(state, 'Device Model', att=true),
-      },
-    }),
-
     sc.Action('is.workflow.actions.runworkflow', {
       local state = super.state,
       WFInput: sc.Ref(state, 'Dictionary', att=true),
@@ -452,94 +421,6 @@ local sc = import 'shortcuts.libsonnet';
         workflowName: 'Jira - Prompt to Review',
       },
       WFWorkflowName: 'Jira - Prompt to Review',
-    }),
-
-    sc.Action('is.workflow.actions.conditional', {
-      local state = super.state,
-      GroupingIdentifier: '0ADD3BA5-12CD-4D5E-8562-1FF5ACE0856B',
-      WFCondition: 101,
-      WFControlFlowMode: 0,
-      WFInput: {
-        Type: 'Variable',
-        Variable: sc.Ref(state, 'Input As Dict', aggs=[
-          {
-            DictionaryKey: 'skip_base_rereview',
-            Type: 'WFDictionaryValueVariableAggrandizement',
-          },
-        ], att=true),
-      },
-    }),
-
-    sc.Action('is.workflow.actions.dictionary', name='Dictionary', params={
-      local state = super.state,
-      WFItems: {
-        Value: {
-          WFDictionaryFieldValueItems: [
-            {
-              WFItemType: 0,
-              WFKey: sc.Val('review_prompt_optional'),
-              WFValue: sc.Val('Review initial issue one more time?'),
-            },
-          ],
-        },
-        WFSerializationType: 'WFDictionaryFieldValue',
-      },
-    }),
-
-    sc.Action('is.workflow.actions.setvalueforkey', name='Dictionary', params={
-      local state = super.state,
-      WFDictionary: sc.Ref(state, 'Dictionary', att=true),
-      WFDictionaryKey: 'issue',
-      WFDictionaryValue: sc.Val('${Get Initial Issue Response}', state),
-    }),
-
-    sc.Action('is.workflow.actions.runworkflow', {
-      local state = super.state,
-      WFInput: sc.Ref(state, 'Dictionary', att=true),
-      WFWorkflow: {
-        isSelf: false,
-        workflowIdentifier: 'DE45228B-5A30-4A30-AF37-DA40929C57C2',
-        workflowName: 'Jira - Prompt to Review',
-      },
-      WFWorkflowName: 'Jira - Prompt to Review',
-    }),
-
-    sc.Action('is.workflow.actions.conditional', {
-      local state = super.state,
-      GroupingIdentifier: '0ADD3BA5-12CD-4D5E-8562-1FF5ACE0856B',
-      WFControlFlowMode: 2,
-    }),
-
-    sc.Action('is.workflow.actions.conditional', {
-      local state = super.state,
-      GroupingIdentifier: 'D4AC72F2-B4A7-45F9-9E9D-E4664B6D9B83',
-      WFControlFlowMode: 1,
-    }),
-
-    sc.Action('is.workflow.actions.exit'),
-
-    sc.Action('is.workflow.actions.setvalueforkey', name='Dictionary', params={
-      local state = super.state,
-      WFDictionary: sc.Ref(state, 'Dictionary', att=true),
-      WFDictionaryKey: 'skip_return',
-      WFDictionaryValue: 'true',
-    }),
-
-    sc.Action('is.workflow.actions.runworkflow', {
-      local state = super.state,
-      WFInput: sc.Ref(state, 'Dictionary', att=true),
-      WFWorkflow: {
-        isSelf: false,
-        workflowIdentifier: 'DE45228B-5A30-4A30-AF37-DA40929C57C2',
-        workflowName: 'Jira - Prompt to Review',
-      },
-      WFWorkflowName: 'Jira - Prompt to Review',
-    }),
-
-    sc.Action('is.workflow.actions.conditional', {
-      local state = super.state,
-      GroupingIdentifier: 'D4AC72F2-B4A7-45F9-9E9D-E4664B6D9B83',
-      WFControlFlowMode: 2,
     }),
 
   ]),
@@ -567,6 +448,7 @@ local sc = import 'shortcuts.libsonnet';
   WFWorkflowTypes: [
     'ActionExtension',
     'MenuBar',
+    'QuickActions',
     'ReceivesOnScreenContent',
   ],
 }

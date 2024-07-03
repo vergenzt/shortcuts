@@ -4,7 +4,44 @@ local sc = import 'shortcuts.libsonnet';
   WFQuickActionSurfaces: [],
   WFWorkflowActions: sc.ActionsSeq([
 
-    sc.Action('is.workflow.actions.dictionary', name='Calendars', params={
+    sc.Action('is.workflow.actions.dictionary', name='Dictionary', params={
+      local state = super.state,
+      WFItems: {
+        Value: {
+          WFDictionaryFieldValueItems: [
+            {
+              WFItemType: 0,
+              WFKey: sc.Val('Calendar'),
+              WFValue: sc.Val('20'),
+            },
+            {
+              WFItemType: 0,
+              WFKey: sc.Val('Events'),
+              WFValue: sc.Val('20'),
+            },
+            {
+              WFItemType: 0,
+              WFKey: sc.Val('Routine'),
+              WFValue: sc.Val('0'),
+            },
+            {
+              WFItemType: 0,
+              WFKey: sc.Val('Medication Reminders'),
+              WFValue: sc.Val('0'),
+            },
+          ],
+        },
+        WFSerializationType: 'WFDictionaryFieldValue',
+      },
+    }),
+
+    sc.Action('is.workflow.actions.setvariable', {
+      local state = super.state,
+      WFInput: sc.Ref(state, 'Dictionary', att=true),
+      WFVariableName: 'Calendar Lead Times',
+    }),
+
+    sc.Action('is.workflow.actions.dictionary', name='Dictionary', params={
       local state = super.state,
       WFItems: {
         Value: {
@@ -35,16 +72,29 @@ local sc = import 'shortcuts.libsonnet';
       },
     }),
 
+    sc.Action('is.workflow.actions.setvariable', {
+      local state = super.state,
+      WFInput: sc.Ref(state, 'Dictionary', att=true),
+      WFVariableName: 'Calendar Labels',
+    }),
+
     sc.Action('is.workflow.actions.text.combine', name='Combined Text', params={
       local state = super.state,
       WFTextCustomSeparator: '|',
       WFTextSeparator: 'Custom',
-      text: sc.Ref(state, 'Calendars', aggs=[
-        {
-          PropertyName: 'Values',
-          Type: 'WFPropertyVariableAggrandizement',
+      text: {
+        Value: {
+          Aggrandizements: [
+            {
+              PropertyName: 'Values',
+              Type: 'WFPropertyVariableAggrandizement',
+            },
+          ],
+          Type: 'Variable',
+          VariableName: 'Calendar Labels',
         },
-      ], att=true),
+        WFSerializationType: 'WFTextTokenAttachment',
+      },
     }),
 
     sc.Action('com.apple.mobiletimer-framework.MobileTimerIntents.MTGetAlarmsIntent', name='Alarm', params={
@@ -228,7 +278,7 @@ local sc = import 'shortcuts.libsonnet';
     sc.Action('is.workflow.actions.getvalueforkey', name='Calendar Label', params={
       local state = super.state,
       WFDictionaryKey: sc.Val('${Calendar}', state),
-      WFInput: sc.Ref(state, 'Calendars', att=true),
+      WFInput: sc.Ref(state, 'Vars.Calendar Labels', att=true),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
@@ -248,6 +298,12 @@ local sc = import 'shortcuts.libsonnet';
       WFInput: sc.Ref(state, 'Vars.Repeat Item', att=true),
     }),
 
+    sc.Action('is.workflow.actions.getvalueforkey', name='Calendar Lead Time', params={
+      local state = super.state,
+      WFDictionaryKey: sc.Val('${Calendar}', state),
+      WFInput: sc.Ref(state, 'Vars.Calendar Lead Times', att=true),
+    }),
+
     sc.Action('is.workflow.actions.properties.calendarevents', name='Start Date', params={
       local state = super.state,
       WFContentItemPropertyName: 'Start Date',
@@ -260,7 +316,7 @@ local sc = import 'shortcuts.libsonnet';
       WFDate: sc.Val('${Start Date}', state),
       WFDuration: {
         Value: {
-          Magnitude: '20',
+          Magnitude: sc.Ref(state, 'Calendar Lead Time'),
           Unit: 'min',
         },
         WFSerializationType: 'WFQuantityFieldValue',
