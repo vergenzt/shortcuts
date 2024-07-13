@@ -13,27 +13,42 @@ local sc = import 'shortcuts.libsonnet';
       WFInput: sc.Ref(state, 'My Shortcuts', att=true),
     }),
 
-    sc.Action('is.workflow.actions.gettext', {
+    sc.Action('is.workflow.actions.list', name='List', params={
       local state = super.state,
-      WFTextActionText: {
-        Value: {
-          attachmentsByRange: {
-            '{0, 1}': {
-              Aggrandizements: [
-                {
-                  PropertyName: 'Folder',
-                  Type: 'WFPropertyVariableAggrandizement',
+      WFItems: [
+        {
+          WFItemType: 0,
+          WFValue: {
+            Value: {
+              attachmentsByRange: {
+                '{0, 1}': {
+                  Aggrandizements: [
+                    {
+                      PropertyName: 'Folder',
+                      Type: 'WFPropertyVariableAggrandizement',
+                    },
+                  ],
+                  Type: 'Variable',
+                  VariableName: 'Repeat Item',
                 },
-              ],
-              Type: 'Variable',
-              VariableName: 'Repeat Item',
+              },
+              string: '￼',
             },
-            '{2, 1}': sc.Ref(state, 'Vars.Repeat Item'),
+            WFSerializationType: 'WFTextTokenString',
           },
-          string: '￼/￼',
         },
-        WFSerializationType: 'WFTextTokenString',
-      },
+        {
+          WFItemType: 0,
+          WFValue: sc.Val('${Vars.Repeat Item}', state),
+        },
+      ],
+    }),
+
+    sc.Action('is.workflow.actions.text.combine', {
+      local state = super.state,
+      WFTextCustomSeparator: '/',
+      WFTextSeparator: 'Custom',
+      text: sc.Ref(state, 'List', att=true),
     }),
 
     sc.Action('is.workflow.actions.repeat.each', name='Repeat Results', params={
