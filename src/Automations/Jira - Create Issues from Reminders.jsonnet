@@ -59,53 +59,158 @@ local sc = import 'shortcuts.libsonnet';
       summary: sc.Val('${Vars.Repeat Item}', state),
     }),
 
-    sc.Action('is.workflow.actions.gettext', name='Text', params={
+    sc.Action('is.workflow.actions.dictionary', name='Dictionary', params={
+      local state = super.state,
+      WFItems: {
+        Value: {
+          WFDictionaryFieldValueItems: [
+            {
+              WFItemType: 0,
+              WFKey: sc.Val('Notes'),
+              WFValue: {
+                Value: {
+                  attachmentsByRange: {
+                    '{0, 1}': {
+                      Aggrandizements: [
+                        {
+                          PropertyName: 'Notes',
+                          Type: 'WFPropertyVariableAggrandizement',
+                        },
+                      ],
+                      Type: 'Variable',
+                      VariableName: 'Repeat Item',
+                    },
+                  },
+                  string: '￼',
+                },
+                WFSerializationType: 'WFTextTokenString',
+              },
+            },
+            {
+              WFItemType: 0,
+              WFKey: sc.Val('Due'),
+              WFValue: {
+                Value: {
+                  attachmentsByRange: {
+                    '{0, 1}': {
+                      Aggrandizements: [
+                        {
+                          PropertyName: 'Due Date',
+                          Type: 'WFPropertyVariableAggrandizement',
+                        },
+                      ],
+                      Type: 'Variable',
+                      VariableName: 'Repeat Item',
+                    },
+                  },
+                  string: '￼',
+                },
+                WFSerializationType: 'WFTextTokenString',
+              },
+            },
+            {
+              WFItemType: 0,
+              WFKey: sc.Val('URL'),
+              WFValue: {
+                Value: {
+                  attachmentsByRange: {
+                    '{0, 1}': {
+                      Aggrandizements: [
+                        {
+                          PropertyName: 'URL',
+                          Type: 'WFPropertyVariableAggrandizement',
+                        },
+                      ],
+                      Type: 'Variable',
+                      VariableName: 'Repeat Item',
+                    },
+                  },
+                  string: '￼',
+                },
+                WFSerializationType: 'WFTextTokenString',
+              },
+            },
+          ],
+        },
+        WFSerializationType: 'WFDictionaryFieldValue',
+      },
+    }),
+
+    sc.Action('is.workflow.actions.repeat.each', {
+      local state = super.state,
+      GroupingIdentifier: 'F24C9B98-1D8E-40A2-BE15-5494F2260456',
+      WFControlFlowMode: 0,
+      WFInput: sc.Ref(state, 'Dictionary', aggs=[
+        {
+          PropertyName: 'Keys',
+          Type: 'WFPropertyVariableAggrandizement',
+        },
+      ], att=true),
+    }),
+
+    sc.Action('is.workflow.actions.getvalueforkey', name='Dictionary Value', params={
+      local state = super.state,
+      WFDictionaryKey: sc.Val('${Vars.Repeat Item 2}', state),
+      WFInput: sc.Ref(state, 'Dictionary', att=true),
+    }),
+
+    sc.Action('is.workflow.actions.conditional', {
+      local state = super.state,
+      GroupingIdentifier: '9AE5FB23-74B1-44AD-B47A-D9977F4FCCAD',
+      WFCondition: 100,
+      WFControlFlowMode: 0,
+      WFInput: {
+        Type: 'Variable',
+        Variable: sc.Ref(state, 'Dictionary Value', att=true),
+      },
+    }),
+
+    sc.Action('is.workflow.actions.gettext', {
       local state = super.state,
       WFTextActionText: {
         Value: {
           attachmentsByRange: {
-            '{15, 1}': {
-              Aggrandizements: [
-                {
-                  PropertyName: 'Due Date',
-                  Type: 'WFPropertyVariableAggrandizement',
-                },
-              ],
-              Type: 'Variable',
-              VariableName: 'Repeat Item',
-            },
-            '{22, 1}': {
-              Aggrandizements: [
-                {
-                  PropertyName: 'URL',
-                  Type: 'WFPropertyVariableAggrandizement',
-                },
-              ],
-              Type: 'Variable',
-              VariableName: 'Repeat Item',
-            },
-            '{7, 1}': {
-              Aggrandizements: [
-                {
-                  PropertyName: 'Notes',
-                  Type: 'WFPropertyVariableAggrandizement',
-                },
-              ],
-              Type: 'Variable',
-              VariableName: 'Repeat Item',
-            },
+            '{0, 1}': sc.Ref(state, 'Vars.Repeat Item 2'),
+            '{3, 1}': sc.Ref(state, 'Dictionary Value'),
           },
-          string: 'Notes:\n￼\n\nDue: ￼\nURL: ￼',
+          string: '￼: ￼',
         },
         WFSerializationType: 'WFTextTokenString',
       },
+    }),
+
+    sc.Action('is.workflow.actions.conditional', {
+      local state = super.state,
+      GroupingIdentifier: '9AE5FB23-74B1-44AD-B47A-D9977F4FCCAD',
+      WFControlFlowMode: 1,
+    }),
+
+    sc.Action('is.workflow.actions.nothing'),
+
+    sc.Action('is.workflow.actions.conditional', {
+      local state = super.state,
+      GroupingIdentifier: '9AE5FB23-74B1-44AD-B47A-D9977F4FCCAD',
+      WFControlFlowMode: 2,
+    }),
+
+    sc.Action('is.workflow.actions.repeat.each', name='Repeat Results', params={
+      local state = super.state,
+      GroupingIdentifier: 'F24C9B98-1D8E-40A2-BE15-5494F2260456',
+      WFControlFlowMode: 2,
+    }),
+
+    sc.Action('is.workflow.actions.text.combine', name='Combined Text', params={
+      local state = super.state,
+      WFTextCustomSeparator: '',
+      WFTextSeparator: 'New Lines',
+      text: sc.Ref(state, 'Repeat Results', att=true),
     }),
 
     sc.Action('com.atlassian.jira.app.SetIssueFieldIntent', name='Issue', params={
       local state = super.state,
       issue: sc.Ref(state, 'Issue', att=true),
       setFieldName: 'Description',
-      setFieldValue: sc.Val('${Text}', state),
+      setFieldValue: sc.Val('${Combined Text}', state),
     }),
 
     sc.Action('is.workflow.actions.setters.reminders', {
