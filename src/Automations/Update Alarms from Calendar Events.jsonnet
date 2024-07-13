@@ -26,7 +26,7 @@ local sc = import 'shortcuts.libsonnet';
             },
             {
               WFItemType: 0,
-              WFKey: sc.Val('Medication Reminders'),
+              WFKey: sc.Val('Health Reminders'),
               WFValue: sc.Val('0'),
             },
           ],
@@ -63,7 +63,7 @@ local sc = import 'shortcuts.libsonnet';
             },
             {
               WFItemType: 0,
-              WFKey: sc.Val('Medication Reminders'),
+              WFKey: sc.Val('Health Reminders'),
               WFValue: sc.Val('Meds'),
             },
           ],
