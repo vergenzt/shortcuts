@@ -7,7 +7,6 @@ local sc = import 'shortcuts.libsonnet';
     sc.Action('is.workflow.actions.date', name='Date'),
 
     sc.Action('is.workflow.actions.ask', name='N', params={
-      local state = super.state,
       WFAskActionPrompt: 'How many days?',
       WFInputType: 'Number',
     }),

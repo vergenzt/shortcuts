@@ -5,7 +5,6 @@ local sc = import 'shortcuts.libsonnet';
   WFWorkflowActions: sc.ActionsSeq([
 
     sc.Action('is.workflow.actions.runworkflow', name='Jira API Config', params={
-      local state = super.state,
       WFWorkflow: {
         isSelf: false,
         workflowIdentifier: '86996835-A1EC-421B-92A1-1F21056EC7EC',
@@ -178,7 +177,6 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.conditional', {
-      local state = super.state,
       GroupingIdentifier: 'C8492311-4C65-4A50-BAA1-5C18CAC7EF4F',
       WFControlFlowMode: 1,
     }),
@@ -190,13 +188,11 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.conditional', name='From', params={
-      local state = super.state,
       GroupingIdentifier: 'C8492311-4C65-4A50-BAA1-5C18CAC7EF4F',
       WFControlFlowMode: 2,
     }),
 
     sc.Action('is.workflow.actions.getitemfromlist', name='messageId', params={
-      local state = super.state,
       WFInput: {
         Value: {
           Aggrandizements: [
@@ -536,7 +532,6 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.repeat.each', {
-      local state = super.state,
       GroupingIdentifier: '690887DA-1DDA-448F-B8E8-AED755477B11',
       WFControlFlowMode: 2,
     }),

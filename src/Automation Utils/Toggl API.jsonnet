@@ -34,7 +34,6 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('dk.simonbs.DataJar.GetValueIntent', name='Toggl Track API Token', params={
-      local state = super.state,
       keyPath: 'Toggl Track.api_token',
     }),
 
@@ -121,7 +120,6 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.repeat.each', name='Repeat Results', params={
-      local state = super.state,
       GroupingIdentifier: 'CB0F08F7-D254-42C4-933F-CDCE8DCF4415',
       WFControlFlowMode: 2,
     }),
@@ -134,7 +132,6 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.conditional', name='Query', params={
-      local state = super.state,
       GroupingIdentifier: '4C6CDAC1-3AF6-4835-87D8-C5348FA88848',
       WFControlFlowMode: 2,
     }),

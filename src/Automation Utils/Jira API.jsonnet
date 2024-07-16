@@ -10,12 +10,10 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('dk.simonbs.DataJar.GetValueIntent', name='Jira Config', params={
-      local state = super.state,
       keyPath: 'jira-config',
     }),
 
     sc.Action('ke.bou.GizmoPack.RandomDataIntent', name='Error Nonce', params={
-      local state = super.state,
       outputEncoding: 'hex',
     }),
 
@@ -87,7 +85,6 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.conditional', {
-      local state = super.state,
       GroupingIdentifier: 'B8B9F0F6-0B7F-4C5D-9FF3-1256A1C48B93',
       WFControlFlowMode: 1,
     }),
@@ -98,7 +95,6 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.conditional', {
-      local state = super.state,
       GroupingIdentifier: 'B8B9F0F6-0B7F-4C5D-9FF3-1256A1C48B93',
       WFControlFlowMode: 2,
     }),

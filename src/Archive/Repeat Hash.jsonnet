@@ -5,17 +5,14 @@ local sc = import 'shortcuts.libsonnet';
   WFWorkflowActions: sc.ActionsSeq([
 
     sc.Action('is.workflow.actions.gettext', name='Input', params={
-      local state = super.state,
       WFTextActionText: 'Screen Time Passcode',
     }),
 
     sc.Action('is.workflow.actions.gettext', name='Num Repetitions', params={
-      local state = super.state,
       WFTextActionText: '500_000_000',
     }),
 
     sc.Action('is.workflow.actions.getdevicedetails', name='Device Model', params={
-      local state = super.state,
       WFDeviceDetail: 'Device Model',
     }),
 
@@ -139,7 +136,6 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.choosefrommenu', {
-      local state = super.state,
       GroupingIdentifier: '4BD0FCCB-729B-4037-8F49-4582958A0C52',
       WFControlFlowMode: 1,
       WFMenuItemTitle: 'Yes',
@@ -159,7 +155,6 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.choosefrommenu', {
-      local state = super.state,
       GroupingIdentifier: '4BD0FCCB-729B-4037-8F49-4582958A0C52',
       WFControlFlowMode: 1,
       WFMenuItemTitle: 'No',
@@ -171,7 +166,6 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.choosefrommenu', {
-      local state = super.state,
       GroupingIdentifier: '4BD0FCCB-729B-4037-8F49-4582958A0C52',
       WFControlFlowMode: 2,
     }),

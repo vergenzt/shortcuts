@@ -5,7 +5,6 @@ local sc = import 'shortcuts.libsonnet';
   WFWorkflowActions: sc.ActionsSeq([
 
     sc.Action('is.workflow.actions.number', {
-      local state = super.state,
       WFNumberActionNumber: '42',
     }),
 
@@ -23,7 +22,6 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.dictionary', {
-      local state = super.state,
       WFItems: {
         Value: {
           WFDictionaryFieldValueItems: [
@@ -119,7 +117,6 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.list', {
-      local state = super.state,
       WFItems: [
         'Asdf',
         'Jkl',

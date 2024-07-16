@@ -5,7 +5,6 @@ local sc = import 'shortcuts.libsonnet';
   WFWorkflowActions: sc.ActionsSeq([
 
     sc.Action('is.workflow.actions.dictionary', name='Dictionary', params={
-      local state = super.state,
       WFItems: {
         Value: {
           WFDictionaryFieldValueItems: [
@@ -42,7 +41,6 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.dictionary', name='Dictionary', params={
-      local state = super.state,
       WFItems: {
         Value: {
           WFDictionaryFieldValueItems: [
@@ -79,7 +77,6 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.text.combine', name='Combined Text', params={
-      local state = super.state,
       WFTextCustomSeparator: '|',
       WFTextSeparator: 'Custom',
       text: {
@@ -98,7 +95,6 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('com.apple.mobiletimer-framework.MobileTimerIntents.MTGetAlarmsIntent', name='Alarm', params={
-      local state = super.state,
       ShowWhenRun: false,
       WFContentItemFilter: {
         Value: {
@@ -170,13 +166,11 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.conditional', {
-      local state = super.state,
       GroupingIdentifier: '06187FD3-4E72-47D2-8626-3DFC096A3334',
       WFControlFlowMode: 2,
     }),
 
     sc.Action('is.workflow.actions.repeat.each', name='Repeat Results', params={
-      local state = super.state,
       GroupingIdentifier: '25CDD183-1362-42B9-8712-863F0F571C6B',
       WFControlFlowMode: 2,
     }),
@@ -265,7 +259,6 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.setvariable', {
-      local state = super.state,
       WFVariableName: 'Alarm',
     }),
 
@@ -445,13 +438,11 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.conditional', {
-      local state = super.state,
       GroupingIdentifier: '39E438DD-244C-452F-A903-9705E3730F13',
       WFControlFlowMode: 1,
     }),
 
     sc.Action('is.workflow.actions.alert', {
-      local state = super.state,
       WFAlertActionMessage: {
         Value: {
           attachmentsByRange: {
@@ -474,7 +465,6 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.conditional', name='If Result', params={
-      local state = super.state,
       GroupingIdentifier: '39E438DD-244C-452F-A903-9705E3730F13',
       WFControlFlowMode: 2,
     }),
@@ -485,13 +475,11 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.conditional', {
-      local state = super.state,
       GroupingIdentifier: '158A4D5F-D62E-4F00-9F76-3C5B2B144588',
       WFControlFlowMode: 2,
     }),
 
     sc.Action('is.workflow.actions.repeat.each', {
-      local state = super.state,
       GroupingIdentifier: '96494FE3-384B-4E3D-A6BB-E7397D7E6D39',
       WFControlFlowMode: 2,
     }),
@@ -567,7 +555,6 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.conditional', {
-      local state = super.state,
       GroupingIdentifier: '2A08F09E-877D-4A80-BE67-91123BE8A71A',
       WFControlFlowMode: 1,
     }),
@@ -585,7 +572,6 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.conditional', {
-      local state = super.state,
       GroupingIdentifier: '2A08F09E-877D-4A80-BE67-91123BE8A71A',
       WFControlFlowMode: 2,
     }),
@@ -604,19 +590,16 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.conditional', {
-      local state = super.state,
       GroupingIdentifier: '61CA7EFD-5FDA-4C9C-A3F2-FEB84FA5E80C',
       WFControlFlowMode: 2,
     }),
 
     sc.Action('is.workflow.actions.conditional', {
-      local state = super.state,
       GroupingIdentifier: '427BCD5D-36BB-4074-BB69-2550C082A88F',
       WFControlFlowMode: 2,
     }),
 
     sc.Action('is.workflow.actions.repeat.each', {
-      local state = super.state,
       GroupingIdentifier: '3A666097-90F9-4E2A-BBDC-A7A2F903EB04',
       WFControlFlowMode: 2,
     }),
@@ -653,7 +636,6 @@ local sc = import 'shortcuts.libsonnet';
     sc.Action('is.workflow.actions.nothing'),
 
     sc.Action('is.workflow.actions.conditional', {
-      local state = super.state,
       GroupingIdentifier: '671D206A-4570-40B9-BB1A-11FC898D8925',
       WFControlFlowMode: 1,
     }),
@@ -664,13 +646,11 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.conditional', {
-      local state = super.state,
       GroupingIdentifier: '671D206A-4570-40B9-BB1A-11FC898D8925',
       WFControlFlowMode: 2,
     }),
 
     sc.Action('is.workflow.actions.repeat.count', name='Repeat Results', params={
-      local state = super.state,
       GroupingIdentifier: '70AA4591-58E4-4CB5-8C7E-09A82EB1495D',
       WFControlFlowMode: 2,
     }),
@@ -702,7 +682,6 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.conditional', {
-      local state = super.state,
       GroupingIdentifier: '56DB22FA-EAD3-4625-A55E-D318797D0672',
       WFCondition: 4,
       WFControlFlowMode: 0,
@@ -763,13 +742,11 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.conditional', {
-      local state = super.state,
       GroupingIdentifier: '56DB22FA-EAD3-4625-A55E-D318797D0672',
       WFControlFlowMode: 2,
     }),
 
     sc.Action('is.workflow.actions.repeat.each', {
-      local state = super.state,
       GroupingIdentifier: 'FA4A18C4-308D-44AC-8E2E-31906FCC518F',
       WFControlFlowMode: 2,
     }),

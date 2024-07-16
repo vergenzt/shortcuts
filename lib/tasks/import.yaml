@@ -95,3 +95,17 @@ tasks:
         fi;
         seen+=("${next_sha:-}");
         done;
+
+    # excise unused `state` variables
+    - >-
+      sed
+      -i ''
+      -e "$(jsonnet-lint {{q .SRC}} 2>&1
+      | pcregrep -o1 '\Q'{{q .SRC}}'\E:(\d+):13-26 Unused variable: state'
+      | awk '{ print $0"d" }'
+      | tr '\n' ';'
+      )"
+      {{q .SRC}}
+
+    # then reformat again
+    - jsonnetfmt -i {{q .SRC}}

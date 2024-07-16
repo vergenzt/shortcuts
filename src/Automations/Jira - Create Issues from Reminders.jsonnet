@@ -5,7 +5,6 @@ local sc = import 'shortcuts.libsonnet';
   WFWorkflowActions: sc.ActionsSeq([
 
     sc.Action('is.workflow.actions.filter.reminders', name='Reminders', params={
-      local state = super.state,
       WFContentItemFilter: {
         Value: {
           WFActionParameterFilterPrefix: 1,
@@ -60,7 +59,6 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.dictionary', name='Dictionary', params={
-      local state = super.state,
       WFItems: {
         Value: {
           WFDictionaryFieldValueItems: [
@@ -180,7 +178,6 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.conditional', {
-      local state = super.state,
       GroupingIdentifier: '9AE5FB23-74B1-44AD-B47A-D9977F4FCCAD',
       WFControlFlowMode: 1,
     }),
@@ -188,13 +185,11 @@ local sc = import 'shortcuts.libsonnet';
     sc.Action('is.workflow.actions.nothing'),
 
     sc.Action('is.workflow.actions.conditional', {
-      local state = super.state,
       GroupingIdentifier: '9AE5FB23-74B1-44AD-B47A-D9977F4FCCAD',
       WFControlFlowMode: 2,
     }),
 
     sc.Action('is.workflow.actions.repeat.each', name='Repeat Results', params={
-      local state = super.state,
       GroupingIdentifier: 'F24C9B98-1D8E-40A2-BE15-5494F2260456',
       WFControlFlowMode: 2,
     }),
@@ -274,7 +269,6 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.repeat.each', {
-      local state = super.state,
       GroupingIdentifier: '06C7177F-0DD0-4EF7-8354-638BF3E43DE8',
       WFControlFlowMode: 2,
     }),

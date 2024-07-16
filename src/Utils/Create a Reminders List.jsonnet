@@ -5,7 +5,6 @@ local sc = import 'shortcuts.libsonnet';
   WFWorkflowActions: sc.ActionsSeq([
 
     sc.Action('com.apple.reminders.TTRCreateListAppIntent', {
-      local state = super.state,
       AppIntentDescriptor: {
         AppIntentIdentifier: 'TTRCreateListAppIntent',
         BundleIdentifier: 'com.apple.reminders',

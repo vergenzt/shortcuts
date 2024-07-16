@@ -5,7 +5,6 @@ local sc = import 'shortcuts.libsonnet';
   WFWorkflowActions: sc.ActionsSeq([
 
     sc.Action('is.workflow.actions.getdevicedetails', name='Device Model', params={
-      local state = super.state,
       WFDeviceDetail: 'Device Model',
     }),
 
@@ -22,7 +21,6 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.url', name='URL', params={
-      local state = super.state,
       WFURLActionURL: {
         Value: {
           attachmentsByRange: {
@@ -54,13 +52,11 @@ local sc = import 'shortcuts.libsonnet';
     sc.Action('is.workflow.actions.exit'),
 
     sc.Action('is.workflow.actions.conditional', {
-      local state = super.state,
       GroupingIdentifier: '02B87892-2116-4AE0-8BE0-9FAC4433A3B7',
       WFControlFlowMode: 2,
     }),
 
     sc.Action('is.workflow.actions.dictionary', name='Dictionary', params={
-      local state = super.state,
       WFItems: {
         Value: {
           WFDictionaryFieldValueItems: [
@@ -129,7 +125,6 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.list', name='List', params={
-      local state = super.state,
       WFItems: [
         'Yes',
         'No',
@@ -185,13 +180,11 @@ local sc = import 'shortcuts.libsonnet';
     sc.Action('is.workflow.actions.exit'),
 
     sc.Action('is.workflow.actions.conditional', {
-      local state = super.state,
       GroupingIdentifier: '6900C0B4-3E34-4A84-9B58-320F50893101',
       WFControlFlowMode: 2,
     }),
 
     sc.Action('is.workflow.actions.conditional', {
-      local state = super.state,
       GroupingIdentifier: '6C91002C-93EC-4B86-8427-F5C7EE4EC8EF',
       WFControlFlowMode: 2,
     }),
@@ -263,7 +256,6 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.text.replace', name='Browse URL', params={
-      local state = super.state,
       WFInput: {
         Value: {
           attachmentsByRange: {
@@ -328,7 +320,6 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.gettext', {
-      local state = super.state,
       WFTextActionText: {
         Value: {
           attachmentsByRange: {
@@ -353,7 +344,6 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.conditional', name='If Result', params={
-      local state = super.state,
       GroupingIdentifier: 'AE978332-38D0-467A-BA94-F5D047219387',
       WFControlFlowMode: 2,
     }),
@@ -397,7 +387,6 @@ local sc = import 'shortcuts.libsonnet';
     sc.Action('is.workflow.actions.waittoreturn'),
 
     sc.Action('is.workflow.actions.conditional', {
-      local state = super.state,
       GroupingIdentifier: '2DD74F72-F042-47FF-8317-8749CC2A2A5A',
       WFControlFlowMode: 2,
     }),

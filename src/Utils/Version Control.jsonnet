@@ -5,7 +5,6 @@ local sc = import 'shortcuts.libsonnet';
   WFWorkflowActions: sc.ActionsSeq([
 
     sc.Action('dk.simonbs.DataJar.CheckIfValueExistsIntent', name='Value Exists', params={
-      local state = super.state,
       keyPath: 'Version Control',
     }),
 
@@ -28,7 +27,6 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.dictionary', name='Dictionary', params={
-      local state = super.state,
       WFItems: {
         Value: {
           WFDictionaryFieldValueItems: [
@@ -61,13 +59,11 @@ local sc = import 'shortcuts.libsonnet';
     sc.Action('is.workflow.actions.delay'),
 
     sc.Action('dk.simonbs.DataJar.DeleteValueIntent', {
-      local state = super.state,
       deleteStrategy: 'alwaysAllow',
       keyPath: 'Version Control.placeholder',
     }),
 
     sc.Action('is.workflow.actions.conditional', {
-      local state = super.state,
       GroupingIdentifier: 'FF33CBB3-BE80-4AA1-AED9-3A5752F93CA6',
       WFControlFlowMode: 2,
     }),
@@ -89,18 +85,15 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.gettext', {
-      local state = super.state,
       WFTextActionText: 'Create',
     }),
 
     sc.Action('is.workflow.actions.conditional', {
-      local state = super.state,
       GroupingIdentifier: 'C4380019-D2D9-4726-9A29-0FE78E467056',
       WFControlFlowMode: 1,
     }),
 
     sc.Action('is.workflow.actions.gettext', name='Text', params={
-      local state = super.state,
       WFTextActionText: 'title: Create new Version\nsub: Add a new version of a shortcut\nicon: link.badge.plus,nil,purple\n\ntitle: View/Restore Versions\nsub: View or Restore a available version of a shortcut\nicon: link.icloud,nil,blue\n\ntitle: Remove a Previous Version\nSub: This cannot be undone!\nicon: trash.circle,nil,red\n\ntitle: Stop Shortcut\nsub: Stop shortcut from running\nicon: clear,nil,orange',
     }),
 
@@ -115,7 +108,6 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.conditional', name='If Result', params={
-      local state = super.state,
       GroupingIdentifier: 'C4380019-D2D9-4726-9A29-0FE78E467056',
       WFControlFlowMode: 2,
     }),
@@ -138,7 +130,6 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.conditional', {
-      local state = super.state,
       GroupingIdentifier: 'BD667D5A-E1F5-4FE7-A782-38C314E4F4AF',
       WFCondition: 999,
       WFConditionalActionString: 'shortcut',
@@ -155,7 +146,6 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.alert', {
-      local state = super.state,
       WFAlertActionCancelButtonShown: false,
       WFAlertActionMessage: 'No shortcut link was found in the clipboard. Please go to the shortcut, hit the share icon and copy the link then run this shortcut again.',
     }),
@@ -163,13 +153,11 @@ local sc = import 'shortcuts.libsonnet';
     sc.Action('is.workflow.actions.exit'),
 
     sc.Action('is.workflow.actions.conditional', {
-      local state = super.state,
       GroupingIdentifier: 'BD667D5A-E1F5-4FE7-A782-38C314E4F4AF',
       WFControlFlowMode: 1,
     }),
 
     sc.Action('is.workflow.actions.text.replace', name='Updated Text', params={
-      local state = super.state,
       WFInput: {
         Value: {
           attachmentsByRange: {
@@ -324,7 +312,6 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.conditional', {
-      local state = super.state,
       GroupingIdentifier: '9C913971-1128-4AC0-B025-55581C32C11D',
       WFControlFlowMode: 2,
     }),
@@ -475,13 +462,11 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.conditional', {
-      local state = super.state,
       GroupingIdentifier: 'BD667D5A-E1F5-4FE7-A782-38C314E4F4AF',
       WFControlFlowMode: 2,
     }),
 
     sc.Action('is.workflow.actions.conditional', {
-      local state = super.state,
       GroupingIdentifier: '92EABD63-025D-48B9-88E5-1C577ED0ABCB',
       WFControlFlowMode: 2,
     }),
@@ -504,7 +489,6 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('dk.simonbs.DataJar.GetKeysIntent', name='Keys', params={
-      local state = super.state,
       keyPath: 'Version Control',
     }),
 
@@ -575,7 +559,6 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.repeat.each', name='Repeat Results', params={
-      local state = super.state,
       GroupingIdentifier: 'F530BB16-B092-43FF-B5E0-26DFFAC48AA8',
       WFControlFlowMode: 2,
     }),
@@ -714,7 +697,6 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.repeat.each', name='Repeat Results', params={
-      local state = super.state,
       GroupingIdentifier: '964E44BF-AD7A-4D63-B099-4704FE2F6B15',
       WFControlFlowMode: 2,
     }),
@@ -726,7 +708,6 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.gettext', name='Text', params={
-      local state = super.state,
       WFTextActionText: 'Export All',
     }),
 
@@ -737,7 +718,6 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.gettext', name='Text', params={
-      local state = super.state,
       WFTextActionText: 'Go Back',
     }),
 
@@ -791,7 +771,6 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.conditional', {
-      local state = super.state,
       GroupingIdentifier: '6A3266FB-DD65-4ADC-B3DF-B13AE8E5A41C',
       WFControlFlowMode: 1,
     }),
@@ -874,31 +853,26 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.conditional', {
-      local state = super.state,
       GroupingIdentifier: '6128F9AF-A448-4A95-9A19-1117FD929284',
       WFControlFlowMode: 1,
     }),
 
     sc.Action('is.workflow.actions.conditional', {
-      local state = super.state,
       GroupingIdentifier: '6128F9AF-A448-4A95-9A19-1117FD929284',
       WFControlFlowMode: 2,
     }),
 
     sc.Action('is.workflow.actions.repeat.each', {
-      local state = super.state,
       GroupingIdentifier: 'B542FF5C-D6F2-47A8-9A8B-DE4F0D6D0C5E',
       WFControlFlowMode: 2,
     }),
 
     sc.Action('is.workflow.actions.conditional', {
-      local state = super.state,
       GroupingIdentifier: '6A3266FB-DD65-4ADC-B3DF-B13AE8E5A41C',
       WFControlFlowMode: 2,
     }),
 
     sc.Action('is.workflow.actions.conditional', {
-      local state = super.state,
       GroupingIdentifier: '417A0E48-5F82-44DF-B448-ED047609E58D',
       WFControlFlowMode: 2,
     }),
@@ -922,7 +896,6 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.alert', {
-      local state = super.state,
       WFAlertActionMessage: 'If this is your first time Exporting, please cancel this shortcut and create a folder in the Notes app named Version Control otherwise, continue.',
       WFAlertActionTitle: 'Version Control Export Setup',
     }),
@@ -994,7 +967,6 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.repeat.each', name='Repeat Results', params={
-      local state = super.state,
       GroupingIdentifier: '80A2FDB7-7A37-4C1F-BD49-43DCD82B30E8',
       WFControlFlowMode: 2,
     }),
@@ -1045,7 +1017,6 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.conditional', {
-      local state = super.state,
       GroupingIdentifier: 'ED0B8895-BCD2-4611-B12A-821C84B2D53C',
       WFControlFlowMode: 1,
     }),
@@ -1158,13 +1129,11 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.conditional', name='If Result', params={
-      local state = super.state,
       GroupingIdentifier: 'ED0B8895-BCD2-4611-B12A-821C84B2D53C',
       WFControlFlowMode: 2,
     }),
 
     sc.Action('is.workflow.actions.gettext', name='Text', params={
-      local state = super.state,
       WFTextActionText: 'Version Control',
     }),
 
@@ -1202,7 +1171,6 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.conditional', {
-      local state = super.state,
       GroupingIdentifier: '70A99A6B-B6FF-4FCE-9FB5-3E51BD8C7F1A',
       WFControlFlowMode: 2,
     }),
@@ -1225,7 +1193,6 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('dk.simonbs.DataJar.GetKeysIntent', name='Keys', params={
-      local state = super.state,
       keyPath: 'Version Control',
     }),
 
@@ -1291,7 +1258,6 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.repeat.each', name='Repeat Results', params={
-      local state = super.state,
       GroupingIdentifier: 'F51681C8-CDBA-40EB-89BF-3CD57E5F3951',
       WFControlFlowMode: 2,
     }),
@@ -1303,7 +1269,6 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.gettext', name='Text', params={
-      local state = super.state,
       WFTextActionText: 'Go Back',
     }),
 
@@ -1338,7 +1303,6 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.conditional', {
-      local state = super.state,
       GroupingIdentifier: 'B224B2D7-B7E4-4B66-9945-899A91135E65',
       WFControlFlowMode: 1,
     }),
@@ -1485,7 +1449,6 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.repeat.each', name='Repeat Results', params={
-      local state = super.state,
       GroupingIdentifier: '7FE68386-F34C-4E25-888C-5862816FFCCB',
       WFControlFlowMode: 2,
     }),
@@ -1608,7 +1571,6 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.number', name='Number', params={
-      local state = super.state,
       WFNumberActionNumber: '1',
     }),
 
@@ -1619,25 +1581,21 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.conditional', {
-      local state = super.state,
       GroupingIdentifier: 'FC4A4FEE-B2EB-4E46-A1D5-E388AAC67024',
       WFControlFlowMode: 2,
     }),
 
     sc.Action('is.workflow.actions.conditional', {
-      local state = super.state,
       GroupingIdentifier: 'B8662EBE-5B24-4C8C-822E-53DA00E3605F',
       WFControlFlowMode: 2,
     }),
 
     sc.Action('is.workflow.actions.repeat.each', {
-      local state = super.state,
       GroupingIdentifier: '0E77A3C6-B0C3-441A-BF2E-5A5884F53FC1',
       WFControlFlowMode: 2,
     }),
 
     sc.Action('is.workflow.actions.repeat.each', {
-      local state = super.state,
       GroupingIdentifier: '2CB74CD2-6D0E-4685-8163-F8F7E1116CBD',
       WFControlFlowMode: 2,
     }),
@@ -1692,19 +1650,16 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.conditional', {
-      local state = super.state,
       GroupingIdentifier: '433E8EF4-5A58-4BBC-8DFC-BA73102FA3A6',
       WFControlFlowMode: 2,
     }),
 
     sc.Action('is.workflow.actions.conditional', {
-      local state = super.state,
       GroupingIdentifier: 'B224B2D7-B7E4-4B66-9945-899A91135E65',
       WFControlFlowMode: 2,
     }),
 
     sc.Action('is.workflow.actions.conditional', {
-      local state = super.state,
       GroupingIdentifier: 'ED4BD5DF-3115-4D29-8460-D699A8604E1A',
       WFControlFlowMode: 2,
     }),
@@ -1729,13 +1684,11 @@ local sc = import 'shortcuts.libsonnet';
     sc.Action('is.workflow.actions.exit'),
 
     sc.Action('is.workflow.actions.conditional', {
-      local state = super.state,
       GroupingIdentifier: '53C04CCA-3A14-4CC7-A7D5-3C28AC23E4B3',
       WFControlFlowMode: 2,
     }),
 
     sc.Action('is.workflow.actions.runworkflow', {
-      local state = super.state,
       WFWorkflow: {
         isSelf: true,
         workflowIdentifier: '34FF5E78-C8C3-4B44-B688-59FC05E3F8A8',

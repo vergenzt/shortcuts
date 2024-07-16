@@ -5,7 +5,6 @@ local sc = import 'shortcuts.libsonnet';
   WFWorkflowActions: sc.ActionsSeq([
 
     sc.Action('dk.simonbs.DataJar.GetValueIntent', {
-      local state = super.state,
       keyPath: 'fastmail-config',
     }),
 

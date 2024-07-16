@@ -5,7 +5,6 @@ local sc = import 'shortcuts.libsonnet';
   WFWorkflowActions: sc.ActionsSeq([
 
     sc.Action('is.workflow.actions.getmyworkflows', name='My Shortcuts', params={
-      local state = super.state,
       Folder: {
         DisplayString: 'Automations',
         Identifier: 'D53EB35E-8044-4094-97D9-BD272C132E32',
@@ -27,7 +26,6 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.repeat.each', {
-      local state = super.state,
       GroupingIdentifier: 'B4F3CD09-4BC6-4CBD-B8AC-2DC99998DBF2',
       WFControlFlowMode: 2,
     }),

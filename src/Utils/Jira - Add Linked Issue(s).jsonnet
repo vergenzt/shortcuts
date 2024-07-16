@@ -29,7 +29,6 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.conditional', {
-      local state = super.state,
       GroupingIdentifier: 'AA47C097-218D-48E1-8EC2-CE887F3EA1C4',
       WFControlFlowMode: 1,
     }),
@@ -43,7 +42,6 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.conditional', name='Issue key', params={
-      local state = super.state,
       GroupingIdentifier: 'AA47C097-218D-48E1-8EC2-CE887F3EA1C4',
       WFControlFlowMode: 2,
     }),
@@ -68,13 +66,11 @@ local sc = import 'shortcuts.libsonnet';
     sc.Action('is.workflow.actions.exit'),
 
     sc.Action('is.workflow.actions.conditional', {
-      local state = super.state,
       GroupingIdentifier: '1D9BEA05-EA73-49E7-A495-B0566729ABA0',
       WFControlFlowMode: 2,
     }),
 
     sc.Action('dk.simonbs.DataJar.GetValueIntent', name='Value', params={
-      local state = super.state,
       keyPath: 'jira-config.issueLinkTypes',
     }),
 
@@ -401,7 +397,6 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.getdevicedetails', {
-      local state = super.state,
       WFDeviceDetail: 'Device Model',
     }),
 

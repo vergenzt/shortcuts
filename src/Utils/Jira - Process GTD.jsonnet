@@ -5,7 +5,6 @@ local sc = import 'shortcuts.libsonnet';
   WFWorkflowActions: sc.ActionsSeq([
 
     sc.Action('dk.simonbs.DataJar.GetValueIntent', name='Value', params={
-      local state = super.state,
       keyPath: 'jira-config',
     }),
 
@@ -54,7 +53,6 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.conditional', {
-      local state = super.state,
       GroupingIdentifier: 'AA47C097-218D-48E1-8EC2-CE887F3EA1C4',
       WFControlFlowMode: 1,
     }),
@@ -68,7 +66,6 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.conditional', name='Issue key', params={
-      local state = super.state,
       GroupingIdentifier: 'AA47C097-218D-48E1-8EC2-CE887F3EA1C4',
       WFControlFlowMode: 2,
     }),

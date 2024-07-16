@@ -5,7 +5,6 @@ local sc = import 'shortcuts.libsonnet';
   WFWorkflowActions: sc.ActionsSeq([
 
     sc.Action('dk.simonbs.DataJar.GetValueIntent', name='Value', params={
-      local state = super.state,
       keyPath: 'mac-addresses.personal',
     }),
 

@@ -5,7 +5,6 @@ local sc = import 'shortcuts.libsonnet';
   WFWorkflowActions: sc.ActionsSeq([
 
     sc.Action('dk.simonbs.DataJar.GetValueIntent', name='config', params={
-      local state = super.state,
       keyPath: 'google-oauth',
     }),
 
@@ -62,7 +61,6 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.conditional', {
-      local state = super.state,
       GroupingIdentifier: '2A79BC9F-64D3-4E75-9B83-A2D758932D7B',
       WFControlFlowMode: 2,
     }),
@@ -137,13 +135,11 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.conditional', {
-      local state = super.state,
       GroupingIdentifier: '22E62798-BDB0-43EE-BE22-F8F025412072',
       WFControlFlowMode: 1,
     }),
 
     sc.Action('is.workflow.actions.dictionary', name='auth_params', params={
-      local state = super.state,
       WFItems: {
         Value: {
           WFDictionaryFieldValueItems: [
@@ -198,7 +194,6 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.dictionary', name='token_params', params={
-      local state = super.state,
       WFItems: {
         Value: {
           WFDictionaryFieldValueItems: [
@@ -273,7 +268,6 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.conditional', {
-      local state = super.state,
       GroupingIdentifier: '22E62798-BDB0-43EE-BE22-F8F025412072',
       WFControlFlowMode: 2,
     }),

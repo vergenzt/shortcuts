@@ -27,7 +27,6 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.selectcontacts', name='Contacts', params={
-      local state = super.state,
       WFSelectMultiple: true,
     }),
 
@@ -68,7 +67,6 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.repeat.each', {
-      local state = super.state,
       GroupingIdentifier: '55D8D462-8872-4045-9F46-91174853FBC0',
       WFControlFlowMode: 2,
     }),
@@ -85,7 +83,6 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.repeat.each', {
-      local state = super.state,
       GroupingIdentifier: '4CC0F7FC-67E5-4A99-9E5B-355E2F0B56ED',
       WFControlFlowMode: 2,
     }),

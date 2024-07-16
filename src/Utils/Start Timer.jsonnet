@@ -5,7 +5,6 @@ local sc = import 'shortcuts.libsonnet';
   WFWorkflowActions: sc.ActionsSeq([
 
     sc.Action('is.workflow.actions.timer.start', {
-      local state = super.state,
       IntentAppDefinition: {
         BundleIdentifier: 'com.apple.clock',
         ExtensionBundleIdentifier: 'com.apple.mobiletimer-framework.MobileTimerIntents',
