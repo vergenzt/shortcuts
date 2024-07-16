@@ -8,7 +8,7 @@ repos:
   - id: check-yaml
 
 - repo: https://github.com/google/go-jsonnet
-  rev: v0.20.0
+  rev: fed90cd9cd733a87f9fb27cfb32a3e08a7695603 # https://github.com/google/go-jsonnet/issues/713
   hooks:
   - id: jsonnet-format
   - id: jsonnet-lint
