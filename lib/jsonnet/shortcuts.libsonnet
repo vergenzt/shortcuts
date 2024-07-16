@@ -56,11 +56,11 @@
 
   Ref(state, name, aggs=[], att=false):: (
     local ref = (
-      if std.startsWith(name, "Vars.") then {
+      if std.startsWith(name, 'Vars.') then {
         Type: 'Variable',
         VariableName: std.substr(name, 5, std.length(name)),
       }
-      else if name == "Shortcut Input" then {
+      else if name == 'Shortcut Input' then {
         Type: 'ExtensionInput',
       }
       else {
@@ -81,7 +81,7 @@
     if state == null then error ('Interpolation of `%s` missing state var' % var)
     else
       if var == '!Input' then { Type: 'ExtensionInput' }
-      else sc.Ref(var, state)
+      else $.Ref(var, state)
   ),
 
   _joiner: std.char(65532),
@@ -100,7 +100,7 @@
           // add interpoltation
           local startNext = jNext + 1;
           local strAccNext = strAcc + strNext + joiner;
-          local attsAccNext = attsAcc + { ['{%d, 1}' % (std.length(strAccNext) - 1)]: resolver(varNext) };
+          local attsAccNext = attsAcc { ['{%d, 1}' % (std.length(strAccNext) - 1)]: resolver(varNext) };
           $._replaceAttachments(s, joiner, startNext, strAccNext, attsAccNext) tailstrict
   ),
 
@@ -119,7 +119,7 @@
       number: f,
       boolean: {
         WFSerializationType: 'WFNumberSubstitutableState',
-        Value: $.Val(f, state)
+        Value: $.Val(f, state),
       },
       object: {
         WFSerializationType: 'WFDictionaryFieldValue',
@@ -141,45 +141,45 @@
 
     // string serialization
     string: (
-      local resolver = function(var) $._resolveAttachment(var, state); // close over Val's state
+      local resolver = function(var) $._resolveAttachment(var, state);  // close over Val's state
       local xWithAtts = $._replaceAttachments(x, resolver), xUnesc = xWithAtts[0], xAtts = xWithAtts[1];
-        local attsObj = if xAtts == {} then { attachmentsbyRange: xAtts } else {};
-        {
-          WFSerializationType: 'WFTextTokenString',
-          Value: ({ string: xUnesc } + attsObj),
-        }
-    )
+      local attsObj = if xAtts == {} then { attachmentsbyRange: xAtts } else {};
+      {
+        WFSerializationType: 'WFTextTokenString',
+        Value: ({ string: xUnesc } + attsObj),
+      }
+    ),
 
     // dict serialization
-    object: {
-      // TODO
-    },
+    // object: {
+    //   // TODO
+    // },
 
     // list serialization (to itself)
-    array: [
-
-    ],
+    // array: [
+    //   // TODO
+    // ],
 
   }[
     std.type(x)
   ],
 
-  Att(val):: ,
+  // Att(val):: ,
 
   // Cond: {
-	// 	LessThan:       0,
-	// 	LessOrEqual:    1,
-	// 	GreaterThan:    2,
-	// 	GreaterOrEqual: 3,
+  // 	LessThan:       0,
+  // 	LessOrEqual:    1,
+  // 	GreaterThan:    2,
+  // 	GreaterOrEqual: 3,
   //   Is:             4,
-	// 	Not:            5,
-	// 	BeginsWith:     8,
-	// 	EndsWith:       9,
-	// 	Contains:       99,
-	// 	Any:            100,
-	// 	Empty:          101,
-	// 	DoesNotContain: 999,
-	// 	Between:        1003,
+  // 	Not:            5,
+  // 	BeginsWith:     8,
+  // 	EndsWith:       9,
+  // 	Contains:       99,
+  // 	Any:            100,
+  // 	Empty:          101,
+  // 	DoesNotContain: 999,
+  // 	Between:        1003,
   // },
 
   // If(input, cond, then_acts, else_acts=[], name=null):: (
