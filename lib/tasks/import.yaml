@@ -73,24 +73,25 @@ tasks:
       vars: ["SOURCE_DIR", "BUILD_DIR", "SHORTCUT_PATH"]
     vars:
       SRC: '{{.SOURCE_DIR}}/{{.SHORTCUT_PATH}}.jsonnet'
+      PHASES:
+        sh: find lib/ast-grep/rules/* -printf '%f\n' | cut -d- -f1 | sort -g | uniq
 
     cmds:
     - { silent: true, cmd: 'mkdir -p {{q .SOURCE_DIR}}/{{q (dir .SHORTCUT_PATH)}}' }
 
     - jsonnetfmt {{q .BUILD_DIR}}/{{q .SHORTCUT_PATH}}-in.json > {{q .SRC}}
 
-
-    - >-
-      phase=1;
-      while find lib/ast-grep/rules/$phase-* -quit 2>/dev/null; do
-      seen=();
-      while ! printf '%s\n' "${seen[@]}" | grep -qF -e "${next_sha:=next}"; do
-      seen+=("${next_sha:-}");
-      find lib/ast-grep/rules/$phase-*
-      -exec sg scan --update-all --rule='{}' {{q .SRC}} \;
-      -exec jsonnetfmt -i {{q .SRC}} \;
-      ;
-      next_sha=$(sha1sum {{q .SRC}} | awk '{print $1}');
-      done;
-      phase=$((phase+1));
-      done;
+    - for: { var: PHASES, as: PHASE, split: "\n" }
+      cmd: >-
+        seen=();
+        while true; do
+        find lib/ast-grep/rules/{{.PHASE}}-*
+        -exec sg scan --update-all --rule='{}' {{q .SRC}} \;
+        -exec jsonnetfmt -i {{q .SRC}} \;
+        ;
+        next_sha=$(sha1sum {{q .SRC}} | awk '{print $1}');
+        if printf '%s\n' "${seen[@]}" | grep -Fq "$next_sha"; then
+        break;
+        fi;
+        seen+=("${next_sha:-}");
+        done;
