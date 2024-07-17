@@ -1,0 +1,4 @@
+Type: 'WFCoercionVariableAggrandizement'
+Type: 'WFDateFormatVariableAggrandizement'
+Type: 'WFDictionaryValueVariableAggrandizement'
+Type: 'WFPropertyVariableAggrandizement'
