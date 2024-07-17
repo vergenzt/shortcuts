@@ -7,25 +7,22 @@ local sc = import 'shortcuts.libsonnet';
     sc.Action('is.workflow.actions.dictionary', name='Empty Dictionary'),
 
     sc.Action('is.workflow.actions.detect.dictionary', name='Input As Dict', params={
-      local state = super.state,
-      WFInput: sc.Ref(state, 'Shortcut Input', att=true),
+      WFInput: function(state) sc.Ref(state, 'Shortcut Input', att=true),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
-      local state = super.state,
       GroupingIdentifier: 'AA47C097-218D-48E1-8EC2-CE887F3EA1C4',
       WFCondition: 100,
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: sc.Ref(state, 'Input As Dict', att=true),
+        Variable: function(state) sc.Ref(state, 'Input As Dict', att=true),
       },
     }),
 
     sc.Action('is.workflow.actions.getvalueforkey', {
-      local state = super.state,
       WFDictionaryKey: 'issue_key',
-      WFInput: sc.Ref(state, 'Input As Dict', att=true),
+      WFInput: function(state) sc.Ref(state, 'Input As Dict', att=true),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
@@ -34,8 +31,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.text.replace', {
-      local state = super.state,
-      WFInput: sc.Val('${Shortcut Input}', state),
+      WFInput: function(state) sc.Val('${Shortcut Input}', state),
       WFReplaceTextFind: '.*\\b([A-Z]+-[1-9][0-9]*)\\b.*',
       WFReplaceTextRegularExpression: true,
       WFReplaceTextReplace: '$1',
@@ -47,19 +43,17 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.conditional', {
-      local state = super.state,
       GroupingIdentifier: '1D9BEA05-EA73-49E7-A495-B0566729ABA0',
       WFCondition: 101,
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: sc.Ref(state, 'Issue key', att=true),
+        Variable: function(state) sc.Ref(state, 'Issue key', att=true),
       },
     }),
 
     sc.Action('is.workflow.actions.notification', {
-      local state = super.state,
-      WFInput: sc.Ref(state, 'Issue key', att=true),
+      WFInput: function(state) sc.Ref(state, 'Issue key', att=true),
       WFNotificationActionBody: 'No issue key provided!',
     }),
 
@@ -75,16 +69,14 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('ke.bou.GizmoPack.QueryJSONIntent', name='Link Type IDs by Inward String', params={
-      local state = super.state,
-      input: sc.Ref(state, 'Value', att=true),
+      input: function(state) sc.Ref(state, 'Value', att=true),
       jqQuery: '.issueLinkTypes | map(select(.name | contains("*") | not) | { key: .inward, value: { id, name } }) | from_entries',
       queryType: 'jq',
     }),
 
     sc.Action('is.workflow.actions.choosefromlist', name='Chosen String', params={
-      local state = super.state,
       WFChooseFromListActionPrompt: "What's the relationship?",
-      WFInput: sc.Ref(state, 'Link Type IDs by Inward String', aggs=[
+      WFInput: function(state) sc.Ref(state, 'Link Type IDs by Inward String', aggs=[
         {
           CoercionItemClass: 'WFDictionaryContentItem',
           Type: 'WFCoercionVariableAggrandizement',
@@ -97,20 +89,17 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.getvalueforkey', name='Link Type', params={
-      local state = super.state,
-      WFDictionaryKey: sc.Val('${Chosen String}', state),
-      WFInput: sc.Ref(state, 'Link Type IDs by Inward String', att=true),
+      WFDictionaryKey: function(state) sc.Val('${Chosen String}', state),
+      WFInput: function(state) sc.Ref(state, 'Link Type IDs by Inward String', att=true),
     }),
 
     sc.Action('is.workflow.actions.text.replace', name='Link Type Name', params={
-      local state = super.state,
-      WFInput: sc.Val('${Link Type}', state),
+      WFInput: function(state) sc.Val('${Link Type}', state),
       WFReplaceTextFind: '^[\\d\\*\\. ]*',
       WFReplaceTextRegularExpression: true,
     }),
 
     sc.Action('is.workflow.actions.dictionary', name='Dictionary', params={
-      local state = super.state,
       WFItems: {
         Value: {
           WFDictionaryFieldValueItems: [
@@ -120,7 +109,7 @@ local sc = import 'shortcuts.libsonnet';
               WFValue: {
                 Value: {
                   attachmentsByRange: {
-                    '{6, 1}': sc.Ref(state, 'Issue key'),
+                    '{6, 1}': function(state) sc.Ref(state, 'Issue key'),
                   },
                   string: 'issue/￼?fields=summary,parent',
                 },
@@ -139,8 +128,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.runworkflow', name='Origin Issue', params={
-      local state = super.state,
-      WFInput: sc.Ref(state, 'Dictionary', att=true),
+      WFInput: function(state) sc.Ref(state, 'Dictionary', att=true),
       WFWorkflow: {
         isSelf: false,
         workflowIdentifier: 'B245F907-CA3B-4273-B2B7-BE1A4BAE3F79',
@@ -150,13 +138,12 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.ask', name='New Issue Summary', params={
-      local state = super.state,
       WFAllowsMultilineText: false,
       WFAskActionDefaultAnswer: {
         Value: {
           attachmentsByRange: {
-            '{0, 1}': sc.Ref(state, 'Link Type Name'),
-            '{5, 1}': sc.Ref(state, 'Origin Issue', aggs=[
+            '{0, 1}': function(state) sc.Ref(state, 'Link Type Name'),
+            '{5, 1}': function(state) sc.Ref(state, 'Origin Issue', aggs=[
               {
                 CoercionItemClass: 'WFDictionaryContentItem',
                 Type: 'WFCoercionVariableAggrandizement',
@@ -175,19 +162,16 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.setclipboard', {
-      local state = super.state,
-      WFInput: sc.Ref(state, 'New Issue Summary', att=true),
+      WFInput: function(state) sc.Ref(state, 'New Issue Summary', att=true),
     }),
 
     sc.Action('is.workflow.actions.text.replace', {
-      local state = super.state,
-      WFInput: sc.Val('${New Issue Summary}', state),
+      WFInput: function(state) sc.Val('${New Issue Summary}', state),
       WFReplaceTextFind: '"',
       WFReplaceTextReplace: '\\"',
     }),
 
     sc.Action('is.workflow.actions.dictionary', name='Create Issue Request', params={
-      local state = super.state,
       WFItems: {
         Value: {
           WFDictionaryFieldValueItems: [
@@ -256,7 +240,7 @@ local sc = import 'shortcuts.libsonnet';
                                 {
                                   WFItemType: 0,
                                   WFKey: sc.Val('summary'),
-                                  WFValue: sc.Val('${New Issue Summary}', state),
+                                  WFValue: function(state) sc.Val('${New Issue Summary}', state),
                                 },
                                 {
                                   WFItemType: 1,
@@ -268,7 +252,7 @@ local sc = import 'shortcuts.libsonnet';
                                           {
                                             WFItemType: 0,
                                             WFKey: sc.Val('key'),
-                                            WFValue: sc.Val('${Origin Issue}', state),
+                                            WFValue: function(state) sc.Val('${Origin Issue}', state),
                                           },
                                         ],
                                       },
@@ -319,7 +303,7 @@ local sc = import 'shortcuts.libsonnet';
                                                                     {
                                                                       WFItemType: 0,
                                                                       WFKey: sc.Val('id'),
-                                                                      WFValue: sc.Val('${Link Type}', state),
+                                                                      WFValue: function(state) sc.Val('${Link Type}', state),
                                                                     },
                                                                   ],
                                                                 },
@@ -338,7 +322,7 @@ local sc = import 'shortcuts.libsonnet';
                                                                     {
                                                                       WFItemType: 0,
                                                                       WFKey: sc.Val('key'),
-                                                                      WFValue: sc.Val('${Issue key}', state),
+                                                                      WFValue: function(state) sc.Val('${Issue key}', state),
                                                                     },
                                                                   ],
                                                                 },
@@ -386,8 +370,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.runworkflow', name='Create Issue Result', params={
-      local state = super.state,
-      WFInput: sc.Ref(state, 'Create Issue Request', att=true),
+      WFInput: function(state) sc.Ref(state, 'Create Issue Request', att=true),
       WFWorkflow: {
         isSelf: false,
         workflowIdentifier: 'B245F907-CA3B-4273-B2B7-BE1A4BAE3F79',
@@ -401,15 +384,13 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.setvalueforkey', name='Dictionary', params={
-      local state = super.state,
-      WFDictionary: sc.Ref(state, 'Empty Dictionary', att=true),
+      WFDictionary: function(state) sc.Ref(state, 'Empty Dictionary', att=true),
       WFDictionaryKey: 'issue',
-      WFDictionaryValue: sc.Val('${Create Issue Result}', state),
+      WFDictionaryValue: function(state) sc.Val('${Create Issue Result}', state),
     }),
 
     sc.Action('is.workflow.actions.runworkflow', {
-      local state = super.state,
-      WFInput: sc.Ref(state, 'Dictionary', att=true),
+      WFInput: function(state) sc.Ref(state, 'Dictionary', att=true),
       WFWorkflow: {
         isSelf: false,
         workflowIdentifier: 'DE45228B-5A30-4A30-AF37-DA40929C57C2',

@@ -9,11 +9,10 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.url', name='URL', params={
-      local state = super.state,
       WFURLActionURL: {
         Value: {
           attachmentsByRange: {
-            '{0, 1}': sc.Ref(state, 'Value', aggs=[
+            '{0, 1}': function(state) sc.Ref(state, 'Value', aggs=[
               {
                 CoercionItemClass: 'WFDictionaryContentItem',
                 Type: 'WFCoercionVariableAggrandizement',
@@ -31,25 +30,22 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.detect.dictionary', name='Input As Dict', params={
-      local state = super.state,
-      WFInput: sc.Ref(state, 'Shortcut Input', att=true),
+      WFInput: function(state) sc.Ref(state, 'Shortcut Input', att=true),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
-      local state = super.state,
       GroupingIdentifier: 'AA47C097-218D-48E1-8EC2-CE887F3EA1C4',
       WFCondition: 100,
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: sc.Ref(state, 'Input As Dict', att=true),
+        Variable: function(state) sc.Ref(state, 'Input As Dict', att=true),
       },
     }),
 
     sc.Action('is.workflow.actions.getvalueforkey', {
-      local state = super.state,
       WFDictionaryKey: 'issue_key',
-      WFInput: sc.Ref(state, 'Input As Dict', att=true),
+      WFInput: function(state) sc.Ref(state, 'Input As Dict', att=true),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
@@ -58,8 +54,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.text.replace', {
-      local state = super.state,
-      WFInput: sc.Val('${Shortcut Input}', state),
+      WFInput: function(state) sc.Val('${Shortcut Input}', state),
       WFReplaceTextFind: '.*\\b([A-Z]+-[1-9][0-9]*)\\b.*',
       WFReplaceTextRegularExpression: true,
       WFReplaceTextReplace: '$1',
@@ -71,7 +66,6 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.dictionary', name='Dictionary', params={
-      local state = super.state,
       WFItems: {
         Value: {
           WFDictionaryFieldValueItems: [
@@ -86,7 +80,7 @@ local sc = import 'shortcuts.libsonnet';
               WFValue: {
                 Value: {
                   attachmentsByRange: {
-                    '{6, 1}': sc.Ref(state, 'Issue key'),
+                    '{6, 1}': function(state) sc.Ref(state, 'Issue key'),
                   },
                   string: 'issue/￼',
                 },
@@ -100,8 +94,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.runworkflow', name='Get Initial Issue Response', params={
-      local state = super.state,
-      WFInput: sc.Ref(state, 'Dictionary', att=true),
+      WFInput: function(state) sc.Ref(state, 'Dictionary', att=true),
       WFWorkflow: {
         isSelf: false,
         workflowIdentifier: 'B245F907-CA3B-4273-B2B7-BE1A4BAE3F79',
@@ -111,24 +104,21 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.getvalueforkey', name='Initial Issue Key', params={
-      local state = super.state,
       WFDictionaryKey: 'key',
-      WFInput: sc.Ref(state, 'Get Initial Issue Response', att=true),
+      WFInput: function(state) sc.Ref(state, 'Get Initial Issue Response', att=true),
     }),
 
     sc.Action('is.workflow.actions.getvalueforkey', name='fields.summary', params={
-      local state = super.state,
       WFDictionaryKey: 'fields.summary',
-      WFInput: sc.Ref(state, 'Get Initial Issue Response', att=true),
+      WFInput: function(state) sc.Ref(state, 'Get Initial Issue Response', att=true),
     }),
 
     sc.Action('is.workflow.actions.gettext', name='Text', params={
-      local state = super.state,
       WFTextActionText: {
         Value: {
           attachmentsByRange: {
-            '{0, 1}': sc.Ref(state, 'Initial Issue Key'),
-            '{2, 1}': sc.Ref(state, 'fields.summary'),
+            '{0, 1}': function(state) sc.Ref(state, 'Initial Issue Key'),
+            '{2, 1}': function(state) sc.Ref(state, 'fields.summary'),
           },
           string: '￼ ￼',
         },
@@ -137,17 +127,15 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.urlencode', name='URL Encoded Text', params={
-      local state = super.state,
-      WFInput: sc.Val('${Text}', state),
+      WFInput: function(state) sc.Val('${Text}', state),
     }),
 
     sc.Action('is.workflow.actions.url', name='URL', params={
-      local state = super.state,
       WFURLActionURL: {
         Value: {
           attachmentsByRange: {
-            '{0, 1}': sc.Ref(state, 'URL'),
-            '{1, 1}': sc.Ref(state, 'URL Encoded Text'),
+            '{0, 1}': function(state) sc.Ref(state, 'URL'),
+            '{1, 1}': function(state) sc.Ref(state, 'URL Encoded Text'),
           },
           string: '￼￼',
         },
@@ -156,8 +144,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.openurl', {
-      local state = super.state,
-      WFInput: sc.Ref(state, 'URL', att=true),
+      WFInput: function(state) sc.Ref(state, 'URL', att=true),
     }),
 
   ]),

@@ -4,54 +4,67 @@
   local _id = 'WFWorkflowActionIdentifier',
   local _params = 'WFWorkflowActionParameters',
 
+  /**
+    Waiting for https://github.com/google/jsonnet/commit/fe8179a8560de6908e52aeef48a03e6fc76035d8
+    to be released to stdlib
+   */
+  _flattenDeepArray(value)::
+    if std.isArray(value) then
+      [y for x in value for y in $._flattenDeepArray(x)]
+    else
+      [value],
+
   Action(id, params={}, name=null):: (
-    local unidentifiedAction = (
-      { [_id]: id }
-      { [_params]: params }
-    );
-    unidentifiedAction + (
-      if name != null
-      then
-        { [_params]+: { CustomOutputName: name } } +
-        { [_params]+: { UUID: $._uuid('action', std.manifestJsonMinified(unidentifiedAction)) } }
-      else
-        {}
+    { [_id]: id }
+    { [_params]: params }
+    + (
+      if name != null then
+        {
+          [_params]+: {
+            CustomOutputName: name,
+          },
+        }
+      else {}
     )
   ),
 
-  ActionsSeq(actions, state={}):: (
-    local actions_flat = std.flattenArrays(actions);
-    if std.length(actions_flat) == 0 then
-      []
-    else (
-      local action = actions_flat[0];
-      local name = std.get(action[_params], 'CustomOutputName');
-      local newState = if name == null then state else state { [name]: action[_params].UUID };
-      local newAction = { state:: newState } + action;
-      local rest = $.ActionsSeq(actions_flat[1:], newState);
-      [newAction] + rest
-    )
+  ActionsSeq(actionsRawUnflat):: $._actionsSeqRecursive($._flattenDeepArray(actionsRawUnflat)),
+
+  _actionsSeqRecursive(actionsRaw, prevActions=[], prevState={}):: (
+    if actionsRaw == [] then
+      prevActions
+    else
+      local nextActionRaw = actionsRaw[0];
+      local nextActionNoID = $._resolveState(nextActionRaw, prevState);
+      local nextActionName = std.get(nextActionNoID[_params], 'CustomOutputName');
+      local nextActionUUID = if nextActionName != null then $._uuid('action', std.manifestJsonMinified(nextActionNoID));
+      local nextAction = (
+        nextActionNoID +
+        if nextActionName != null then
+          { [_params]+: { UUID: nextActionUUID } }
+        else {}
+      );
+      local nextActions = prevActions + [nextAction];
+      local nextState = (
+        prevState +
+        if nextActionName != null then
+          { [nextActionName]: nextActionUUID }
+        else {}
+      );
+      $._actionsSeqRecursive(actionsRaw[1:], nextActions, nextState) tailstrict
   ),
 
   /**
-    returns [i, unesc] where:
-     - i is the start pos of next pat (null if no match), and
-     - unesc is the unescaped version of string contents scanned so far
-  */
-  _findNextNotEscaped(s, pat, start=0, unescAcc=''):: (
-    if start >= std.length(s) then
-      [null, unescAcc]
-    else
-      local len = std.length(pat);
-      // unescaped pattern: return start and accumulated unescaped string
-      if std.substr(s, start, len) == pat then
-        [start, unescAcc]
-      // escaped pattern: skip and accumulate unescaped
-      else if std.substr(s, start, len + 1) == '\\' + pat then
-        $._findNextNotEscaped(s, pat, start + len + 1, unescAcc + pat) tailstrict
-      // neither: accumulate
-      else
-        $._findNextNotEscaped(s, pat, start + 1, unescAcc) tailstrict
+  Recursively updates `x`, passing `state` into any functions found and replacing with the result.
+  Throws error if any functions do not have arity 1.
+   */
+  _resolveState(x, state):: (
+    if std.isFunction(x) then
+      if std.length(x) == 1 then $._resolveState(x(state), std.trace(state, state))
+      else error 'Cannot resolve non-unary action function'
+    else if std.isObject(x) then std.mapWithKey(function(k, v) $._resolveState(v, state), x)
+    else if std.isArray(x) then std.map(function(v) $._resolveState(v, state), x)
+    else x
   ),
 
   Ref(state, name, aggs=[], att=false):: (
@@ -77,31 +90,63 @@
     else ref
   ),
 
+  _interpJoiner: std.char(65532),
+  _interpStart: '${',
+  _interpEnd: '}',
+  _interpEscape: '\\',
+
+  /**
+  @returns [i, unesc] where:
+    - i is the position of the next character after the pattern (null if no match), and
+    - unesc is the unescaped string contents from start to pat start (or end of string)
+  */
+  _findNextNotEscaped(s, pat, iAcc=0, unescAcc=''):: (
+    local esc = $._interpEscape;
+    if pat == '' then error 'Pattern cannot be empty!'
+    else if s == '' then
+      [null, unescAcc]
+    else if std.startsWith(s, pat) then
+      [iAcc + std.length(pat), unescAcc]
+    else if std.startsWith(s, esc) then
+      local nextUnesc =
+        if std.startsWith(s, esc + esc) then esc
+        else if std.startsWith(s, esc + pat) then pat
+        else error 'Invalid escape: ' + s
+      ;
+      local inc = std.length(esc) + std.length(nextUnesc);
+      $._findNextNotEscaped(s[inc:], pat, iAcc + inc, unescAcc + nextUnesc) tailstrict
+    else
+      $._findNextNotEscaped(s[1:], pat, iAcc + 1, unescAcc + s[0]) tailstrict
+  ),
+
   _resolveAttachment(var, state=null):: (
     if state == null then error ('Interpolation of `%s` missing state var' % var)
     else
       if var == '!Input' then { Type: 'ExtensionInput' }
-      else $.Ref(var, state)
+      else $.Ref(state, var)
   ),
 
-  _joiner: std.char(65532),
-
-  _replaceAttachments(s, resolver, joiner=$._joiner, start=0, strAcc='', attsAcc={}):: (
+  /**
+  @returns [str, atts] where:
+    - str is the WFTextTokenString string with interpolations replaced with $._interpJoiner
+    - atts is the mapping from '{X, 1}', where X is the position of a joiner, to the result of
+      calling _resolver with the string inside the interpolation at X
+  */
+  _replaceAttachments(s, resolver, strAcc='', attsAcc={}):: (
     if s == '' then [strAcc, attsAcc]
     else
-      local nextStart = $._findNextNotEscaped(s, '${', start), iNext = nextStart[0], strNext = nextStart[1];
+      local nextStart = $._findNextNotEscaped(s, $._interpStart), iNext = nextStart[0], strNext = nextStart[1];
       // no more interpolations
       if iNext == null then [strAcc + strNext, attsAcc]
       else
-        local nextEnd = $._findNextNotEscaped(s, '}', start), jNext = nextEnd[0], varNext = nextEnd[1];
-        if jNext == null then error ('Missing end `%s` for start `%s` at %d in `%s`' % [']', '${', iNext, s])
+        local nextEnd = $._findNextNotEscaped(s[iNext:], $._interpEnd), jNext = nextEnd[0], varNext = nextEnd[1];
+        if jNext == null then error ('Missing end `%s` for start `%s` at %d in `%s`' % [$._interpStart, $._interpEnd, iNext, s])
         else if varNext == '' then error ('Empty interpolation at %d in `%s`' % [iNext, s])
         else
-          // add interpoltation
-          local startNext = jNext + 1;
-          local strAccNext = strAcc + strNext + joiner;
+          // add interpolation
+          local strAccNext = strAcc + strNext + $._interpJoiner;
           local attsAccNext = attsAcc { ['{%d, 1}' % (std.length(strAccNext) - 1)]: resolver(varNext) };
-          $._replaceAttachments(s, joiner, startNext, strAccNext, attsAccNext) tailstrict
+          $._replaceAttachments(s[(iNext + jNext):], resolver, strAccNext, attsAccNext) tailstrict
   ),
 
   _wrapItem(f, state=null, key=null):: {
@@ -137,32 +182,18 @@
     }[std.type(f)],
   },
 
-  Val(x, state=null):: {
-
-    // string serialization
-    string: (
+  Val(x, state=null):: (
+    if std.isString(x) then
       local resolver = function(var) $._resolveAttachment(var, state);  // close over Val's state
       local xWithAtts = $._replaceAttachments(x, resolver), xUnesc = xWithAtts[0], xAtts = xWithAtts[1];
-      local attsObj = if xAtts == {} then { attachmentsbyRange: xAtts } else {};
+      local attsObj = if xAtts == {} then {} else { attachmentsByRange: xAtts };
       {
         WFSerializationType: 'WFTextTokenString',
         Value: ({ string: xUnesc } + attsObj),
       }
-    ),
-
-    // dict serialization
-    // object: {
-    //   // TODO
-    // },
-
-    // list serialization (to itself)
-    // array: [
-    //   // TODO
-    // ],
-
-  }[
-    std.type(x)
-  ],
+    else
+      x
+  ),
 
   // Att(val):: ,
 

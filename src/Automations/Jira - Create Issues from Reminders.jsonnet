@@ -37,14 +37,12 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.repeat.each', {
-      local state = super.state,
       GroupingIdentifier: '06C7177F-0DD0-4EF7-8354-638BF3E43DE8',
       WFControlFlowMode: 0,
-      WFInput: sc.Ref(state, 'Reminders', att=true),
+      WFInput: function(state) sc.Ref(state, 'Reminders', att=true),
     }),
 
     sc.Action('com.atlassian.jira.app.CreateIssueIntent', name='Issue', params={
-      local state = super.state,
       account: 'vergenzt@gmail.com',
       issueType: {
         displayString: 'Task',
@@ -55,7 +53,7 @@ local sc = import 'shortcuts.libsonnet';
         identifier: '10008',
       },
       site: 'vergenz',
-      summary: sc.Val('${Vars.Repeat Item}', state),
+      summary: function(state) sc.Val('${Vars.Repeat Item}', state),
     }),
 
     sc.Action('is.workflow.actions.dictionary', name='Dictionary', params={
@@ -135,10 +133,9 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.repeat.each', {
-      local state = super.state,
       GroupingIdentifier: 'F24C9B98-1D8E-40A2-BE15-5494F2260456',
       WFControlFlowMode: 0,
-      WFInput: sc.Ref(state, 'Dictionary', aggs=[
+      WFInput: function(state) sc.Ref(state, 'Dictionary', aggs=[
         {
           PropertyName: 'Keys',
           Type: 'WFPropertyVariableAggrandizement',
@@ -147,29 +144,26 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.getvalueforkey', name='Dictionary Value', params={
-      local state = super.state,
-      WFDictionaryKey: sc.Val('${Vars.Repeat Item 2}', state),
-      WFInput: sc.Ref(state, 'Dictionary', att=true),
+      WFDictionaryKey: function(state) sc.Val('${Vars.Repeat Item 2}', state),
+      WFInput: function(state) sc.Ref(state, 'Dictionary', att=true),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
-      local state = super.state,
       GroupingIdentifier: '9AE5FB23-74B1-44AD-B47A-D9977F4FCCAD',
       WFCondition: 100,
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: sc.Ref(state, 'Dictionary Value', att=true),
+        Variable: function(state) sc.Ref(state, 'Dictionary Value', att=true),
       },
     }),
 
     sc.Action('is.workflow.actions.gettext', {
-      local state = super.state,
       WFTextActionText: {
         Value: {
           attachmentsByRange: {
-            '{0, 1}': sc.Ref(state, 'Vars.Repeat Item 2'),
-            '{3, 1}': sc.Ref(state, 'Dictionary Value'),
+            '{0, 1}': function(state) sc.Ref(state, 'Vars.Repeat Item 2'),
+            '{3, 1}': function(state) sc.Ref(state, 'Dictionary Value'),
           },
           string: '￼: ￼',
         },
@@ -195,29 +189,25 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.text.combine', name='Combined Text', params={
-      local state = super.state,
       WFTextCustomSeparator: '',
       WFTextSeparator: 'New Lines',
-      text: sc.Ref(state, 'Repeat Results', att=true),
+      text: function(state) sc.Ref(state, 'Repeat Results', att=true),
     }),
 
     sc.Action('com.atlassian.jira.app.SetIssueFieldIntent', name='Issue', params={
-      local state = super.state,
-      issue: sc.Ref(state, 'Issue', att=true),
+      issue: function(state) sc.Ref(state, 'Issue', att=true),
       setFieldName: 'Description',
-      setFieldValue: sc.Val('${Combined Text}', state),
+      setFieldValue: function(state) sc.Val('${Combined Text}', state),
     }),
 
     sc.Action('is.workflow.actions.setters.reminders', {
-      local state = super.state,
       Mode: 'Set',
       WFContentItemPropertyName: 'List',
-      WFInput: sc.Ref(state, 'Vars.Repeat Item', att=true),
+      WFInput: function(state) sc.Ref(state, 'Vars.Repeat Item', att=true),
       WFReminderContentItemList: 'Added to Jira',
     }),
 
     sc.Action('is.workflow.actions.gettext', name='Text', params={
-      local state = super.state,
       WFTextActionText: {
         Value: {
           attachmentsByRange: {
@@ -231,13 +221,13 @@ local sc = import 'shortcuts.libsonnet';
               Type: 'Variable',
               VariableName: 'Repeat Item',
             },
-            '{11, 1}': sc.Ref(state, 'Issue', aggs=[
+            '{11, 1}': function(state) sc.Ref(state, 'Issue', aggs=[
               {
                 PropertyName: 'site',
                 Type: 'WFPropertyVariableAggrandizement',
               },
             ]),
-            '{34, 1}': sc.Ref(state, 'Issue', aggs=[
+            '{34, 1}': function(state) sc.Ref(state, 'Issue', aggs=[
               {
                 PropertyName: 'key',
                 Type: 'WFPropertyVariableAggrandizement',
@@ -251,16 +241,15 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.setters.reminders', {
-      local state = super.state,
       Mode: 'Set',
       'Show-WFReminderContentItemTags': true,
       WFContentItemPropertyName: 'Notes',
-      WFInput: sc.Ref(state, 'Vars.Repeat Item', att=true),
+      WFInput: function(state) sc.Ref(state, 'Vars.Repeat Item', att=true),
       WFReminderContentItemIsCompleted: 1,
       WFReminderContentItemNotes: {
         Value: {
           attachmentsByRange: {
-            '{1, 1}': sc.Ref(state, 'Text'),
+            '{1, 1}': function(state) sc.Ref(state, 'Text'),
           },
           string: ' ￼',
         },

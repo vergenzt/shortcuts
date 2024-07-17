@@ -9,8 +9,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.output', {
-      local state = super.state,
-      WFOutput: sc.Val('${Value}', state),
+      WFOutput: function(state) sc.Val('${Value}', state),
     }),
 
   ]),

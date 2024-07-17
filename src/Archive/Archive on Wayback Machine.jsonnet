@@ -5,16 +5,14 @@ local sc = import 'shortcuts.libsonnet';
   WFWorkflowActions: sc.ActionsSeq([
 
     sc.Action('is.workflow.actions.urlencode', name='Encoded URL', params={
-      local state = super.state,
-      WFInput: sc.Val('${Shortcut Input}', state),
+      WFInput: function(state) sc.Val('${Shortcut Input}', state),
     }),
 
     sc.Action('is.workflow.actions.gettext', name='Archive Save URL', params={
-      local state = super.state,
       WFTextActionText: {
         Value: {
           attachmentsByRange: {
-            '{29, 1}': sc.Ref(state, 'Encoded URL'),
+            '{29, 1}': function(state) sc.Ref(state, 'Encoded URL'),
           },
           string: 'https://web.archive.org/save/￼',
         },
@@ -23,7 +21,6 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.downloadurl', {
-      local state = super.state,
       ShowHeaders: false,
       WFFormValues: {
         Value: {
@@ -37,7 +34,7 @@ local sc = import 'shortcuts.libsonnet';
                 },
                 WFSerializationType: 'WFTextTokenString',
               },
-              WFValue: sc.Val('${Vars.URL}', state),
+              WFValue: function(state) sc.Val('${Vars.URL}', state),
             },
           ],
         },
@@ -45,15 +42,14 @@ local sc = import 'shortcuts.libsonnet';
       },
       WFHTTPBodyType: 'Form',
       WFHTTPMethod: 'POST',
-      WFURL: sc.Val('${Archive Save URL}', state),
+      WFURL: function(state) sc.Val('${Archive Save URL}', state),
     }),
 
     sc.Action('is.workflow.actions.gettext', name='Archive Root URL', params={
-      local state = super.state,
       WFTextActionText: {
         Value: {
           attachmentsByRange: {
-            '{28, 1}': sc.Ref(state, 'Encoded URL'),
+            '{28, 1}': function(state) sc.Ref(state, 'Encoded URL'),
           },
           string: 'https://web.archive.org/web/￼',
         },
@@ -62,43 +58,36 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.url.getheaders', name='Headers of URL', params={
-      local state = super.state,
-      WFInput: sc.Val('${Archive Root URL}', state),
+      WFInput: function(state) sc.Val('${Archive Root URL}', state),
     }),
 
     sc.Action('is.workflow.actions.getvalueforkey', name='Link Header', params={
-      local state = super.state,
       WFDictionaryKey: 'Link',
-      WFInput: sc.Ref(state, 'Headers of URL', att=true),
+      WFInput: function(state) sc.Ref(state, 'Headers of URL', att=true),
     }),
 
     sc.Action('is.workflow.actions.previewdocument', {
-      local state = super.state,
-      WFInput: sc.Ref(state, 'Link Header', att=true),
+      WFInput: function(state) sc.Ref(state, 'Link Header', att=true),
     }),
 
     sc.Action('is.workflow.actions.text.match', name='Link Header Matches', params={
-      local state = super.state,
       WFMatchTextCaseSensitive: false,
       WFMatchTextPattern: '<([^>]+)>; rel="memento"',
-      text: sc.Val('${Link Header}', state),
+      text: function(state) sc.Val('${Link Header}', state),
     }),
 
     sc.Action('is.workflow.actions.text.match.getgroup', name='Archive URL', params={
-      local state = super.state,
       WFGetGroupType: 'Group At Index',
-      matches: sc.Ref(state, 'Link Header Matches', att=true),
+      matches: function(state) sc.Ref(state, 'Link Header Matches', att=true),
     }),
 
     sc.Action('is.workflow.actions.setclipboard', {
-      local state = super.state,
-      WFInput: sc.Ref(state, 'Archive URL', att=true),
+      WFInput: function(state) sc.Ref(state, 'Archive URL', att=true),
       WFLocalOnly: false,
     }),
 
     sc.Action('is.workflow.actions.notification', {
-      local state = super.state,
-      WFInput: sc.Ref(state, 'Archive URL', att=true),
+      WFInput: function(state) sc.Ref(state, 'Archive URL', att=true),
       WFNotificationActionBody: 'Archive URL copied to clipboard',
     }),
 

@@ -9,8 +9,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.openurl', {
-      local state = super.state,
-      WFInput: sc.Ref(state, 'Value', att=true),
+      WFInput: function(state) sc.Ref(state, 'Value', att=true),
     }),
 
   ]),

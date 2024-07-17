@@ -26,7 +26,6 @@ rewriters:
         by: ''
   fix: |-
     sc.Action($ID, {
-      local state = super.state,
       $PARAMS_INNER
     })
 

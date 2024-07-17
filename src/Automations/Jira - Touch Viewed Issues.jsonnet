@@ -9,17 +9,15 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.setvariable', {
-      local state = super.state,
-      WFInput: sc.Ref(state, 'Text', att=true),
+      WFInput: function(state) sc.Ref(state, 'Text', att=true),
       WFVariableName: 'FID',
     }),
 
     sc.Action('is.workflow.actions.gettext', name='JQL', params={
-      local state = super.state,
       WFTextActionText: {
         Value: {
           attachmentsByRange: {
-            '{30, 1}': sc.Ref(state, 'Vars.FID'),
+            '{30, 1}': function(state) sc.Ref(state, 'Vars.FID'),
           },
           string: 'lastViewed is not EMPTY or cf[￼] is EMPTY',
         },
@@ -28,7 +26,6 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.dictionary', name='Dictionary', params={
-      local state = super.state,
       WFItems: {
         Value: {
           WFDictionaryFieldValueItems: [
@@ -52,7 +49,7 @@ local sc = import 'shortcuts.libsonnet';
                       {
                         WFItemType: 0,
                         WFKey: sc.Val('jql'),
-                        WFValue: sc.Val('${JQL}', state),
+                        WFValue: function(state) sc.Val('${JQL}', state),
                       },
                       {
                         WFItemType: 0,
@@ -60,7 +57,7 @@ local sc = import 'shortcuts.libsonnet';
                         WFValue: {
                           Value: {
                             attachmentsByRange: {
-                              '{31, 1}': sc.Ref(state, 'Vars.FID'),
+                              '{31, 1}': function(state) sc.Ref(state, 'Vars.FID'),
                             },
                             string: 'updated,lastViewed,customfield_￼',
                           },
@@ -86,8 +83,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.runworkflow', name='Get Viewed Issues Result', params={
-      local state = super.state,
-      WFInput: sc.Ref(state, 'Dictionary', att=true),
+      WFInput: function(state) sc.Ref(state, 'Dictionary', att=true),
       WFWorkflow: {
         isSelf: false,
         workflowIdentifier: 'B245F907-CA3B-4273-B2B7-BE1A4BAE3F79',
@@ -97,10 +93,9 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.repeat.each', {
-      local state = super.state,
       GroupingIdentifier: '6F192F82-E28B-4DA5-8E9D-3595CEE96F87',
       WFControlFlowMode: 0,
-      WFInput: sc.Ref(state, 'Get Viewed Issues Result', aggs=[
+      WFInput: function(state) sc.Ref(state, 'Get Viewed Issues Result', aggs=[
         {
           CoercionItemClass: 'WFDictionaryContentItem',
           Type: 'WFCoercionVariableAggrandizement',
@@ -113,11 +108,10 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.gettext', name='jq', params={
-      local state = super.state,
       WFTextActionText: {
         Value: {
           attachmentsByRange: {
-            '{57, 1}': sc.Ref(state, 'Vars.FID'),
+            '{57, 1}': function(state) sc.Ref(state, 'Vars.FID'),
           },
           string: '([.fields[]] | max) as $max\n| (\n  if .fields.customfield_￼ == $max\n  then empty\n  else { key, newValue: $max }\n  end\n)',
         },
@@ -126,26 +120,23 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('ke.bou.GizmoPack.QueryJSONIntent', name='Result', params={
-      local state = super.state,
-      input: sc.Ref(state, 'Vars.Repeat Item', att=true),
-      jqQuery: sc.Val('${jq}', state),
+      input: function(state) sc.Ref(state, 'Vars.Repeat Item', att=true),
+      jqQuery: function(state) sc.Val('${jq}', state),
       queryType: 'jq',
     }),
 
     sc.Action('is.workflow.actions.conditional', {
-      local state = super.state,
       GroupingIdentifier: 'FAC0F958-C6D7-4969-9830-1BE2C0B6472C',
       WFCondition: 100,
-      WFConditionalActionString: sc.Val('${Updated}', state),
+      WFConditionalActionString: function(state) sc.Val('${Updated}', state),
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: sc.Ref(state, 'Result', att=true),
+        Variable: function(state) sc.Ref(state, 'Result', att=true),
       },
     }),
 
     sc.Action('is.workflow.actions.dictionary', name='Dictionary', params={
-      local state = super.state,
       WFItems: {
         Value: {
           WFDictionaryFieldValueItems: [
@@ -160,7 +151,7 @@ local sc = import 'shortcuts.libsonnet';
               WFValue: {
                 Value: {
                   attachmentsByRange: {
-                    '{6, 1}': sc.Ref(state, 'Result', aggs=[
+                    '{6, 1}': function(state) sc.Ref(state, 'Result', aggs=[
                       {
                         CoercionItemClass: 'WFDictionaryContentItem',
                         Type: 'WFCoercionVariableAggrandizement',
@@ -195,13 +186,13 @@ local sc = import 'shortcuts.libsonnet';
                                   WFKey: {
                                     Value: {
                                       attachmentsByRange: {
-                                        '{12, 1}': sc.Ref(state, 'Vars.FID'),
+                                        '{12, 1}': function(state) sc.Ref(state, 'Vars.FID'),
                                       },
                                       string: 'customfield_￼',
                                     },
                                     WFSerializationType: 'WFTextTokenString',
                                   },
-                                  WFValue: sc.Val('${Result}', state),
+                                  WFValue: function(state) sc.Val('${Result}', state),
                                 },
                               ],
                             },
@@ -224,8 +215,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.runworkflow', name='Shortcut Result', params={
-      local state = super.state,
-      WFInput: sc.Ref(state, 'Dictionary', att=true),
+      WFInput: function(state) sc.Ref(state, 'Dictionary', att=true),
       WFWorkflow: {
         isSelf: false,
         workflowIdentifier: 'B245F907-CA3B-4273-B2B7-BE1A4BAE3F79',
@@ -235,8 +225,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.appendvariable', {
-      local state = super.state,
-      WFInput: sc.Ref(state, 'Shortcut Result', att=true),
+      WFInput: function(state) sc.Ref(state, 'Shortcut Result', att=true),
       WFVariableName: 'Updated Issues',
     }),
 
@@ -251,28 +240,25 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.count', name='Count', params={
-      local state = super.state,
-      Input: sc.Ref(state, 'Vars.Updated Issues', att=true),
+      Input: function(state) sc.Ref(state, 'Vars.Updated Issues', att=true),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
-      local state = super.state,
       GroupingIdentifier: '732DECE0-5E84-43B1-A972-8FEC52FECF86',
       WFCondition: 2,
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: sc.Ref(state, 'Count', att=true),
+        Variable: function(state) sc.Ref(state, 'Count', att=true),
       },
       WFNumberValue: '0',
     }),
 
     sc.Action('is.workflow.actions.notification', {
-      local state = super.state,
       WFNotificationActionBody: {
         Value: {
           attachmentsByRange: {
-            '{8, 1}': sc.Ref(state, 'Count'),
+            '{8, 1}': function(state) sc.Ref(state, 'Count'),
           },
           string: 'Updated ￼ issues',
         },

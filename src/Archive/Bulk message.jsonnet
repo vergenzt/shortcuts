@@ -5,11 +5,10 @@ local sc = import 'shortcuts.libsonnet';
   WFWorkflowActions: sc.ActionsSeq([
 
     sc.Action('is.workflow.actions.ask', name='Provided Input', params={
-      local state = super.state,
       WFAskActionDefaultAnswer: {
         Value: {
           attachmentsByRange: {
-            '{20, 1}': sc.Ref(state, 'Shortcut Input'),
+            '{20, 1}': function(state) sc.Ref(state, 'Shortcut Input'),
           },
           string: 'Hey {{First Name}}! ￼',
         },
@@ -20,10 +19,9 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.text.match', name='Matches', params={
-      local state = super.state,
       WFMatchTextCaseSensitive: false,
       WFMatchTextPattern: '(?<=\\{\\{)[\\w ]+(?=\\}\\})',
-      text: sc.Val('${Provided Input}', state),
+      text: function(state) sc.Val('${Provided Input}', state),
     }),
 
     sc.Action('is.workflow.actions.selectcontacts', name='Contacts', params={
@@ -31,39 +29,35 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.repeat.each', {
-      local state = super.state,
       GroupingIdentifier: '4CC0F7FC-67E5-4A99-9E5B-355E2F0B56ED',
       WFControlFlowMode: 0,
-      WFInput: sc.Ref(state, 'Contacts', att=true),
+      WFInput: function(state) sc.Ref(state, 'Contacts', att=true),
     }),
 
     sc.Action('is.workflow.actions.repeat.each', {
-      local state = super.state,
       GroupingIdentifier: '55D8D462-8872-4045-9F46-91174853FBC0',
       WFControlFlowMode: 0,
-      WFInput: sc.Ref(state, 'Matches', att=true),
+      WFInput: function(state) sc.Ref(state, 'Matches', att=true),
     }),
 
     sc.Action('is.workflow.actions.properties.contacts', name='Details of Contacts', params={
-      local state = super.state,
-      WFContentItemPropertyName: sc.Ref(state, 'Vars.Repeat Item 2', att=true),
-      WFInput: sc.Ref(state, 'Vars.Repeat Item', att=true),
+      WFContentItemPropertyName: function(state) sc.Ref(state, 'Vars.Repeat Item 2', att=true),
+      WFInput: function(state) sc.Ref(state, 'Vars.Repeat Item', att=true),
     }),
 
     sc.Action('is.workflow.actions.text.replace', name='Updated Text', params={
-      local state = super.state,
-      WFInput: sc.Val('${Provided Input}', state),
+      WFInput: function(state) sc.Val('${Provided Input}', state),
       WFReplaceTextCaseSensitive: false,
       WFReplaceTextFind: {
         Value: {
           attachmentsByRange: {
-            '{2, 1}': sc.Ref(state, 'Vars.Repeat Item 2'),
+            '{2, 1}': function(state) sc.Ref(state, 'Vars.Repeat Item 2'),
           },
           string: '{{￼}}',
         },
         WFSerializationType: 'WFTextTokenString',
       },
-      WFReplaceTextReplace: sc.Val('${Details of Contacts}', state),
+      WFReplaceTextReplace: function(state) sc.Val('${Details of Contacts}', state),
     }),
 
     sc.Action('is.workflow.actions.repeat.each', {
@@ -72,14 +66,13 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.sendmessage', {
-      local state = super.state,
       IntentAppDefinition: {
         BundleIdentifier: 'com.apple.MobileSMS',
         Name: 'Messages',
         TeamIdentifier: '0000000000',
       },
-      WFSendMessageActionRecipients: sc.Ref(state, 'Vars.Repeat Item', att=true),
-      WFSendMessageContent: sc.Val('${Updated Text}', state),
+      WFSendMessageActionRecipients: function(state) sc.Ref(state, 'Vars.Repeat Item', att=true),
+      WFSendMessageContent: function(state) sc.Val('${Updated Text}', state),
     }),
 
     sc.Action('is.workflow.actions.repeat.each', {

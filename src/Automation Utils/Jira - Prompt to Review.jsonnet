@@ -9,14 +9,13 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.conditional', {
-      local state = super.state,
       GroupingIdentifier: '02B87892-2116-4AE0-8BE0-9FAC4433A3B7',
       WFCondition: 4,
       WFConditionalActionString: 'Mac',
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: sc.Ref(state, 'Device Model', att=true),
+        Variable: function(state) sc.Ref(state, 'Device Model', att=true),
       },
     }),
 
@@ -45,8 +44,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.openurl', {
-      local state = super.state,
-      WFInput: sc.Ref(state, 'URL', att=true),
+      WFInput: function(state) sc.Ref(state, 'URL', att=true),
     }),
 
     sc.Action('is.workflow.actions.exit'),
@@ -97,8 +95,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.runworkflow', name='Get Issue Result', params={
-      local state = super.state,
-      WFInput: sc.Ref(state, 'Dictionary', att=true),
+      WFInput: function(state) sc.Ref(state, 'Dictionary', att=true),
       WFWorkflow: {
         isSelf: false,
         workflowIdentifier: 'B245F907-CA3B-4273-B2B7-BE1A4BAE3F79',
@@ -108,19 +105,17 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.getvalueforkey', name='Do you want to review?', params={
-      local state = super.state,
       WFDictionaryKey: 'review_prompt_optional',
-      WFInput: sc.Ref(state, 'Shortcut Input', att=true),
+      WFInput: function(state) sc.Ref(state, 'Shortcut Input', att=true),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
-      local state = super.state,
       GroupingIdentifier: '6C91002C-93EC-4B86-8427-F5C7EE4EC8EF',
       WFCondition: 100,
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: sc.Ref(state, 'Do you want to review?', att=true),
+        Variable: function(state) sc.Ref(state, 'Do you want to review?', att=true),
       },
     }),
 
@@ -132,12 +127,11 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.choosefromlist', name='Chosen Item', params={
-      local state = super.state,
       WFChooseFromListActionPrompt: {
         Value: {
           attachmentsByRange: {
-            '{0, 1}': sc.Ref(state, 'Do you want to review?'),
-            '{3, 1}': sc.Ref(state, 'Get Issue Result', aggs=[
+            '{0, 1}': function(state) sc.Ref(state, 'Do you want to review?'),
+            '{3, 1}': function(state) sc.Ref(state, 'Get Issue Result', aggs=[
               {
                 CoercionItemClass: 'WFDictionaryContentItem',
                 Type: 'WFCoercionVariableAggrandizement',
@@ -147,7 +141,7 @@ local sc = import 'shortcuts.libsonnet';
                 Type: 'WFDictionaryValueVariableAggrandizement',
               },
             ]),
-            '{6, 1}': sc.Ref(state, 'Get Issue Result', aggs=[
+            '{6, 1}': function(state) sc.Ref(state, 'Get Issue Result', aggs=[
               {
                 CoercionItemClass: 'WFDictionaryContentItem',
                 Type: 'WFCoercionVariableAggrandizement',
@@ -162,18 +156,17 @@ local sc = import 'shortcuts.libsonnet';
         },
         WFSerializationType: 'WFTextTokenString',
       },
-      WFInput: sc.Ref(state, 'List', att=true),
+      WFInput: function(state) sc.Ref(state, 'List', att=true),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
-      local state = super.state,
       GroupingIdentifier: '6900C0B4-3E34-4A84-9B58-320F50893101',
       WFCondition: 4,
       WFConditionalActionString: 'No',
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: sc.Ref(state, 'Chosen Item', att=true),
+        Variable: function(state) sc.Ref(state, 'Chosen Item', att=true),
       },
     }),
 
@@ -190,7 +183,6 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.alert', {
-      local state = super.state,
       WFAlertActionMessage: {
         Value: {
           attachmentsByRange: {
@@ -228,7 +220,7 @@ local sc = import 'shortcuts.libsonnet';
               ],
               Type: 'ExtensionInput',
             },
-            '{2, 1}': sc.Ref(state, 'Get Issue Result', aggs=[
+            '{2, 1}': function(state) sc.Ref(state, 'Get Issue Result', aggs=[
               {
                 CoercionItemClass: 'WFDictionaryContentItem',
                 Type: 'WFCoercionVariableAggrandizement',
@@ -238,7 +230,7 @@ local sc = import 'shortcuts.libsonnet';
                 Type: 'WFDictionaryValueVariableAggrandizement',
               },
             ]),
-            '{5, 1}': sc.Ref(state, 'Get Issue Result', aggs=[
+            '{5, 1}': function(state) sc.Ref(state, 'Get Issue Result', aggs=[
               {
                 CoercionItemClass: 'WFDictionaryContentItem',
                 Type: 'WFCoercionVariableAggrandizement',
@@ -303,19 +295,17 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.getvalueforkey', name='filter', params={
-      local state = super.state,
       WFDictionaryKey: 'filter',
-      WFInput: sc.Ref(state, 'Shortcut Input', att=true),
+      WFInput: function(state) sc.Ref(state, 'Shortcut Input', att=true),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
-      local state = super.state,
       GroupingIdentifier: 'AE978332-38D0-467A-BA94-F5D047219387',
       WFCondition: 100,
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: sc.Ref(state, 'filter', att=true),
+        Variable: function(state) sc.Ref(state, 'filter', att=true),
       },
     }),
 
@@ -349,12 +339,11 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.url', name='URL', params={
-      local state = super.state,
       WFURLActionURL: {
         Value: {
           attachmentsByRange: {
-            '{0, 1}': sc.Ref(state, 'Browse URL'),
-            '{1, 1}': sc.Ref(state, 'If Result'),
+            '{0, 1}': function(state) sc.Ref(state, 'Browse URL'),
+            '{1, 1}': function(state) sc.Ref(state, 'If Result'),
           },
           string: '￼￼',
         },
@@ -363,24 +352,21 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.openurl', {
-      local state = super.state,
-      WFInput: sc.Ref(state, 'URL', att=true),
+      WFInput: function(state) sc.Ref(state, 'URL', att=true),
     }),
 
     sc.Action('is.workflow.actions.getvalueforkey', name='skip_return', params={
-      local state = super.state,
       WFDictionaryKey: 'skip_return',
-      WFInput: sc.Ref(state, 'Shortcut Input', att=true),
+      WFInput: function(state) sc.Ref(state, 'Shortcut Input', att=true),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
-      local state = super.state,
       GroupingIdentifier: '2DD74F72-F042-47FF-8317-8749CC2A2A5A',
       WFCondition: 101,
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: sc.Ref(state, 'skip_return', att=true),
+        Variable: function(state) sc.Ref(state, 'skip_return', att=true),
       },
     }),
 

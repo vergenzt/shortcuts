@@ -7,14 +7,12 @@ local sc = import 'shortcuts.libsonnet';
     sc.Action('is.workflow.actions.getmyworkflows', name='My Shortcuts'),
 
     sc.Action('is.workflow.actions.repeat.each', {
-      local state = super.state,
       GroupingIdentifier: '3C39F304-C709-4042-8340-B48B1B383EB8',
       WFControlFlowMode: 0,
-      WFInput: sc.Ref(state, 'My Shortcuts', att=true),
+      WFInput: function(state) sc.Ref(state, 'My Shortcuts', att=true),
     }),
 
     sc.Action('is.workflow.actions.list', name='List', params={
-      local state = super.state,
       WFItems: [
         {
           WFItemType: 0,
@@ -39,16 +37,15 @@ local sc = import 'shortcuts.libsonnet';
         },
         {
           WFItemType: 0,
-          WFValue: sc.Val('${Vars.Repeat Item}', state),
+          WFValue: function(state) sc.Val('${Vars.Repeat Item}', state),
         },
       ],
     }),
 
     sc.Action('is.workflow.actions.text.combine', {
-      local state = super.state,
       WFTextCustomSeparator: '/',
       WFTextSeparator: 'Custom',
-      text: sc.Ref(state, 'List', att=true),
+      text: function(state) sc.Ref(state, 'List', att=true),
     }),
 
     sc.Action('is.workflow.actions.repeat.each', name='Repeat Results', params={
@@ -57,13 +54,11 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.text.combine', name='Combined Text', params={
-      local state = super.state,
-      text: sc.Ref(state, 'Repeat Results', att=true),
+      text: function(state) sc.Ref(state, 'Repeat Results', att=true),
     }),
 
     sc.Action('is.workflow.actions.output', {
-      local state = super.state,
-      WFOutput: sc.Val('${Combined Text}', state),
+      WFOutput: function(state) sc.Val('${Combined Text}', state),
     }),
 
   ]),

@@ -9,11 +9,10 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.gettext', {
-      local state = super.state,
       WFTextActionText: {
         Value: {
           attachmentsByRange: {
-            '{8, 1}': sc.Ref(state, 'Shortcut Input'),
+            '{8, 1}': function(state) sc.Ref(state, 'Shortcut Input'),
           },
           string: 'Foo bar ￼',
         },

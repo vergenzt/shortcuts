@@ -40,7 +40,7 @@ rewriters:
         replace: '^'
         by: ', aggs='
   fix: >-
-    sc.Ref(state, $REF_NAME$AGGS_ARG)
+    function(state) sc.Ref(state, $REF_NAME$AGGS_ARG)
 
 - id: rewrite-referrers
   rule:

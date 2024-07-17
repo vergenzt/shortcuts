@@ -23,14 +23,14 @@ rewriters:
       {
         Value: {
           attachmentsByRange: {
-            '{0, 1}': sc.Ref(state, '$NAME'),
+            '{0, 1}': function(state) sc.Ref(state, '$NAME'),
           },
           string: '￼',
         },
         WFSerializationType: 'WFTextTokenString',
       }
   fix: >-
-    sc.Val('${$NAME}', state)
+    function(state) sc.Val('${$NAME}', state)
 
 - id: &3 ref-input
   rule:
@@ -39,7 +39,7 @@ rewriters:
         Type: 'ExtensionInput',
       }
   fix: >-
-    sc.Ref(state, 'Shortcut Input')
+    function(state) sc.Ref(state, 'Shortcut Input')
 
 - id: &4 ref-var
   rule:
@@ -49,17 +49,17 @@ rewriters:
         VariableName: '$NAME',
       }
   fix: >-
-    sc.Ref(state, 'Vars.$NAME')
+    function(state) sc.Ref(state, 'Vars.$NAME')
 
 - id: &5 ref-att
   rule:
     pattern: >-
       {
-        Value: sc.Ref($$$ARGS),
+        Value: function(state) sc.Ref($$$ARGS),
         WFSerializationType: 'WFTextTokenAttachment',
       }
   fix: >-
-    sc.Ref($$$ARGS, att=true)
+    function(state) sc.Ref($$$ARGS, att=true)
 
 transform:
   X_RE:

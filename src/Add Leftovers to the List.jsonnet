@@ -12,11 +12,10 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.adjustdate', name='Adjusted Date', params={
-      local state = super.state,
-      WFDate: sc.Val('${Date}', state),
+      WFDate: function(state) sc.Val('${Date}', state),
       WFDuration: {
         Value: {
-          Magnitude: sc.Ref(state, 'N'),
+          Magnitude: function(state) sc.Ref(state, 'N'),
           Unit: 'days',
         },
         WFSerializationType: 'WFQuantityFieldValue',
@@ -24,8 +23,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.addnewreminder', {
-      local state = super.state,
-      WFAlertCustomTime: sc.Val('${Adjusted Date}', state),
+      WFAlertCustomTime: function(state) sc.Val('${Adjusted Date}', state),
       WFAlertEnabled: 'Alert',
       WFCalendarDescriptor: {
         Identifier: '<x-apple-reminderkit://REMCDList/0D507F24-D632-477A-BEF2-AFC7E49CB18D>',

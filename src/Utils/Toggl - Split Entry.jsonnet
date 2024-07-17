@@ -10,8 +10,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.converttimezone', name='Split Time (UTC)', params={
-      local state = super.state,
-      Date: sc.Val('${Split Time}', state),
+      Date: function(state) sc.Val('${Split Time}', state),
       DestinationTimeZone: {
         alCityIdentifier: 302,
         localizedCityName: 'UTC',
@@ -20,7 +19,6 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.dictionary', name='Dictionary', params={
-      local state = super.state,
       WFItems: {
         Value: {
           WFDictionaryFieldValueItems: [
@@ -44,7 +42,7 @@ local sc = import 'shortcuts.libsonnet';
                       {
                         WFItemType: 0,
                         WFKey: sc.Val('before'),
-                        WFValue: sc.Val('${Split Time (UTC)}', state),
+                        WFValue: function(state) sc.Val('${Split Time (UTC)}', state),
                       },
                     ],
                   },
@@ -60,8 +58,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.runworkflow', name='Time Entries', params={
-      local state = super.state,
-      WFInput: sc.Ref(state, 'Dictionary', att=true),
+      WFInput: function(state) sc.Ref(state, 'Dictionary', att=true),
       WFWorkflow: {
         isSelf: false,
         workflowIdentifier: 'D7676A00-FF48-4BCC-AD06-21D893C2BFE9',
@@ -71,10 +68,9 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.repeat.each', {
-      local state = super.state,
       GroupingIdentifier: 'D9C206AD-C252-455D-A994-9C52097C95F0',
       WFControlFlowMode: 0,
-      WFInput: sc.Ref(state, 'Time Entries', att=true),
+      WFInput: function(state) sc.Ref(state, 'Time Entries', att=true),
     }),
 
     sc.Action('is.workflow.actions.list', name='Endpoint Keys', params={
@@ -85,60 +81,53 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.repeat.each', {
-      local state = super.state,
       GroupingIdentifier: 'B6878FDB-F12E-4BE9-8FA0-198D4A57DA40',
       WFControlFlowMode: 0,
-      WFInput: sc.Ref(state, 'Endpoint Keys', att=true),
+      WFInput: function(state) sc.Ref(state, 'Endpoint Keys', att=true),
     }),
 
     sc.Action('is.workflow.actions.getvalueforkey', name='Endpoint Text', params={
-      local state = super.state,
-      WFDictionaryKey: sc.Val('${Vars.Repeat Item 2}', state),
-      WFInput: sc.Ref(state, 'Vars.Repeat Item', att=true),
+      WFDictionaryKey: function(state) sc.Val('${Vars.Repeat Item 2}', state),
+      WFInput: function(state) sc.Ref(state, 'Vars.Repeat Item', att=true),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
-      local state = super.state,
       GroupingIdentifier: '96AB6539-120D-4246-A24B-80C6F2F3758E',
       WFCondition: 100,
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: sc.Ref(state, 'Endpoint Text', att=true),
+        Variable: function(state) sc.Ref(state, 'Endpoint Text', att=true),
       },
     }),
 
     sc.Action('is.workflow.actions.detect.date', name='Endpoint', params={
-      local state = super.state,
-      WFInput: sc.Ref(state, 'Endpoint Text', att=true),
+      WFInput: function(state) sc.Ref(state, 'Endpoint Text', att=true),
     }),
 
     sc.Action('is.workflow.actions.gettimebetweendates', name='Endpoint Interval', params={
-      local state = super.state,
-      WFInput: sc.Val('${Split Time (UTC)}', state),
-      WFTimeUntilFromDate: sc.Val('${Endpoint}', state),
+      WFInput: function(state) sc.Val('${Split Time (UTC)}', state),
+      WFTimeUntilFromDate: function(state) sc.Val('${Endpoint}', state),
       WFTimeUntilUnit: 'Seconds',
     }),
 
     sc.Action('is.workflow.actions.conditional', {
-      local state = super.state,
       GroupingIdentifier: 'AF919587-F239-4E2F-8061-D205AF6AC302',
       WFCondition: 5,
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: sc.Ref(state, 'Endpoint Interval', att=true),
+        Variable: function(state) sc.Ref(state, 'Endpoint Interval', att=true),
       },
       WFNumberValue: '0',
     }),
 
     sc.Action('is.workflow.actions.calculateexpression', {
-      local state = super.state,
       Input: {
         Value: {
           attachmentsByRange: {
-            '{0, 1}': sc.Ref(state, 'Endpoint Interval'),
-            '{8, 1}': sc.Ref(state, 'Endpoint Interval'),
+            '{0, 1}': function(state) sc.Ref(state, 'Endpoint Interval'),
+            '{8, 1}': function(state) sc.Ref(state, 'Endpoint Interval'),
           },
           string: '￼ / abs(￼)',
         },
@@ -166,12 +155,11 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.gettext', {
-      local state = super.state,
       WFTextActionText: {
         Value: {
           attachmentsByRange: {
-            '{0, 1}': sc.Ref(state, 'Vars.Repeat Item 2'),
-            '{2, 1}': sc.Ref(state, 'If Result'),
+            '{0, 1}': function(state) sc.Ref(state, 'Vars.Repeat Item 2'),
+            '{2, 1}': function(state) sc.Ref(state, 'If Result'),
           },
           string: '￼:￼',
         },
@@ -185,10 +173,9 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.text.combine', name='Combined Text', params={
-      local state = super.state,
       WFTextCustomSeparator: ', ',
       WFTextSeparator: 'Custom',
-      text: sc.Ref(state, 'Repeat Results', att=true),
+      text: function(state) sc.Ref(state, 'Repeat Results', att=true),
     }),
 
     sc.Action('is.workflow.actions.dictionary', name='Dictionary', params={
@@ -212,19 +199,17 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.getvalueforkey', name='Dictionary Value', params={
-      local state = super.state,
-      WFDictionaryKey: sc.Val('${Combined Text}', state),
-      WFInput: sc.Ref(state, 'Dictionary', att=true),
+      WFDictionaryKey: function(state) sc.Val('${Combined Text}', state),
+      WFInput: function(state) sc.Ref(state, 'Dictionary', att=true),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
-      local state = super.state,
       GroupingIdentifier: '4FAF4B8F-8164-4849-B48A-32D3A32C12FC',
       WFCondition: 100,
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: sc.Ref(state, 'Dictionary Value', att=true),
+        Variable: function(state) sc.Ref(state, 'Dictionary Value', att=true),
       },
     }),
 
@@ -233,7 +218,6 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.dictionary', name='New Entry Request', params={
-      local state = super.state,
       WFItems: {
         Value: {
           WFDictionaryFieldValueItems: [
@@ -266,7 +250,7 @@ local sc = import 'shortcuts.libsonnet';
             {
               WFItemType: 0,
               WFKey: sc.Val('stop'),
-              WFValue: sc.Val('${Split Time (UTC)}', state),
+              WFValue: function(state) sc.Val('${Split Time (UTC)}', state),
             },
             {
               WFItemType: 0,
@@ -382,8 +366,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.setvalueforkey', name='Updated JSON', params={
-      local state = super.state,
-      WFDictionary: sc.Ref(state, 'New Entry Request', aggs=[
+      WFDictionary: function(state) sc.Ref(state, 'New Entry Request', aggs=[
         {
           DictionaryKey: 'json',
           Type: 'WFDictionaryValueVariableAggrandizement',
@@ -415,14 +398,12 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.setvalueforkey', name='Updated New Entry Request', params={
-      local state = super.state,
-      WFDictionary: sc.Ref(state, 'New Entry Request', att=true),
+      WFDictionary: function(state) sc.Ref(state, 'New Entry Request', att=true),
       WFDictionaryKey: 'json',
-      WFDictionaryValue: sc.Val('${Updated JSON}', state),
+      WFDictionaryValue: function(state) sc.Val('${Updated JSON}', state),
     }),
 
     sc.Action('is.workflow.actions.dictionary', {
-      local state = super.state,
       WFItems: {
         Value: {
           WFDictionaryFieldValueItems: [
@@ -467,7 +448,7 @@ local sc = import 'shortcuts.libsonnet';
                       {
                         WFItemType: 0,
                         WFKey: sc.Val('start'),
-                        WFValue: sc.Val('${Split Time (UTC)}', state),
+                        WFValue: function(state) sc.Val('${Split Time (UTC)}', state),
                       },
                       {
                         WFItemType: 0,
@@ -616,8 +597,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.runworkflow', {
-      local state = super.state,
-      WFInput: sc.Ref(state, 'Updated New Entry Request', att=true),
+      WFInput: function(state) sc.Ref(state, 'Updated New Entry Request', att=true),
       WFWorkflow: {
         isSelf: false,
         workflowIdentifier: 'D7676A00-FF48-4BCC-AD06-21D893C2BFE9',

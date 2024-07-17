@@ -5,16 +5,14 @@ local sc = import 'shortcuts.libsonnet';
   WFWorkflowActions: sc.ActionsSeq([
 
     sc.Action('is.workflow.actions.detect.dictionary', name='Input Dict', params={
-      local state = super.state,
-      WFInput: sc.Ref(state, 'Shortcut Input', att=true),
+      WFInput: function(state) sc.Ref(state, 'Shortcut Input', att=true),
     }),
 
     sc.Action('is.workflow.actions.url', name='URL', params={
-      local state = super.state,
       WFURLActionURL: {
         Value: {
           attachmentsByRange: {
-            '{35, 1}': sc.Ref(state, 'Input Dict', aggs=[
+            '{35, 1}': function(state) sc.Ref(state, 'Input Dict', aggs=[
               {
                 DictionaryKey: 'path',
                 Type: 'WFDictionaryValueVariableAggrandizement',
@@ -28,9 +26,8 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.getvalueforkey', name='Request Method', params={
-      local state = super.state,
       WFDictionaryKey: 'method',
-      WFInput: sc.Ref(state, 'Input Dict', att=true),
+      WFInput: function(state) sc.Ref(state, 'Input Dict', att=true),
     }),
 
     sc.Action('dk.simonbs.DataJar.GetValueIntent', name='Toggl Track API Token', params={
@@ -38,11 +35,10 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.gettext', name='Text', params={
-      local state = super.state,
       WFTextActionText: {
         Value: {
           attachmentsByRange: {
-            '{0, 1}': sc.Ref(state, 'Toggl Track API Token'),
+            '{0, 1}': function(state) sc.Ref(state, 'Toggl Track API Token'),
           },
           string: '￼:api_token',
         },
@@ -51,33 +47,29 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.base64encode', name='Base64 Encoded', params={
-      local state = super.state,
       WFBase64LineBreakMode: 'None',
-      WFInput: sc.Ref(state, 'Text', att=true),
+      WFInput: function(state) sc.Ref(state, 'Text', att=true),
     }),
 
     sc.Action('is.workflow.actions.getvalueforkey', name='Query Params', params={
-      local state = super.state,
       WFDictionaryKey: 'params',
-      WFInput: sc.Ref(state, 'Input Dict', att=true),
+      WFInput: function(state) sc.Ref(state, 'Input Dict', att=true),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
-      local state = super.state,
       GroupingIdentifier: '4C6CDAC1-3AF6-4835-87D8-C5348FA88848',
       WFCondition: 100,
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: sc.Ref(state, 'Query Params', att=true),
+        Variable: function(state) sc.Ref(state, 'Query Params', att=true),
       },
     }),
 
     sc.Action('is.workflow.actions.repeat.each', {
-      local state = super.state,
       GroupingIdentifier: 'CB0F08F7-D254-42C4-933F-CDCE8DCF4415',
       WFControlFlowMode: 0,
-      WFInput: sc.Ref(state, 'Query Params', aggs=[
+      WFInput: function(state) sc.Ref(state, 'Query Params', aggs=[
         {
           CoercionItemClass: 'WFDictionaryContentItem',
           Type: 'WFCoercionVariableAggrandizement',
@@ -90,28 +82,24 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.urlencode', name='Key', params={
-      local state = super.state,
-      WFInput: sc.Val('${Vars.Repeat Item}', state),
+      WFInput: function(state) sc.Val('${Vars.Repeat Item}', state),
     }),
 
     sc.Action('is.workflow.actions.getvalueforkey', name='Value', params={
-      local state = super.state,
-      WFDictionaryKey: sc.Val('${Vars.Repeat Item}', state),
-      WFInput: sc.Ref(state, 'Query Params', att=true),
+      WFDictionaryKey: function(state) sc.Val('${Vars.Repeat Item}', state),
+      WFInput: function(state) sc.Ref(state, 'Query Params', att=true),
     }),
 
     sc.Action('is.workflow.actions.urlencode', name='Value', params={
-      local state = super.state,
-      WFInput: sc.Val('${Value}', state),
+      WFInput: function(state) sc.Val('${Value}', state),
     }),
 
     sc.Action('is.workflow.actions.gettext', {
-      local state = super.state,
       WFTextActionText: {
         Value: {
           attachmentsByRange: {
-            '{0, 1}': sc.Ref(state, 'Key'),
-            '{2, 1}': sc.Ref(state, 'Value'),
+            '{0, 1}': function(state) sc.Ref(state, 'Key'),
+            '{2, 1}': function(state) sc.Ref(state, 'Value'),
           },
           string: '￼=￼',
         },
@@ -125,10 +113,9 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.text.combine', {
-      local state = super.state,
       WFTextCustomSeparator: '&',
       WFTextSeparator: 'Custom',
-      text: sc.Ref(state, 'Repeat Results', att=true),
+      text: function(state) sc.Ref(state, 'Repeat Results', att=true),
     }),
 
     sc.Action('is.workflow.actions.conditional', name='Query', params={
@@ -137,28 +124,25 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.list', name='List', params={
-      local state = super.state,
       WFItems: [
         {
           WFItemType: 0,
-          WFValue: sc.Val('${URL}', state),
+          WFValue: function(state) sc.Val('${URL}', state),
         },
         {
           WFItemType: 0,
-          WFValue: sc.Val('${Query}', state),
+          WFValue: function(state) sc.Val('${Query}', state),
         },
       ],
     }),
 
     sc.Action('is.workflow.actions.text.combine', name='Combined URL', params={
-      local state = super.state,
       WFTextCustomSeparator: '?',
       WFTextSeparator: 'Custom',
-      text: sc.Ref(state, 'List', att=true),
+      text: function(state) sc.Ref(state, 'List', att=true),
     }),
 
     sc.Action('is.workflow.actions.downloadurl', {
-      local state = super.state,
       ShowHeaders: true,
       WFHTTPBodyType: 'File',
       WFHTTPHeaders: {
@@ -170,7 +154,7 @@ local sc = import 'shortcuts.libsonnet';
               WFValue: {
                 Value: {
                   attachmentsByRange: {
-                    '{6, 1}': sc.Ref(state, 'Base64 Encoded'),
+                    '{6, 1}': function(state) sc.Ref(state, 'Base64 Encoded'),
                   },
                   string: 'Basic ￼',
                 },
@@ -186,14 +170,14 @@ local sc = import 'shortcuts.libsonnet';
         },
         WFSerializationType: 'WFDictionaryFieldValue',
       },
-      WFHTTPMethod: sc.Ref(state, 'Request Method', att=true),
-      WFRequestVariable: sc.Ref(state, 'Input Dict', aggs=[
+      WFHTTPMethod: function(state) sc.Ref(state, 'Request Method', att=true),
+      WFRequestVariable: function(state) sc.Ref(state, 'Input Dict', aggs=[
         {
           DictionaryKey: 'json',
           Type: 'WFDictionaryValueVariableAggrandizement',
         },
       ], att=true),
-      WFURL: sc.Val('${Combined URL}', state),
+      WFURL: function(state) sc.Val('${Combined URL}', state),
     }),
 
   ]),

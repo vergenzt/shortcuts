@@ -9,31 +9,26 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.extracttextfromimage', name='Text from Image', params={
-      local state = super.state,
-      WFImage: sc.Ref(state, 'Photo', att=true),
+      WFImage: function(state) sc.Ref(state, 'Photo', att=true),
     }),
 
     sc.Action('is.workflow.actions.text.match', name='Matches', params={
-      local state = super.state,
       WFMatchTextPattern: 'CARD-(\\d+)',
-      text: sc.Val('${Text from Image}', state),
+      text: function(state) sc.Val('${Text from Image}', state),
     }),
 
     sc.Action('is.workflow.actions.runworkflow', {
-      local state = super.state,
-      WFInput: sc.Ref(state, 'Matches', att=true),
+      WFInput: function(state) sc.Ref(state, 'Matches', att=true),
     }),
 
     sc.Action('com.atlassian.jira.app.GetIssueIntent', name='Issue', params={
-      local state = super.state,
       account: 'vergenzt@gmail.com',
-      issueKey: sc.Val('${Matches}', state),
+      issueKey: function(state) sc.Val('${Matches}', state),
       site: 'vergenz',
     }),
 
     sc.Action('com.atlassian.jira.app.OpenIssueIntent', {
-      local state = super.state,
-      issue: sc.Ref(state, 'Issue', att=true),
+      issue: function(state) sc.Ref(state, 'Issue', att=true),
     }),
 
   ]),
