@@ -78,7 +78,7 @@
       }
       else {
         Type: 'ActionOutput',
-        OutputUUID: state[name],
+        OutputUUID: std.get(state, name, std.trace('warning: output `%s` not found in state' % name, '???')),
         OutputName: name,
         [if aggs == [] then null else 'Aggrandizements']: aggs,
       }
