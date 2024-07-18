@@ -15,7 +15,7 @@ rewriters:
         WFSerializationType: 'WFTextTokenString',
       }
   fix: >-
-    sc.Val($STR)
+    sc.Str([$STR])
 
 - id: &2 val-string-solo-var
   rule:
@@ -23,14 +23,14 @@ rewriters:
       {
         Value: {
           attachmentsByRange: {
-            '{0, 1}': function(state) sc.Ref(state, '$NAME'),
+            '{0, 1}': $REF
           },
           string: '￼',
         },
         WFSerializationType: 'WFTextTokenString',
       }
   fix: >-
-    function(state) sc.Val('${$NAME}', state)
+    sc.Str([$REF])
 
 - id: &3 ref-input
   rule:
@@ -39,7 +39,7 @@ rewriters:
         Type: 'ExtensionInput',
       }
   fix: >-
-    function(state) sc.Ref(state, 'Shortcut Input')
+    sc.Input
 
 - id: &4 ref-var
   rule:
@@ -49,17 +49,17 @@ rewriters:
         VariableName: '$NAME',
       }
   fix: >-
-    function(state) sc.Ref(state, 'Vars.$NAME')
+    sc.Ref('Vars.$NAME')
 
 - id: &5 ref-att
   rule:
     pattern: >-
       {
-        Value: function(state) sc.Ref($$$ARGS),
+        Value: sc.Ref($$$ARGS),
         WFSerializationType: 'WFTextTokenAttachment',
       }
   fix: >-
-    function(state) sc.Ref($$$ARGS, att=true)
+    sc.Ref($$$ARGS, att=true)
 
 transform:
   X_RE:

@@ -15,7 +15,7 @@ local sc = import 'shortcuts.libsonnet';
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: function(state) sc.Ref(state, 'Device Model', att=true),
+        Variable: sc.Ref('Device Model', att=true),
       },
     }),
 
@@ -24,13 +24,16 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.runshellscript', name='Shell Script Result', params={
-      Input: function(state) sc.Ref(state, 'Shortcut Input', att=true),
+      Input: {
+        Value: sc.Input,
+        WFSerializationType: 'WFTextTokenAttachment',
+      },
       InputMode: 'to stdin',
-      Script: function(state) sc.Val('${Text}', state),
+      Script: sc.Str([sc.Ref('Text')]),
     }),
 
     sc.Action('is.workflow.actions.previewdocument', {
-      WFInput: function(state) sc.Ref(state, 'Shell Script Result', att=true),
+      WFInput: sc.Ref('Shell Script Result', att=true),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
@@ -45,7 +48,7 @@ local sc = import 'shortcuts.libsonnet';
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: function(state) sc.Ref(state, 'Device Model', att=true),
+        Variable: sc.Ref('Device Model', att=true),
       },
     }),
 
@@ -56,8 +59,8 @@ local sc = import 'shortcuts.libsonnet';
       'Show-urls': false,
       ShowWhenRun: false,
       parameter: [],
-      script: function(state) sc.Val('${Text}', state),
-      texts: function(state) sc.Val('${Input Dict}', state),
+      script: sc.Str([sc.Ref('Text')]),
+      texts: sc.Str([sc.Ref('Input Dict')]),
     }),
 
     sc.Action('is.workflow.actions.conditional', {

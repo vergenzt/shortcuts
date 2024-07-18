@@ -5,7 +5,7 @@ local sc = import 'shortcuts.libsonnet';
   WFWorkflowActions: sc.ActionsSeq([
 
     sc.Action('is.workflow.actions.text.replace', name='Updated Text', params={
-      WFInput: function(state) sc.Val('${Shortcut Input}', state),
+      WFInput: sc.Str([sc.Input]),
       WFReplaceTextCaseSensitive: false,
       WFReplaceTextFind: '^<|>$',
       WFReplaceTextRegularExpression: true,
@@ -17,28 +17,28 @@ local sc = import 'shortcuts.libsonnet';
           WFDictionaryFieldValueItems: [
             {
               WFItemType: 0,
-              WFKey: sc.Val('method'),
-              WFValue: sc.Val('GET'),
+              WFKey: sc.Str(['method']),
+              WFValue: sc.Str(['GET']),
             },
             {
               WFItemType: 0,
-              WFKey: sc.Val('path'),
-              WFValue: sc.Val('search'),
+              WFKey: sc.Str(['path']),
+              WFValue: sc.Str(['search']),
             },
             {
               WFItemType: 1,
-              WFKey: sc.Val('params'),
+              WFKey: sc.Str(['params']),
               WFValue: {
                 Value: {
                   Value: {
                     WFDictionaryFieldValueItems: [
                       {
                         WFItemType: 0,
-                        WFKey: sc.Val('jql'),
+                        WFKey: sc.Str(['jql']),
                         WFValue: {
                           Value: {
                             attachmentsByRange: {
-                              '{22, 1}': function(state) sc.Ref(state, 'Updated Text'),
+                              '{22, 1}': sc.Ref('Updated Text'),
                             },
                             string: '"Email Message ID" ~ "￼"',
                           },
@@ -59,7 +59,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.runworkflow', name='Shortcut Result', params={
-      WFInput: function(state) sc.Ref(state, 'Dictionary', att=true),
+      WFInput: sc.Ref('Dictionary', att=true),
       WFWorkflow: {
         isSelf: false,
         workflowIdentifier: 'B245F907-CA3B-4273-B2B7-BE1A4BAE3F79',
@@ -71,7 +71,7 @@ local sc = import 'shortcuts.libsonnet';
     sc.Action('is.workflow.actions.repeat.each', {
       GroupingIdentifier: '9A814540-129A-4AE3-A0FA-CCA13EBE28DC',
       WFControlFlowMode: 0,
-      WFInput: function(state) sc.Ref(state, 'Shortcut Result', aggs=[
+      WFInput: sc.Ref('Shortcut Result', aggs=[
         {
           CoercionItemClass: 'WFDictionaryContentItem',
           Type: 'WFCoercionVariableAggrandizement',
@@ -86,13 +86,13 @@ local sc = import 'shortcuts.libsonnet';
     sc.Action('is.workflow.actions.dictionary', name='Dictionary'),
 
     sc.Action('is.workflow.actions.setvalueforkey', name='Dictionary', params={
-      WFDictionary: function(state) sc.Ref(state, 'Dictionary', att=true),
+      WFDictionary: sc.Ref('Dictionary', att=true),
       WFDictionaryKey: 'issue',
-      WFDictionaryValue: function(state) sc.Val('${Vars.Repeat Item}', state),
+      WFDictionaryValue: sc.Str([sc.Ref('Vars.Repeat Item')]),
     }),
 
     sc.Action('is.workflow.actions.runworkflow', {
-      WFInput: function(state) sc.Ref(state, 'Dictionary', att=true),
+      WFInput: sc.Ref('Dictionary', att=true),
       WFWorkflow: {
         isSelf: false,
         workflowIdentifier: 'DE45228B-5A30-4A30-AF37-DA40929C57C2',

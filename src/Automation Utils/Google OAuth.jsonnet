@@ -9,7 +9,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('ke.bou.GizmoPack.QueryJSONIntent', name='existing unexpired token', params={
-      input: function(state) sc.Ref(state, 'config', att=true),
+      input: sc.Ref('config', att=true),
       jqQuery: 'if .token.expires_at > (now | todate) and .token.access_token then .token else empty end',
       queryType: 'jq',
     }),
@@ -20,7 +20,7 @@ local sc = import 'shortcuts.libsonnet';
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: function(state) sc.Ref(state, 'existing unexpired token', att=true),
+        Variable: sc.Ref('existing unexpired token', att=true),
       },
     }),
 
@@ -29,7 +29,7 @@ local sc = import 'shortcuts.libsonnet';
       WFOutput: {
         Value: {
           attachmentsByRange: {
-            '{0, 1}': function(state) sc.Ref(state, 'existing unexpired token', aggs=[
+            '{0, 1}': sc.Ref('existing unexpired token', aggs=[
               {
                 CoercionItemClass: 'WFDictionaryContentItem',
                 Type: 'WFCoercionVariableAggrandizement',
@@ -39,7 +39,7 @@ local sc = import 'shortcuts.libsonnet';
                 Type: 'WFDictionaryValueVariableAggrandizement',
               },
             ]),
-            '{2, 1}': function(state) sc.Ref(state, 'existing unexpired token', aggs=[
+            '{2, 1}': sc.Ref('existing unexpired token', aggs=[
               {
                 CoercionItemClass: 'WFDictionaryContentItem',
                 Type: 'WFCoercionVariableAggrandizement',
@@ -63,7 +63,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('ke.bou.GizmoPack.QueryJSONIntent', name='refresh_uri', params={
-      input: function(state) sc.Ref(state, 'config', att=true),
+      input: sc.Ref('config', att=true),
       jqQuery: 'if .token.expires_at <= (now | todate) and .token.refresh_token then .token_uri + "?" + (.params + (.token | {refresh_token}) + { grant_type: "refresh_token" } | to_entries | map(map(@uri) | join("=")) | join("&")) else empty end',
       queryType: 'jq',
     }),
@@ -74,21 +74,21 @@ local sc = import 'shortcuts.libsonnet';
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: function(state) sc.Ref(state, 'refresh_uri', att=true),
+        Variable: sc.Ref('refresh_uri', att=true),
       },
     }),
 
     sc.Action('is.workflow.actions.downloadurl', name='refresh_result', params={
       WFHTTPMethod: 'POST',
-      WFURL: function(state) sc.Val('${refresh_uri}', state),
+      WFURL: sc.Str([sc.Ref('refresh_uri')]),
     }),
 
     sc.Action('ke.bou.GizmoPack.QueryJSONIntent', name='timestamped_token', params={
-      input: function(state) sc.Ref(state, 'refresh_result', att=true),
+      input: sc.Ref('refresh_result', att=true),
       jqQuery: {
         Value: {
           attachmentsByRange: {
-            '{0, 1}': function(state) sc.Ref(state, 'config', aggs=[
+            '{0, 1}': sc.Ref('config', aggs=[
               {
                 CoercionItemClass: 'WFDictionaryContentItem',
                 Type: 'WFCoercionVariableAggrandizement',
@@ -109,18 +109,18 @@ local sc = import 'shortcuts.libsonnet';
     sc.Action('dk.simonbs.DataJar.SetValueIntent', {
       keyPath: 'google-oauth.token',
       overwriteStrategy: 'alwaysAllow',
-      values: function(state) sc.Ref(state, 'timestamped_token', att=true),
+      values: sc.Ref('timestamped_token', att=true),
     }),
 
     sc.Action('ke.bou.GizmoPack.QueryJSONIntent', name='Result', params={
-      input: function(state) sc.Ref(state, 'timestamped_token', att=true),
+      input: sc.Ref('timestamped_token', att=true),
       jqQuery: '.token_type + " " + .access_token',
       queryType: 'jq',
     }),
 
     sc.Action('is.workflow.actions.output', {
       WFNoOutputSurfaceBehavior: 'Respond',
-      WFOutput: function(state) sc.Val('${Result}', state),
+      WFOutput: sc.Str([sc.Ref('Result')]),
       WFResponse: 'Successfully authenticated to Google. ✅',
     }),
 
@@ -135,18 +135,18 @@ local sc = import 'shortcuts.libsonnet';
           WFDictionaryFieldValueItems: [
             {
               WFItemType: 0,
-              WFKey: sc.Val('approval_prompt'),
-              WFValue: sc.Val('force'),
+              WFKey: sc.Str(['approval_prompt']),
+              WFValue: sc.Str(['force']),
             },
             {
               WFItemType: 0,
-              WFKey: sc.Val('access_type'),
-              WFValue: sc.Val('offline'),
+              WFKey: sc.Str(['access_type']),
+              WFValue: sc.Str(['offline']),
             },
             {
               WFItemType: 0,
-              WFKey: sc.Val('response_type'),
-              WFValue: sc.Val('code'),
+              WFKey: sc.Str(['response_type']),
+              WFValue: sc.Str(['code']),
             },
           ],
         },
@@ -155,11 +155,11 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('ke.bou.GizmoPack.QueryJSONIntent', name='auth_uri', params={
-      input: function(state) sc.Ref(state, 'config', att=true),
+      input: sc.Ref('config', att=true),
       jqQuery: {
         Value: {
           attachmentsByRange: {
-            '{29, 1}': function(state) sc.Ref(state, 'auth_params'),
+            '{29, 1}': sc.Ref('auth_params'),
           },
           string: '.auth_uri + "?" + (.params + ￼| del(.client_secret) | to_entries | map(map(@uri) | join("=")) | join("&"))',
         },
@@ -173,11 +173,11 @@ local sc = import 'shortcuts.libsonnet';
       WFXCallbackCustomCallbackEnabled: true,
       WFXCallbackCustomSuccessKey: 'state',
       WFXCallbackCustomSuccessURLEnabled: false,
-      WFXCallbackURL: function(state) sc.Val('${auth_uri}', state),
+      WFXCallbackURL: sc.Str([sc.Ref('auth_uri')]),
     }),
 
     sc.Action('is.workflow.actions.detect.dictionary', name='result', params={
-      WFInput: function(state) sc.Ref(state, 'X-Callback Result', att=true),
+      WFInput: sc.Ref('X-Callback Result', att=true),
     }),
 
     sc.Action('is.workflow.actions.dictionary', name='token_params', params={
@@ -186,8 +186,8 @@ local sc = import 'shortcuts.libsonnet';
           WFDictionaryFieldValueItems: [
             {
               WFItemType: 0,
-              WFKey: sc.Val('grant_type'),
-              WFValue: sc.Val('authorization_code'),
+              WFKey: sc.Str(['grant_type']),
+              WFValue: sc.Str(['authorization_code']),
             },
           ],
         },
@@ -196,12 +196,12 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('ke.bou.GizmoPack.QueryJSONIntent', name='token_uri', params={
-      input: function(state) sc.Ref(state, 'config', att=true),
+      input: sc.Ref('config', att=true),
       jqQuery: {
         Value: {
           attachmentsByRange: {
-            '{20, 1}': function(state) sc.Ref(state, 'token_params'),
-            '{24, 1}': function(state) sc.Ref(state, 'result'),
+            '{20, 1}': sc.Ref('token_params'),
+            '{24, 1}': sc.Ref('result'),
           },
           string: '.token_uri + "?" + (￼ + ￼ + .params | to_entries | map(map(@uri | gsub("\\\\+"; "%20")) | join("=")) | join("&"))',
         },
@@ -213,18 +213,18 @@ local sc = import 'shortcuts.libsonnet';
 
     sc.Action('is.workflow.actions.url', name='URL', params={
       'Show-WFURLActionURL': true,
-      WFURLActionURL: function(state) sc.Ref(state, 'token_uri', att=true),
+      WFURLActionURL: sc.Ref('token_uri', att=true),
     }),
 
     sc.Action('is.workflow.actions.downloadurl', name='token', params={
       Advanced: true,
       ShowHeaders: false,
       WFHTTPMethod: 'POST',
-      WFURL: function(state) sc.Val('${URL}', state),
+      WFURL: sc.Str([sc.Ref('URL')]),
     }),
 
     sc.Action('ke.bou.GizmoPack.QueryJSONIntent', name='timestamped_token', params={
-      input: function(state) sc.Ref(state, 'token', att=true),
+      input: sc.Ref('token', att=true),
       jqQuery: '. + { refreshed_at: (now | todate), expires_at: (now + .expires_in | todate) }',
       queryType: 'jq',
     }),
@@ -232,18 +232,18 @@ local sc = import 'shortcuts.libsonnet';
     sc.Action('dk.simonbs.DataJar.SetValueIntent', {
       keyPath: 'google-oauth.token',
       overwriteStrategy: 'alwaysAllow',
-      values: function(state) sc.Ref(state, 'timestamped_token', att=true),
+      values: sc.Ref('timestamped_token', att=true),
     }),
 
     sc.Action('ke.bou.GizmoPack.QueryJSONIntent', name='Result', params={
-      input: function(state) sc.Ref(state, 'timestamped_token', att=true),
+      input: sc.Ref('timestamped_token', att=true),
       jqQuery: '.token_type + " " + .access_token',
       queryType: 'jq',
     }),
 
     sc.Action('is.workflow.actions.output', {
       WFNoOutputSurfaceBehavior: 'Respond',
-      WFOutput: function(state) sc.Val('${Result}', state),
+      WFOutput: sc.Str([sc.Ref('Result')]),
       WFResponse: 'Successfully authenticated to Google. ✅',
     }),
 

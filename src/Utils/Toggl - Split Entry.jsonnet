@@ -10,7 +10,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.converttimezone', name='Split Time (UTC)', params={
-      Date: function(state) sc.Val('${Split Time}', state),
+      Date: sc.Str([sc.Ref('Split Time')]),
       DestinationTimeZone: {
         alCityIdentifier: 302,
         localizedCityName: 'UTC',
@@ -24,25 +24,31 @@ local sc = import 'shortcuts.libsonnet';
           WFDictionaryFieldValueItems: [
             {
               WFItemType: 0,
-              WFKey: sc.Val('method'),
-              WFValue: sc.Val('GET'),
+              WFKey: sc.Str(['method']),
+              WFValue: sc.Str(['GET']),
             },
             {
               WFItemType: 0,
-              WFKey: sc.Val('path'),
-              WFValue: sc.Val('me/time_entries'),
+              WFKey: sc.Str(['path']),
+              WFValue: sc.Str(['me/time_entries']),
             },
             {
               WFItemType: 1,
-              WFKey: sc.Val('params'),
+              WFKey: sc.Str(['params']),
               WFValue: {
                 Value: {
                   Value: {
                     WFDictionaryFieldValueItems: [
                       {
                         WFItemType: 0,
-                        WFKey: sc.Val('before'),
-                        WFValue: function(state) sc.Val('${Split Time (UTC)}', state),
+                        WFKey: sc.Str(['before']),
+                        WFValue: sc.Str([sc.Ref('Split Time (UTC)', aggs=[
+                          {
+                            Type: 'WFDateFormatVariableAggrandizement',
+                            WFDateFormatStyle: 'ISO 8601',
+                            WFISO8601IncludeTime: true,
+                          },
+                        ])]),
                       },
                     ],
                   },
@@ -58,7 +64,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.runworkflow', name='Time Entries', params={
-      WFInput: function(state) sc.Ref(state, 'Dictionary', att=true),
+      WFInput: sc.Ref('Dictionary', att=true),
       WFWorkflow: {
         isSelf: false,
         workflowIdentifier: 'D7676A00-FF48-4BCC-AD06-21D893C2BFE9',
@@ -70,7 +76,7 @@ local sc = import 'shortcuts.libsonnet';
     sc.Action('is.workflow.actions.repeat.each', {
       GroupingIdentifier: 'D9C206AD-C252-455D-A994-9C52097C95F0',
       WFControlFlowMode: 0,
-      WFInput: function(state) sc.Ref(state, 'Time Entries', att=true),
+      WFInput: sc.Ref('Time Entries', att=true),
     }),
 
     sc.Action('is.workflow.actions.list', name='Endpoint Keys', params={
@@ -83,12 +89,12 @@ local sc = import 'shortcuts.libsonnet';
     sc.Action('is.workflow.actions.repeat.each', {
       GroupingIdentifier: 'B6878FDB-F12E-4BE9-8FA0-198D4A57DA40',
       WFControlFlowMode: 0,
-      WFInput: function(state) sc.Ref(state, 'Endpoint Keys', att=true),
+      WFInput: sc.Ref('Endpoint Keys', att=true),
     }),
 
     sc.Action('is.workflow.actions.getvalueforkey', name='Endpoint Text', params={
-      WFDictionaryKey: function(state) sc.Val('${Vars.Repeat Item 2}', state),
-      WFInput: function(state) sc.Ref(state, 'Vars.Repeat Item', att=true),
+      WFDictionaryKey: sc.Str([sc.Ref('Vars.Repeat Item 2')]),
+      WFInput: sc.Ref('Vars.Repeat Item', att=true),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
@@ -97,17 +103,17 @@ local sc = import 'shortcuts.libsonnet';
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: function(state) sc.Ref(state, 'Endpoint Text', att=true),
+        Variable: sc.Ref('Endpoint Text', att=true),
       },
     }),
 
     sc.Action('is.workflow.actions.detect.date', name='Endpoint', params={
-      WFInput: function(state) sc.Ref(state, 'Endpoint Text', att=true),
+      WFInput: sc.Ref('Endpoint Text', att=true),
     }),
 
     sc.Action('is.workflow.actions.gettimebetweendates', name='Endpoint Interval', params={
-      WFInput: function(state) sc.Val('${Split Time (UTC)}', state),
-      WFTimeUntilFromDate: function(state) sc.Val('${Endpoint}', state),
+      WFInput: sc.Str([sc.Ref('Split Time (UTC)')]),
+      WFTimeUntilFromDate: sc.Str([sc.Ref('Endpoint')]),
       WFTimeUntilUnit: 'Seconds',
     }),
 
@@ -117,7 +123,7 @@ local sc = import 'shortcuts.libsonnet';
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: function(state) sc.Ref(state, 'Endpoint Interval', att=true),
+        Variable: sc.Ref('Endpoint Interval', att=true),
       },
       WFNumberValue: '0',
     }),
@@ -126,8 +132,8 @@ local sc = import 'shortcuts.libsonnet';
       Input: {
         Value: {
           attachmentsByRange: {
-            '{0, 1}': function(state) sc.Ref(state, 'Endpoint Interval'),
-            '{8, 1}': function(state) sc.Ref(state, 'Endpoint Interval'),
+            '{0, 1}': sc.Ref('Endpoint Interval'),
+            '{8, 1}': sc.Ref('Endpoint Interval'),
           },
           string: '￼ / abs(￼)',
         },
@@ -158,8 +164,8 @@ local sc = import 'shortcuts.libsonnet';
       WFTextActionText: {
         Value: {
           attachmentsByRange: {
-            '{0, 1}': function(state) sc.Ref(state, 'Vars.Repeat Item 2'),
-            '{2, 1}': function(state) sc.Ref(state, 'If Result'),
+            '{0, 1}': sc.Ref('Vars.Repeat Item 2'),
+            '{2, 1}': sc.Ref('If Result'),
           },
           string: '￼:￼',
         },
@@ -175,7 +181,7 @@ local sc = import 'shortcuts.libsonnet';
     sc.Action('is.workflow.actions.text.combine', name='Combined Text', params={
       WFTextCustomSeparator: ', ',
       WFTextSeparator: 'Custom',
-      text: function(state) sc.Ref(state, 'Repeat Results', att=true),
+      text: sc.Ref('Repeat Results', att=true),
     }),
 
     sc.Action('is.workflow.actions.dictionary', name='Dictionary', params={
@@ -184,13 +190,13 @@ local sc = import 'shortcuts.libsonnet';
           WFDictionaryFieldValueItems: [
             {
               WFItemType: 0,
-              WFKey: sc.Val('start:1, stop:'),
-              WFValue: sc.Val('yes (start < split, stop empty)'),
+              WFKey: sc.Str(['start:1, stop:']),
+              WFValue: sc.Str(['yes (start < split, stop empty)']),
             },
             {
               WFItemType: 0,
-              WFKey: sc.Val('start:1, stop:-1'),
-              WFValue: sc.Val('yes (start < split, stop > split)'),
+              WFKey: sc.Str(['start:1, stop:-1']),
+              WFValue: sc.Str(['yes (start < split, stop > split)']),
             },
           ],
         },
@@ -199,8 +205,8 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.getvalueforkey', name='Dictionary Value', params={
-      WFDictionaryKey: function(state) sc.Val('${Combined Text}', state),
-      WFInput: function(state) sc.Ref(state, 'Dictionary', att=true),
+      WFDictionaryKey: sc.Str([sc.Ref('Combined Text')]),
+      WFInput: sc.Ref('Dictionary', att=true),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
@@ -209,7 +215,7 @@ local sc = import 'shortcuts.libsonnet';
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: function(state) sc.Ref(state, 'Dictionary Value', att=true),
+        Variable: sc.Ref('Dictionary Value', att=true),
       },
     }),
 
@@ -223,121 +229,89 @@ local sc = import 'shortcuts.libsonnet';
           WFDictionaryFieldValueItems: [
             {
               WFItemType: 0,
-              WFKey: sc.Val('start'),
-              WFValue: {
-                Value: {
-                  attachmentsByRange: {
-                    '{0, 1}': {
-                      Aggrandizements: [
-                        {
-                          CoercionItemClass: 'WFDictionaryContentItem',
-                          Type: 'WFCoercionVariableAggrandizement',
-                        },
-                        {
-                          DictionaryKey: 'start',
-                          Type: 'WFDictionaryValueVariableAggrandizement',
-                        },
-                      ],
-                      Type: 'Variable',
-                      VariableName: 'Repeat Item',
-                    },
+              WFKey: sc.Str(['start']),
+              WFValue: sc.Str([{
+                Aggrandizements: [
+                  {
+                    CoercionItemClass: 'WFDictionaryContentItem',
+                    Type: 'WFCoercionVariableAggrandizement',
                   },
-                  string: '￼',
-                },
-                WFSerializationType: 'WFTextTokenString',
-              },
-            },
-            {
-              WFItemType: 0,
-              WFKey: sc.Val('stop'),
-              WFValue: function(state) sc.Val('${Split Time (UTC)}', state),
-            },
-            {
-              WFItemType: 0,
-              WFKey: sc.Val('created_with'),
-              WFValue: sc.Val('Shortcuts'),
-            },
-            {
-              WFItemType: 0,
-              WFKey: sc.Val('description'),
-              WFValue: {
-                Value: {
-                  attachmentsByRange: {
-                    '{0, 1}': {
-                      Aggrandizements: [
-                        {
-                          CoercionItemClass: 'WFDictionaryContentItem',
-                          Type: 'WFCoercionVariableAggrandizement',
-                        },
-                        {
-                          DictionaryKey: 'description',
-                          Type: 'WFDictionaryValueVariableAggrandizement',
-                        },
-                      ],
-                      Type: 'Variable',
-                      VariableName: 'Repeat Item',
-                    },
+                  {
+                    DictionaryKey: 'start',
+                    Type: 'WFDictionaryValueVariableAggrandizement',
                   },
-                  string: '￼',
-                },
-                WFSerializationType: 'WFTextTokenString',
-              },
+                ],
+                Type: 'Variable',
+                VariableName: 'Repeat Item',
+              }]),
             },
             {
               WFItemType: 0,
-              WFKey: sc.Val('project_id'),
-              WFValue: {
-                Value: {
-                  attachmentsByRange: {
-                    '{0, 1}': {
-                      Aggrandizements: [
-                        {
-                          CoercionItemClass: 'WFDictionaryContentItem',
-                          Type: 'WFCoercionVariableAggrandizement',
-                        },
-                        {
-                          DictionaryKey: 'project_id',
-                          Type: 'WFDictionaryValueVariableAggrandizement',
-                        },
-                      ],
-                      Type: 'Variable',
-                      VariableName: 'Repeat Item',
-                    },
-                  },
-                  string: '￼',
-                },
-                WFSerializationType: 'WFTextTokenString',
-              },
+              WFKey: sc.Str(['stop']),
+              WFValue: sc.Str([sc.Ref('Split Time (UTC)')]),
             },
             {
               WFItemType: 0,
-              WFKey: sc.Val('task_id'),
-              WFValue: {
-                Value: {
-                  attachmentsByRange: {
-                    '{0, 1}': {
-                      Aggrandizements: [
-                        {
-                          CoercionItemClass: 'WFDictionaryContentItem',
-                          Type: 'WFCoercionVariableAggrandizement',
-                        },
-                        {
-                          DictionaryKey: 'task_id',
-                          Type: 'WFDictionaryValueVariableAggrandizement',
-                        },
-                      ],
-                      Type: 'Variable',
-                      VariableName: 'Repeat Item',
-                    },
+              WFKey: sc.Str(['created_with']),
+              WFValue: sc.Str(['Shortcuts']),
+            },
+            {
+              WFItemType: 0,
+              WFKey: sc.Str(['description']),
+              WFValue: sc.Str([{
+                Aggrandizements: [
+                  {
+                    CoercionItemClass: 'WFDictionaryContentItem',
+                    Type: 'WFCoercionVariableAggrandizement',
                   },
-                  string: '￼',
-                },
-                WFSerializationType: 'WFTextTokenString',
-              },
+                  {
+                    DictionaryKey: 'description',
+                    Type: 'WFDictionaryValueVariableAggrandizement',
+                  },
+                ],
+                Type: 'Variable',
+                VariableName: 'Repeat Item',
+              }]),
+            },
+            {
+              WFItemType: 0,
+              WFKey: sc.Str(['project_id']),
+              WFValue: sc.Str([{
+                Aggrandizements: [
+                  {
+                    CoercionItemClass: 'WFDictionaryContentItem',
+                    Type: 'WFCoercionVariableAggrandizement',
+                  },
+                  {
+                    DictionaryKey: 'project_id',
+                    Type: 'WFDictionaryValueVariableAggrandizement',
+                  },
+                ],
+                Type: 'Variable',
+                VariableName: 'Repeat Item',
+              }]),
+            },
+            {
+              WFItemType: 0,
+              WFKey: sc.Str(['task_id']),
+              WFValue: sc.Str([{
+                Aggrandizements: [
+                  {
+                    CoercionItemClass: 'WFDictionaryContentItem',
+                    Type: 'WFCoercionVariableAggrandizement',
+                  },
+                  {
+                    DictionaryKey: 'task_id',
+                    Type: 'WFDictionaryValueVariableAggrandizement',
+                  },
+                ],
+                Type: 'Variable',
+                VariableName: 'Repeat Item',
+              }]),
             },
             {
               WFItemType: 4,
-              WFKey: sc.Val('billable'),
+              WFKey: sc.Str(['billable']),
               WFValue: {
                 Value: {
                   Value: {
@@ -366,41 +340,33 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.setvalueforkey', name='Updated JSON', params={
-      WFDictionary: function(state) sc.Ref(state, 'New Entry Request', aggs=[
+      WFDictionary: sc.Ref('New Entry Request', aggs=[
         {
           DictionaryKey: 'json',
           Type: 'WFDictionaryValueVariableAggrandizement',
         },
       ], att=true),
       WFDictionaryKey: 'tag_ids',
-      WFDictionaryValue: {
-        Value: {
-          attachmentsByRange: {
-            '{0, 1}': {
-              Aggrandizements: [
-                {
-                  CoercionItemClass: 'WFDictionaryContentItem',
-                  Type: 'WFCoercionVariableAggrandizement',
-                },
-                {
-                  DictionaryKey: 'tag_ids',
-                  Type: 'WFDictionaryValueVariableAggrandizement',
-                },
-              ],
-              Type: 'Variable',
-              VariableName: 'Repeat Item',
-            },
+      WFDictionaryValue: sc.Str([{
+        Aggrandizements: [
+          {
+            CoercionItemClass: 'WFDictionaryContentItem',
+            Type: 'WFCoercionVariableAggrandizement',
           },
-          string: '￼',
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
+          {
+            DictionaryKey: 'tag_ids',
+            Type: 'WFDictionaryValueVariableAggrandizement',
+          },
+        ],
+        Type: 'Variable',
+        VariableName: 'Repeat Item',
+      }]),
     }),
 
     sc.Action('is.workflow.actions.setvalueforkey', name='Updated New Entry Request', params={
-      WFDictionary: function(state) sc.Ref(state, 'New Entry Request', att=true),
+      WFDictionary: sc.Ref('New Entry Request', att=true),
       WFDictionaryKey: 'json',
-      WFDictionaryValue: function(state) sc.Val('${Updated JSON}', state),
+      WFDictionaryValue: sc.Str([sc.Ref('Updated JSON')]),
     }),
 
     sc.Action('is.workflow.actions.dictionary', {
@@ -409,12 +375,12 @@ local sc = import 'shortcuts.libsonnet';
           WFDictionaryFieldValueItems: [
             {
               WFItemType: 0,
-              WFKey: sc.Val('method'),
-              WFValue: sc.Val('POST'),
+              WFKey: sc.Str(['method']),
+              WFValue: sc.Str(['POST']),
             },
             {
               WFItemType: 0,
-              WFKey: sc.Val('path'),
+              WFKey: sc.Str(['path']),
               WFValue: {
                 Value: {
                   attachmentsByRange: {
@@ -440,128 +406,96 @@ local sc = import 'shortcuts.libsonnet';
             },
             {
               WFItemType: 1,
-              WFKey: sc.Val('json'),
+              WFKey: sc.Str(['json']),
               WFValue: {
                 Value: {
                   Value: {
                     WFDictionaryFieldValueItems: [
                       {
                         WFItemType: 0,
-                        WFKey: sc.Val('start'),
-                        WFValue: function(state) sc.Val('${Split Time (UTC)}', state),
+                        WFKey: sc.Str(['start']),
+                        WFValue: sc.Str([sc.Ref('Split Time (UTC)')]),
                       },
                       {
                         WFItemType: 0,
-                        WFKey: sc.Val('stop'),
-                        WFValue: {
-                          Value: {
-                            attachmentsByRange: {
-                              '{0, 1}': {
-                                Aggrandizements: [
-                                  {
-                                    CoercionItemClass: 'WFDictionaryContentItem',
-                                    Type: 'WFCoercionVariableAggrandizement',
-                                  },
-                                  {
-                                    DictionaryKey: 'stop',
-                                    Type: 'WFDictionaryValueVariableAggrandizement',
-                                  },
-                                ],
-                                Type: 'Variable',
-                                VariableName: 'Repeat Item',
-                              },
+                        WFKey: sc.Str(['stop']),
+                        WFValue: sc.Str([{
+                          Aggrandizements: [
+                            {
+                              CoercionItemClass: 'WFDictionaryContentItem',
+                              Type: 'WFCoercionVariableAggrandizement',
                             },
-                            string: '￼',
-                          },
-                          WFSerializationType: 'WFTextTokenString',
-                        },
-                      },
-                      {
-                        WFItemType: 0,
-                        WFKey: sc.Val('created_with'),
-                        WFValue: sc.Val('Shortcuts'),
-                      },
-                      {
-                        WFItemType: 0,
-                        WFKey: sc.Val('description'),
-                        WFValue: {
-                          Value: {
-                            attachmentsByRange: {
-                              '{0, 1}': {
-                                Aggrandizements: [
-                                  {
-                                    CoercionItemClass: 'WFDictionaryContentItem',
-                                    Type: 'WFCoercionVariableAggrandizement',
-                                  },
-                                  {
-                                    DictionaryKey: 'description',
-                                    Type: 'WFDictionaryValueVariableAggrandizement',
-                                  },
-                                ],
-                                Type: 'Variable',
-                                VariableName: 'Repeat Item',
-                              },
+                            {
+                              DictionaryKey: 'stop',
+                              Type: 'WFDictionaryValueVariableAggrandizement',
                             },
-                            string: '￼',
-                          },
-                          WFSerializationType: 'WFTextTokenString',
-                        },
+                          ],
+                          Type: 'Variable',
+                          VariableName: 'Repeat Item',
+                        }]),
                       },
                       {
                         WFItemType: 0,
-                        WFKey: sc.Val('project_id'),
-                        WFValue: {
-                          Value: {
-                            attachmentsByRange: {
-                              '{0, 1}': {
-                                Aggrandizements: [
-                                  {
-                                    CoercionItemClass: 'WFDictionaryContentItem',
-                                    Type: 'WFCoercionVariableAggrandizement',
-                                  },
-                                  {
-                                    DictionaryKey: 'project_id',
-                                    Type: 'WFDictionaryValueVariableAggrandizement',
-                                  },
-                                ],
-                                Type: 'Variable',
-                                VariableName: 'Repeat Item',
-                              },
-                            },
-                            string: '￼',
-                          },
-                          WFSerializationType: 'WFTextTokenString',
-                        },
+                        WFKey: sc.Str(['created_with']),
+                        WFValue: sc.Str(['Shortcuts']),
                       },
                       {
                         WFItemType: 0,
-                        WFKey: sc.Val('task_id'),
-                        WFValue: {
-                          Value: {
-                            attachmentsByRange: {
-                              '{0, 1}': {
-                                Aggrandizements: [
-                                  {
-                                    CoercionItemClass: 'WFDictionaryContentItem',
-                                    Type: 'WFCoercionVariableAggrandizement',
-                                  },
-                                  {
-                                    DictionaryKey: 'task_id',
-                                    Type: 'WFDictionaryValueVariableAggrandizement',
-                                  },
-                                ],
-                                Type: 'Variable',
-                                VariableName: 'Repeat Item',
-                              },
+                        WFKey: sc.Str(['description']),
+                        WFValue: sc.Str([{
+                          Aggrandizements: [
+                            {
+                              CoercionItemClass: 'WFDictionaryContentItem',
+                              Type: 'WFCoercionVariableAggrandizement',
                             },
-                            string: '￼',
-                          },
-                          WFSerializationType: 'WFTextTokenString',
-                        },
+                            {
+                              DictionaryKey: 'description',
+                              Type: 'WFDictionaryValueVariableAggrandizement',
+                            },
+                          ],
+                          Type: 'Variable',
+                          VariableName: 'Repeat Item',
+                        }]),
+                      },
+                      {
+                        WFItemType: 0,
+                        WFKey: sc.Str(['project_id']),
+                        WFValue: sc.Str([{
+                          Aggrandizements: [
+                            {
+                              CoercionItemClass: 'WFDictionaryContentItem',
+                              Type: 'WFCoercionVariableAggrandizement',
+                            },
+                            {
+                              DictionaryKey: 'project_id',
+                              Type: 'WFDictionaryValueVariableAggrandizement',
+                            },
+                          ],
+                          Type: 'Variable',
+                          VariableName: 'Repeat Item',
+                        }]),
+                      },
+                      {
+                        WFItemType: 0,
+                        WFKey: sc.Str(['task_id']),
+                        WFValue: sc.Str([{
+                          Aggrandizements: [
+                            {
+                              CoercionItemClass: 'WFDictionaryContentItem',
+                              Type: 'WFCoercionVariableAggrandizement',
+                            },
+                            {
+                              DictionaryKey: 'task_id',
+                              Type: 'WFDictionaryValueVariableAggrandizement',
+                            },
+                          ],
+                          Type: 'Variable',
+                          VariableName: 'Repeat Item',
+                        }]),
                       },
                       {
                         WFItemType: 4,
-                        WFKey: sc.Val('billable'),
+                        WFKey: sc.Str(['billable']),
                         WFValue: {
                           Value: {
                             Value: {
@@ -597,7 +531,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.runworkflow', {
-      WFInput: function(state) sc.Ref(state, 'Updated New Entry Request', att=true),
+      WFInput: sc.Ref('Updated New Entry Request', att=true),
       WFWorkflow: {
         isSelf: false,
         workflowIdentifier: 'D7676A00-FF48-4BCC-AD06-21D893C2BFE9',

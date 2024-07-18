@@ -15,7 +15,7 @@ local sc = import 'shortcuts.libsonnet';
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: function(state) sc.Ref(state, 'Value Exists', aggs=[
+        Variable: sc.Ref('Value Exists', aggs=[
           {
             PropertyName: 'Name',
             PropertyUserInfo: 'WFItemName',
@@ -31,7 +31,7 @@ local sc = import 'shortcuts.libsonnet';
           WFDictionaryFieldValueItems: [
             {
               WFItemType: 1,
-              WFKey: sc.Val('placeholder'),
+              WFKey: sc.Str(['placeholder']),
               WFValue: {
                 Value: {
                   Value: {
@@ -51,7 +51,7 @@ local sc = import 'shortcuts.libsonnet';
     sc.Action('dk.simonbs.DataJar.SetValueIntent', {
       keyPath: 'Version Control',
       overwriteStrategy: 'alwaysAllow',
-      values: function(state) sc.Ref(state, 'Dictionary', att=true),
+      values: sc.Ref('Dictionary', att=true),
     }),
 
     sc.Action('is.workflow.actions.delay'),
@@ -72,12 +72,18 @@ local sc = import 'shortcuts.libsonnet';
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: function(state) sc.Ref(state, 'Shortcut Input', att=true),
+        Variable: {
+          Value: sc.Input,
+          WFSerializationType: 'WFTextTokenAttachment',
+        },
       },
     }),
 
     sc.Action('is.workflow.actions.setclipboard', {
-      WFInput: function(state) sc.Ref(state, 'Shortcut Input', att=true),
+      WFInput: {
+        Value: sc.Input,
+        WFSerializationType: 'WFTextTokenAttachment',
+      },
     }),
 
     sc.Action('is.workflow.actions.gettext', {
@@ -94,11 +100,11 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('com.alexhay.ToolboxProForShortcuts.QuickMenu2Intent', name='Menu Items', params={
-      text: function(state) sc.Val('${Text}', state),
+      text: sc.Str([sc.Ref('Text')]),
     }),
 
     sc.Action('is.workflow.actions.choosefromlist', name='Chosen Item', params={
-      WFInput: function(state) sc.Ref(state, 'Menu Items', att=true),
+      WFInput: sc.Ref('Menu Items', att=true),
     }),
 
     sc.Action('is.workflow.actions.conditional', name='If Result', params={
@@ -113,7 +119,7 @@ local sc = import 'shortcuts.libsonnet';
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: function(state) sc.Ref(state, 'If Result', aggs=[
+        Variable: sc.Ref('If Result', aggs=[
           {
             CoercionItemClass: 'WFStringContentItem',
             Type: 'WFCoercionVariableAggrandizement',
@@ -151,46 +157,56 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.text.replace', name='Updated Text', params={
-      WFInput: {
-        Value: {
-          attachmentsByRange: {
-            '{0, 1}': {
-              Type: 'Clipboard',
-            },
-          },
-          string: '￼',
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
+      WFInput: sc.Str([{
+        Type: 'Clipboard',
+      }]),
       WFReplaceTextFind: '/shortcuts/',
       WFReplaceTextReplace: '/shortcuts/api/records/',
     }),
 
     sc.Action('is.workflow.actions.gettypeaction', name='File of Type', params={
       WFFileType: 'public.json',
-      WFInput: function(state) sc.Ref(state, 'Updated Text', att=true),
+      WFInput: sc.Ref('Updated Text', att=true),
     }),
 
     sc.Action('is.workflow.actions.urlencode', name='URL Encoded Text', params={
-      WFInput: function(state) sc.Val('${File of Type}', state),
+      WFInput: sc.Str([sc.Ref('File of Type', aggs=[
+        {
+          CoercionItemClass: 'WFDictionaryContentItem',
+          Type: 'WFCoercionVariableAggrandizement',
+        },
+        {
+          DictionaryKey: 'fields.name.value',
+          Type: 'WFDictionaryValueVariableAggrandizement',
+        },
+      ])]),
     }),
 
     sc.Action('is.workflow.actions.text.replace', name='Updated Text', params={
-      WFInput: function(state) sc.Val('${File of Type}', state),
+      WFInput: sc.Str([sc.Ref('File of Type', aggs=[
+        {
+          CoercionItemClass: 'WFDictionaryContentItem',
+          Type: 'WFCoercionVariableAggrandizement',
+        },
+        {
+          DictionaryKey: 'fields.icon.value.downloadURL',
+          Type: 'WFDictionaryValueVariableAggrandizement',
+        },
+      ])]),
       WFReplaceTextFind: '${f}',
-      WFReplaceTextReplace: function(state) sc.Val('${URL Encoded Text}', state),
+      WFReplaceTextReplace: sc.Str([sc.Ref('URL Encoded Text')]),
     }),
 
     sc.Action('is.workflow.actions.downloadurl', name='Contents of URL', params={
-      WFURL: function(state) sc.Val('${Updated Text}', state),
+      WFURL: sc.Str([sc.Ref('Updated Text')]),
     }),
 
     sc.Action('is.workflow.actions.setitemname', name='Icon Image', params={
-      WFInput: function(state) sc.Ref(state, 'Contents of URL', att=true),
+      WFInput: sc.Ref('Contents of URL', att=true),
       WFName: {
         Value: {
           attachmentsByRange: {
-            '{0, 1}': function(state) sc.Ref(state, 'File of Type', aggs=[
+            '{0, 1}': sc.Ref('File of Type', aggs=[
               {
                 CoercionItemClass: 'WFDictionaryContentItem',
                 Type: 'WFCoercionVariableAggrandizement',
@@ -208,7 +224,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.image.resize', name='Resized Icon', params={
-      WFImage: function(state) sc.Ref(state, 'Icon Image', att=true),
+      WFImage: sc.Ref('Icon Image', att=true),
       WFImageResizeHeight: '123',
       WFImageResizeWidth: '123',
     }),
@@ -216,26 +232,35 @@ local sc = import 'shortcuts.libsonnet';
     sc.Action('is.workflow.actions.base64encode', name='Base64 Encoded', params={
       WFBase64LineBreakMode: 'None',
       WFEncodeMode: 'Encode',
-      WFInput: function(state) sc.Ref(state, 'Resized Icon', att=true),
+      WFInput: sc.Ref('Resized Icon', att=true),
     }),
 
     sc.Action('is.workflow.actions.text.replace', name='Updated Text', params={
-      WFInput: function(state) sc.Val('${File of Type}', state),
+      WFInput: sc.Str([sc.Ref('File of Type', aggs=[
+        {
+          CoercionItemClass: 'WFDictionaryContentItem',
+          Type: 'WFCoercionVariableAggrandizement',
+        },
+        {
+          DictionaryKey: 'fields.shortcut.value.downloadURL',
+          Type: 'WFDictionaryValueVariableAggrandizement',
+        },
+      ])]),
       WFReplaceTextFind: '${f}',
-      WFReplaceTextReplace: function(state) sc.Val('${URL Encoded Text}', state),
+      WFReplaceTextReplace: sc.Str([sc.Ref('URL Encoded Text')]),
     }),
 
     sc.Action('is.workflow.actions.downloadurl', name='rawShortcut', params={
-      WFURL: function(state) sc.Val('${Updated Text}', state),
+      WFURL: sc.Str([sc.Ref('Updated Text')]),
     }),
 
     sc.Action('is.workflow.actions.setitemname', name='Renamed Item', params={
-      WFInput: function(state) sc.Ref(state, 'rawShortcut', att=true),
+      WFInput: sc.Ref('rawShortcut', att=true),
       WFName: 'A.plist',
     }),
 
     sc.Action('is.workflow.actions.count', name='Count', params={
-      Input: function(state) sc.Ref(state, 'Renamed Item', aggs=[
+      Input: sc.Ref('Renamed Item', aggs=[
         {
           CoercionItemClass: 'WFDictionaryContentItem',
           Type: 'WFCoercionVariableAggrandizement',
@@ -248,7 +273,16 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.ask', name='Provided Input', params={
-      WFAskActionDefaultAnswer: function(state) sc.Val('${File of Type}', state),
+      WFAskActionDefaultAnswer: sc.Str([sc.Ref('File of Type', aggs=[
+        {
+          CoercionItemClass: 'WFDictionaryContentItem',
+          Type: 'WFCoercionVariableAggrandizement',
+        },
+        {
+          DictionaryKey: 'fields.name.value',
+          Type: 'WFDictionaryValueVariableAggrandizement',
+        },
+      ])]),
       WFAskActionPrompt: 'What Shortcut name should this be stored under?',
     }),
 
@@ -257,7 +291,7 @@ local sc = import 'shortcuts.libsonnet';
       keyPath: {
         Value: {
           attachmentsByRange: {
-            '{16, 1}': function(state) sc.Ref(state, 'Provided Input'),
+            '{16, 1}': sc.Ref('Provided Input'),
           },
           string: 'Version Control.￼',
         },
@@ -271,7 +305,7 @@ local sc = import 'shortcuts.libsonnet';
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: function(state) sc.Ref(state, 'Count', att=true),
+        Variable: sc.Ref('Count', att=true),
       },
       WFNumberValue: '0',
     }),
@@ -280,8 +314,8 @@ local sc = import 'shortcuts.libsonnet';
       keyPath: {
         Value: {
           attachmentsByRange: {
-            '{16, 1}': function(state) sc.Ref(state, 'Provided Input'),
-            '{18, 1}': function(state) sc.Ref(state, 'Count'),
+            '{16, 1}': sc.Ref('Provided Input'),
+            '{18, 1}': sc.Ref('Count'),
           },
           string: 'Version Control.￼.￼.version',
         },
@@ -300,68 +334,44 @@ local sc = import 'shortcuts.libsonnet';
           WFDictionaryFieldValueItems: [
             {
               WFItemType: 0,
-              WFKey: sc.Val('name'),
-              WFValue: function(state) sc.Val('${Provided Input}', state),
+              WFKey: sc.Str(['name']),
+              WFValue: sc.Str([sc.Ref('Provided Input')]),
             },
             {
               WFItemType: 0,
-              WFKey: sc.Val('version'),
-              WFValue: function(state) sc.Val('${Value}', state),
+              WFKey: sc.Str(['version']),
+              WFValue: sc.Str([sc.Ref('Value')]),
             },
             {
               WFItemType: 0,
-              WFKey: sc.Val('url'),
-              WFValue: {
-                Value: {
-                  attachmentsByRange: {
-                    '{0, 1}': {
-                      Type: 'Clipboard',
-                    },
-                  },
-                  string: '￼',
-                },
-                WFSerializationType: 'WFTextTokenString',
-              },
+              WFKey: sc.Str(['url']),
+              WFValue: sc.Str([{
+                Type: 'Clipboard',
+              }]),
             },
             {
               WFItemType: 0,
-              WFKey: sc.Val('date'),
-              WFValue: {
-                Value: {
-                  attachmentsByRange: {
-                    '{0, 1}': {
-                      Type: 'CurrentDate',
-                    },
-                  },
-                  string: '￼',
-                },
-                WFSerializationType: 'WFTextTokenString',
-              },
+              WFKey: sc.Str(['date']),
+              WFValue: sc.Str([{
+                Type: 'CurrentDate',
+              }]),
             },
             {
               WFItemType: 0,
-              WFKey: sc.Val('note'),
-              WFValue: {
-                Value: {
-                  attachmentsByRange: {
-                    '{0, 1}': {
-                      Type: 'Ask',
-                    },
-                  },
-                  string: '￼',
-                },
-                WFSerializationType: 'WFTextTokenString',
-              },
+              WFKey: sc.Str(['note']),
+              WFValue: sc.Str([{
+                Type: 'Ask',
+              }]),
             },
             {
               WFItemType: 0,
-              WFKey: sc.Val('actions count'),
-              WFValue: function(state) sc.Val('${Count}', state),
+              WFKey: sc.Str(['actions count']),
+              WFValue: sc.Str([sc.Ref('Count')]),
             },
             {
               WFItemType: 0,
-              WFKey: sc.Val('b64icon'),
-              WFValue: function(state) sc.Val('${Base64 Encoded}', state),
+              WFKey: sc.Str(['b64icon']),
+              WFValue: sc.Str([sc.Ref('Base64 Encoded')]),
             },
           ],
         },
@@ -370,7 +380,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.math', name='Calculation Result', params={
-      WFInput: function(state) sc.Ref(state, 'Count', att=true),
+      WFInput: sc.Ref('Count', att=true),
       WFMathOperand: '1',
     }),
 
@@ -378,60 +388,60 @@ local sc = import 'shortcuts.libsonnet';
       keyPath: {
         Value: {
           attachmentsByRange: {
-            '{16, 1}': function(state) sc.Ref(state, 'Dictionary', aggs=[
+            '{16, 1}': sc.Ref('Dictionary', aggs=[
               {
                 DictionaryKey: 'name',
                 Type: 'WFDictionaryValueVariableAggrandizement',
               },
             ]),
-            '{18, 1}': function(state) sc.Ref(state, 'Calculation Result'),
+            '{18, 1}': sc.Ref('Calculation Result'),
           },
           string: 'Version Control.￼.￼',
         },
         WFSerializationType: 'WFTextTokenString',
       },
       overwriteStrategy: 'alwaysAllow',
-      values: function(state) sc.Ref(state, 'Dictionary', att=true),
+      values: sc.Ref('Dictionary', att=true),
     }),
 
     sc.Action('dk.simonbs.DataJar.SetValueIntent', {
       keyPath: {
         Value: {
           attachmentsByRange: {
-            '{16, 1}': function(state) sc.Ref(state, 'Dictionary', aggs=[
+            '{16, 1}': sc.Ref('Dictionary', aggs=[
               {
                 DictionaryKey: 'name',
                 Type: 'WFDictionaryValueVariableAggrandizement',
               },
             ]),
-            '{18, 1}': function(state) sc.Ref(state, 'Calculation Result'),
+            '{18, 1}': sc.Ref('Calculation Result'),
           },
           string: 'Version Control.￼.￼.icon',
         },
         WFSerializationType: 'WFTextTokenString',
       },
       overwriteStrategy: 'alwaysAllow',
-      values: function(state) sc.Ref(state, 'Resized Icon', att=true),
+      values: sc.Ref('Resized Icon', att=true),
     }),
 
     sc.Action('dk.simonbs.DataJar.SetValueIntent', {
       keyPath: {
         Value: {
           attachmentsByRange: {
-            '{16, 1}': function(state) sc.Ref(state, 'Dictionary', aggs=[
+            '{16, 1}': sc.Ref('Dictionary', aggs=[
               {
                 DictionaryKey: 'name',
                 Type: 'WFDictionaryValueVariableAggrandizement',
               },
             ]),
-            '{18, 1}': function(state) sc.Ref(state, 'Calculation Result'),
+            '{18, 1}': sc.Ref('Calculation Result'),
           },
           string: 'Version Control.￼.￼.exporticon',
         },
         WFSerializationType: 'WFTextTokenString',
       },
       overwriteStrategy: 'alwaysAllow',
-      values: function(state) sc.Ref(state, 'Icon Image', att=true),
+      values: sc.Ref('Icon Image', att=true),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
@@ -451,7 +461,7 @@ local sc = import 'shortcuts.libsonnet';
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: function(state) sc.Ref(state, 'Chosen Item', aggs=[
+        Variable: sc.Ref('Chosen Item', aggs=[
           {
             PropertyName: 'title',
             Type: 'WFPropertyVariableAggrandizement',
@@ -472,20 +482,20 @@ local sc = import 'shortcuts.libsonnet';
         TeamIdentifier: 'YG56YK5RN5',
       },
       'Show-list': true,
-      list: function(state) sc.Ref(state, 'Keys', att=true),
+      list: sc.Ref('Keys', att=true),
     }),
 
     sc.Action('is.workflow.actions.repeat.each', {
       GroupingIdentifier: 'F530BB16-B092-43FF-B5E0-26DFFAC48AA8',
       WFControlFlowMode: 0,
-      WFInput: function(state) sc.Ref(state, 'Sorted List', att=true),
+      WFInput: sc.Ref('Sorted List', att=true),
     }),
 
     sc.Action('dk.simonbs.DataJar.GetValueIntent', name='Value', params={
       keyPath: {
         Value: {
           attachmentsByRange: {
-            '{16, 1}': function(state) sc.Ref(state, 'Vars.Repeat Item'),
+            '{16, 1}': sc.Ref('Vars.Repeat Item'),
           },
           string: 'Version Control.￼.1.b64icon',
         },
@@ -497,7 +507,7 @@ local sc = import 'shortcuts.libsonnet';
       WFTextActionText: {
         Value: {
           attachmentsByRange: {
-            '{17, 1}': function(state) sc.Ref(state, 'Value', aggs=[
+            '{17, 1}': sc.Ref('Value', aggs=[
               {
                 CoercionItemClass: 'WFStringContentItem',
                 Type: 'WFCoercionVariableAggrandizement',
@@ -522,7 +532,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('com.alexhay.ToolboxProForShortcuts.QuickMenu2Intent', {
-      text: function(state) sc.Val('${Text}', state),
+      text: sc.Str([sc.Ref('Text')]),
     }),
 
     sc.Action('is.workflow.actions.repeat.each', name='Repeat Results', params={
@@ -532,14 +542,14 @@ local sc = import 'shortcuts.libsonnet';
 
     sc.Action('is.workflow.actions.choosefromlist', name='Chosen Item', params={
       WFChooseFromListActionPrompt: 'Select shortcut to view its versions',
-      WFInput: function(state) sc.Ref(state, 'Repeat Results', att=true),
+      WFInput: sc.Ref('Repeat Results', att=true),
     }),
 
     sc.Action('dk.simonbs.DataJar.GetValueIntent', name='Value', params={
       keyPath: {
         Value: {
           attachmentsByRange: {
-            '{16, 1}': function(state) sc.Ref(state, 'Chosen Item', aggs=[
+            '{16, 1}': sc.Ref('Chosen Item', aggs=[
               {
                 PropertyName: 'title',
                 Type: 'WFPropertyVariableAggrandizement',
@@ -553,22 +563,22 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.setvariable', {
-      WFInput: function(state) sc.Ref(state, 'Value', att=true),
+      WFInput: sc.Ref('Value', att=true),
       WFVariableName: 'Export',
     }),
 
     sc.Action('is.workflow.actions.repeat.each', {
       GroupingIdentifier: '964E44BF-AD7A-4D63-B099-4704FE2F6B15',
       WFControlFlowMode: 0,
-      WFInput: function(state) sc.Ref(state, 'Value', att=true),
+      WFInput: sc.Ref('Value', att=true),
     }),
 
     sc.Action('dk.simonbs.DataJar.GetValueIntent', name='Value', params={
       keyPath: {
         Value: {
           attachmentsByRange: {
-            '{16, 1}': function(state) sc.Ref(state, 'Chosen Item'),
-            '{18, 1}': function(state) sc.Ref(state, 'Vars.Repeat Index'),
+            '{16, 1}': sc.Ref('Chosen Item'),
+            '{18, 1}': sc.Ref('Vars.Repeat Index'),
           },
           string: 'Version Control.￼.￼',
         },
@@ -577,7 +587,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.setvariable', {
-      WFInput: function(state) sc.Ref(state, 'Value', aggs=[
+      WFInput: sc.Ref('Value', aggs=[
         {
           CoercionItemClass: 'WFDictionaryContentItem',
           Type: 'WFCoercionVariableAggrandizement',
@@ -594,7 +604,7 @@ local sc = import 'shortcuts.libsonnet';
       WFTextActionText: {
         Value: {
           attachmentsByRange: {
-            '{11, 1}': function(state) sc.Ref(state, 'Value', aggs=[
+            '{11, 1}': sc.Ref('Value', aggs=[
               {
                 CoercionItemClass: 'WFDictionaryContentItem',
                 Type: 'WFCoercionVariableAggrandizement',
@@ -604,7 +614,7 @@ local sc = import 'shortcuts.libsonnet';
                 Type: 'WFDictionaryValueVariableAggrandizement',
               },
             ]),
-            '{27, 1}': function(state) sc.Ref(state, 'Value', aggs=[
+            '{27, 1}': sc.Ref('Value', aggs=[
               {
                 CoercionItemClass: 'WFDictionaryContentItem',
                 Type: 'WFCoercionVariableAggrandizement',
@@ -614,7 +624,7 @@ local sc = import 'shortcuts.libsonnet';
                 Type: 'WFDictionaryValueVariableAggrandizement',
               },
             ]),
-            '{31, 1}': function(state) sc.Ref(state, 'Value', aggs=[
+            '{31, 1}': sc.Ref('Value', aggs=[
               {
                 CoercionItemClass: 'WFDictionaryContentItem',
                 Type: 'WFCoercionVariableAggrandizement',
@@ -624,7 +634,7 @@ local sc = import 'shortcuts.libsonnet';
                 Type: 'WFDictionaryValueVariableAggrandizement',
               },
             ]),
-            '{41, 1}': function(state) sc.Ref(state, 'Value', aggs=[
+            '{41, 1}': sc.Ref('Value', aggs=[
               {
                 CoercionItemClass: 'WFDictionaryContentItem',
                 Type: 'WFCoercionVariableAggrandizement',
@@ -634,7 +644,7 @@ local sc = import 'shortcuts.libsonnet';
                 Type: 'WFDictionaryValueVariableAggrandizement',
               },
             ]),
-            '{7, 1}': function(state) sc.Ref(state, 'Value', aggs=[
+            '{7, 1}': sc.Ref('Value', aggs=[
               {
                 CoercionItemClass: 'WFDictionaryContentItem',
                 Type: 'WFCoercionVariableAggrandizement',
@@ -652,7 +662,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('com.alexhay.ToolboxProForShortcuts.QuickMenu2Intent', {
-      text: function(state) sc.Val('${Text}', state),
+      text: sc.Str([sc.Ref('Text')]),
     }),
 
     sc.Action('is.workflow.actions.repeat.each', name='Repeat Results', params={
@@ -661,7 +671,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.setvariable', {
-      WFInput: function(state) sc.Ref(state, 'Repeat Results', att=true),
+      WFInput: sc.Ref('Repeat Results', att=true),
       WFVariableName: 'Menu',
     }),
 
@@ -670,7 +680,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.appendvariable', {
-      WFInput: function(state) sc.Ref(state, 'Text', att=true),
+      WFInput: sc.Ref('Text', att=true),
       WFVariableName: 'Menu',
     }),
 
@@ -679,7 +689,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.appendvariable', {
-      WFInput: function(state) sc.Ref(state, 'Text', att=true),
+      WFInput: sc.Ref('Text', att=true),
       WFVariableName: 'Menu',
     }),
 
@@ -687,13 +697,13 @@ local sc = import 'shortcuts.libsonnet';
       WFChooseFromListActionPrompt: {
         Value: {
           attachmentsByRange: {
-            '{17, 1}': function(state) sc.Ref(state, 'Chosen Item'),
+            '{17, 1}': sc.Ref('Chosen Item'),
           },
           string: 'Which version of ￼ would you like to restore?',
         },
         WFSerializationType: 'WFTextTokenString',
       },
-      WFInput: function(state) sc.Ref(state, 'Vars.Menu', att=true),
+      WFInput: sc.Ref('Vars.Menu', att=true),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
@@ -703,7 +713,7 @@ local sc = import 'shortcuts.libsonnet';
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: function(state) sc.Ref(state, 'Chosen Item', aggs=[
+        Variable: sc.Ref('Chosen Item', aggs=[
           {
             PropertyName: 'Name',
             PropertyUserInfo: 'WFItemName',
@@ -714,7 +724,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.runworkflow', {
-      WFInput: function(state) sc.Ref(state, 'Chosen Item', att=true),
+      WFInput: sc.Ref('Chosen Item', att=true),
       WFWorkflow: {
         isSelf: true,
         workflowIdentifier: '63BDD6A0-A90B-425F-9CD8-C2B25DC56CD6',
@@ -732,15 +742,15 @@ local sc = import 'shortcuts.libsonnet';
       'Show-text': true,
       WFTextCustomSeparator: ':',
       WFTextSeparator: 'Custom',
-      text: function(state) sc.Ref(state, 'Chosen Item', att=true),
+      text: sc.Ref('Chosen Item', att=true),
     }),
 
     sc.Action('is.workflow.actions.getitemfromlist', name='Item from List', params={
-      WFInput: function(state) sc.Ref(state, 'Split Text', att=true),
+      WFInput: sc.Ref('Split Text', att=true),
     }),
 
     sc.Action('is.workflow.actions.text.replace', name='Updated Text', params={
-      WFInput: function(state) sc.Val('${Item from List}', state),
+      WFInput: sc.Str([sc.Ref('Item from List')]),
       WFReplaceTextFind: '\\s$',
       WFReplaceTextRegularExpression: true,
     }),
@@ -748,20 +758,20 @@ local sc = import 'shortcuts.libsonnet';
     sc.Action('is.workflow.actions.repeat.each', {
       GroupingIdentifier: 'B542FF5C-D6F2-47A8-9A8B-DE4F0D6D0C5E',
       WFControlFlowMode: 0,
-      WFInput: function(state) sc.Ref(state, 'Value', att=true),
+      WFInput: sc.Ref('Value', att=true),
     }),
 
     sc.Action('dk.simonbs.DataJar.GetValueIntent', name='Value', params={
       keyPath: {
         Value: {
           attachmentsByRange: {
-            '{16, 1}': function(state) sc.Ref(state, 'Chosen Item', aggs=[
+            '{16, 1}': sc.Ref('Chosen Item', aggs=[
               {
                 PropertyName: 'title',
                 Type: 'WFPropertyVariableAggrandizement',
               },
             ]),
-            '{18, 1}': function(state) sc.Ref(state, 'Vars.Repeat Index'),
+            '{18, 1}': sc.Ref('Vars.Repeat Index'),
           },
           string: 'Version Control.￼.￼.version',
         },
@@ -772,11 +782,11 @@ local sc = import 'shortcuts.libsonnet';
     sc.Action('is.workflow.actions.conditional', {
       GroupingIdentifier: '6128F9AF-A448-4A95-9A19-1117FD929284',
       WFCondition: 4,
-      WFConditionalActionString: function(state) sc.Val('${Value}', state),
+      WFConditionalActionString: sc.Str([sc.Ref('Value')]),
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: function(state) sc.Ref(state, 'Updated Text', att=true),
+        Variable: sc.Ref('Updated Text', att=true),
       },
     }),
 
@@ -784,8 +794,8 @@ local sc = import 'shortcuts.libsonnet';
       keyPath: {
         Value: {
           attachmentsByRange: {
-            '{16, 1}': function(state) sc.Ref(state, 'Vars.name'),
-            '{18, 1}': function(state) sc.Ref(state, 'Vars.Repeat Index'),
+            '{16, 1}': sc.Ref('Vars.name'),
+            '{18, 1}': sc.Ref('Vars.Repeat Index'),
           },
           string: 'Version Control.￼.￼.url',
         },
@@ -794,7 +804,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.showwebpage', {
-      WFURL: function(state) sc.Val('${Value}', state),
+      WFURL: sc.Str([sc.Ref('Value')]),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
@@ -829,7 +839,7 @@ local sc = import 'shortcuts.libsonnet';
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: function(state) sc.Ref(state, 'Chosen Item', aggs=[
+        Variable: sc.Ref('Chosen Item', aggs=[
           {
             PropertyName: 'Name',
             PropertyUserInfo: 'WFItemName',
@@ -847,49 +857,49 @@ local sc = import 'shortcuts.libsonnet';
     sc.Action('is.workflow.actions.repeat.each', {
       GroupingIdentifier: '80A2FDB7-7A37-4C1F-BD49-43DCD82B30E8',
       WFControlFlowMode: 0,
-      WFInput: function(state) sc.Ref(state, 'Vars.Export', att=true),
+      WFInput: sc.Ref('Vars.Export', att=true),
     }),
 
     sc.Action('is.workflow.actions.getvalueforkey', name='Name', params={
       WFDictionaryKey: 'name',
-      WFInput: function(state) sc.Ref(state, 'Vars.Repeat Item', att=true),
+      WFInput: sc.Ref('Vars.Repeat Item', att=true),
     }),
 
     sc.Action('is.workflow.actions.getvalueforkey', name='Version', params={
       WFDictionaryKey: 'version',
-      WFInput: function(state) sc.Ref(state, 'Vars.Repeat Item', att=true),
+      WFInput: sc.Ref('Vars.Repeat Item', att=true),
     }),
 
     sc.Action('is.workflow.actions.getvalueforkey', name='Date', params={
       WFDictionaryKey: 'date',
-      WFInput: function(state) sc.Ref(state, 'Vars.Repeat Item', att=true),
+      WFInput: sc.Ref('Vars.Repeat Item', att=true),
     }),
 
     sc.Action('is.workflow.actions.getvalueforkey', name='URL', params={
       WFDictionaryKey: 'url',
-      WFInput: function(state) sc.Ref(state, 'Vars.Repeat Item', att=true),
+      WFInput: sc.Ref('Vars.Repeat Item', att=true),
     }),
 
     sc.Action('is.workflow.actions.getvalueforkey', name='Note', params={
       WFDictionaryKey: 'note',
-      WFInput: function(state) sc.Ref(state, 'Vars.Repeat Item', att=true),
+      WFInput: sc.Ref('Vars.Repeat Item', att=true),
     }),
 
     sc.Action('is.workflow.actions.getvalueforkey', name='Actions', params={
       WFDictionaryKey: 'actions count',
-      WFInput: function(state) sc.Ref(state, 'Vars.Repeat Item', att=true),
+      WFInput: sc.Ref('Vars.Repeat Item', att=true),
     }),
 
     sc.Action('is.workflow.actions.gettext', name='Text', params={
       WFTextActionText: {
         Value: {
           attachmentsByRange: {
-            '{0, 1}': function(state) sc.Ref(state, 'Date'),
-            '{11, 1}': function(state) sc.Ref(state, 'URL'),
-            '{16, 1}': function(state) sc.Ref(state, 'Actions'),
-            '{26, 1}': function(state) sc.Ref(state, 'Note'),
-            '{3, 1}': function(state) sc.Ref(state, 'Name'),
-            '{8, 1}': function(state) sc.Ref(state, 'Version'),
+            '{0, 1}': sc.Ref('Date'),
+            '{11, 1}': sc.Ref('URL'),
+            '{16, 1}': sc.Ref('Actions'),
+            '{26, 1}': sc.Ref('Note'),
+            '{3, 1}': sc.Ref('Name'),
+            '{8, 1}': sc.Ref('Version'),
           },
           string: '￼\n[￼ : v￼](￼) : ￼ Actions\n￼\n\n-',
         },
@@ -898,7 +908,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.getrichtextfrommarkdown', {
-      WFInput: function(state) sc.Ref(state, 'Text', att=true),
+      WFInput: sc.Ref('Text', att=true),
     }),
 
     sc.Action('is.workflow.actions.repeat.each', name='Repeat Results', params={
@@ -910,7 +920,7 @@ local sc = import 'shortcuts.libsonnet';
       keyPath: {
         Value: {
           attachmentsByRange: {
-            '{16, 1}': function(state) sc.Ref(state, 'Name'),
+            '{16, 1}': sc.Ref('Name'),
           },
           string: 'Version Control.￼.1.exporticon',
         },
@@ -925,7 +935,7 @@ local sc = import 'shortcuts.libsonnet';
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: function(state) sc.Ref(state, 'Value Exists', aggs=[
+        Variable: sc.Ref('Value Exists', aggs=[
           {
             PropertyName: 'Name',
             PropertyUserInfo: 'WFItemName',
@@ -940,7 +950,7 @@ local sc = import 'shortcuts.libsonnet';
       keyPath: {
         Value: {
           attachmentsByRange: {
-            '{16, 1}': function(state) sc.Ref(state, 'Name'),
+            '{16, 1}': sc.Ref('Name'),
           },
           string: 'Version Control.￼.1.exporticon',
         },
@@ -957,7 +967,7 @@ local sc = import 'shortcuts.libsonnet';
       keyPath: {
         Value: {
           attachmentsByRange: {
-            '{16, 1}': function(state) sc.Ref(state, 'Name'),
+            '{16, 1}': sc.Ref('Name'),
           },
           string: 'Version Control.￼.1.url',
         },
@@ -966,36 +976,54 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.text.replace', name='Updated Text', params={
-      WFInput: function(state) sc.Val('${Value}', state),
+      WFInput: sc.Str([sc.Ref('Value')]),
       WFReplaceTextFind: '/shortcuts/',
       WFReplaceTextReplace: '/shortcuts/api/records/',
     }),
 
     sc.Action('is.workflow.actions.gettypeaction', name='File of Type', params={
       WFFileType: 'public.json',
-      WFInput: function(state) sc.Ref(state, 'Updated Text', att=true),
+      WFInput: sc.Ref('Updated Text', att=true),
     }),
 
     sc.Action('is.workflow.actions.urlencode', name='URL Encoded Text', params={
-      WFInput: function(state) sc.Val('${File of Type}', state),
+      WFInput: sc.Str([sc.Ref('File of Type', aggs=[
+        {
+          CoercionItemClass: 'WFDictionaryContentItem',
+          Type: 'WFCoercionVariableAggrandizement',
+        },
+        {
+          DictionaryKey: 'fields.name.value',
+          Type: 'WFDictionaryValueVariableAggrandizement',
+        },
+      ])]),
     }),
 
     sc.Action('is.workflow.actions.text.replace', name='Updated Text', params={
-      WFInput: function(state) sc.Val('${File of Type}', state),
+      WFInput: sc.Str([sc.Ref('File of Type', aggs=[
+        {
+          CoercionItemClass: 'WFDictionaryContentItem',
+          Type: 'WFCoercionVariableAggrandizement',
+        },
+        {
+          DictionaryKey: 'fields.icon.value.downloadURL',
+          Type: 'WFDictionaryValueVariableAggrandizement',
+        },
+      ])]),
       WFReplaceTextFind: '${f}',
-      WFReplaceTextReplace: function(state) sc.Val('${URL Encoded Text}', state),
+      WFReplaceTextReplace: sc.Str([sc.Ref('URL Encoded Text')]),
     }),
 
     sc.Action('is.workflow.actions.downloadurl', name='Contents of URL', params={
-      WFURL: function(state) sc.Val('${Updated Text}', state),
+      WFURL: sc.Str([sc.Ref('Updated Text')]),
     }),
 
     sc.Action('is.workflow.actions.setitemname', name='Icon Image', params={
-      WFInput: function(state) sc.Ref(state, 'Contents of URL', att=true),
+      WFInput: sc.Ref('Contents of URL', att=true),
       WFName: {
         Value: {
           attachmentsByRange: {
-            '{0, 1}': function(state) sc.Ref(state, 'File of Type', aggs=[
+            '{0, 1}': sc.Ref('File of Type', aggs=[
               {
                 CoercionItemClass: 'WFDictionaryContentItem',
                 Type: 'WFCoercionVariableAggrandizement',
@@ -1016,7 +1044,7 @@ local sc = import 'shortcuts.libsonnet';
       keyPath: {
         Value: {
           attachmentsByRange: {
-            '{16, 1}': function(state) sc.Ref(state, 'Chosen Item', aggs=[
+            '{16, 1}': sc.Ref('Chosen Item', aggs=[
               {
                 PropertyName: 'title',
                 Type: 'WFPropertyVariableAggrandizement',
@@ -1029,7 +1057,7 @@ local sc = import 'shortcuts.libsonnet';
       },
       overwriteStrategy: 'alwaysAllow',
       valueConversionMode: 'file',
-      values: function(state) sc.Ref(state, 'Icon Image', att=true),
+      values: sc.Ref('Icon Image', att=true),
     }),
 
     sc.Action('is.workflow.actions.delay'),
@@ -1038,7 +1066,7 @@ local sc = import 'shortcuts.libsonnet';
       keyPath: {
         Value: {
           attachmentsByRange: {
-            '{16, 1}': function(state) sc.Ref(state, 'Chosen Item', aggs=[
+            '{16, 1}': sc.Ref('Chosen Item', aggs=[
               {
                 PropertyName: 'title',
                 Type: 'WFPropertyVariableAggrandizement',
@@ -1070,14 +1098,14 @@ local sc = import 'shortcuts.libsonnet';
       WFCreateNoteInput: {
         Value: {
           attachmentsByRange: {
-            '{0, 1}': function(state) sc.Ref(state, 'Name'),
-            '{2, 1}': function(state) sc.Ref(state, 'If Result'),
+            '{0, 1}': sc.Ref('Name'),
+            '{2, 1}': sc.Ref('If Result'),
           },
           string: '￼ ￼',
         },
         WFSerializationType: 'WFTextTokenString',
       },
-      folder: function(state) sc.Ref(state, 'Text', att=true),
+      folder: sc.Ref('Text', att=true),
     }),
 
     sc.Action('is.workflow.actions.appendnote', {
@@ -1087,8 +1115,8 @@ local sc = import 'shortcuts.libsonnet';
         Name: 'Notes',
         TeamIdentifier: '0000000000',
       },
-      WFInput: function(state) sc.Val('${Repeat Results}', state),
-      WFNote: function(state) sc.Ref(state, 'Note', att=true),
+      WFInput: sc.Str([sc.Ref('Repeat Results')]),
+      WFNote: sc.Ref('Note', att=true),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
@@ -1103,7 +1131,7 @@ local sc = import 'shortcuts.libsonnet';
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: function(state) sc.Ref(state, 'Chosen Item', aggs=[
+        Variable: sc.Ref('Chosen Item', aggs=[
           {
             PropertyName: 'title',
             Type: 'WFPropertyVariableAggrandizement',
@@ -1124,20 +1152,20 @@ local sc = import 'shortcuts.libsonnet';
         TeamIdentifier: 'YG56YK5RN5',
       },
       'Show-list': true,
-      list: function(state) sc.Ref(state, 'Keys', att=true),
+      list: sc.Ref('Keys', att=true),
     }),
 
     sc.Action('is.workflow.actions.repeat.each', {
       GroupingIdentifier: 'F51681C8-CDBA-40EB-89BF-3CD57E5F3951',
       WFControlFlowMode: 0,
-      WFInput: function(state) sc.Ref(state, 'Sorted List', att=true),
+      WFInput: sc.Ref('Sorted List', att=true),
     }),
 
     sc.Action('dk.simonbs.DataJar.GetValueIntent', name='Value', params={
       keyPath: {
         Value: {
           attachmentsByRange: {
-            '{16, 1}': function(state) sc.Ref(state, 'Vars.Repeat Item'),
+            '{16, 1}': sc.Ref('Vars.Repeat Item'),
           },
           string: 'Version Control.￼.1.b64icon',
         },
@@ -1149,7 +1177,7 @@ local sc = import 'shortcuts.libsonnet';
       WFTextActionText: {
         Value: {
           attachmentsByRange: {
-            '{17, 1}': function(state) sc.Ref(state, 'Value'),
+            '{17, 1}': sc.Ref('Value'),
             '{7, 1}': {
               Aggrandizements: [
                 {
@@ -1169,7 +1197,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('com.alexhay.ToolboxProForShortcuts.QuickMenu2Intent', {
-      text: function(state) sc.Val('${Text}', state),
+      text: sc.Str([sc.Ref('Text')]),
     }),
 
     sc.Action('is.workflow.actions.repeat.each', name='Repeat Results', params={
@@ -1178,7 +1206,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.setvariable', {
-      WFInput: function(state) sc.Ref(state, 'Repeat Results', att=true),
+      WFInput: sc.Ref('Repeat Results', att=true),
       WFVariableName: 'Menu',
     }),
 
@@ -1187,13 +1215,13 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.appendvariable', {
-      WFInput: function(state) sc.Ref(state, 'Text', att=true),
+      WFInput: sc.Ref('Text', att=true),
       WFVariableName: 'Menu',
     }),
 
     sc.Action('is.workflow.actions.choosefromlist', name='Chosen Item', params={
       WFChooseFromListActionPrompt: 'Select shortcut to view its versions',
-      WFInput: function(state) sc.Ref(state, 'Vars.Menu', att=true),
+      WFInput: sc.Ref('Vars.Menu', att=true),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
@@ -1203,7 +1231,7 @@ local sc = import 'shortcuts.libsonnet';
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: function(state) sc.Ref(state, 'Chosen Item', aggs=[
+        Variable: sc.Ref('Chosen Item', aggs=[
           {
             PropertyName: 'Name',
             PropertyUserInfo: 'WFItemName',
@@ -1222,7 +1250,7 @@ local sc = import 'shortcuts.libsonnet';
       keyPath: {
         Value: {
           attachmentsByRange: {
-            '{16, 1}': function(state) sc.Ref(state, 'Chosen Item', aggs=[
+            '{16, 1}': sc.Ref('Chosen Item', aggs=[
               {
                 PropertyName: 'title',
                 Type: 'WFPropertyVariableAggrandizement',
@@ -1238,15 +1266,15 @@ local sc = import 'shortcuts.libsonnet';
     sc.Action('is.workflow.actions.repeat.each', {
       GroupingIdentifier: '7FE68386-F34C-4E25-888C-5862816FFCCB',
       WFControlFlowMode: 0,
-      WFInput: function(state) sc.Ref(state, 'Value', att=true),
+      WFInput: sc.Ref('Value', att=true),
     }),
 
     sc.Action('dk.simonbs.DataJar.GetValueIntent', name='Value', params={
       keyPath: {
         Value: {
           attachmentsByRange: {
-            '{16, 1}': function(state) sc.Ref(state, 'Chosen Item'),
-            '{18, 1}': function(state) sc.Ref(state, 'Vars.Repeat Index'),
+            '{16, 1}': sc.Ref('Chosen Item'),
+            '{18, 1}': sc.Ref('Vars.Repeat Index'),
           },
           string: 'Version Control.￼.￼',
         },
@@ -1255,7 +1283,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.setvariable', {
-      WFInput: function(state) sc.Ref(state, 'Value', aggs=[
+      WFInput: sc.Ref('Value', aggs=[
         {
           CoercionItemClass: 'WFDictionaryContentItem',
           Type: 'WFCoercionVariableAggrandizement',
@@ -1272,7 +1300,7 @@ local sc = import 'shortcuts.libsonnet';
       WFTextActionText: {
         Value: {
           attachmentsByRange: {
-            '{11, 1}': function(state) sc.Ref(state, 'Value', aggs=[
+            '{11, 1}': sc.Ref('Value', aggs=[
               {
                 CoercionItemClass: 'WFDictionaryContentItem',
                 Type: 'WFCoercionVariableAggrandizement',
@@ -1282,7 +1310,7 @@ local sc = import 'shortcuts.libsonnet';
                 Type: 'WFDictionaryValueVariableAggrandizement',
               },
             ]),
-            '{27, 1}': function(state) sc.Ref(state, 'Value', aggs=[
+            '{27, 1}': sc.Ref('Value', aggs=[
               {
                 CoercionItemClass: 'WFDictionaryContentItem',
                 Type: 'WFCoercionVariableAggrandizement',
@@ -1292,7 +1320,7 @@ local sc = import 'shortcuts.libsonnet';
                 Type: 'WFDictionaryValueVariableAggrandizement',
               },
             ]),
-            '{31, 1}': function(state) sc.Ref(state, 'Value', aggs=[
+            '{31, 1}': sc.Ref('Value', aggs=[
               {
                 CoercionItemClass: 'WFDictionaryContentItem',
                 Type: 'WFCoercionVariableAggrandizement',
@@ -1302,7 +1330,7 @@ local sc = import 'shortcuts.libsonnet';
                 Type: 'WFDictionaryValueVariableAggrandizement',
               },
             ]),
-            '{41, 1}': function(state) sc.Ref(state, 'Value', aggs=[
+            '{41, 1}': sc.Ref('Value', aggs=[
               {
                 CoercionItemClass: 'WFDictionaryContentItem',
                 Type: 'WFCoercionVariableAggrandizement',
@@ -1312,7 +1340,7 @@ local sc = import 'shortcuts.libsonnet';
                 Type: 'WFDictionaryValueVariableAggrandizement',
               },
             ]),
-            '{52, 1}': function(state) sc.Ref(state, 'Value', aggs=[
+            '{52, 1}': sc.Ref('Value', aggs=[
               {
                 CoercionItemClass: 'WFDictionaryContentItem',
                 Type: 'WFCoercionVariableAggrandizement',
@@ -1322,7 +1350,7 @@ local sc = import 'shortcuts.libsonnet';
                 Type: 'WFDictionaryValueVariableAggrandizement',
               },
             ]),
-            '{63, 1}': function(state) sc.Ref(state, 'Value', aggs=[
+            '{63, 1}': sc.Ref('Value', aggs=[
               {
                 CoercionItemClass: 'WFDictionaryContentItem',
                 Type: 'WFCoercionVariableAggrandizement',
@@ -1332,7 +1360,7 @@ local sc = import 'shortcuts.libsonnet';
                 Type: 'WFDictionaryValueVariableAggrandizement',
               },
             ]),
-            '{7, 1}': function(state) sc.Ref(state, 'Value', aggs=[
+            '{7, 1}': sc.Ref('Value', aggs=[
               {
                 CoercionItemClass: 'WFDictionaryContentItem',
                 Type: 'WFCoercionVariableAggrandizement',
@@ -1350,7 +1378,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('com.alexhay.ToolboxProForShortcuts.QuickMenu2Intent', {
-      text: function(state) sc.Val('${Text}', state),
+      text: sc.Str([sc.Ref('Text')]),
     }),
 
     sc.Action('is.workflow.actions.repeat.each', name='Repeat Results', params={
@@ -1361,28 +1389,28 @@ local sc = import 'shortcuts.libsonnet';
     sc.Action('is.workflow.actions.choosefromlist', name='Chosen Item', params={
       WFChooseFromListActionPrompt: 'Select the version(s) you would like to remove',
       WFChooseFromListActionSelectMultiple: true,
-      WFInput: function(state) sc.Ref(state, 'Repeat Results', att=true),
+      WFInput: sc.Ref('Repeat Results', att=true),
     }),
 
     sc.Action('is.workflow.actions.repeat.each', {
       GroupingIdentifier: '2CB74CD2-6D0E-4685-8163-F8F7E1116CBD',
       WFControlFlowMode: 0,
-      WFInput: function(state) sc.Ref(state, 'Chosen Item', att=true),
+      WFInput: sc.Ref('Chosen Item', att=true),
     }),
 
     sc.Action('is.workflow.actions.text.split', name='Split Text', params={
       'Show-text': true,
       WFTextCustomSeparator: ':',
       WFTextSeparator: 'Custom',
-      text: function(state) sc.Ref(state, 'Vars.Repeat Item', att=true),
+      text: sc.Ref('Vars.Repeat Item', att=true),
     }),
 
     sc.Action('is.workflow.actions.getitemfromlist', name='Item from List', params={
-      WFInput: function(state) sc.Ref(state, 'Split Text', att=true),
+      WFInput: sc.Ref('Split Text', att=true),
     }),
 
     sc.Action('is.workflow.actions.text.replace', name='Updated Text', params={
-      WFInput: function(state) sc.Val('${Item from List}', state),
+      WFInput: sc.Str([sc.Ref('Item from List')]),
       WFReplaceTextFind: '\\s$',
       WFReplaceTextRegularExpression: true,
     }),
@@ -1390,7 +1418,7 @@ local sc = import 'shortcuts.libsonnet';
     sc.Action('is.workflow.actions.repeat.each', {
       GroupingIdentifier: '0E77A3C6-B0C3-441A-BF2E-5A5884F53FC1',
       WFControlFlowMode: 0,
-      WFInput: function(state) sc.Ref(state, 'Value', att=true),
+      WFInput: sc.Ref('Value', att=true),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
@@ -1399,7 +1427,7 @@ local sc = import 'shortcuts.libsonnet';
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: function(state) sc.Ref(state, 'Vars.Deleted', att=true),
+        Variable: sc.Ref('Vars.Deleted', att=true),
       },
       WFNumberValue: '1',
     }),
@@ -1408,13 +1436,13 @@ local sc = import 'shortcuts.libsonnet';
       keyPath: {
         Value: {
           attachmentsByRange: {
-            '{16, 1}': function(state) sc.Ref(state, 'Chosen Item', aggs=[
+            '{16, 1}': sc.Ref('Chosen Item', aggs=[
               {
                 PropertyName: 'title',
                 Type: 'WFPropertyVariableAggrandizement',
               },
             ]),
-            '{18, 1}': function(state) sc.Ref(state, 'Vars.Repeat Index 2'),
+            '{18, 1}': sc.Ref('Vars.Repeat Index 2'),
           },
           string: 'Version Control.￼.￼.version',
         },
@@ -1425,11 +1453,11 @@ local sc = import 'shortcuts.libsonnet';
     sc.Action('is.workflow.actions.conditional', {
       GroupingIdentifier: 'FC4A4FEE-B2EB-4E46-A1D5-E388AAC67024',
       WFCondition: 4,
-      WFConditionalActionString: function(state) sc.Val('${Value}', state),
+      WFConditionalActionString: sc.Str([sc.Ref('Value')]),
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: function(state) sc.Ref(state, 'Updated Text', att=true),
+        Variable: sc.Ref('Updated Text', att=true),
       },
     }),
 
@@ -1437,7 +1465,7 @@ local sc = import 'shortcuts.libsonnet';
       WFAlertActionMessage: {
         Value: {
           attachmentsByRange: {
-            '{40, 1}': function(state) sc.Ref(state, 'Value'),
+            '{40, 1}': sc.Ref('Value'),
           },
           string: 'Are you sure you want to delete version ￼? If so, press OK.',
         },
@@ -1450,13 +1478,13 @@ local sc = import 'shortcuts.libsonnet';
       keyPath: {
         Value: {
           attachmentsByRange: {
-            '{16, 1}': function(state) sc.Ref(state, 'Chosen Item', aggs=[
+            '{16, 1}': sc.Ref('Chosen Item', aggs=[
               {
                 PropertyName: 'title',
                 Type: 'WFPropertyVariableAggrandizement',
               },
             ]),
-            '{18, 1}': function(state) sc.Ref(state, 'Vars.Repeat Index 2'),
+            '{18, 1}': sc.Ref('Vars.Repeat Index 2'),
           },
           string: 'Version Control.￼.￼',
         },
@@ -1469,7 +1497,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.setvariable', {
-      WFInput: function(state) sc.Ref(state, 'Number', att=true),
+      WFInput: sc.Ref('Number', att=true),
       WFVariableName: 'Deleted',
     }),
 
@@ -1497,7 +1525,7 @@ local sc = import 'shortcuts.libsonnet';
       keyPath: {
         Value: {
           attachmentsByRange: {
-            '{16, 1}': function(state) sc.Ref(state, 'Chosen Item', aggs=[
+            '{16, 1}': sc.Ref('Chosen Item', aggs=[
               {
                 PropertyName: 'title',
                 Type: 'WFPropertyVariableAggrandizement',
@@ -1516,7 +1544,7 @@ local sc = import 'shortcuts.libsonnet';
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: function(state) sc.Ref(state, 'Count', att=true),
+        Variable: sc.Ref('Count', att=true),
       },
       WFNumberValue: '1',
     }),
@@ -1526,7 +1554,7 @@ local sc = import 'shortcuts.libsonnet';
       keyPath: {
         Value: {
           attachmentsByRange: {
-            '{16, 1}': function(state) sc.Ref(state, 'Chosen Item', aggs=[
+            '{16, 1}': sc.Ref('Chosen Item', aggs=[
               {
                 PropertyName: 'title',
                 Type: 'WFPropertyVariableAggrandizement',
@@ -1561,7 +1589,7 @@ local sc = import 'shortcuts.libsonnet';
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: function(state) sc.Ref(state, 'Chosen Item', aggs=[
+        Variable: sc.Ref('Chosen Item', aggs=[
           {
             PropertyName: 'title',
             Type: 'WFPropertyVariableAggrandizement',

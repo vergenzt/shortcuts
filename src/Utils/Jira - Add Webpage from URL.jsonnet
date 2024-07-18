@@ -5,11 +5,11 @@ local sc = import 'shortcuts.libsonnet';
   WFWorkflowActions: sc.ActionsSeq([
 
     sc.Action('is.workflow.actions.getarticle', name='Article', params={
-      WFWebPage: function(state) sc.Val('${Shortcut Input}', state),
+      WFWebPage: sc.Str([sc.Input]),
     }),
 
     sc.Action('is.workflow.actions.previewdocument', {
-      WFInput: function(state) sc.Ref(state, 'Article', att=true),
+      WFInput: sc.Ref('Article', att=true),
     }),
 
   ]),

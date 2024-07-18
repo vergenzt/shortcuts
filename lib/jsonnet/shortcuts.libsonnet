@@ -28,7 +28,7 @@
     )
   ),
 
-  ActionsSeq(actionsRawUnflat):: $._actionsSeqRecursive($._flattenDeepArray(actionsRawUnflat)),
+  ActionsSeq(actions):: $._actionsSeqRecursive($._flattenDeepArray(actions)),
 
   _actionsSeqRecursive(actionsRaw, prevActions=[], prevState={}):: (
     if actionsRaw == [] then
@@ -67,18 +67,18 @@
     else x
   ),
 
-  Ref(state, name, aggs=[], att=false):: (
+  Ref(name, aggs=[], att=false):: (
     local ref = (
       if std.startsWith(name, 'Vars.') then {
         Type: 'Variable',
         VariableName: std.substr(name, 5, std.length(name)),
       }
-      else if name == 'Shortcut Input' then {
-        Type: 'ExtensionInput',
-      }
       else {
         Type: 'ActionOutput',
-        OutputUUID: std.get(state, name, std.trace('warning: output `%s` not found in state' % name, '???')),
+        OutputUUID: function(state) (
+          if std.objectHas(state, name) then state[name]
+          else std.trace('warning: output `%s` not found in state' % name, '???')
+        ),
         OutputName: name,
         [if aggs == [] then null else 'Aggrandizements']: aggs,
       }
@@ -91,109 +91,61 @@
   ),
 
   _interpJoiner: std.char(65532),
-  _interpStart: '${',
-  _interpEnd: '}',
-  _interpEscape: '\\',
 
-  /**
-  @returns [i, unesc] where:
-    - i is the position of the next character after the pattern (null if no match), and
-    - unesc is the unescaped string contents from start to pat start (or end of string)
-  */
-  _findNextNotEscaped(s, pat, iAcc=0, unescAcc=''):: (
-    local esc = $._interpEscape;
-    if pat == '' then error 'Pattern cannot be empty!'
-    else if s == '' then
-      [null, unescAcc]
-    else if std.startsWith(s, pat) then
-      [iAcc + std.length(pat), unescAcc]
-    else if std.startsWith(s, esc) then
-      local nextUnesc =
-        if std.startsWith(s, esc + esc) then esc
-        else if std.startsWith(s, esc + pat) then pat
-        else error 'Invalid escape: ' + s
-      ;
-      local inc = std.length(esc) + std.length(nextUnesc);
-      $._findNextNotEscaped(s[inc:], pat, iAcc + inc, unescAcc + nextUnesc) tailstrict
-    else
-      $._findNextNotEscaped(s[1:], pat, iAcc + 1, unescAcc + s[0]) tailstrict
+  // _wrapItem(f, state=null, key=null):: {
+  //   [if key != null then 'WFKey']: $.Val(key),
+  //   WFItemType: {
+  //     string: 0,
+  //     object: 1,
+  //     array: 2,
+  //     number: 3,
+  //     boolean: 4,
+  //     'null': error 'Cannot produce Shortcuts value for null',
+  //   }[std.type(f)],
+  //   WFValue: {
+  //     string: $.Val(f, state),
+  //     number: f,
+  //     boolean: {
+  //       WFSerializationType: 'WFNumberSubstitutableState',
+  //       Value: $.Val(f, state),
+  //     },
+  //     object: {
+  //       WFSerializationType: 'WFDictionaryFieldValue',
+  //       Value: {
+  //         WFDictionaryFieldValueItems: [
+  //           $._wrapItem(item.value, state, key=item.key)
+  //           for item in std.objectKeysValues(f)
+  //         ],
+  //       },
+  //     },
+  //     array: {
+  //       WFSerializationType: 'WFArrayParameterState',
+  //       Value: std.map($._wrapItem, f),
+  //     },
+  //   }[std.type(f)],
+  // },
+
+  Str(parts):: (
+    local partStrs = std.map(function(part) if std.isString(part) then part else $._interpJoiner, parts);
+    local partStrLens = std.map(std.length, partStrs);
+    local partStrStarts = std.makeArray(std.length(parts), function(i) std.sum(partStrLens[:i]));
+    local attachments = {
+      ['{' + partStrStarts[i] + ', 1}']: parts[i]
+      for i in std.range(0, std.length(parts) - 1)
+      if !std.isString(parts[i])
+    };
+    {
+      WFSerializationType: 'WFTextTokenString',
+      Value: std.prune({
+        string: std.join('', partStrs),
+        attachmentsByRange: attachments,
+      }),
+    }
   ),
 
-  _resolveAttachment(var, state=null):: (
-    if state == null then error ('Interpolation of `%s` missing state var' % var)
-    else
-      if var == '!Input' then { Type: 'ExtensionInput' }
-      else $.Ref(state, var)
-  ),
-
-  /**
-  @returns [str, atts] where:
-    - str is the WFTextTokenString string with interpolations replaced with $._interpJoiner
-    - atts is the mapping from '{X, 1}', where X is the position of a joiner, to the result of
-      calling _resolver with the string inside the interpolation at X
-  */
-  _replaceAttachments(s, resolver, strAcc='', attsAcc={}):: (
-    if s == '' then [strAcc, attsAcc]
-    else
-      local nextStart = $._findNextNotEscaped(s, $._interpStart), iNext = nextStart[0], strNext = nextStart[1];
-      // no more interpolations
-      if iNext == null then [strAcc + strNext, attsAcc]
-      else
-        local nextEnd = $._findNextNotEscaped(s[iNext:], $._interpEnd), jNext = nextEnd[0], varNext = nextEnd[1];
-        if jNext == null then error ('Missing end `%s` for start `%s` at %d in `%s`' % [$._interpStart, $._interpEnd, iNext, s])
-        else if varNext == '' then error ('Empty interpolation at %d in `%s`' % [iNext, s])
-        else
-          // add interpolation
-          local strAccNext = strAcc + strNext + $._interpJoiner;
-          local attsAccNext = attsAcc { ['{%d, 1}' % (std.length(strAccNext) - 1)]: resolver(varNext) };
-          $._replaceAttachments(s[(iNext + jNext):], resolver, strAccNext, attsAccNext) tailstrict
-  ),
-
-  _wrapItem(f, state=null, key=null):: {
-    [if key != null then 'WFKey']: $.Val(key),
-    WFItemType: {
-      string: 0,
-      object: 1,
-      array: 2,
-      number: 3,
-      boolean: 4,
-      'null': error 'Cannot produce Shortcuts value for null',
-    }[std.type(f)],
-    WFValue: {
-      string: $.Val(f, state),
-      number: f,
-      boolean: {
-        WFSerializationType: 'WFNumberSubstitutableState',
-        Value: $.Val(f, state),
-      },
-      object: {
-        WFSerializationType: 'WFDictionaryFieldValue',
-        Value: {
-          WFDictionaryFieldValueItems: [
-            $._wrapItem(item.value, state, key=item.key)
-            for item in std.objectKeysValues(f)
-          ],
-        },
-      },
-      array: {
-        WFSerializationType: 'WFArrayParameterState',
-        Value: std.map($._wrapItem, f),
-      },
-    }[std.type(f)],
+  Input:: {
+    Type: 'ExtensionInput',
   },
-
-  Val(x, state=null):: (
-    if std.isString(x) then
-      local resolver = function(var) $._resolveAttachment(var, state);  // close over Val's state
-      local xWithAtts = $._replaceAttachments(x, resolver), xUnesc = xWithAtts[0], xAtts = xWithAtts[1];
-      local attsObj = if xAtts == {} then {} else { attachmentsByRange: xAtts };
-      {
-        WFSerializationType: 'WFTextTokenString',
-        Value: ({ string: xUnesc } + attsObj),
-      }
-    else
-      x
-  ),
 
   // Att(val):: ,
 

@@ -11,17 +11,9 @@ local sc = import 'shortcuts.libsonnet';
         Name: 'Reminders',
         TeamIdentifier: '0000000000',
       },
-      name: {
-        Value: {
-          attachmentsByRange: {
-            '{0, 1}': {
-              Type: 'Ask',
-            },
-          },
-          string: '￼',
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
+      name: sc.Str([{
+        Type: 'Ask',
+      }]),
     }),
 
   ]),

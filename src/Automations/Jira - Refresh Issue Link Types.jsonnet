@@ -10,13 +10,13 @@ local sc = import 'shortcuts.libsonnet';
           WFDictionaryFieldValueItems: [
             {
               WFItemType: 0,
-              WFKey: sc.Val('method'),
-              WFValue: sc.Val('GET'),
+              WFKey: sc.Str(['method']),
+              WFValue: sc.Str(['GET']),
             },
             {
               WFItemType: 0,
-              WFKey: sc.Val('path'),
-              WFValue: sc.Val('issueLinkType'),
+              WFKey: sc.Str(['path']),
+              WFValue: sc.Str(['issueLinkType']),
             },
           ],
         },
@@ -25,7 +25,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.runworkflow', name='Get Link Types Result', params={
-      WFInput: function(state) sc.Ref(state, 'Dictionary', att=true),
+      WFInput: sc.Ref('Dictionary', att=true),
       WFWorkflow: {
         isSelf: false,
         workflowIdentifier: 'B245F907-CA3B-4273-B2B7-BE1A4BAE3F79',
@@ -37,7 +37,7 @@ local sc = import 'shortcuts.libsonnet';
     sc.Action('dk.simonbs.DataJar.SetValueIntent', {
       keyPath: 'jira-config.issueLinkTypes',
       overwriteStrategy: 'alwaysAllow',
-      values: function(state) sc.Ref(state, 'Get Link Types Result', att=true),
+      values: sc.Ref('Get Link Types Result', att=true),
     }),
 
   ]),

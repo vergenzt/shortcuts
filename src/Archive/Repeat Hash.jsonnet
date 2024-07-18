@@ -22,13 +22,13 @@ local sc = import 'shortcuts.libsonnet';
       keyPath: {
         Value: {
           attachmentsByRange: {
-            '{23, 1}': function(state) sc.Ref(state, 'Device Model'),
+            '{23, 1}': sc.Ref('Device Model'),
           },
           string: 'Repeat Hash Signatures.￼.started_at',
         },
         WFSerializationType: 'WFTextTokenString',
       },
-      values: function(state) sc.Ref(state, 'Date', aggs=[
+      values: sc.Ref('Date', aggs=[
         {
           Type: 'WFDateFormatVariableAggrandizement',
           WFDateFormatStyle: 'ISO 8601',
@@ -39,8 +39,8 @@ local sc = import 'shortcuts.libsonnet';
 
     sc.Action('ch.marcela.ada.Pyto.RunCodeIntent', {
       arguments: [
-        function(state) sc.Val('${Input}', state),
-        function(state) sc.Val('${Num Repetitions}', state),
+        sc.Str([sc.Ref('Input')]),
+        sc.Str([sc.Ref('Num Repetitions')]),
       ],
       code: 'import sys, ast, hashlib\n\ndata = sys.argv[1]\nn = int(ast.literal_eval(sys.argv[2]))\n\nfor i in range(n):\n  data = hashlib.sha1(data.encode()).hexdigest()\n\nprint(data)',
       input: '',
@@ -49,23 +49,15 @@ local sc = import 'shortcuts.libsonnet';
     sc.Action('ch.marcela.ada.Pyto.GetScriptOutputIntent', name='Output'),
 
     sc.Action('is.workflow.actions.gettimebetweendates', name='Time Between Dates', params={
-      WFInput: {
-        Value: {
-          attachmentsByRange: {
-            '{0, 1}': {
-              Type: 'CurrentDate',
-            },
-          },
-          string: '￼',
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
-      WFTimeUntilFromDate: function(state) sc.Val('${Date}', state),
+      WFInput: sc.Str([{
+        Type: 'CurrentDate',
+      }]),
+      WFTimeUntilFromDate: sc.Str([sc.Ref('Date')]),
       WFTimeUntilUnit: 'Seconds',
     }),
 
     sc.Action('is.workflow.actions.text.replace', name='Hash Suffix', params={
-      WFInput: function(state) sc.Val('${Output}', state),
+      WFInput: sc.Str([sc.Ref('Output')]),
       WFReplaceTextFind: '.*?(.{7})$',
       WFReplaceTextRegularExpression: true,
       WFReplaceTextReplace: '...$1',
@@ -75,10 +67,10 @@ local sc = import 'shortcuts.libsonnet';
       WFTextActionText: {
         Value: {
           attachmentsByRange: {
-            '{18, 1}': function(state) sc.Ref(state, 'Num Repetitions'),
-            '{32, 1}': function(state) sc.Ref(state, 'Time Between Dates'),
-            '{48, 1}': function(state) sc.Ref(state, 'Hash Suffix'),
-            '{62, 1}': function(state) sc.Ref(state, 'Date', aggs=[
+            '{18, 1}': sc.Ref('Num Repetitions'),
+            '{32, 1}': sc.Ref('Time Between Dates'),
+            '{48, 1}': sc.Ref('Hash Suffix'),
+            '{62, 1}': sc.Ref('Date', aggs=[
               {
                 Type: 'WFDateFormatVariableAggrandizement',
                 WFDateFormatStyle: 'ISO 8601',
@@ -96,20 +88,20 @@ local sc = import 'shortcuts.libsonnet';
       keyPath: {
         Value: {
           attachmentsByRange: {
-            '{23, 1}': function(state) sc.Ref(state, 'Device Model'),
+            '{23, 1}': sc.Ref('Device Model'),
           },
           string: 'Repeat Hash Signatures.￼.result',
         },
         WFSerializationType: 'WFTextTokenString',
       },
-      values: function(state) sc.Ref(state, 'Result', att=true),
+      values: sc.Ref('Result', att=true),
     }),
 
     sc.Action('is.workflow.actions.gettext', name='Prompt', params={
       WFTextActionText: {
         Value: {
           attachmentsByRange: {
-            '{0, 1}': function(state) sc.Ref(state, 'Result'),
+            '{0, 1}': sc.Ref('Result'),
           },
           string: '￼\n\nView leading digits?',
         },
@@ -124,7 +116,7 @@ local sc = import 'shortcuts.libsonnet';
         'Yes',
         'No',
       ],
-      WFMenuPrompt: function(state) sc.Val('${Prompt}', state),
+      WFMenuPrompt: sc.Str([sc.Ref('Prompt')]),
     }),
 
     sc.Action('is.workflow.actions.choosefrommenu', {
@@ -134,14 +126,14 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.text.replace', name='Leading Digits', params={
-      WFInput: function(state) sc.Val('${Output}', state),
+      WFInput: sc.Str([sc.Ref('Output')]),
       WFReplaceTextFind: '.*?(\\d).*?(\\d).*?(\\d).*?(\\d).*',
       WFReplaceTextRegularExpression: true,
       WFReplaceTextReplace: '$1$2$3$4',
     }),
 
     sc.Action('is.workflow.actions.showresult', {
-      Text: function(state) sc.Val('${Leading Digits}', state),
+      Text: sc.Str([sc.Ref('Leading Digits')]),
     }),
 
     sc.Action('is.workflow.actions.choosefrommenu', {
@@ -151,7 +143,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.output', {
-      WFOutput: function(state) sc.Val('${Result}', state),
+      WFOutput: sc.Str([sc.Ref('Result')]),
     }),
 
     sc.Action('is.workflow.actions.choosefrommenu', {

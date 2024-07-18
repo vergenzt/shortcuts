@@ -12,10 +12,10 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.adjustdate', name='Adjusted Date', params={
-      WFDate: function(state) sc.Val('${Date}', state),
+      WFDate: sc.Str([sc.Ref('Date')]),
       WFDuration: {
         Value: {
-          Magnitude: function(state) sc.Ref(state, 'N'),
+          Magnitude: sc.Ref('N'),
           Unit: 'days',
         },
         WFSerializationType: 'WFQuantityFieldValue',
@@ -23,7 +23,14 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.addnewreminder', {
-      WFAlertCustomTime: function(state) sc.Val('${Adjusted Date}', state),
+      WFAlertCustomTime: sc.Str([sc.Ref('Adjusted Date', aggs=[
+        {
+          Type: 'WFDateFormatVariableAggrandizement',
+          WFDateFormatStyle: 'Medium',
+          WFISO8601IncludeTime: false,
+          WFTimeFormatStyle: 'None',
+        },
+      ])]),
       WFAlertEnabled: 'Alert',
       WFCalendarDescriptor: {
         Identifier: '<x-apple-reminderkit://REMCDList/0D507F24-D632-477A-BEF2-AFC7E49CB18D>',
@@ -31,17 +38,9 @@ local sc = import 'shortcuts.libsonnet';
         Title: 'Perishable Food',
       },
       WFCalendarItemCalendar: 'Perishable Food',
-      WFCalendarItemTitle: {
-        Value: {
-          attachmentsByRange: {
-            '{0, 1}': {
-              Type: 'Ask',
-            },
-          },
-          string: '￼',
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
+      WFCalendarItemTitle: sc.Str([{
+        Type: 'Ask',
+      }]),
     }),
 
   ]),

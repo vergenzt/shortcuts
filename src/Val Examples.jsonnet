@@ -12,7 +12,7 @@ local sc = import 'shortcuts.libsonnet';
       WFTextActionText: {
         Value: {
           attachmentsByRange: {
-            '{8, 1}': function(state) sc.Ref(state, 'Shortcut Input'),
+            '{8, 1}': sc.Input,
           },
           string: 'Foo bar ￼',
         },
@@ -26,25 +26,25 @@ local sc = import 'shortcuts.libsonnet';
           WFDictionaryFieldValueItems: [
             {
               WFItemType: 0,
-              WFKey: sc.Val('string'),
-              WFValue: sc.Val('value'),
+              WFKey: sc.Str(['string']),
+              WFValue: sc.Str(['value']),
             },
             {
               WFItemType: 3,
-              WFKey: sc.Val('number'),
-              WFValue: sc.Val('5'),
+              WFKey: sc.Str(['number']),
+              WFValue: sc.Str(['5']),
             },
             {
               WFItemType: 1,
-              WFKey: sc.Val('dict'),
+              WFKey: sc.Str(['dict']),
               WFValue: {
                 Value: {
                   Value: {
                     WFDictionaryFieldValueItems: [
                       {
                         WFItemType: 0,
-                        WFKey: sc.Val('bliz'),
-                        WFValue: sc.Val('fah'),
+                        WFKey: sc.Str(['bliz']),
+                        WFValue: sc.Str(['fah']),
                       },
                     ],
                   },
@@ -55,7 +55,7 @@ local sc = import 'shortcuts.libsonnet';
             },
             {
               WFItemType: 2,
-              WFKey: sc.Val(''),
+              WFKey: sc.Str(['']),
               WFValue: {
                 Value: [
                   'foo',
@@ -68,7 +68,7 @@ local sc = import 'shortcuts.libsonnet';
                         'baz',
                         {
                           WFItemType: 3,
-                          WFValue: sc.Val('0'),
+                          WFValue: sc.Str(['0']),
                         },
                         {
                           WFItemType: 4,
@@ -85,7 +85,7 @@ local sc = import 'shortcuts.libsonnet';
                                 WFDictionaryFieldValueItems: [
                                   {
                                     WFItemType: 2,
-                                    WFKey: sc.Val('fizz'),
+                                    WFKey: sc.Str(['fizz']),
                                     WFValue: {
                                       Value: [
                                         'buzz',

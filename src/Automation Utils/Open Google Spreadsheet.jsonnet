@@ -15,7 +15,7 @@ local sc = import 'shortcuts.libsonnet';
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: function(state) sc.Ref(state, 'Device Model', att=true),
+        Variable: sc.Ref('Device Model', att=true),
       },
     }),
 
@@ -42,8 +42,8 @@ local sc = import 'shortcuts.libsonnet';
       WFURLActionURL: {
         Value: {
           attachmentsByRange: {
-            '{0, 1}': function(state) sc.Ref(state, 'Scheme'),
-            '{35, 1}': function(state) sc.Ref(state, 'Shortcut Input'),
+            '{0, 1}': sc.Ref('Scheme'),
+            '{35, 1}': sc.Input,
           },
           string: '￼://docs.google.com/spreadsheets/d/￼/edit',
         },
@@ -53,7 +53,7 @@ local sc = import 'shortcuts.libsonnet';
 
     sc.Action('is.workflow.actions.openurl', {
       'Show-WFInput': true,
-      WFInput: function(state) sc.Ref(state, 'URL', att=true),
+      WFInput: sc.Ref('URL', att=true),
     }),
 
   ]),

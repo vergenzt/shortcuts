@@ -21,7 +21,7 @@ local sc = import 'shortcuts.libsonnet';
       WFURLActionURL: {
         Value: {
           attachmentsByRange: {
-            '{46, 1}': function(state) sc.Ref(state, 'Value', aggs=[
+            '{46, 1}': sc.Ref('Value', aggs=[
               {
                 CoercionItemClass: 'WFDictionaryContentItem',
                 Type: 'WFCoercionVariableAggrandizement',
@@ -39,7 +39,16 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.urlencode', name='menuRange', params={
-      WFInput: function(state) sc.Val('${Value}', state),
+      WFInput: sc.Str([sc.Ref('Value', aggs=[
+        {
+          CoercionItemClass: 'WFDictionaryContentItem',
+          Type: 'WFCoercionVariableAggrandizement',
+        },
+        {
+          DictionaryKey: 'menuRange',
+          Type: 'WFDictionaryValueVariableAggrandizement',
+        },
+      ])]),
     }),
 
     sc.Action('is.workflow.actions.downloadurl', name='Contents of URL', params={
@@ -49,8 +58,8 @@ local sc = import 'shortcuts.libsonnet';
           WFDictionaryFieldValueItems: [
             {
               WFItemType: 0,
-              WFKey: sc.Val('Authorization'),
-              WFValue: function(state) sc.Val('${Google OAuth}', state),
+              WFKey: sc.Str(['Authorization']),
+              WFValue: sc.Str([sc.Ref('Google OAuth')]),
             },
           ],
         },
@@ -59,8 +68,8 @@ local sc = import 'shortcuts.libsonnet';
       WFURL: {
         Value: {
           attachmentsByRange: {
-            '{0, 1}': function(state) sc.Ref(state, 'URL'),
-            '{2, 1}': function(state) sc.Ref(state, 'menuRange'),
+            '{0, 1}': sc.Ref('URL'),
+            '{2, 1}': sc.Ref('menuRange'),
           },
           string: '￼/￼?valueRenderOption=FORMATTED_VALUE',
         },
@@ -71,7 +80,7 @@ local sc = import 'shortcuts.libsonnet';
     sc.Action('is.workflow.actions.repeat.each', {
       GroupingIdentifier: '12455693-4B6E-4486-BAD9-730E939E6984',
       WFControlFlowMode: 0,
-      WFInput: function(state) sc.Ref(state, 'Contents of URL', aggs=[
+      WFInput: sc.Ref('Contents of URL', aggs=[
         {
           CoercionItemClass: 'WFDictionaryContentItem',
           Type: 'WFCoercionVariableAggrandizement',
@@ -84,7 +93,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.getitemfromlist', {
-      WFInput: function(state) sc.Ref(state, 'Vars.Repeat Item', att=true),
+      WFInput: sc.Ref('Vars.Repeat Item', att=true),
     }),
 
     sc.Action('is.workflow.actions.repeat.each', name='Repeat Results', params={
@@ -93,12 +102,12 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.choosefromlist', name='Chosen Item', params={
-      WFInput: function(state) sc.Ref(state, 'Repeat Results', att=true),
+      WFInput: sc.Ref('Repeat Results', att=true),
     }),
 
     sc.Action('is.workflow.actions.text.match', name='Matches', params={
       WFMatchTextPattern: 'Other',
-      text: function(state) sc.Val('${Chosen Item}', state),
+      text: sc.Str([sc.Ref('Chosen Item')]),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
@@ -108,7 +117,7 @@ local sc = import 'shortcuts.libsonnet';
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: function(state) sc.Ref(state, 'Matches', att=true),
+        Variable: sc.Ref('Matches', att=true),
       },
     }),
 
@@ -117,7 +126,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.setvariable', {
-      WFInput: function(state) sc.Ref(state, 'Provided Input', att=true),
+      WFInput: sc.Ref('Provided Input', att=true),
       WFVariableName: 'Med',
     }),
 
@@ -127,7 +136,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.setvariable', {
-      WFInput: function(state) sc.Ref(state, 'Chosen Item', att=true),
+      WFInput: sc.Ref('Chosen Item', att=true),
       WFVariableName: 'Med',
     }),
 
@@ -142,7 +151,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.format.date', name='Formatted Date', params={
-      WFDate: function(state) sc.Val('${Provided Input}', state),
+      WFDate: sc.Str([sc.Ref('Provided Input')]),
       WFDateFormat: 'yyyy-MM-dd HH:mm',
       WFDateFormatStyle: 'Custom',
       WFISO8601IncludeTime: true,
@@ -150,11 +159,11 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.ask', name='Provided Input', params={
-      WFAskActionDefaultAnswer: function(state) sc.Val('${Vars.Med}', state),
+      WFAskActionDefaultAnswer: sc.Str([sc.Ref('Vars.Med')]),
       WFAskActionPrompt: {
         Value: {
           attachmentsByRange: {
-            '{13, 1}': function(state) sc.Ref(state, 'Formatted Date'),
+            '{13, 1}': sc.Ref('Formatted Date'),
           },
           string: 'Record dose? ￼',
         },
@@ -163,12 +172,21 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.setvariable', {
-      WFInput: function(state) sc.Ref(state, 'Provided Input', att=true),
+      WFInput: sc.Ref('Provided Input', att=true),
       WFVariableName: 'Med',
     }),
 
     sc.Action('is.workflow.actions.urlencode', name='dataRange', params={
-      WFInput: function(state) sc.Val('${Value}', state),
+      WFInput: sc.Str([sc.Ref('Value', aggs=[
+        {
+          CoercionItemClass: 'WFDictionaryContentItem',
+          Type: 'WFCoercionVariableAggrandizement',
+        },
+        {
+          DictionaryKey: 'dataRange',
+          Type: 'WFDictionaryValueVariableAggrandizement',
+        },
+      ])]),
     }),
 
     sc.Action('is.workflow.actions.downloadurl', name='Contents of URL', params={
@@ -185,8 +203,8 @@ local sc = import 'shortcuts.libsonnet';
           WFDictionaryFieldValueItems: [
             {
               WFItemType: 0,
-              WFKey: sc.Val('Authorization'),
-              WFValue: function(state) sc.Val('${Google OAuth}', state),
+              WFKey: sc.Str(['Authorization']),
+              WFValue: sc.Str([sc.Ref('Google OAuth')]),
             },
           ],
         },
@@ -198,7 +216,7 @@ local sc = import 'shortcuts.libsonnet';
           WFDictionaryFieldValueItems: [
             {
               WFItemType: 2,
-              WFKey: sc.Val('values'),
+              WFKey: sc.Str(['values']),
               WFValue: {
                 Value: [
                   {
@@ -207,11 +225,11 @@ local sc = import 'shortcuts.libsonnet';
                       Value: [
                         {
                           WFItemType: 0,
-                          WFValue: function(state) sc.Val('${Formatted Date}', state),
+                          WFValue: sc.Str([sc.Ref('Formatted Date')]),
                         },
                         {
                           WFItemType: 0,
-                          WFValue: function(state) sc.Val('${Vars.Med}', state),
+                          WFValue: sc.Str([sc.Ref('Vars.Med')]),
                         },
                       ],
                       WFSerializationType: 'WFArrayParameterState',
@@ -228,8 +246,8 @@ local sc = import 'shortcuts.libsonnet';
       WFURL: {
         Value: {
           attachmentsByRange: {
-            '{0, 1}': function(state) sc.Ref(state, 'URL'),
-            '{2, 1}': function(state) sc.Ref(state, 'dataRange'),
+            '{0, 1}': sc.Ref('URL'),
+            '{2, 1}': sc.Ref('dataRange'),
           },
           string: '￼/￼:append?valueInputOption=USER_ENTERED',
         },
@@ -238,7 +256,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.alert', {
-      WFAlertActionTitle: function(state) sc.Val('${Contents of URL}', state),
+      WFAlertActionTitle: sc.Str([sc.Ref('Contents of URL')]),
     }),
 
     sc.Action('is.workflow.actions.runworkflow', {
@@ -269,67 +287,51 @@ local sc = import 'shortcuts.libsonnet';
     sc.Action('is.workflow.actions.waittoreturn'),
 
     sc.Action('is.workflow.actions.alert', {
-      WFAlertActionTitle: {
-        Value: {
-          attachmentsByRange: {
-            '{0, 1}': {
-              Aggrandizements: [
-                {
-                  CoercionItemClass: 'WFDateContentItem',
-                  Type: 'WFCoercionVariableAggrandizement',
-                },
-                {
-                  Type: 'WFDateFormatVariableAggrandizement',
-                  WFDateFormat: 'yyyy-dd-MM H:mm',
-                  WFDateFormatStyle: 'Custom',
-                  WFISO8601IncludeTime: false,
-                },
-              ],
-              Type: 'Clipboard',
-            },
+      WFAlertActionTitle: sc.Str([{
+        Aggrandizements: [
+          {
+            CoercionItemClass: 'WFDateContentItem',
+            Type: 'WFCoercionVariableAggrandizement',
           },
-          string: '￼',
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
+          {
+            Type: 'WFDateFormatVariableAggrandizement',
+            WFDateFormat: 'yyyy-dd-MM H:mm',
+            WFDateFormatStyle: 'Custom',
+            WFISO8601IncludeTime: false,
+          },
+        ],
+        Type: 'Clipboard',
+      }]),
     }),
 
     sc.Action('is.workflow.actions.format.date', name='Formatted Date', params={
-      WFDate: {
-        Value: {
-          attachmentsByRange: {
-            '{0, 1}': {
-              Aggrandizements: [
-                {
-                  CoercionItemClass: 'WFDateContentItem',
-                  Type: 'WFCoercionVariableAggrandizement',
-                },
-                {
-                  Type: 'WFDateFormatVariableAggrandizement',
-                  WFDateFormat: 'yyyy-dd-MM H:mm',
-                  WFDateFormatStyle: 'Custom',
-                  WFISO8601IncludeTime: false,
-                },
-              ],
-              Type: 'Clipboard',
-            },
+      WFDate: sc.Str([{
+        Aggrandizements: [
+          {
+            CoercionItemClass: 'WFDateContentItem',
+            Type: 'WFCoercionVariableAggrandizement',
           },
-          string: '￼',
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
+          {
+            Type: 'WFDateFormatVariableAggrandizement',
+            WFDateFormat: 'yyyy-dd-MM H:mm',
+            WFDateFormatStyle: 'Custom',
+            WFISO8601IncludeTime: false,
+          },
+        ],
+        Type: 'Clipboard',
+      }]),
       WFDateFormat: 'h:mm:ss a',
       WFDateFormatStyle: 'Custom',
       WFISO8601IncludeTime: false,
     }),
 
     sc.Action('is.workflow.actions.alert', {
-      WFAlertActionTitle: function(state) sc.Val('${Formatted Date}', state),
+      WFAlertActionTitle: sc.Str([sc.Ref('Formatted Date')]),
     }),
 
     sc.Action('is.workflow.actions.ask', name='Provided Input', params={
-      WFAskActionDefaultAnswerDateAndTime: function(state) sc.Val('${Formatted Date}', state),
-      WFAskActionDefaultAnswerTime: function(state) sc.Val('${Formatted Date}', state),
+      WFAskActionDefaultAnswerDateAndTime: sc.Str([sc.Ref('Formatted Date')]),
+      WFAskActionDefaultAnswerTime: sc.Str([sc.Ref('Formatted Date')]),
       WFAskActionPrompt: 'Alarm time',
       WFInputType: 'Time',
     }),
@@ -341,8 +343,8 @@ local sc = import 'shortcuts.libsonnet';
         Name: 'Clock',
         TeamIdentifier: '0000000000',
       },
-      dateComponents: function(state) sc.Val('${Provided Input}', state),
-      label: function(state) sc.Val('${Vars.Med}', state),
+      dateComponents: sc.Str([sc.Ref('Provided Input')]),
+      label: sc.Str([sc.Ref('Vars.Med')]),
       repeatSchedule: {
         displayString: 'Never',
         value: 0,
@@ -361,7 +363,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.detect.date', {
-      WFInput: function(state) sc.Ref(state, 'Menu Result', att=true),
+      WFInput: sc.Ref('Menu Result', att=true),
     }),
 
   ]),

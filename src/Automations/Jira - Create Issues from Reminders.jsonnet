@@ -39,7 +39,7 @@ local sc = import 'shortcuts.libsonnet';
     sc.Action('is.workflow.actions.repeat.each', {
       GroupingIdentifier: '06C7177F-0DD0-4EF7-8354-638BF3E43DE8',
       WFControlFlowMode: 0,
-      WFInput: function(state) sc.Ref(state, 'Reminders', att=true),
+      WFInput: sc.Ref('Reminders', att=true),
     }),
 
     sc.Action('com.atlassian.jira.app.CreateIssueIntent', name='Issue', params={
@@ -53,7 +53,7 @@ local sc = import 'shortcuts.libsonnet';
         identifier: '10008',
       },
       site: 'vergenz',
-      summary: function(state) sc.Val('${Vars.Repeat Item}', state),
+      summary: sc.Str([sc.Ref('Vars.Repeat Item')]),
     }),
 
     sc.Action('is.workflow.actions.dictionary', name='Dictionary', params={
@@ -62,69 +62,45 @@ local sc = import 'shortcuts.libsonnet';
           WFDictionaryFieldValueItems: [
             {
               WFItemType: 0,
-              WFKey: sc.Val('Notes'),
-              WFValue: {
-                Value: {
-                  attachmentsByRange: {
-                    '{0, 1}': {
-                      Aggrandizements: [
-                        {
-                          PropertyName: 'Notes',
-                          Type: 'WFPropertyVariableAggrandizement',
-                        },
-                      ],
-                      Type: 'Variable',
-                      VariableName: 'Repeat Item',
-                    },
+              WFKey: sc.Str(['Notes']),
+              WFValue: sc.Str([{
+                Aggrandizements: [
+                  {
+                    PropertyName: 'Notes',
+                    Type: 'WFPropertyVariableAggrandizement',
                   },
-                  string: '￼',
-                },
-                WFSerializationType: 'WFTextTokenString',
-              },
+                ],
+                Type: 'Variable',
+                VariableName: 'Repeat Item',
+              }]),
             },
             {
               WFItemType: 0,
-              WFKey: sc.Val('Due'),
-              WFValue: {
-                Value: {
-                  attachmentsByRange: {
-                    '{0, 1}': {
-                      Aggrandizements: [
-                        {
-                          PropertyName: 'Due Date',
-                          Type: 'WFPropertyVariableAggrandizement',
-                        },
-                      ],
-                      Type: 'Variable',
-                      VariableName: 'Repeat Item',
-                    },
+              WFKey: sc.Str(['Due']),
+              WFValue: sc.Str([{
+                Aggrandizements: [
+                  {
+                    PropertyName: 'Due Date',
+                    Type: 'WFPropertyVariableAggrandizement',
                   },
-                  string: '￼',
-                },
-                WFSerializationType: 'WFTextTokenString',
-              },
+                ],
+                Type: 'Variable',
+                VariableName: 'Repeat Item',
+              }]),
             },
             {
               WFItemType: 0,
-              WFKey: sc.Val('URL'),
-              WFValue: {
-                Value: {
-                  attachmentsByRange: {
-                    '{0, 1}': {
-                      Aggrandizements: [
-                        {
-                          PropertyName: 'URL',
-                          Type: 'WFPropertyVariableAggrandizement',
-                        },
-                      ],
-                      Type: 'Variable',
-                      VariableName: 'Repeat Item',
-                    },
+              WFKey: sc.Str(['URL']),
+              WFValue: sc.Str([{
+                Aggrandizements: [
+                  {
+                    PropertyName: 'URL',
+                    Type: 'WFPropertyVariableAggrandizement',
                   },
-                  string: '￼',
-                },
-                WFSerializationType: 'WFTextTokenString',
-              },
+                ],
+                Type: 'Variable',
+                VariableName: 'Repeat Item',
+              }]),
             },
           ],
         },
@@ -135,7 +111,7 @@ local sc = import 'shortcuts.libsonnet';
     sc.Action('is.workflow.actions.repeat.each', {
       GroupingIdentifier: 'F24C9B98-1D8E-40A2-BE15-5494F2260456',
       WFControlFlowMode: 0,
-      WFInput: function(state) sc.Ref(state, 'Dictionary', aggs=[
+      WFInput: sc.Ref('Dictionary', aggs=[
         {
           PropertyName: 'Keys',
           Type: 'WFPropertyVariableAggrandizement',
@@ -144,8 +120,8 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.getvalueforkey', name='Dictionary Value', params={
-      WFDictionaryKey: function(state) sc.Val('${Vars.Repeat Item 2}', state),
-      WFInput: function(state) sc.Ref(state, 'Dictionary', att=true),
+      WFDictionaryKey: sc.Str([sc.Ref('Vars.Repeat Item 2')]),
+      WFInput: sc.Ref('Dictionary', att=true),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
@@ -154,7 +130,7 @@ local sc = import 'shortcuts.libsonnet';
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: function(state) sc.Ref(state, 'Dictionary Value', att=true),
+        Variable: sc.Ref('Dictionary Value', att=true),
       },
     }),
 
@@ -162,8 +138,8 @@ local sc = import 'shortcuts.libsonnet';
       WFTextActionText: {
         Value: {
           attachmentsByRange: {
-            '{0, 1}': function(state) sc.Ref(state, 'Vars.Repeat Item 2'),
-            '{3, 1}': function(state) sc.Ref(state, 'Dictionary Value'),
+            '{0, 1}': sc.Ref('Vars.Repeat Item 2'),
+            '{3, 1}': sc.Ref('Dictionary Value'),
           },
           string: '￼: ￼',
         },
@@ -191,19 +167,19 @@ local sc = import 'shortcuts.libsonnet';
     sc.Action('is.workflow.actions.text.combine', name='Combined Text', params={
       WFTextCustomSeparator: '',
       WFTextSeparator: 'New Lines',
-      text: function(state) sc.Ref(state, 'Repeat Results', att=true),
+      text: sc.Ref('Repeat Results', att=true),
     }),
 
     sc.Action('com.atlassian.jira.app.SetIssueFieldIntent', name='Issue', params={
-      issue: function(state) sc.Ref(state, 'Issue', att=true),
+      issue: sc.Ref('Issue', att=true),
       setFieldName: 'Description',
-      setFieldValue: function(state) sc.Val('${Combined Text}', state),
+      setFieldValue: sc.Str([sc.Ref('Combined Text')]),
     }),
 
     sc.Action('is.workflow.actions.setters.reminders', {
       Mode: 'Set',
       WFContentItemPropertyName: 'List',
-      WFInput: function(state) sc.Ref(state, 'Vars.Repeat Item', att=true),
+      WFInput: sc.Ref('Vars.Repeat Item', att=true),
       WFReminderContentItemList: 'Added to Jira',
     }),
 
@@ -221,13 +197,13 @@ local sc = import 'shortcuts.libsonnet';
               Type: 'Variable',
               VariableName: 'Repeat Item',
             },
-            '{11, 1}': function(state) sc.Ref(state, 'Issue', aggs=[
+            '{11, 1}': sc.Ref('Issue', aggs=[
               {
                 PropertyName: 'site',
                 Type: 'WFPropertyVariableAggrandizement',
               },
             ]),
-            '{34, 1}': function(state) sc.Ref(state, 'Issue', aggs=[
+            '{34, 1}': sc.Ref('Issue', aggs=[
               {
                 PropertyName: 'key',
                 Type: 'WFPropertyVariableAggrandizement',
@@ -244,12 +220,12 @@ local sc = import 'shortcuts.libsonnet';
       Mode: 'Set',
       'Show-WFReminderContentItemTags': true,
       WFContentItemPropertyName: 'Notes',
-      WFInput: function(state) sc.Ref(state, 'Vars.Repeat Item', att=true),
+      WFInput: sc.Ref('Vars.Repeat Item', att=true),
       WFReminderContentItemIsCompleted: 1,
       WFReminderContentItemNotes: {
         Value: {
           attachmentsByRange: {
-            '{1, 1}': function(state) sc.Ref(state, 'Text'),
+            '{1, 1}': sc.Ref('Text'),
           },
           string: ' ￼',
         },

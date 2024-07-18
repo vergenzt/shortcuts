@@ -5,7 +5,10 @@ local sc = import 'shortcuts.libsonnet';
   WFWorkflowActions: sc.ActionsSeq([
 
     sc.Action('is.workflow.actions.detect.dictionary', name='Input Dict', params={
-      WFInput: function(state) sc.Ref(state, 'Shortcut Input', att=true),
+      WFInput: {
+        Value: sc.Input,
+        WFSerializationType: 'WFTextTokenAttachment',
+      },
     }),
 
     sc.Action('dk.simonbs.DataJar.GetValueIntent', name='Jira Config', params={
@@ -20,9 +23,9 @@ local sc = import 'shortcuts.libsonnet';
       code: {
         Value: {
           attachmentsByRange: {
-            '{65, 1}': function(state) sc.Ref(state, 'Input Dict'),
-            '{68, 1}': function(state) sc.Ref(state, 'Jira Config'),
-            '{72, 1}': function(state) sc.Ref(state, 'Error Nonce'),
+            '{65, 1}': sc.Ref('Input Dict'),
+            '{68, 1}': sc.Ref('Jira Config'),
+            '{72, 1}': sc.Ref('Error Nonce'),
           },
           string: 'import json, requests\n\nargs, cfg, err_nonce = json.loads(r"""\n  [￼, ￼, "￼"]\n""")\n\nresp = requests.request(\n  url=cfg["base_url"] + args.pop("path"),\n  **args,\n  auth=requests.auth.HTTPBasicAuth(\n    cfg["username"],\n    cfg["api_token"]\n  ),\n)\n\nif not resp.ok:\n  print(err_nonce)\n  print("On", resp.request.method, resp.request.path_url)\n  print("Error", resp.status_code, resp.reason)\n\nprint(resp.text)',
         },
@@ -35,44 +38,44 @@ local sc = import 'shortcuts.libsonnet';
     sc.Action('ch.marcela.ada.Pyto.GetScriptOutputIntent', name='Output'),
 
     sc.Action('is.workflow.actions.text.split', name='Split Text', params={
-      text: function(state) sc.Ref(state, 'Output', att=true),
+      text: sc.Ref('Output', att=true),
     }),
 
     sc.Action('is.workflow.actions.getitemfromlist', name='Item from List', params={
-      WFInput: function(state) sc.Ref(state, 'Split Text', att=true),
+      WFInput: sc.Ref('Split Text', att=true),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
       GroupingIdentifier: 'B8B9F0F6-0B7F-4C5D-9FF3-1256A1C48B93',
       WFCondition: 4,
-      WFConditionalActionString: function(state) sc.Val('${Error Nonce}', state),
+      WFConditionalActionString: sc.Str([sc.Ref('Error Nonce')]),
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: function(state) sc.Ref(state, 'Item from List', att=true),
+        Variable: sc.Ref('Item from List', att=true),
       },
     }),
 
     sc.Action('is.workflow.actions.getitemfromlist', name='Error Context', params={
-      WFInput: function(state) sc.Ref(state, 'Split Text', att=true),
+      WFInput: sc.Ref('Split Text', att=true),
       WFItemIndex: '2',
       WFItemRangeStart: '2',
       WFItemSpecifier: 'Item At Index',
     }),
 
     sc.Action('is.workflow.actions.getitemfromlist', name='Error Message Lines', params={
-      WFInput: function(state) sc.Ref(state, 'Split Text', att=true),
+      WFInput: sc.Ref('Split Text', att=true),
       WFItemRangeStart: '3',
       WFItemSpecifier: 'Items in Range',
     }),
 
     sc.Action('is.workflow.actions.text.combine', name='Error Message', params={
-      text: function(state) sc.Ref(state, 'Error Message Lines', att=true),
+      text: sc.Ref('Error Message Lines', att=true),
     }),
 
     sc.Action('is.workflow.actions.alert', {
-      WFAlertActionMessage: function(state) sc.Val('${Error Message}', state),
-      WFAlertActionTitle: function(state) sc.Val('${Error Context}', state),
+      WFAlertActionMessage: sc.Str([sc.Ref('Error Message')]),
+      WFAlertActionTitle: sc.Str([sc.Ref('Error Context')]),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
@@ -81,7 +84,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.output', {
-      WFOutput: function(state) sc.Val('${Output}', state),
+      WFOutput: sc.Str([sc.Ref('Output')]),
     }),
 
     sc.Action('is.workflow.actions.conditional', {

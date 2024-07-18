@@ -11,18 +11,21 @@ local sc = import 'shortcuts.libsonnet';
     sc.Action('is.workflow.actions.text.split', name='Split Text', params={
       WFTextCustomSeparator: '&daddr=',
       WFTextSeparator: 'Custom',
-      text: function(state) sc.Ref(state, 'Shortcut Input', att=true),
+      text: {
+        Value: sc.Input,
+        WFSerializationType: 'WFTextTokenAttachment',
+      },
     }),
 
     sc.Action('is.workflow.actions.count', name='Count', params={
-      Input: function(state) sc.Ref(state, 'Split Text', att=true),
+      Input: sc.Ref('Split Text', att=true),
     }),
 
     sc.Action('is.workflow.actions.calculateexpression', name='Location number', params={
       Input: {
         Value: {
           attachmentsByRange: {
-            '{4, 1}': function(state) sc.Ref(state, 'Count'),
+            '{4, 1}': sc.Ref('Count'),
           },
           string: 'max(￼-1,0)',
         },
@@ -44,7 +47,7 @@ local sc = import 'shortcuts.libsonnet';
       WFMenuPrompt: {
         Value: {
           attachmentsByRange: {
-            '{12, 1}': function(state) sc.Ref(state, 'Location number'),
+            '{12, 1}': sc.Ref('Location number'),
           },
           string: 'Select stop ￼',
         },
@@ -68,17 +71,9 @@ local sc = import 'shortcuts.libsonnet';
               Property: 'First Name',
               Removable: true,
               Values: {
-                String: {
-                  Value: {
-                    attachmentsByRange: {
-                      '{0, 1}': {
-                        Type: 'Ask',
-                      },
-                    },
-                    string: '￼',
-                  },
-                  WFSerializationType: 'WFTextTokenString',
-                },
+                String: sc.Str([{
+                  Type: 'Ask',
+                }]),
                 Unit: 4,
               },
             },
@@ -94,7 +89,7 @@ local sc = import 'shortcuts.libsonnet';
     sc.Action('is.workflow.actions.repeat.each', {
       GroupingIdentifier: '923DF985-E1E0-4137-96A0-C7D054D600D1',
       WFControlFlowMode: 0,
-      WFInput: function(state) sc.Ref(state, 'Contacts', att=true),
+      WFInput: sc.Ref('Contacts', att=true),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
@@ -121,7 +116,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.appendvariable', {
-      WFInput: function(state) sc.Ref(state, 'Vars.Repeat Item', att=true),
+      WFInput: sc.Ref('Vars.Repeat Item', att=true),
       WFVariableName: 'Loc contacts',
     }),
 
@@ -141,7 +136,7 @@ local sc = import 'shortcuts.libsonnet';
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: function(state) sc.Ref(state, 'Vars.Loc contacts', att=true),
+        Variable: sc.Ref('Vars.Loc contacts', att=true),
       },
     }),
 
@@ -165,7 +160,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.count', name='Count', params={
-      Input: function(state) sc.Ref(state, 'Vars.Loc contacts', att=true),
+      Input: sc.Ref('Vars.Loc contacts', att=true),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
@@ -174,13 +169,13 @@ local sc = import 'shortcuts.libsonnet';
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: function(state) sc.Ref(state, 'Count', att=true),
+        Variable: sc.Ref('Count', att=true),
       },
       WFNumberValue: '1',
     }),
 
     sc.Action('is.workflow.actions.choosefromlist', {
-      WFInput: function(state) sc.Ref(state, 'Vars.Loc contacts', att=true),
+      WFInput: sc.Ref('Vars.Loc contacts', att=true),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
@@ -189,7 +184,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.getvariable', {
-      WFVariable: function(state) sc.Ref(state, 'Vars.Loc contacts', att=true),
+      WFVariable: sc.Ref('Vars.Loc contacts', att=true),
     }),
 
     sc.Action('is.workflow.actions.conditional', name='If Result', params={
@@ -199,11 +194,11 @@ local sc = import 'shortcuts.libsonnet';
 
     sc.Action('is.workflow.actions.properties.contacts', name='Street Addresses', params={
       WFContentItemPropertyName: 'Street Addresses',
-      WFInput: function(state) sc.Ref(state, 'If Result', att=true),
+      WFInput: sc.Ref('If Result', att=true),
     }),
 
     sc.Action('is.workflow.actions.count', name='Count', params={
-      Input: function(state) sc.Ref(state, 'Street Addresses', att=true),
+      Input: sc.Ref('Street Addresses', att=true),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
@@ -212,13 +207,13 @@ local sc = import 'shortcuts.libsonnet';
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: function(state) sc.Ref(state, 'Count', att=true),
+        Variable: sc.Ref('Count', att=true),
       },
       WFNumberValue: '1',
     }),
 
     sc.Action('is.workflow.actions.choosefromlist', {
-      WFInput: function(state) sc.Ref(state, 'Street Addresses', att=true),
+      WFInput: sc.Ref('Street Addresses', att=true),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
@@ -227,7 +222,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.getvariable', {
-      WFVariable: function(state) sc.Ref(state, 'Street Addresses', att=true),
+      WFVariable: sc.Ref('Street Addresses', att=true),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
@@ -271,7 +266,7 @@ local sc = import 'shortcuts.libsonnet';
     sc.Action('is.workflow.actions.repeat.each', {
       GroupingIdentifier: '34746EE0-F852-4ABC-BB30-91BF83A4D4B7',
       WFControlFlowMode: 0,
-      WFInput: function(state) sc.Ref(state, 'Calendar Events', att=true),
+      WFInput: sc.Ref('Calendar Events', att=true),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
@@ -297,7 +292,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.appendvariable', {
-      WFInput: function(state) sc.Ref(state, 'Vars.Repeat Item', att=true),
+      WFInput: sc.Ref('Vars.Repeat Item', att=true),
       WFVariableName: 'Loc events',
     }),
 
@@ -317,7 +312,7 @@ local sc = import 'shortcuts.libsonnet';
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: function(state) sc.Ref(state, 'Vars.Loc events', att=true),
+        Variable: sc.Ref('Vars.Loc events', att=true),
       },
     }),
 
@@ -340,7 +335,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.count', name='Count', params={
-      Input: function(state) sc.Ref(state, 'Vars.Loc events', att=true),
+      Input: sc.Ref('Vars.Loc events', att=true),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
@@ -349,13 +344,13 @@ local sc = import 'shortcuts.libsonnet';
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: function(state) sc.Ref(state, 'Count', att=true),
+        Variable: sc.Ref('Count', att=true),
       },
       WFNumberValue: '1',
     }),
 
     sc.Action('is.workflow.actions.choosefromlist', {
-      WFInput: function(state) sc.Ref(state, 'Vars.Loc events', att=true),
+      WFInput: sc.Ref('Vars.Loc events', att=true),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
@@ -364,7 +359,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.getvariable', {
-      WFVariable: function(state) sc.Ref(state, 'Vars.Loc events', att=true),
+      WFVariable: sc.Ref('Vars.Loc events', att=true),
     }),
 
     sc.Action('is.workflow.actions.conditional', name='If Result', params={
@@ -374,7 +369,7 @@ local sc = import 'shortcuts.libsonnet';
 
     sc.Action('is.workflow.actions.properties.calendarevents', {
       WFContentItemPropertyName: 'Location',
-      WFInput: function(state) sc.Ref(state, 'If Result', att=true),
+      WFInput: sc.Ref('If Result', att=true),
     }),
 
     sc.Action('is.workflow.actions.choosefrommenu', {
@@ -384,29 +379,21 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.ask', name='Provided Input', params={
-      WFAskActionDefaultAnswerDate: {
-        Value: {
-          attachmentsByRange: {
-            '{0, 1}': {
-              Type: 'CurrentDate',
-            },
-          },
-          string: '￼',
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
+      WFAskActionDefaultAnswerDate: sc.Str([{
+        Type: 'CurrentDate',
+      }]),
       WFAskActionPrompt: 'Select day to navigate events',
       WFInputType: 'Date',
     }),
 
     sc.Action('is.workflow.actions.adjustdate', name='Adjusted Date', params={
       WFAdjustOperation: 'Get Start of Day',
-      WFDate: function(state) sc.Val('${Provided Input}', state),
+      WFDate: sc.Str([sc.Ref('Provided Input')]),
     }),
 
     sc.Action('is.workflow.actions.adjustdate', name='Adjusted Date', params={
       WFAdjustOperation: 'Add',
-      WFDate: function(state) sc.Val('${Adjusted Date}', state),
+      WFDate: sc.Str([sc.Ref('Adjusted Date')]),
       WFDuration: {
         Value: {
           Magnitude: '24',
@@ -427,8 +414,8 @@ local sc = import 'shortcuts.libsonnet';
               Property: 'Start Date',
               Removable: false,
               Values: {
-                AnotherDate: function(state) sc.Ref(state, 'Adjusted Date', att=true),
-                Date: function(state) sc.Ref(state, 'Adjusted Date', att=true),
+                AnotherDate: sc.Ref('Adjusted Date', att=true),
+                Date: sc.Ref('Adjusted Date', att=true),
                 Number: 7,
                 Unit: 16,
               },
@@ -445,7 +432,7 @@ local sc = import 'shortcuts.libsonnet';
     sc.Action('is.workflow.actions.repeat.each', {
       GroupingIdentifier: 'B16C96BF-E67D-4501-A3BC-5CE0B36C3639',
       WFControlFlowMode: 0,
-      WFInput: function(state) sc.Ref(state, 'Calendar Events', att=true),
+      WFInput: sc.Ref('Calendar Events', att=true),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
@@ -471,7 +458,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.appendvariable', {
-      WFInput: function(state) sc.Ref(state, 'Vars.Repeat Item', att=true),
+      WFInput: sc.Ref('Vars.Repeat Item', att=true),
       WFVariableName: 'Events',
     }),
 
@@ -491,7 +478,7 @@ local sc = import 'shortcuts.libsonnet';
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: function(state) sc.Ref(state, 'Vars.Events', att=true),
+        Variable: sc.Ref('Vars.Events', att=true),
       },
     }),
 
@@ -520,18 +507,18 @@ local sc = import 'shortcuts.libsonnet';
       WFChooseFromListActionPrompt: 'Select events to include in route',
       WFChooseFromListActionSelectAll: true,
       WFChooseFromListActionSelectMultiple: true,
-      WFInput: function(state) sc.Ref(state, 'Vars.Events', att=true),
+      WFInput: sc.Ref('Vars.Events', att=true),
     }),
 
     sc.Action('is.workflow.actions.repeat.each', {
       GroupingIdentifier: '3A53C81A-53DC-4C3E-A3C2-24B3EFE0B762',
       WFControlFlowMode: 0,
-      WFInput: function(state) sc.Ref(state, 'Chosen Item', att=true),
+      WFInput: sc.Ref('Chosen Item', att=true),
     }),
 
     sc.Action('is.workflow.actions.properties.calendarevents', {
       WFContentItemPropertyName: 'Location',
-      WFInput: function(state) sc.Ref(state, 'Vars.Repeat Item', att=true),
+      WFInput: sc.Ref('Vars.Repeat Item', att=true),
     }),
 
     sc.Action('is.workflow.actions.repeat.each', {
@@ -550,13 +537,13 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.text.split', name='Split Text', params={
-      text: function(state) sc.Ref(state, 'Provided Input', att=true),
+      text: sc.Ref('Provided Input', att=true),
     }),
 
     sc.Action('is.workflow.actions.repeat.each', {
       GroupingIdentifier: 'D78FC4C2-2A82-4508-8F7E-7975EDA72091',
       WFControlFlowMode: 0,
-      WFInput: function(state) sc.Ref(state, 'Split Text', att=true),
+      WFInput: sc.Ref('Split Text', att=true),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
@@ -565,13 +552,13 @@ local sc = import 'shortcuts.libsonnet';
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: function(state) sc.Ref(state, 'Vars.Repeat Item', att=true),
+        Variable: sc.Ref('Vars.Repeat Item', att=true),
       },
     }),
 
     sc.Action('is.workflow.actions.text.match', name='lone zip code', params={
       WFMatchTextPattern: '^[0-9]+$',
-      text: function(state) sc.Val('${Vars.Repeat Item}', state),
+      text: sc.Str([sc.Ref('Vars.Repeat Item')]),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
@@ -580,7 +567,7 @@ local sc = import 'shortcuts.libsonnet';
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: function(state) sc.Ref(state, 'lone zip code', att=true),
+        Variable: sc.Ref('lone zip code', att=true),
       },
     }),
 
@@ -619,7 +606,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.address', {
-      WFPostalCode: function(state) sc.Val('${Vars.Repeat Item}', state),
+      WFPostalCode: sc.Str([sc.Ref('Vars.Repeat Item')]),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
@@ -629,7 +616,7 @@ local sc = import 'shortcuts.libsonnet';
 
     sc.Action('is.workflow.actions.text.match', name='lat,lon', params={
       WFMatchTextPattern: '(\\-?[0-9]+\\.[0-9]+),(\\-?[0-9]+\\.[0-9]+)',
-      text: function(state) sc.Val('${Vars.Repeat Item}', state),
+      text: sc.Str([sc.Ref('Vars.Repeat Item')]),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
@@ -638,25 +625,25 @@ local sc = import 'shortcuts.libsonnet';
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: function(state) sc.Ref(state, 'lat,lon', att=true),
+        Variable: sc.Ref('lat,lon', att=true),
       },
     }),
 
     sc.Action('is.workflow.actions.text.match.getgroup', name='lat', params={
-      matches: function(state) sc.Ref(state, 'lat,lon', att=true),
+      matches: sc.Ref('lat,lon', att=true),
     }),
 
     sc.Action('is.workflow.actions.text.match.getgroup', name='lon', params={
       WFGroupIndex: '2',
-      matches: function(state) sc.Ref(state, 'lat,lon', att=true),
+      matches: sc.Ref('lat,lon', att=true),
     }),
 
     sc.Action('is.workflow.actions.gettext', name='Text', params={
       WFTextActionText: {
         Value: {
           attachmentsByRange: {
-            '{0, 1}': function(state) sc.Ref(state, 'lat'),
-            '{2, 1}': function(state) sc.Ref(state, 'lon'),
+            '{0, 1}': sc.Ref('lat'),
+            '{2, 1}': sc.Ref('lon'),
           },
           string: '￼,￼',
         },
@@ -665,11 +652,11 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.getmapslink', name='Maps URL', params={
-      WFInput: function(state) sc.Ref(state, 'Text', att=true),
+      WFInput: sc.Ref('Text', att=true),
     }),
 
     sc.Action('is.workflow.actions.location', {
-      WFLocation: function(state) sc.Ref(state, 'Maps URL', att=true),
+      WFLocation: sc.Ref('Maps URL', att=true),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
@@ -678,7 +665,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.detect.address', {
-      WFInput: function(state) sc.Ref(state, 'Vars.Repeat Item', att=true),
+      WFInput: sc.Ref('Vars.Repeat Item', att=true),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
@@ -692,7 +679,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.appendvariable', {
-      WFInput: function(state) sc.Ref(state, 'If Result', att=true),
+      WFInput: sc.Ref('If Result', att=true),
       WFVariableName: 'ImportLocations',
     }),
 
@@ -709,7 +696,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.getvariable', {
-      WFVariable: function(state) sc.Ref(state, 'Vars.ImportLocations', att=true),
+      WFVariable: sc.Ref('Vars.ImportLocations', att=true),
     }),
 
     sc.Action('is.workflow.actions.choosefrommenu', {
@@ -741,7 +728,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.count', name='Count', params={
-      Input: function(state) sc.Ref(state, 'Menu Result', att=true),
+      Input: sc.Ref('Menu Result', att=true),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
@@ -750,7 +737,7 @@ local sc = import 'shortcuts.libsonnet';
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: function(state) sc.Ref(state, 'Count', att=true),
+        Variable: sc.Ref('Count', att=true),
       },
       WFNumberValue: '1',
     }),
@@ -758,11 +745,11 @@ local sc = import 'shortcuts.libsonnet';
     sc.Action('is.workflow.actions.repeat.each', {
       GroupingIdentifier: '051A5639-E48D-4F68-AEAF-4C54C33717E9',
       WFControlFlowMode: 0,
-      WFInput: function(state) sc.Ref(state, 'Menu Result', att=true),
+      WFInput: sc.Ref('Menu Result', att=true),
     }),
 
     sc.Action('is.workflow.actions.urlencode', {
-      WFInput: function(state) sc.Val('${Vars.Repeat Item}', state),
+      WFInput: sc.Str([sc.Ref('Vars.Repeat Item')]),
     }),
 
     sc.Action('is.workflow.actions.repeat.each', name='Repeat Results', params={
@@ -773,7 +760,7 @@ local sc = import 'shortcuts.libsonnet';
     sc.Action('is.workflow.actions.text.combine', {
       WFTextCustomSeparator: '&daddr=',
       WFTextSeparator: 'Custom',
-      text: function(state) sc.Ref(state, 'Repeat Results', att=true),
+      text: sc.Ref('Repeat Results', att=true),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
@@ -782,7 +769,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.urlencode', {
-      WFInput: function(state) sc.Val('${Menu Result}', state),
+      WFInput: sc.Str([sc.Ref('Menu Result')]),
     }),
 
     sc.Action('is.workflow.actions.conditional', name='If Result', params={
@@ -794,8 +781,8 @@ local sc = import 'shortcuts.libsonnet';
       WFTextActionText: {
         Value: {
           attachmentsByRange: {
-            '{0, 1}': function(state) sc.Ref(state, 'Shortcut Input'),
-            '{8, 1}': function(state) sc.Ref(state, 'If Result'),
+            '{0, 1}': sc.Input,
+            '{8, 1}': sc.Ref('If Result'),
           },
           string: '￼&daddr=￼',
         },
@@ -806,11 +793,11 @@ local sc = import 'shortcuts.libsonnet';
     sc.Action('is.workflow.actions.text.split', name='Split Text', params={
       WFTextCustomSeparator: '&daddr=',
       WFTextSeparator: 'Custom',
-      text: function(state) sc.Ref(state, 'Loc string', att=true),
+      text: sc.Ref('Loc string', att=true),
     }),
 
     sc.Action('is.workflow.actions.count', name='Location count', params={
-      Input: function(state) sc.Ref(state, 'Split Text', att=true),
+      Input: sc.Ref('Split Text', att=true),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
@@ -819,13 +806,13 @@ local sc = import 'shortcuts.libsonnet';
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: function(state) sc.Ref(state, 'Location count', att=true),
+        Variable: sc.Ref('Location count', att=true),
       },
       WFNumberValue: '4',
     }),
 
     sc.Action('is.workflow.actions.runworkflow', {
-      WFInput: function(state) sc.Ref(state, 'Loc string', att=true),
+      WFInput: sc.Ref('Loc string', att=true),
       WFWorkflow: {
         isSelf: true,
         workflowIdentifier: '6F3A9A14-14B3-454E-81AB-D80DFC21D0C0',
@@ -840,7 +827,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.math', name='cur count', params={
-      WFInput: function(state) sc.Ref(state, 'Location count', att=true),
+      WFInput: sc.Ref('Location count', att=true),
       WFMathOperand: '1',
       WFMathOperation: '-',
     }),
@@ -855,7 +842,7 @@ local sc = import 'shortcuts.libsonnet';
       WFMenuPrompt: {
         Value: {
           attachmentsByRange: {
-            '{13, 1}': function(state) sc.Ref(state, 'cur count'),
+            '{13, 1}': sc.Ref('cur count'),
           },
           string: 'Total stops: ￼',
         },
@@ -870,7 +857,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.runworkflow', {
-      WFInput: function(state) sc.Ref(state, 'Loc string', att=true),
+      WFInput: sc.Ref('Loc string', att=true),
       WFWorkflow: {
         isSelf: true,
         workflowIdentifier: '6F3A9A14-14B3-454E-81AB-D80DFC21D0C0',
@@ -888,7 +875,7 @@ local sc = import 'shortcuts.libsonnet';
     sc.Action('is.workflow.actions.repeat.each', {
       GroupingIdentifier: 'E9448D8B-66F3-4F17-8C96-32F99CA66DA6',
       WFControlFlowMode: 0,
-      WFInput: function(state) sc.Ref(state, 'Split Text', att=true),
+      WFInput: sc.Ref('Split Text', att=true),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
@@ -897,17 +884,17 @@ local sc = import 'shortcuts.libsonnet';
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: function(state) sc.Ref(state, 'Vars.Repeat Item', att=true),
+        Variable: sc.Ref('Vars.Repeat Item', att=true),
       },
     }),
 
     sc.Action('is.workflow.actions.urlencode', name='URL Encoded Text', params={
       WFEncodeMode: 'Decode',
-      WFInput: function(state) sc.Val('${Vars.Repeat Item}', state),
+      WFInput: sc.Str([sc.Ref('Vars.Repeat Item')]),
     }),
 
     sc.Action('is.workflow.actions.detect.address', name='Addresses', params={
-      WFInput: function(state) sc.Ref(state, 'URL Encoded Text', att=true),
+      WFInput: sc.Ref('URL Encoded Text', att=true),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
@@ -916,12 +903,12 @@ local sc = import 'shortcuts.libsonnet';
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: function(state) sc.Ref(state, 'Addresses', att=true),
+        Variable: sc.Ref('Addresses', att=true),
       },
     }),
 
     sc.Action('is.workflow.actions.getvariable', {
-      WFVariable: function(state) sc.Ref(state, 'Addresses', att=true),
+      WFVariable: sc.Ref('Addresses', att=true),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
@@ -930,7 +917,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.address', {
-      WFPostalCode: function(state) sc.Val('${URL Encoded Text}', state),
+      WFPostalCode: sc.Str([sc.Ref('URL Encoded Text')]),
     }),
 
     sc.Action('is.workflow.actions.conditional', name='If Result', params={
@@ -939,7 +926,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.appendvariable', {
-      WFInput: function(state) sc.Ref(state, 'If Result', att=true),
+      WFInput: sc.Ref('If Result', att=true),
       WFVariableName: 'LocList',
     }),
 
@@ -965,23 +952,23 @@ local sc = import 'shortcuts.libsonnet';
           WFDictionaryFieldValueItems: [
             {
               WFItemType: 0,
-              WFKey: sc.Val('⏱️ Time'),
-              WFValue: sc.Val('Fastest route'),
+              WFKey: sc.Str(['⏱️ Time']),
+              WFValue: sc.Str(['Fastest route']),
             },
             {
               WFItemType: 0,
-              WFKey: sc.Val('🛣️ Distance'),
-              WFValue: sc.Val('Most efficient route'),
+              WFKey: sc.Str(['🛣️ Distance']),
+              WFValue: sc.Str(['Most efficient route']),
             },
             {
               WFItemType: 0,
-              WFKey: sc.Val('📏 Straight line distance'),
-              WFValue: sc.Val('Fastest to compute'),
+              WFKey: sc.Str(['📏 Straight line distance']),
+              WFValue: sc.Str(['Fastest to compute']),
             },
             {
               WFItemType: 0,
-              WFKey: sc.Val('🚫 Input order'),
-              WFValue: sc.Val('No route optimization'),
+              WFKey: sc.Str(['🚫 Input order']),
+              WFValue: sc.Str(['No route optimization']),
             },
           ],
         },
@@ -991,11 +978,11 @@ local sc = import 'shortcuts.libsonnet';
 
     sc.Action('is.workflow.actions.choosefromlist', name='Chosen Item', params={
       WFChooseFromListActionPrompt: 'How to optimize route? ',
-      WFInput: function(state) sc.Ref(state, 'Dictionary', att=true),
+      WFInput: sc.Ref('Dictionary', att=true),
     }),
 
     sc.Action('is.workflow.actions.setvariable', {
-      WFInput: function(state) sc.Ref(state, 'Chosen Item', att=true),
+      WFInput: sc.Ref('Chosen Item', att=true),
       WFVariableName: 'TSP type',
     }),
 
@@ -1027,29 +1014,34 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.getitemfromlist', name='First', params={
-      WFInput: function(state) sc.Ref(state, 'Vars.LocList', att=true),
+      WFInput: sc.Ref('Vars.LocList', att=true),
     }),
 
     sc.Action('is.workflow.actions.getitemfromlist', name='Last', params={
-      WFInput: function(state) sc.Ref(state, 'Vars.LocList', att=true),
+      WFInput: sc.Ref('Vars.LocList', att=true),
       WFItemSpecifier: 'Last Item',
     }),
 
     sc.Action('is.workflow.actions.getdistance', name='Distance', params={
       Accuracy: 'Best',
       WFDistanceUnit: 'Kilometers',
-      WFGetDirectionsCustomLocation: function(state) sc.Ref(state, 'First', att=true),
-      WFGetDistanceDestination: function(state) sc.Ref(state, 'Last', att=true),
+      WFGetDirectionsCustomLocation: sc.Ref('First', att=true),
+      WFGetDistanceDestination: sc.Ref('Last', att=true),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
       GroupingIdentifier: '1DEA492B-DF3D-48FF-A4D5-2722BD642384',
       WFCondition: 0,
-      WFConditionalActionString: function(state) sc.Val('${First}', state),
+      WFConditionalActionString: sc.Str([sc.Ref('First', aggs=[
+        {
+          CoercionItemClass: 'WFStringContentItem',
+          Type: 'WFCoercionVariableAggrandizement',
+        },
+      ])]),
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: function(state) sc.Ref(state, 'Distance', att=true),
+        Variable: sc.Ref('Distance', att=true),
       },
       WFNumberValue: '0.3',
     }),
@@ -1073,7 +1065,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.setvariable', {
-      WFInput: function(state) sc.Ref(state, 'If Result', att=true),
+      WFInput: sc.Ref('If Result', att=true),
       WFVariableName: 'Is tour',
     }),
 
@@ -1084,7 +1076,7 @@ local sc = import 'shortcuts.libsonnet';
     sc.Action('is.workflow.actions.date', name='t1'),
 
     sc.Action('is.workflow.actions.count', name='N', params={
-      Input: function(state) sc.Ref(state, 'Vars.LocList', att=true),
+      Input: sc.Ref('Vars.LocList', att=true),
     }),
 
     sc.Action('is.workflow.actions.dictionary', name='Dictionary', params={
@@ -1093,8 +1085,8 @@ local sc = import 'shortcuts.libsonnet';
           WFDictionaryFieldValueItems: [
             {
               WFItemType: 3,
-              WFKey: sc.Val('N'),
-              WFValue: function(state) sc.Val('${N}', state),
+              WFKey: sc.Str(['N']),
+              WFValue: sc.Str([sc.Ref('N')]),
             },
           ],
         },
@@ -1103,26 +1095,26 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.setvariable', {
-      WFInput: function(state) sc.Ref(state, 'Dictionary', att=true),
+      WFInput: sc.Ref('Dictionary', att=true),
       WFVariableName: 'Cost dictionary',
     }),
 
     sc.Action('is.workflow.actions.repeat.count', {
       GroupingIdentifier: '787C56C1-C9EB-4514-B811-E1D034A17906',
       WFControlFlowMode: 0,
-      WFRepeatCount: function(state) sc.Ref(state, 'N', att=true),
+      WFRepeatCount: sc.Ref('N', att=true),
     }),
 
     sc.Action('is.workflow.actions.getitemfromlist', name='L1', params={
-      WFInput: function(state) sc.Ref(state, 'Vars.LocList', att=true),
-      WFItemIndex: function(state) sc.Ref(state, 'Vars.Repeat Index', att=true),
+      WFInput: sc.Ref('Vars.LocList', att=true),
+      WFItemIndex: sc.Ref('Vars.Repeat Index', att=true),
       WFItemSpecifier: 'Item At Index',
     }),
 
     sc.Action('is.workflow.actions.repeat.count', {
       GroupingIdentifier: 'D110F405-9BF1-4D33-9020-802620EF60BF',
       WFControlFlowMode: 0,
-      WFRepeatCount: function(state) sc.Ref(state, 'Vars.Repeat Index', att=true),
+      WFRepeatCount: sc.Ref('Vars.Repeat Index', att=true),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
@@ -1131,14 +1123,14 @@ local sc = import 'shortcuts.libsonnet';
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: function(state) sc.Ref(state, 'Vars.Repeat Index', att=true),
+        Variable: sc.Ref('Vars.Repeat Index', att=true),
       },
-      WFNumberValue: function(state) sc.Ref(state, 'Vars.Repeat Index 2', att=true),
+      WFNumberValue: sc.Ref('Vars.Repeat Index 2', att=true),
     }),
 
     sc.Action('is.workflow.actions.getitemfromlist', name='L2', params={
-      WFInput: function(state) sc.Ref(state, 'Vars.LocList', att=true),
-      WFItemIndex: function(state) sc.Ref(state, 'Vars.Repeat Index 2', att=true),
+      WFInput: sc.Ref('Vars.LocList', att=true),
+      WFItemIndex: sc.Ref('Vars.Repeat Index 2', att=true),
       WFItemSpecifier: 'Item At Index',
     }),
 
@@ -1170,9 +1162,9 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.gettraveltime', {
-      WFDestination: function(state) sc.Ref(state, 'L2', att=true),
+      WFDestination: sc.Ref('L2', att=true),
       WFGetDirectionsActionMode: 'Driving',
-      WFGetDirectionsCustomLocation: function(state) sc.Ref(state, 'L1', att=true),
+      WFGetDirectionsCustomLocation: sc.Ref('L1', att=true),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
@@ -1207,8 +1199,8 @@ local sc = import 'shortcuts.libsonnet';
       Accuracy: 'HundredMeters',
       WFDistanceUnit: 'Kilometers',
       WFGetDirectionsActionMode: 'Driving',
-      WFGetDirectionsCustomLocation: function(state) sc.Ref(state, 'L1', att=true),
-      WFGetDistanceDestination: function(state) sc.Ref(state, 'L2', att=true),
+      WFGetDirectionsCustomLocation: sc.Ref('L1', att=true),
+      WFGetDistanceDestination: sc.Ref('L2', att=true),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
@@ -1220,8 +1212,8 @@ local sc = import 'shortcuts.libsonnet';
       Accuracy: 'HundredMeters',
       WFDistanceUnit: 'Kilometers',
       WFGetDirectionsActionMode: 'Direct',
-      WFGetDirectionsCustomLocation: function(state) sc.Ref(state, 'L1', att=true),
-      WFGetDistanceDestination: function(state) sc.Ref(state, 'L2', att=true),
+      WFGetDirectionsCustomLocation: sc.Ref('L1', att=true),
+      WFGetDistanceDestination: sc.Ref('L2', att=true),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
@@ -1235,37 +1227,37 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.setvalueforkey', name='Dictionary', params={
-      WFDictionary: function(state) sc.Ref(state, 'Vars.Cost dictionary', att=true),
+      WFDictionary: sc.Ref('Vars.Cost dictionary', att=true),
       WFDictionaryKey: {
         Value: {
           attachmentsByRange: {
-            '{0, 1}': function(state) sc.Ref(state, 'Vars.Repeat Index'),
-            '{2, 1}': function(state) sc.Ref(state, 'Vars.Repeat Index 2'),
+            '{0, 1}': sc.Ref('Vars.Repeat Index'),
+            '{2, 1}': sc.Ref('Vars.Repeat Index 2'),
           },
           string: '￼,￼',
         },
         WFSerializationType: 'WFTextTokenString',
       },
-      WFDictionaryValue: function(state) sc.Val('${L1L2}', state),
+      WFDictionaryValue: sc.Str([sc.Ref('L1L2')]),
     }),
 
     sc.Action('is.workflow.actions.setvalueforkey', name='Dictionary', params={
-      WFDictionary: function(state) sc.Ref(state, 'Dictionary', att=true),
+      WFDictionary: sc.Ref('Dictionary', att=true),
       WFDictionaryKey: {
         Value: {
           attachmentsByRange: {
-            '{0, 1}': function(state) sc.Ref(state, 'Vars.Repeat Index 2'),
-            '{2, 1}': function(state) sc.Ref(state, 'Vars.Repeat Index'),
+            '{0, 1}': sc.Ref('Vars.Repeat Index 2'),
+            '{2, 1}': sc.Ref('Vars.Repeat Index'),
           },
           string: '￼,￼',
         },
         WFSerializationType: 'WFTextTokenString',
       },
-      WFDictionaryValue: function(state) sc.Val('${L1L2}', state),
+      WFDictionaryValue: sc.Str([sc.Ref('L1L2')]),
     }),
 
     sc.Action('is.workflow.actions.setvariable', {
-      WFInput: function(state) sc.Ref(state, 'Dictionary', att=true),
+      WFInput: sc.Ref('Dictionary', att=true),
       WFVariableName: 'Cost dictionary',
     }),
 
@@ -1287,8 +1279,8 @@ local sc = import 'shortcuts.libsonnet';
     sc.Action('is.workflow.actions.date', name='t2'),
 
     sc.Action('is.workflow.actions.gettimebetweendates', name='Drive time wall time', params={
-      WFInput: function(state) sc.Val('${t2}', state),
-      WFTimeUntilFromDate: function(state) sc.Val('${t1}', state),
+      WFInput: sc.Str([sc.Ref('t2')]),
+      WFTimeUntilFromDate: sc.Str([sc.Ref('t1')]),
       WFTimeUntilUnit: 'Total Time',
     }),
 
@@ -1303,7 +1295,7 @@ local sc = import 'shortcuts.libsonnet';
     sc.Action('is.workflow.actions.nothing', name='Nothing'),
 
     sc.Action('is.workflow.actions.setvariable', {
-      WFInput: function(state) sc.Ref(state, 'Nothing', att=true),
+      WFInput: sc.Ref('Nothing', att=true),
       WFVariableName: 'Solutions',
     }),
 
@@ -1330,7 +1322,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.math', {
-      WFInput: function(state) sc.Ref(state, 'N', att=true),
+      WFInput: sc.Ref('N', att=true),
       WFMathOperand: '2',
       WFMathOperation: '-',
     }),
@@ -1341,7 +1333,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.math', {
-      WFInput: function(state) sc.Ref(state, 'N', att=true),
+      WFInput: sc.Ref('N', att=true),
       WFMathOperand: '1',
       WFMathOperation: '-',
     }),
@@ -1354,11 +1346,11 @@ local sc = import 'shortcuts.libsonnet';
     sc.Action('is.workflow.actions.repeat.count', {
       GroupingIdentifier: '8EB302EA-C141-4165-AB98-CE45A879D7BF',
       WFControlFlowMode: 0,
-      WFRepeatCount: function(state) sc.Ref(state, 'N - 1', att=true),
+      WFRepeatCount: sc.Ref('N - 1', att=true),
     }),
 
     sc.Action('is.workflow.actions.math', name='i', params={
-      WFInput: function(state) sc.Ref(state, 'Vars.Repeat Index', att=true),
+      WFInput: sc.Ref('Vars.Repeat Index', att=true),
       WFMathOperand: '1',
     }),
 
@@ -1367,13 +1359,13 @@ local sc = import 'shortcuts.libsonnet';
         '1',
         {
           WFItemType: 0,
-          WFValue: function(state) sc.Val('${i}', state),
+          WFValue: sc.Str([sc.Ref('i')]),
         },
       ],
     }),
 
     sc.Action('is.workflow.actions.setvariable', {
-      WFInput: function(state) sc.Ref(state, 'List', att=true),
+      WFInput: sc.Ref('List', att=true),
       WFVariableName: 'CurSolution',
     }),
 
@@ -1381,13 +1373,13 @@ local sc = import 'shortcuts.libsonnet';
       WFDictionaryKey: {
         Value: {
           attachmentsByRange: {
-            '{2, 1}': function(state) sc.Ref(state, 'i'),
+            '{2, 1}': sc.Ref('i'),
           },
           string: '1,￼',
         },
         WFSerializationType: 'WFTextTokenString',
       },
-      WFInput: function(state) sc.Ref(state, 'Vars.Cost dictionary', att=true),
+      WFInput: sc.Ref('Vars.Cost dictionary', att=true),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
@@ -1396,7 +1388,7 @@ local sc = import 'shortcuts.libsonnet';
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: function(state) sc.Ref(state, 'Cost 1,i', aggs=[
+        Variable: sc.Ref('Cost 1,i', aggs=[
           {
             CoercionItemClass: 'WFNumberContentItem',
             Type: 'WFCoercionVariableAggrandizement',
@@ -1407,7 +1399,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.setvariable', {
-      WFInput: function(state) sc.Ref(state, 'Cost 1,i', att=true),
+      WFInput: sc.Ref('Cost 1,i', att=true),
       WFVariableName: 'CurSolutionCosts',
     }),
 
@@ -1418,39 +1410,39 @@ local sc = import 'shortcuts.libsonnet';
     sc.Action('is.workflow.actions.repeat.count', {
       GroupingIdentifier: '3BAF33D3-8077-4A69-9395-3ADBF0705BC9',
       WFControlFlowMode: 0,
-      WFRepeatCount: function(state) sc.Ref(state, 'N - 1', att=true),
+      WFRepeatCount: sc.Ref('N - 1', att=true),
     }),
 
     sc.Action('is.workflow.actions.setvariable', {
-      WFInput: function(state) sc.Ref(state, 'Big number', att=true),
+      WFInput: sc.Ref('Big number', att=true),
       WFVariableName: 'MinCost',
     }),
 
     sc.Action('is.workflow.actions.setvariable', {
-      WFInput: function(state) sc.Ref(state, 'Nothing', att=true),
+      WFInput: sc.Ref('Nothing', att=true),
       WFVariableName: 'MinCostInd',
     }),
 
     sc.Action('is.workflow.actions.getitemfromlist', name='previous location', params={
-      WFInput: function(state) sc.Ref(state, 'Vars.CurSolution', att=true),
+      WFInput: sc.Ref('Vars.CurSolution', att=true),
       WFItemSpecifier: 'Last Item',
     }),
 
     sc.Action('is.workflow.actions.repeat.count', {
       GroupingIdentifier: 'BF7CE22A-56B6-4E67-ADCB-F2702A982FFF',
       WFControlFlowMode: 0,
-      WFRepeatCount: function(state) sc.Ref(state, 'N - 1', att=true),
+      WFRepeatCount: sc.Ref('N - 1', att=true),
     }),
 
     sc.Action('is.workflow.actions.math', name='j', params={
-      WFInput: function(state) sc.Ref(state, 'Vars.Repeat Index 3', att=true),
+      WFInput: sc.Ref('Vars.Repeat Index 3', att=true),
       WFMathOperand: '1',
     }),
 
     sc.Action('is.workflow.actions.conditional', {
       GroupingIdentifier: 'C1D0F2A9-157F-420A-8E30-B22F25CECFB8',
       WFCondition: 999,
-      WFConditionalActionString: function(state) sc.Val('${j}', state),
+      WFConditionalActionString: sc.Str([sc.Ref('j')]),
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
@@ -1474,14 +1466,14 @@ local sc = import 'shortcuts.libsonnet';
       WFDictionaryKey: {
         Value: {
           attachmentsByRange: {
-            '{0, 1}': function(state) sc.Ref(state, 'previous location'),
-            '{2, 1}': function(state) sc.Ref(state, 'j'),
+            '{0, 1}': sc.Ref('previous location'),
+            '{2, 1}': sc.Ref('j'),
           },
           string: '￼,￼',
         },
         WFSerializationType: 'WFTextTokenString',
       },
-      WFInput: function(state) sc.Ref(state, 'Vars.Cost dictionary', att=true),
+      WFInput: sc.Ref('Vars.Cost dictionary', att=true),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
@@ -1490,23 +1482,23 @@ local sc = import 'shortcuts.libsonnet';
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: function(state) sc.Ref(state, 'cost ij', aggs=[
+        Variable: sc.Ref('cost ij', aggs=[
           {
             CoercionItemClass: 'WFNumberContentItem',
             Type: 'WFCoercionVariableAggrandizement',
           },
         ], att=true),
       },
-      WFNumberValue: function(state) sc.Ref(state, 'Vars.MinCost', att=true),
+      WFNumberValue: sc.Ref('Vars.MinCost', att=true),
     }),
 
     sc.Action('is.workflow.actions.setvariable', {
-      WFInput: function(state) sc.Ref(state, 'cost ij', att=true),
+      WFInput: sc.Ref('cost ij', att=true),
       WFVariableName: 'MinCost',
     }),
 
     sc.Action('is.workflow.actions.setvariable', {
-      WFInput: function(state) sc.Ref(state, 'j', att=true),
+      WFInput: sc.Ref('j', att=true),
       WFVariableName: 'MinCostInd',
     }),
 
@@ -1533,17 +1525,17 @@ local sc = import 'shortcuts.libsonnet';
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: function(state) sc.Ref(state, 'Vars.MinCostInd', att=true),
+        Variable: sc.Ref('Vars.MinCostInd', att=true),
       },
     }),
 
     sc.Action('is.workflow.actions.appendvariable', {
-      WFInput: function(state) sc.Ref(state, 'Vars.MinCostInd', att=true),
+      WFInput: sc.Ref('Vars.MinCostInd', att=true),
       WFVariableName: 'CurSolution',
     }),
 
     sc.Action('is.workflow.actions.appendvariable', {
-      WFInput: function(state) sc.Ref(state, 'Vars.MinCost', att=true),
+      WFInput: sc.Ref('Vars.MinCost', att=true),
       WFVariableName: 'CurSolutionCosts',
     }),
 
@@ -1586,7 +1578,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.getitemfromlist', name='Item from List', params={
-      WFInput: function(state) sc.Ref(state, 'Vars.CurSolution', att=true),
+      WFInput: sc.Ref('Vars.CurSolution', att=true),
       WFItemSpecifier: 'Last Item',
     }),
 
@@ -1594,23 +1586,23 @@ local sc = import 'shortcuts.libsonnet';
       WFDictionaryKey: {
         Value: {
           attachmentsByRange: {
-            '{0, 1}': function(state) sc.Ref(state, 'Item from List'),
-            '{2, 1}': function(state) sc.Ref(state, 'N'),
+            '{0, 1}': sc.Ref('Item from List'),
+            '{2, 1}': sc.Ref('N'),
           },
           string: '￼,￼',
         },
         WFSerializationType: 'WFTextTokenString',
       },
-      WFInput: function(state) sc.Ref(state, 'Vars.Cost dictionary', att=true),
+      WFInput: sc.Ref('Vars.Cost dictionary', att=true),
     }),
 
     sc.Action('is.workflow.actions.appendvariable', {
-      WFInput: function(state) sc.Ref(state, 'Dictionary Value', att=true),
+      WFInput: sc.Ref('Dictionary Value', att=true),
       WFVariableName: 'CurSolutionCosts',
     }),
 
     sc.Action('is.workflow.actions.appendvariable', {
-      WFInput: function(state) sc.Ref(state, 'N', att=true),
+      WFInput: sc.Ref('N', att=true),
       WFVariableName: 'CurSolution',
     }),
 
@@ -1620,24 +1612,24 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.statistics', name='Sum', params={
-      Input: function(state) sc.Ref(state, 'Vars.CurSolutionCosts', att=true),
+      Input: sc.Ref('Vars.CurSolutionCosts', att=true),
       WFStatisticsOperation: 'Sum',
     }),
 
     sc.Action('is.workflow.actions.text.combine', name='Combined Text', params={
       WFTextCustomSeparator: ',',
       WFTextSeparator: 'Custom',
-      text: function(state) sc.Ref(state, 'Vars.CurSolution', att=true),
+      text: sc.Ref('Vars.CurSolution', att=true),
     }),
 
     sc.Action('is.workflow.actions.setvalueforkey', name='Dictionary', params={
-      WFDictionary: function(state) sc.Ref(state, 'Vars.Solutions', att=true),
-      WFDictionaryKey: function(state) sc.Val('${Sum}', state),
-      WFDictionaryValue: function(state) sc.Val('${Combined Text}', state),
+      WFDictionary: sc.Ref('Vars.Solutions', att=true),
+      WFDictionaryKey: sc.Str([sc.Ref('Sum')]),
+      WFDictionaryValue: sc.Str([sc.Ref('Combined Text')]),
     }),
 
     sc.Action('is.workflow.actions.setvariable', {
-      WFInput: function(state) sc.Ref(state, 'Dictionary', att=true),
+      WFInput: sc.Ref('Dictionary', att=true),
       WFVariableName: 'Solutions',
     }),
 
@@ -1679,15 +1671,15 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.getvalueforkey', name='MinCostSolution', params={
-      WFDictionaryKey: function(state) sc.Val('${Minimum}', state),
-      WFInput: function(state) sc.Ref(state, 'Vars.Solutions', att=true),
+      WFDictionaryKey: sc.Str([sc.Ref('Minimum')]),
+      WFInput: sc.Ref('Vars.Solutions', att=true),
     }),
 
     sc.Action('is.workflow.actions.date', name='t3'),
 
     sc.Action('is.workflow.actions.gettimebetweendates', name='TSP wall time', params={
-      WFInput: function(state) sc.Val('${t3}', state),
-      WFTimeUntilFromDate: function(state) sc.Val('${t2}', state),
+      WFInput: sc.Str([sc.Ref('t3')]),
+      WFTimeUntilFromDate: sc.Str([sc.Ref('t2')]),
       WFTimeUntilUnit: 'Total Time',
     }),
 
@@ -1697,13 +1689,13 @@ local sc = import 'shortcuts.libsonnet';
           WFDictionaryFieldValueItems: [
             {
               WFItemType: 3,
-              WFKey: sc.Val('Precompute drive times'),
-              WFValue: function(state) sc.Val('${Drive time wall time}', state),
+              WFKey: sc.Str(['Precompute drive times']),
+              WFValue: sc.Str([sc.Ref('Drive time wall time')]),
             },
             {
               WFItemType: 3,
-              WFKey: sc.Val('Compute optimal solution'),
-              WFValue: function(state) sc.Val('${TSP wall time}', state),
+              WFKey: sc.Str(['Compute optimal solution']),
+              WFValue: sc.Str([sc.Ref('TSP wall time')]),
             },
           ],
         },
@@ -1714,23 +1706,23 @@ local sc = import 'shortcuts.libsonnet';
     sc.Action('is.workflow.actions.text.split', name='Split Text', params={
       WFTextCustomSeparator: ',',
       WFTextSeparator: 'Custom',
-      text: function(state) sc.Ref(state, 'MinCostSolution', att=true),
+      text: sc.Ref('MinCostSolution', att=true),
     }),
 
     sc.Action('is.workflow.actions.repeat.each', {
       GroupingIdentifier: '38DF2123-5E7B-4B38-80B1-92FC4ABB4FD6',
       WFControlFlowMode: 0,
-      WFInput: function(state) sc.Ref(state, 'Split Text', att=true),
+      WFInput: sc.Ref('Split Text', att=true),
     }),
 
     sc.Action('is.workflow.actions.getitemfromlist', name='Item from List', params={
-      WFInput: function(state) sc.Ref(state, 'Vars.LocList', att=true),
-      WFItemIndex: function(state) sc.Ref(state, 'Vars.Repeat Item', att=true),
+      WFInput: sc.Ref('Vars.LocList', att=true),
+      WFItemIndex: sc.Ref('Vars.Repeat Item', att=true),
       WFItemSpecifier: 'Item At Index',
     }),
 
     sc.Action('is.workflow.actions.urlencode', {
-      WFInput: function(state) sc.Val('${Item from List}', state),
+      WFInput: sc.Str([sc.Ref('Item from List')]),
     }),
 
     sc.Action('is.workflow.actions.repeat.each', name='Repeat Results', params={
@@ -1741,12 +1733,12 @@ local sc = import 'shortcuts.libsonnet';
     sc.Action('is.workflow.actions.repeat.each', {
       GroupingIdentifier: 'DE59A7C3-6579-49EF-9B09-C5A2256FCC91',
       WFControlFlowMode: 0,
-      WFInput: function(state) sc.Ref(state, 'Split Text', att=true),
+      WFInput: sc.Ref('Split Text', att=true),
     }),
 
     sc.Action('is.workflow.actions.getitemfromlist', name='Item from List', params={
-      WFInput: function(state) sc.Ref(state, 'Vars.LocList', att=true),
-      WFItemIndex: function(state) sc.Ref(state, 'Vars.Repeat Item', att=true),
+      WFInput: sc.Ref('Vars.LocList', att=true),
+      WFItemIndex: sc.Ref('Vars.Repeat Item', att=true),
       WFItemSpecifier: 'Item At Index',
     }),
 
@@ -1754,29 +1746,29 @@ local sc = import 'shortcuts.libsonnet';
       WFTextActionText: {
         Value: {
           attachmentsByRange: {
-            '{0, 1}': function(state) sc.Ref(state, 'Vars.Repeat Index'),
-            '{12, 1}': function(state) sc.Ref(state, 'Item from List', aggs=[
+            '{0, 1}': sc.Ref('Vars.Repeat Index'),
+            '{12, 1}': sc.Ref('Item from List', aggs=[
               {
                 PropertyName: 'Country',
                 PropertyUserInfo: 'country',
                 Type: 'WFPropertyVariableAggrandizement',
               },
             ]),
-            '{3, 1}': function(state) sc.Ref(state, 'Item from List', aggs=[
+            '{3, 1}': sc.Ref('Item from List', aggs=[
               {
                 PropertyName: 'Street',
                 PropertyUserInfo: 'street',
                 Type: 'WFPropertyVariableAggrandizement',
               },
             ]),
-            '{6, 1}': function(state) sc.Ref(state, 'Item from List', aggs=[
+            '{6, 1}': sc.Ref('Item from List', aggs=[
               {
                 PropertyName: 'City',
                 PropertyUserInfo: 'city',
                 Type: 'WFPropertyVariableAggrandizement',
               },
             ]),
-            '{9, 1}': function(state) sc.Ref(state, 'Item from List', aggs=[
+            '{9, 1}': sc.Ref('Item from List', aggs=[
               {
                 PropertyName: 'State',
                 PropertyUserInfo: 'state',
@@ -1796,14 +1788,14 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.text.combine', {
-      text: function(state) sc.Ref(state, 'Repeat Results', att=true),
+      text: sc.Ref('Repeat Results', att=true),
     }),
 
     sc.Action('is.workflow.actions.gettext', {
       WFTextActionText: {
         Value: {
           attachmentsByRange: {
-            '{18, 1}': function(state) sc.Ref(state, 'Dictionary'),
+            '{18, 1}': sc.Ref('Dictionary'),
           },
           string: 'Timing (seconds): ￼',
         },
@@ -1814,14 +1806,14 @@ local sc = import 'shortcuts.libsonnet';
     sc.Action('is.workflow.actions.text.combine', name='Combined Text', params={
       WFTextCustomSeparator: '&daddr=',
       WFTextSeparator: 'Custom',
-      text: function(state) sc.Ref(state, 'Repeat Results', att=true),
+      text: sc.Ref('Repeat Results', att=true),
     }),
 
     sc.Action('is.workflow.actions.gettext', name='maps url', params={
       WFTextActionText: {
         Value: {
           attachmentsByRange: {
-            '{27, 1}': function(state) sc.Ref(state, 'Combined Text'),
+            '{27, 1}': sc.Ref('Combined Text'),
           },
           string: 'maps://?dirflg=d&t=h&saddr=￼',
         },
@@ -1830,7 +1822,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.openurl', {
-      WFInput: function(state) sc.Ref(state, 'maps url', att=true),
+      WFInput: sc.Ref('maps url', att=true),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
@@ -1841,11 +1833,11 @@ local sc = import 'shortcuts.libsonnet';
     sc.Action('is.workflow.actions.repeat.each', {
       GroupingIdentifier: '37E189D3-078A-4705-8225-DF9DF2186144',
       WFControlFlowMode: 0,
-      WFInput: function(state) sc.Ref(state, 'Vars.LocList', att=true),
+      WFInput: sc.Ref('Vars.LocList', att=true),
     }),
 
     sc.Action('is.workflow.actions.urlencode', {
-      WFInput: function(state) sc.Val('${Vars.Repeat Item}', state),
+      WFInput: sc.Str([sc.Ref('Vars.Repeat Item')]),
     }),
 
     sc.Action('is.workflow.actions.repeat.each', name='Repeat Results', params={
@@ -1856,14 +1848,14 @@ local sc = import 'shortcuts.libsonnet';
     sc.Action('is.workflow.actions.text.combine', name='Combined Text', params={
       WFTextCustomSeparator: '&daddr=',
       WFTextSeparator: 'Custom',
-      text: function(state) sc.Ref(state, 'Repeat Results', att=true),
+      text: sc.Ref('Repeat Results', att=true),
     }),
 
     sc.Action('is.workflow.actions.gettext', name='maps url', params={
       WFTextActionText: {
         Value: {
           attachmentsByRange: {
-            '{27, 1}': function(state) sc.Ref(state, 'Combined Text'),
+            '{27, 1}': sc.Ref('Combined Text'),
           },
           string: 'maps://?dirflg=d&t=h&saddr=￼',
         },
@@ -1872,7 +1864,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.openurl', {
-      WFInput: function(state) sc.Ref(state, 'maps url', att=true),
+      WFInput: sc.Ref('maps url', att=true),
     }),
 
     sc.Action('is.workflow.actions.conditional', {

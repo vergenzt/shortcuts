@@ -10,23 +10,23 @@ local sc = import 'shortcuts.libsonnet';
           WFDictionaryFieldValueItems: [
             {
               WFItemType: 0,
-              WFKey: sc.Val('Calendar'),
-              WFValue: sc.Val('20'),
+              WFKey: sc.Str(['Calendar']),
+              WFValue: sc.Str(['20']),
             },
             {
               WFItemType: 0,
-              WFKey: sc.Val('Events'),
-              WFValue: sc.Val('20'),
+              WFKey: sc.Str(['Events']),
+              WFValue: sc.Str(['20']),
             },
             {
               WFItemType: 0,
-              WFKey: sc.Val('Routine'),
-              WFValue: sc.Val('0'),
+              WFKey: sc.Str(['Routine']),
+              WFValue: sc.Str(['0']),
             },
             {
               WFItemType: 0,
-              WFKey: sc.Val('Health Reminders'),
-              WFValue: sc.Val('0'),
+              WFKey: sc.Str(['Health Reminders']),
+              WFValue: sc.Str(['0']),
             },
           ],
         },
@@ -35,7 +35,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.setvariable', {
-      WFInput: function(state) sc.Ref(state, 'Dictionary', att=true),
+      WFInput: sc.Ref('Dictionary', att=true),
       WFVariableName: 'Calendar Lead Times',
     }),
 
@@ -45,23 +45,23 @@ local sc = import 'shortcuts.libsonnet';
           WFDictionaryFieldValueItems: [
             {
               WFItemType: 0,
-              WFKey: sc.Val('Calendar'),
-              WFValue: sc.Val('ICF'),
+              WFKey: sc.Str(['Calendar']),
+              WFValue: sc.Str(['ICF']),
             },
             {
               WFItemType: 0,
-              WFKey: sc.Val('Events'),
-              WFValue: sc.Val('Tim'),
+              WFKey: sc.Str(['Events']),
+              WFValue: sc.Str(['Tim']),
             },
             {
               WFItemType: 0,
-              WFKey: sc.Val('Routine'),
-              WFValue: sc.Val('Routine'),
+              WFKey: sc.Str(['Routine']),
+              WFValue: sc.Str(['Routine']),
             },
             {
               WFItemType: 0,
-              WFKey: sc.Val('Health Reminders'),
-              WFValue: sc.Val('Meds'),
+              WFKey: sc.Str(['Health Reminders']),
+              WFValue: sc.Str(['Meds']),
             },
           ],
         },
@@ -70,7 +70,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.setvariable', {
-      WFInput: function(state) sc.Ref(state, 'Dictionary', att=true),
+      WFInput: sc.Ref('Dictionary', att=true),
       WFVariableName: 'Calendar Labels',
     }),
 
@@ -107,42 +107,34 @@ local sc = import 'shortcuts.libsonnet';
     sc.Action('is.workflow.actions.repeat.each', {
       GroupingIdentifier: '25CDD183-1362-42B9-8712-863F0F571C6B',
       WFControlFlowMode: 0,
-      WFInput: function(state) sc.Ref(state, 'Alarm', att=true),
+      WFInput: sc.Ref('Alarm', att=true),
     }),
 
     sc.Action('is.workflow.actions.text.match', name='Matches', params={
       WFMatchTextPattern: {
         Value: {
           attachmentsByRange: {
-            '{1, 1}': function(state) sc.Ref(state, 'Combined Text'),
+            '{1, 1}': sc.Ref('Combined Text'),
           },
           string: '(￼) 🗓️: (.*) at ([0-9: APM]+)',
         },
         WFSerializationType: 'WFTextTokenString',
       },
-      text: {
-        Value: {
-          attachmentsByRange: {
-            '{0, 1}': {
-              Aggrandizements: [
-                {
-                  CoercionItemClass: 'WFLinkEntityContentItem_com.apple.mobiletimer_AlarmEntity',
-                  Type: 'WFCoercionVariableAggrandizement',
-                },
-                {
-                  PropertyName: 'label',
-                  PropertyUserInfo: 'label',
-                  Type: 'WFPropertyVariableAggrandizement',
-                },
-              ],
-              Type: 'Variable',
-              VariableName: 'Repeat Item',
-            },
+      text: sc.Str([{
+        Aggrandizements: [
+          {
+            CoercionItemClass: 'WFLinkEntityContentItem_com.apple.mobiletimer_AlarmEntity',
+            Type: 'WFCoercionVariableAggrandizement',
           },
-          string: '￼',
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
+          {
+            PropertyName: 'label',
+            PropertyUserInfo: 'label',
+            Type: 'WFPropertyVariableAggrandizement',
+          },
+        ],
+        Type: 'Variable',
+        VariableName: 'Repeat Item',
+      }]),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
@@ -151,12 +143,12 @@ local sc = import 'shortcuts.libsonnet';
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: function(state) sc.Ref(state, 'Matches', att=true),
+        Variable: sc.Ref('Matches', att=true),
       },
     }),
 
     sc.Action('is.workflow.actions.getvariable', {
-      WFVariable: function(state) sc.Ref(state, 'Vars.Repeat Item', att=true),
+      WFVariable: sc.Ref('Vars.Repeat Item', att=true),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
@@ -170,14 +162,14 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.setvariable', {
-      WFInput: function(state) sc.Ref(state, 'Repeat Results', att=true),
+      WFInput: sc.Ref('Repeat Results', att=true),
       WFVariableName: 'Calendar Alarms',
     }),
 
     sc.Action('is.workflow.actions.dictionary', name='Dictionary'),
 
     sc.Action('is.workflow.actions.setvariable', {
-      WFInput: function(state) sc.Ref(state, 'Dictionary', att=true),
+      WFInput: sc.Ref('Dictionary', att=true),
       WFVariableName: 'Matched Calendar Alarm Indices',
     }),
 
@@ -185,7 +177,7 @@ local sc = import 'shortcuts.libsonnet';
 
     sc.Action('is.workflow.actions.adjustdate', name='4 Hours Ago', params={
       WFAdjustOperation: 'Subtract',
-      WFDate: function(state) sc.Val('${Current Datetime}', state),
+      WFDate: sc.Str([sc.Ref('Current Datetime')]),
       WFDuration: {
         Value: {
           Magnitude: '4',
@@ -196,7 +188,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.adjustdate', name='24 Hours Out', params={
-      WFDate: function(state) sc.Val('${Current Datetime}', state),
+      WFDate: sc.Str([sc.Ref('Current Datetime')]),
       WFDuration: {
         Value: {
           Magnitude: '24',
@@ -217,8 +209,8 @@ local sc = import 'shortcuts.libsonnet';
               Property: 'Start Date',
               Removable: false,
               Values: {
-                AnotherDate: function(state) sc.Ref(state, '24 Hours Out', att=true),
-                Date: function(state) sc.Ref(state, '4 Hours Ago', att=true),
+                AnotherDate: sc.Ref('24 Hours Out', att=true),
+                Date: sc.Ref('4 Hours Ago', att=true),
                 Number: 7,
                 Unit: 16,
               },
@@ -243,7 +235,7 @@ local sc = import 'shortcuts.libsonnet';
     sc.Action('is.workflow.actions.repeat.each', {
       GroupingIdentifier: '3A666097-90F9-4E2A-BBDC-A7A2F903EB04',
       WFControlFlowMode: 0,
-      WFInput: function(state) sc.Ref(state, 'Calendar Events', att=true),
+      WFInput: sc.Ref('Calendar Events', att=true),
     }),
 
     sc.Action('is.workflow.actions.setvariable', {
@@ -252,12 +244,12 @@ local sc = import 'shortcuts.libsonnet';
 
     sc.Action('is.workflow.actions.properties.calendarevents', name='Calendar', params={
       WFContentItemPropertyName: 'Calendar',
-      WFInput: function(state) sc.Ref(state, 'Vars.Repeat Item', att=true),
+      WFInput: sc.Ref('Vars.Repeat Item', att=true),
     }),
 
     sc.Action('is.workflow.actions.getvalueforkey', name='Calendar Label', params={
-      WFDictionaryKey: function(state) sc.Val('${Calendar}', state),
-      WFInput: function(state) sc.Ref(state, 'Vars.Calendar Labels', att=true),
+      WFDictionaryKey: sc.Str([sc.Ref('Calendar')]),
+      WFInput: sc.Ref('Vars.Calendar Labels', att=true),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
@@ -266,31 +258,31 @@ local sc = import 'shortcuts.libsonnet';
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: function(state) sc.Ref(state, 'Calendar Label', att=true),
+        Variable: sc.Ref('Calendar Label', att=true),
       },
     }),
 
     sc.Action('is.workflow.actions.properties.calendarevents', name='Title', params={
       WFContentItemPropertyName: 'Title',
-      WFInput: function(state) sc.Ref(state, 'Vars.Repeat Item', att=true),
+      WFInput: sc.Ref('Vars.Repeat Item', att=true),
     }),
 
     sc.Action('is.workflow.actions.getvalueforkey', name='Calendar Lead Time', params={
-      WFDictionaryKey: function(state) sc.Val('${Calendar}', state),
-      WFInput: function(state) sc.Ref(state, 'Vars.Calendar Lead Times', att=true),
+      WFDictionaryKey: sc.Str([sc.Ref('Calendar')]),
+      WFInput: sc.Ref('Vars.Calendar Lead Times', att=true),
     }),
 
     sc.Action('is.workflow.actions.properties.calendarevents', name='Start Date', params={
       WFContentItemPropertyName: 'Start Date',
-      WFInput: function(state) sc.Ref(state, 'Vars.Repeat Item', att=true),
+      WFInput: sc.Ref('Vars.Repeat Item', att=true),
     }),
 
     sc.Action('is.workflow.actions.adjustdate', name='Desired Alarm Time', params={
       WFAdjustOperation: 'Subtract',
-      WFDate: function(state) sc.Val('${Start Date}', state),
+      WFDate: sc.Str([sc.Ref('Start Date')]),
       WFDuration: {
         Value: {
-          Magnitude: function(state) sc.Ref(state, 'Calendar Lead Time'),
+          Magnitude: sc.Ref('Calendar Lead Time'),
           Unit: 'min',
         },
         WFSerializationType: 'WFQuantityFieldValue',
@@ -298,7 +290,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.setvariable', {
-      WFInput: function(state) sc.Ref(state, 'Desired Alarm Time', att=true),
+      WFInput: sc.Ref('Desired Alarm Time', att=true),
       WFVariableName: 'Desired Alarm Time',
     }),
 
@@ -306,8 +298,8 @@ local sc = import 'shortcuts.libsonnet';
       WFTextActionText: {
         Value: {
           attachmentsByRange: {
-            '{0, 1}': function(state) sc.Ref(state, 'Calendar Label'),
-            '{12, 1}': function(state) sc.Ref(state, 'Start Date', aggs=[
+            '{0, 1}': sc.Ref('Calendar Label'),
+            '{12, 1}': sc.Ref('Start Date', aggs=[
               {
                 Type: 'WFDateFormatVariableAggrandizement',
                 WFDateFormatStyle: 'None',
@@ -315,7 +307,7 @@ local sc = import 'shortcuts.libsonnet';
                 WFTimeFormatStyle: 'Short',
               },
             ]),
-            '{7, 1}': function(state) sc.Ref(state, 'Title'),
+            '{7, 1}': sc.Ref('Title'),
           },
           string: '￼ 🗓️: ￼ at ￼',
         },
@@ -326,18 +318,18 @@ local sc = import 'shortcuts.libsonnet';
     sc.Action('is.workflow.actions.repeat.each', {
       GroupingIdentifier: '96494FE3-384B-4E3D-A6BB-E7397D7E6D39',
       WFControlFlowMode: 0,
-      WFInput: function(state) sc.Ref(state, 'Vars.Calendar Alarms', att=true),
+      WFInput: sc.Ref('Vars.Calendar Alarms', att=true),
     }),
 
     sc.Action('is.workflow.actions.setvariable', {
-      WFInput: function(state) sc.Ref(state, 'Vars.Repeat Item 2', att=true),
+      WFInput: sc.Ref('Vars.Repeat Item 2', att=true),
       WFVariableName: 'Candidate Alarm',
     }),
 
     sc.Action('is.workflow.actions.conditional', {
       GroupingIdentifier: '158A4D5F-D62E-4F00-9F76-3C5B2B144588',
       WFCondition: 4,
-      WFConditionalActionString: function(state) sc.Val('${Desired Alarm Name}', state),
+      WFConditionalActionString: sc.Str([sc.Ref('Desired Alarm Name')]),
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
@@ -359,52 +351,58 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.setvariable', {
-      WFInput: function(state) sc.Ref(state, 'Vars.Candidate Alarm', att=true),
+      WFInput: sc.Ref('Vars.Candidate Alarm', att=true),
       WFVariableName: 'Alarm',
     }),
 
     sc.Action('is.workflow.actions.setvariable', {
-      WFInput: function(state) sc.Ref(state, 'Vars.Repeat Index 2', att=true),
+      WFInput: sc.Ref('Vars.Repeat Index 2', att=true),
       WFVariableName: 'Alarm Index',
     }),
 
     sc.Action('is.workflow.actions.gettimebetweendates', name='Time Between Dates', params={
-      WFInput: function(state) sc.Val('${Start Date}', state),
-      WFTimeUntilFromDate: {
-        Value: {
-          attachmentsByRange: {
-            '{0, 1}': {
-              Aggrandizements: [
-                {
-                  PropertyName: 'dateComponents',
-                  Type: 'WFPropertyVariableAggrandizement',
-                },
-                {
-                  Type: 'WFDateFormatVariableAggrandizement',
-                  WFDateFormatStyle: 'None',
-                  WFISO8601IncludeTime: false,
-                  WFTimeFormatStyle: 'Short',
-                },
-              ],
-              Type: 'Variable',
-              VariableName: 'Repeat Item 2',
-            },
-          },
-          string: '￼',
+      WFInput: sc.Str([sc.Ref('Start Date', aggs=[
+        {
+          Type: 'WFDateFormatVariableAggrandizement',
+          WFDateFormatStyle: 'None',
+          WFISO8601IncludeTime: false,
+          WFTimeFormatStyle: 'Short',
         },
-        WFSerializationType: 'WFTextTokenString',
-      },
+      ])]),
+      WFTimeUntilFromDate: sc.Str([{
+        Aggrandizements: [
+          {
+            PropertyName: 'dateComponents',
+            Type: 'WFPropertyVariableAggrandizement',
+          },
+          {
+            Type: 'WFDateFormatVariableAggrandizement',
+            WFDateFormatStyle: 'None',
+            WFISO8601IncludeTime: false,
+            WFTimeFormatStyle: 'Short',
+          },
+        ],
+        Type: 'Variable',
+        VariableName: 'Repeat Item 2',
+      }]),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
       GroupingIdentifier: '39E438DD-244C-452F-A903-9705E3730F13',
       WFAnotherNumber: '240',
       WFCondition: 1003,
-      WFConditionalActionString: function(state) sc.Val('${Desired Alarm Time}', state),
+      WFConditionalActionString: sc.Str([sc.Ref('Desired Alarm Time', aggs=[
+        {
+          Type: 'WFDateFormatVariableAggrandizement',
+          WFDateFormatStyle: 'None',
+          WFISO8601IncludeTime: false,
+          WFTimeFormatStyle: 'Short',
+        },
+      ])]),
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: function(state) sc.Ref(state, 'Time Between Dates', att=true),
+        Variable: sc.Ref('Time Between Dates', att=true),
       },
       WFNumberValue: '0',
     }),
@@ -442,7 +440,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.count', {
-      Input: function(state) sc.Ref(state, 'If Result', att=true),
+      Input: sc.Ref('If Result', att=true),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
@@ -456,18 +454,10 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.gettimebetweendates', name='Time Between Dates', params={
-      WFInput: function(state) sc.Val('${Vars.Desired Alarm Time}', state),
-      WFTimeUntilFromDate: {
-        Value: {
-          attachmentsByRange: {
-            '{0, 1}': {
-              Type: 'CurrentDate',
-            },
-          },
-          string: '￼',
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
+      WFInput: sc.Str([sc.Ref('Vars.Desired Alarm Time')]),
+      WFTimeUntilFromDate: sc.Str([{
+        Type: 'CurrentDate',
+      }]),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
@@ -476,7 +466,7 @@ local sc = import 'shortcuts.libsonnet';
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: function(state) sc.Ref(state, 'Time Between Dates', att=true),
+        Variable: sc.Ref('Time Between Dates', att=true),
       },
       WFNumberValue: '0',
     }),
@@ -487,7 +477,7 @@ local sc = import 'shortcuts.libsonnet';
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: function(state) sc.Ref(state, 'Vars.Alarm', att=true),
+        Variable: sc.Ref('Vars.Alarm', att=true),
       },
     }),
 
@@ -499,9 +489,9 @@ local sc = import 'shortcuts.libsonnet';
         TeamIdentifier: '0000000000',
       },
       ShowWhenRun: false,
-      dateComponents: function(state) sc.Val('${Desired Alarm Time}', state),
-      label: function(state) sc.Val('${Desired Alarm Name}', state),
-      name: function(state) sc.Val('${Desired Alarm Name}', state),
+      dateComponents: sc.Str([sc.Ref('Desired Alarm Time')]),
+      label: sc.Str([sc.Ref('Desired Alarm Name')]),
+      name: sc.Str([sc.Ref('Desired Alarm Name')]),
       repeatSchedule: {
         displayString: 'Never',
         value: 0,
@@ -512,7 +502,7 @@ local sc = import 'shortcuts.libsonnet';
       WFNotificationActionBody: {
         Value: {
           attachmentsByRange: {
-            '{14, 1}': function(state) sc.Ref(state, 'Desired Alarm Name'),
+            '{14, 1}': sc.Ref('Desired Alarm Name'),
           },
           string: 'Created alarm ￼',
         },
@@ -533,7 +523,7 @@ local sc = import 'shortcuts.libsonnet';
         TeamIdentifier: '0000000000',
       },
       ShowWhenRun: false,
-      alarm: function(state) sc.Ref(state, 'Vars.Alarm', att=true),
+      alarm: sc.Ref('Vars.Alarm', att=true),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
@@ -542,13 +532,13 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.setvalueforkey', name='Dictionary', params={
-      WFDictionary: function(state) sc.Ref(state, 'Vars.Matched Calendar Alarm Indices', att=true),
-      WFDictionaryKey: function(state) sc.Val('${Vars.Alarm Index}', state),
+      WFDictionary: sc.Ref('Vars.Matched Calendar Alarm Indices', att=true),
+      WFDictionaryKey: sc.Str([sc.Ref('Vars.Alarm Index')]),
       WFDictionaryValue: 'yes',
     }),
 
     sc.Action('is.workflow.actions.setvariable', {
-      WFInput: function(state) sc.Ref(state, 'Dictionary', att=true),
+      WFInput: sc.Ref('Dictionary', att=true),
       WFVariableName: 'Matched Calendar Alarm Indices',
     }),
 
@@ -568,18 +558,18 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.count', name='Count', params={
-      Input: function(state) sc.Ref(state, 'Vars.Calendar Alarms', att=true),
+      Input: sc.Ref('Vars.Calendar Alarms', att=true),
     }),
 
     sc.Action('is.workflow.actions.repeat.count', {
       GroupingIdentifier: '70AA4591-58E4-4CB5-8C7E-09A82EB1495D',
       WFControlFlowMode: 0,
-      WFRepeatCount: function(state) sc.Ref(state, 'Count', att=true),
+      WFRepeatCount: sc.Ref('Count', att=true),
     }),
 
     sc.Action('is.workflow.actions.getvalueforkey', name='Dictionary Value', params={
-      WFDictionaryKey: function(state) sc.Val('${Vars.Repeat Index}', state),
-      WFInput: function(state) sc.Ref(state, 'Vars.Matched Calendar Alarm Indices', att=true),
+      WFDictionaryKey: sc.Str([sc.Ref('Vars.Repeat Index')]),
+      WFInput: sc.Ref('Vars.Matched Calendar Alarm Indices', att=true),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
@@ -588,7 +578,7 @@ local sc = import 'shortcuts.libsonnet';
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: function(state) sc.Ref(state, 'Dictionary Value', att=true),
+        Variable: sc.Ref('Dictionary Value', att=true),
       },
     }),
 
@@ -600,7 +590,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.getvariable', {
-      WFVariable: function(state) sc.Ref(state, 'Vars.Repeat Index', att=true),
+      WFVariable: sc.Ref('Vars.Repeat Index', att=true),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
@@ -614,24 +604,24 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.setvariable', {
-      WFInput: function(state) sc.Ref(state, 'Repeat Results', att=true),
+      WFInput: sc.Ref('Repeat Results', att=true),
       WFVariableName: 'Unmatched Calendar Alarm Indices',
     }),
 
     sc.Action('is.workflow.actions.repeat.each', {
       GroupingIdentifier: 'FA4A18C4-308D-44AC-8E2E-31906FCC518F',
       WFControlFlowMode: 0,
-      WFInput: function(state) sc.Ref(state, 'Vars.Unmatched Calendar Alarm Indices', att=true),
+      WFInput: sc.Ref('Vars.Unmatched Calendar Alarm Indices', att=true),
     }),
 
     sc.Action('is.workflow.actions.getitemfromlist', name='Item from List', params={
-      WFInput: function(state) sc.Ref(state, 'Vars.Calendar Alarms', att=true),
-      WFItemIndex: function(state) sc.Ref(state, 'Vars.Repeat Item', att=true),
+      WFInput: sc.Ref('Vars.Calendar Alarms', att=true),
+      WFItemIndex: sc.Ref('Vars.Repeat Item', att=true),
       WFItemSpecifier: 'Item At Index',
     }),
 
     sc.Action('is.workflow.actions.setvariable', {
-      WFInput: function(state) sc.Ref(state, 'Item from List', att=true),
+      WFInput: sc.Ref('Item from List', att=true),
       WFVariableName: 'Alarm to Disable',
     }),
 
@@ -659,7 +649,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.notification', {
-      WFInput: function(state) sc.Ref(state, 'Item from List', att=true),
+      WFInput: sc.Ref('Item from List', att=true),
       WFNotificationActionBody: {
         Value: {
           attachmentsByRange: {
@@ -689,7 +679,7 @@ local sc = import 'shortcuts.libsonnet';
         TeamIdentifier: '0000000000',
       },
       ShowWhenRun: false,
-      alarm: function(state) sc.Ref(state, 'Vars.Alarm to Disable', att=true),
+      alarm: sc.Ref('Vars.Alarm to Disable', att=true),
       state: 0,
     }),
 
