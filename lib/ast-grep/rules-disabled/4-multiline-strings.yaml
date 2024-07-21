@@ -1,0 +1,20 @@
+id: multiline-strings
+language: jsonnet
+
+rule:
+  kind: string
+  has:
+    pattern: $CONTENTS
+    regex: '\\n' # escaped newline
+
+transform:
+  CONTENTS_UNESCAPED_NL:
+    replace:
+      source: $CONTENTS
+      replace: '\\n' # escaped newline
+      by: "- \n" # literal newline
+
+fix: |-
+  |||
+    $CONTENTS_UNESCAPED_NL
+  |||
