@@ -9,7 +9,7 @@ local sc = import 'shortcuts.libsonnet';
     sc.Action('is.workflow.actions.repeat.each', {
       GroupingIdentifier: '3C39F304-C709-4042-8340-B48B1B383EB8',
       WFControlFlowMode: 0,
-      WFInput: sc.Ref('My Shortcuts', att=true),
+      WFInput: sc.Attach(sc.Ref('My Shortcuts')),
     }),
 
     sc.Action('is.workflow.actions.list', name='List', params={
@@ -37,7 +37,7 @@ local sc = import 'shortcuts.libsonnet';
     sc.Action('is.workflow.actions.text.combine', {
       WFTextCustomSeparator: '/',
       WFTextSeparator: 'Custom',
-      text: sc.Ref('List', att=true),
+      text: sc.Attach(sc.Ref('List')),
     }),
 
     sc.Action('is.workflow.actions.repeat.each', name='Repeat Results', params={
@@ -46,7 +46,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.text.combine', name='Combined Text', params={
-      text: sc.Ref('Repeat Results', att=true),
+      text: sc.Attach(sc.Ref('Repeat Results')),
     }),
 
     sc.Action('is.workflow.actions.output', {

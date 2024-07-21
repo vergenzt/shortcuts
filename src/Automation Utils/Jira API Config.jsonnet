@@ -9,18 +9,18 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('ke.bou.GizmoPack.QueryJSONIntent', name='Result', params={
-      input: sc.Ref('Jira Config', att=true),
+      input: sc.Attach(sc.Ref('Jira Config')),
       jqQuery: '"\\(.username):\\(.api_token)" | @base64',
       queryType: 'jq',
     }),
 
     sc.Action('is.workflow.actions.setvalueforkey', {
-      WFDictionary: sc.Ref('Jira Config', aggs=[
+      WFDictionary: sc.Attach(sc.Ref('Jira Config', aggs=[
         {
           CoercionItemClass: 'WFDictionaryContentItem',
           Type: 'WFCoercionVariableAggrandizement',
         },
-      ], att=true),
+      ])),
       WFDictionaryKey: 'authorization',
       WFDictionaryValue: {
         Value: {

@@ -14,13 +14,13 @@ local sc = import 'shortcuts.libsonnet';
     sc.Action('is.workflow.actions.repeat.each', {
       GroupingIdentifier: 'B4F3CD09-4BC6-4CBD-B8AC-2DC99998DBF2',
       WFControlFlowMode: 0,
-      WFInput: sc.Ref('My Shortcuts', att=true),
+      WFInput: sc.Attach(sc.Ref('My Shortcuts')),
     }),
 
     sc.Action('is.workflow.actions.runworkflow', {
-      WFInput: sc.Ref('Vars.Repeat Item', att=true),
-      WFWorkflow: sc.Ref('Vars.Repeat Item', att=true),
-      WFWorkflowName: sc.Ref('Vars.Repeat Item', att=true),
+      WFInput: sc.Attach(sc.Ref('Vars.Repeat Item')),
+      WFWorkflow: sc.Attach(sc.Ref('Vars.Repeat Item')),
+      WFWorkflowName: sc.Attach(sc.Ref('Vars.Repeat Item')),
     }),
 
     sc.Action('is.workflow.actions.repeat.each', {

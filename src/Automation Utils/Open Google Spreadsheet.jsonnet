@@ -15,7 +15,7 @@ local sc = import 'shortcuts.libsonnet';
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: sc.Ref('Device Model', att=true),
+        Variable: sc.Attach(sc.Ref('Device Model')),
       },
     }),
 
@@ -53,7 +53,7 @@ local sc = import 'shortcuts.libsonnet';
 
     sc.Action('is.workflow.actions.openurl', {
       'Show-WFInput': true,
-      WFInput: sc.Ref('URL', att=true),
+      WFInput: sc.Attach(sc.Ref('URL')),
     }),
 
   ]),

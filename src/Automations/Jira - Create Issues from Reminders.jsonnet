@@ -39,7 +39,7 @@ local sc = import 'shortcuts.libsonnet';
     sc.Action('is.workflow.actions.repeat.each', {
       GroupingIdentifier: '06C7177F-0DD0-4EF7-8354-638BF3E43DE8',
       WFControlFlowMode: 0,
-      WFInput: sc.Ref('Reminders', att=true),
+      WFInput: sc.Attach(sc.Ref('Reminders')),
     }),
 
     sc.Action('com.atlassian.jira.app.CreateIssueIntent', name='Issue', params={
@@ -111,17 +111,17 @@ local sc = import 'shortcuts.libsonnet';
     sc.Action('is.workflow.actions.repeat.each', {
       GroupingIdentifier: 'F24C9B98-1D8E-40A2-BE15-5494F2260456',
       WFControlFlowMode: 0,
-      WFInput: sc.Ref('Dictionary', aggs=[
+      WFInput: sc.Attach(sc.Ref('Dictionary', aggs=[
         {
           PropertyName: 'Keys',
           Type: 'WFPropertyVariableAggrandizement',
         },
-      ], att=true),
+      ])),
     }),
 
     sc.Action('is.workflow.actions.getvalueforkey', name='Dictionary Value', params={
       WFDictionaryKey: sc.Str([sc.Ref('Vars.Repeat Item 2')]),
-      WFInput: sc.Ref('Dictionary', att=true),
+      WFInput: sc.Attach(sc.Ref('Dictionary')),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
@@ -130,7 +130,7 @@ local sc = import 'shortcuts.libsonnet';
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: sc.Ref('Dictionary Value', att=true),
+        Variable: sc.Attach(sc.Ref('Dictionary Value')),
       },
     }),
 
@@ -167,11 +167,11 @@ local sc = import 'shortcuts.libsonnet';
     sc.Action('is.workflow.actions.text.combine', name='Combined Text', params={
       WFTextCustomSeparator: '',
       WFTextSeparator: 'New Lines',
-      text: sc.Ref('Repeat Results', att=true),
+      text: sc.Attach(sc.Ref('Repeat Results')),
     }),
 
     sc.Action('com.atlassian.jira.app.SetIssueFieldIntent', name='Issue', params={
-      issue: sc.Ref('Issue', att=true),
+      issue: sc.Attach(sc.Ref('Issue')),
       setFieldName: 'Description',
       setFieldValue: sc.Str([sc.Ref('Combined Text')]),
     }),
@@ -179,7 +179,7 @@ local sc = import 'shortcuts.libsonnet';
     sc.Action('is.workflow.actions.setters.reminders', {
       Mode: 'Set',
       WFContentItemPropertyName: 'List',
-      WFInput: sc.Ref('Vars.Repeat Item', att=true),
+      WFInput: sc.Attach(sc.Ref('Vars.Repeat Item')),
       WFReminderContentItemList: 'Added to Jira',
     }),
 
@@ -220,7 +220,7 @@ local sc = import 'shortcuts.libsonnet';
       Mode: 'Set',
       'Show-WFReminderContentItemTags': true,
       WFContentItemPropertyName: 'Notes',
-      WFInput: sc.Ref('Vars.Repeat Item', att=true),
+      WFInput: sc.Attach(sc.Ref('Vars.Repeat Item')),
       WFReminderContentItemIsCompleted: 1,
       WFReminderContentItemNotes: {
         Value: {

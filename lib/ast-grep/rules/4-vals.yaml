@@ -55,11 +55,11 @@ rewriters:
   rule:
     pattern: >-
       {
-        Value: sc.Ref($$$ARGS),
+        Value: $VAL,
         WFSerializationType: 'WFTextTokenAttachment',
       }
   fix: >-
-    sc.Ref($$$ARGS, att=true)
+    sc.Attach($VAL)
 
 transform:
   X_RE:

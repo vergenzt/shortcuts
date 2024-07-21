@@ -7,10 +7,7 @@ local sc = import 'shortcuts.libsonnet';
     sc.Action('is.workflow.actions.dictionary', name='Empty Dictionary'),
 
     sc.Action('is.workflow.actions.detect.dictionary', name='Input As Dict', params={
-      WFInput: {
-        Value: sc.Input,
-        WFSerializationType: 'WFTextTokenAttachment',
-      },
+      WFInput: sc.Attach(sc.Input),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
@@ -19,13 +16,13 @@ local sc = import 'shortcuts.libsonnet';
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: sc.Ref('Input As Dict', att=true),
+        Variable: sc.Attach(sc.Ref('Input As Dict')),
       },
     }),
 
     sc.Action('is.workflow.actions.getvalueforkey', {
       WFDictionaryKey: 'issue_key',
-      WFInput: sc.Ref('Input As Dict', att=true),
+      WFInput: sc.Attach(sc.Ref('Input As Dict')),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
@@ -51,12 +48,12 @@ local sc = import 'shortcuts.libsonnet';
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: sc.Ref('Issue key', att=true),
+        Variable: sc.Attach(sc.Ref('Issue key')),
       },
     }),
 
     sc.Action('is.workflow.actions.notification', {
-      WFInput: sc.Ref('Issue key', att=true),
+      WFInput: sc.Attach(sc.Ref('Issue key')),
       WFNotificationActionBody: 'No issue key provided!',
     }),
 
@@ -72,14 +69,14 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('ke.bou.GizmoPack.QueryJSONIntent', name='Link Type IDs by Inward String', params={
-      input: sc.Ref('Value', att=true),
+      input: sc.Attach(sc.Ref('Value')),
       jqQuery: '.issueLinkTypes | map(select(.name | contains("*") | not) | { key: .inward, value: { id, name } }) | from_entries',
       queryType: 'jq',
     }),
 
     sc.Action('is.workflow.actions.choosefromlist', name='Chosen String', params={
       WFChooseFromListActionPrompt: "What's the relationship?",
-      WFInput: sc.Ref('Link Type IDs by Inward String', aggs=[
+      WFInput: sc.Attach(sc.Ref('Link Type IDs by Inward String', aggs=[
         {
           CoercionItemClass: 'WFDictionaryContentItem',
           Type: 'WFCoercionVariableAggrandizement',
@@ -88,12 +85,12 @@ local sc = import 'shortcuts.libsonnet';
           PropertyName: 'Keys',
           Type: 'WFPropertyVariableAggrandizement',
         },
-      ], att=true),
+      ])),
     }),
 
     sc.Action('is.workflow.actions.getvalueforkey', name='Link Type', params={
       WFDictionaryKey: sc.Str([sc.Ref('Chosen String')]),
-      WFInput: sc.Ref('Link Type IDs by Inward String', att=true),
+      WFInput: sc.Attach(sc.Ref('Link Type IDs by Inward String')),
     }),
 
     sc.Action('is.workflow.actions.text.replace', name='Link Type Name', params={
@@ -140,7 +137,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.runworkflow', name='Origin Issue', params={
-      WFInput: sc.Ref('Dictionary', att=true),
+      WFInput: sc.Attach(sc.Ref('Dictionary')),
       WFWorkflow: {
         isSelf: false,
         workflowIdentifier: 'B245F907-CA3B-4273-B2B7-BE1A4BAE3F79',
@@ -174,7 +171,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.setclipboard', {
-      WFInput: sc.Ref('New Issue Summary', att=true),
+      WFInput: sc.Attach(sc.Ref('New Issue Summary')),
     }),
 
     sc.Action('is.workflow.actions.text.replace', {
@@ -400,7 +397,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.runworkflow', name='Create Issue Result', params={
-      WFInput: sc.Ref('Create Issue Request', att=true),
+      WFInput: sc.Attach(sc.Ref('Create Issue Request')),
       WFWorkflow: {
         isSelf: false,
         workflowIdentifier: 'B245F907-CA3B-4273-B2B7-BE1A4BAE3F79',
@@ -414,7 +411,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.setvalueforkey', name='Dictionary', params={
-      WFDictionary: sc.Ref('Empty Dictionary', att=true),
+      WFDictionary: sc.Attach(sc.Ref('Empty Dictionary')),
       WFDictionaryKey: 'issue',
       WFDictionaryValue: sc.Str([sc.Ref('Create Issue Result', aggs=[
         {
@@ -425,7 +422,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.runworkflow', {
-      WFInput: sc.Ref('Dictionary', att=true),
+      WFInput: sc.Attach(sc.Ref('Dictionary')),
       WFWorkflow: {
         isSelf: false,
         workflowIdentifier: 'DE45228B-5A30-4A30-AF37-DA40929C57C2',

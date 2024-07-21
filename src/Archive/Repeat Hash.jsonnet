@@ -28,13 +28,13 @@ local sc = import 'shortcuts.libsonnet';
         },
         WFSerializationType: 'WFTextTokenString',
       },
-      values: sc.Ref('Date', aggs=[
+      values: sc.Attach(sc.Ref('Date', aggs=[
         {
           Type: 'WFDateFormatVariableAggrandizement',
           WFDateFormatStyle: 'ISO 8601',
           WFISO8601IncludeTime: true,
         },
-      ], att=true),
+      ])),
     }),
 
     sc.Action('ch.marcela.ada.Pyto.RunCodeIntent', {
@@ -94,7 +94,7 @@ local sc = import 'shortcuts.libsonnet';
         },
         WFSerializationType: 'WFTextTokenString',
       },
-      values: sc.Ref('Result', att=true),
+      values: sc.Attach(sc.Ref('Result')),
     }),
 
     sc.Action('is.workflow.actions.gettext', name='Prompt', params={

@@ -64,7 +64,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.runworkflow', name='Time Entries', params={
-      WFInput: sc.Ref('Dictionary', att=true),
+      WFInput: sc.Attach(sc.Ref('Dictionary')),
       WFWorkflow: {
         isSelf: false,
         workflowIdentifier: 'D7676A00-FF48-4BCC-AD06-21D893C2BFE9',
@@ -76,7 +76,7 @@ local sc = import 'shortcuts.libsonnet';
     sc.Action('is.workflow.actions.repeat.each', {
       GroupingIdentifier: 'D9C206AD-C252-455D-A994-9C52097C95F0',
       WFControlFlowMode: 0,
-      WFInput: sc.Ref('Time Entries', att=true),
+      WFInput: sc.Attach(sc.Ref('Time Entries')),
     }),
 
     sc.Action('is.workflow.actions.list', name='Endpoint Keys', params={
@@ -89,12 +89,12 @@ local sc = import 'shortcuts.libsonnet';
     sc.Action('is.workflow.actions.repeat.each', {
       GroupingIdentifier: 'B6878FDB-F12E-4BE9-8FA0-198D4A57DA40',
       WFControlFlowMode: 0,
-      WFInput: sc.Ref('Endpoint Keys', att=true),
+      WFInput: sc.Attach(sc.Ref('Endpoint Keys')),
     }),
 
     sc.Action('is.workflow.actions.getvalueforkey', name='Endpoint Text', params={
       WFDictionaryKey: sc.Str([sc.Ref('Vars.Repeat Item 2')]),
-      WFInput: sc.Ref('Vars.Repeat Item', att=true),
+      WFInput: sc.Attach(sc.Ref('Vars.Repeat Item')),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
@@ -103,12 +103,12 @@ local sc = import 'shortcuts.libsonnet';
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: sc.Ref('Endpoint Text', att=true),
+        Variable: sc.Attach(sc.Ref('Endpoint Text')),
       },
     }),
 
     sc.Action('is.workflow.actions.detect.date', name='Endpoint', params={
-      WFInput: sc.Ref('Endpoint Text', att=true),
+      WFInput: sc.Attach(sc.Ref('Endpoint Text')),
     }),
 
     sc.Action('is.workflow.actions.gettimebetweendates', name='Endpoint Interval', params={
@@ -123,7 +123,7 @@ local sc = import 'shortcuts.libsonnet';
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: sc.Ref('Endpoint Interval', att=true),
+        Variable: sc.Attach(sc.Ref('Endpoint Interval')),
       },
       WFNumberValue: '0',
     }),
@@ -181,7 +181,7 @@ local sc = import 'shortcuts.libsonnet';
     sc.Action('is.workflow.actions.text.combine', name='Combined Text', params={
       WFTextCustomSeparator: ', ',
       WFTextSeparator: 'Custom',
-      text: sc.Ref('Repeat Results', att=true),
+      text: sc.Attach(sc.Ref('Repeat Results')),
     }),
 
     sc.Action('is.workflow.actions.dictionary', name='Dictionary', params={
@@ -206,7 +206,7 @@ local sc = import 'shortcuts.libsonnet';
 
     sc.Action('is.workflow.actions.getvalueforkey', name='Dictionary Value', params={
       WFDictionaryKey: sc.Str([sc.Ref('Combined Text')]),
-      WFInput: sc.Ref('Dictionary', att=true),
+      WFInput: sc.Attach(sc.Ref('Dictionary')),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
@@ -215,7 +215,7 @@ local sc = import 'shortcuts.libsonnet';
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: sc.Ref('Dictionary Value', att=true),
+        Variable: sc.Attach(sc.Ref('Dictionary Value')),
       },
     }),
 
@@ -313,23 +313,20 @@ local sc = import 'shortcuts.libsonnet';
               WFItemType: 4,
               WFKey: sc.Str(['billable']),
               WFValue: {
-                Value: {
-                  Value: {
-                    Aggrandizements: [
-                      {
-                        CoercionItemClass: 'WFDictionaryContentItem',
-                        Type: 'WFCoercionVariableAggrandizement',
-                      },
-                      {
-                        DictionaryKey: 'billable',
-                        Type: 'WFDictionaryValueVariableAggrandizement',
-                      },
-                    ],
-                    Type: 'Variable',
-                    VariableName: 'Repeat Item',
-                  },
-                  WFSerializationType: 'WFTextTokenAttachment',
-                },
+                Value: sc.Attach({
+                  Aggrandizements: [
+                    {
+                      CoercionItemClass: 'WFDictionaryContentItem',
+                      Type: 'WFCoercionVariableAggrandizement',
+                    },
+                    {
+                      DictionaryKey: 'billable',
+                      Type: 'WFDictionaryValueVariableAggrandizement',
+                    },
+                  ],
+                  Type: 'Variable',
+                  VariableName: 'Repeat Item',
+                }),
                 WFSerializationType: 'WFNumberSubstitutableState',
               },
             },
@@ -340,12 +337,12 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.setvalueforkey', name='Updated JSON', params={
-      WFDictionary: sc.Ref('New Entry Request', aggs=[
+      WFDictionary: sc.Attach(sc.Ref('New Entry Request', aggs=[
         {
           DictionaryKey: 'json',
           Type: 'WFDictionaryValueVariableAggrandizement',
         },
-      ], att=true),
+      ])),
       WFDictionaryKey: 'tag_ids',
       WFDictionaryValue: sc.Str([{
         Aggrandizements: [
@@ -364,7 +361,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.setvalueforkey', name='Updated New Entry Request', params={
-      WFDictionary: sc.Ref('New Entry Request', att=true),
+      WFDictionary: sc.Attach(sc.Ref('New Entry Request')),
       WFDictionaryKey: 'json',
       WFDictionaryValue: sc.Str([sc.Ref('Updated JSON')]),
     }),
@@ -497,23 +494,20 @@ local sc = import 'shortcuts.libsonnet';
                         WFItemType: 4,
                         WFKey: sc.Str(['billable']),
                         WFValue: {
-                          Value: {
-                            Value: {
-                              Aggrandizements: [
-                                {
-                                  CoercionItemClass: 'WFDictionaryContentItem',
-                                  Type: 'WFCoercionVariableAggrandizement',
-                                },
-                                {
-                                  DictionaryKey: 'billable',
-                                  Type: 'WFDictionaryValueVariableAggrandizement',
-                                },
-                              ],
-                              Type: 'Variable',
-                              VariableName: 'Repeat Item',
-                            },
-                            WFSerializationType: 'WFTextTokenAttachment',
-                          },
+                          Value: sc.Attach({
+                            Aggrandizements: [
+                              {
+                                CoercionItemClass: 'WFDictionaryContentItem',
+                                Type: 'WFCoercionVariableAggrandizement',
+                              },
+                              {
+                                DictionaryKey: 'billable',
+                                Type: 'WFDictionaryValueVariableAggrandizement',
+                              },
+                            ],
+                            Type: 'Variable',
+                            VariableName: 'Repeat Item',
+                          }),
                           WFSerializationType: 'WFNumberSubstitutableState',
                         },
                       },
@@ -531,7 +525,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.runworkflow', {
-      WFInput: sc.Ref('Updated New Entry Request', att=true),
+      WFInput: sc.Attach(sc.Ref('Updated New Entry Request')),
       WFWorkflow: {
         isSelf: false,
         workflowIdentifier: 'D7676A00-FF48-4BCC-AD06-21D893C2BFE9',

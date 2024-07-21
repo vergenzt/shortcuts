@@ -31,18 +31,18 @@ local sc = import 'shortcuts.libsonnet';
     sc.Action('is.workflow.actions.repeat.each', {
       GroupingIdentifier: '4CC0F7FC-67E5-4A99-9E5B-355E2F0B56ED',
       WFControlFlowMode: 0,
-      WFInput: sc.Ref('Contacts', att=true),
+      WFInput: sc.Attach(sc.Ref('Contacts')),
     }),
 
     sc.Action('is.workflow.actions.repeat.each', {
       GroupingIdentifier: '55D8D462-8872-4045-9F46-91174853FBC0',
       WFControlFlowMode: 0,
-      WFInput: sc.Ref('Matches', att=true),
+      WFInput: sc.Attach(sc.Ref('Matches')),
     }),
 
     sc.Action('is.workflow.actions.properties.contacts', name='Details of Contacts', params={
-      WFContentItemPropertyName: sc.Ref('Vars.Repeat Item 2', att=true),
-      WFInput: sc.Ref('Vars.Repeat Item', att=true),
+      WFContentItemPropertyName: sc.Attach(sc.Ref('Vars.Repeat Item 2')),
+      WFInput: sc.Attach(sc.Ref('Vars.Repeat Item')),
     }),
 
     sc.Action('is.workflow.actions.text.replace', name='Updated Text', params={
@@ -71,7 +71,7 @@ local sc = import 'shortcuts.libsonnet';
         Name: 'Messages',
         TeamIdentifier: '0000000000',
       },
-      WFSendMessageActionRecipients: sc.Ref('Vars.Repeat Item', att=true),
+      WFSendMessageActionRecipients: sc.Attach(sc.Ref('Vars.Repeat Item')),
       WFSendMessageContent: sc.Str([sc.Ref('Updated Text')]),
     }),
 

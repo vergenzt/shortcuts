@@ -80,7 +80,7 @@ local sc = import 'shortcuts.libsonnet';
     sc.Action('is.workflow.actions.repeat.each', {
       GroupingIdentifier: '12455693-4B6E-4486-BAD9-730E939E6984',
       WFControlFlowMode: 0,
-      WFInput: sc.Ref('Contents of URL', aggs=[
+      WFInput: sc.Attach(sc.Ref('Contents of URL', aggs=[
         {
           CoercionItemClass: 'WFDictionaryContentItem',
           Type: 'WFCoercionVariableAggrandizement',
@@ -89,11 +89,11 @@ local sc = import 'shortcuts.libsonnet';
           DictionaryKey: 'values',
           Type: 'WFDictionaryValueVariableAggrandizement',
         },
-      ], att=true),
+      ])),
     }),
 
     sc.Action('is.workflow.actions.getitemfromlist', {
-      WFInput: sc.Ref('Vars.Repeat Item', att=true),
+      WFInput: sc.Attach(sc.Ref('Vars.Repeat Item')),
     }),
 
     sc.Action('is.workflow.actions.repeat.each', name='Repeat Results', params={
@@ -102,7 +102,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.choosefromlist', name='Chosen Item', params={
-      WFInput: sc.Ref('Repeat Results', att=true),
+      WFInput: sc.Attach(sc.Ref('Repeat Results')),
     }),
 
     sc.Action('is.workflow.actions.text.match', name='Matches', params={
@@ -117,7 +117,7 @@ local sc = import 'shortcuts.libsonnet';
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: sc.Ref('Matches', att=true),
+        Variable: sc.Attach(sc.Ref('Matches')),
       },
     }),
 
@@ -126,7 +126,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.setvariable', {
-      WFInput: sc.Ref('Provided Input', att=true),
+      WFInput: sc.Attach(sc.Ref('Provided Input')),
       WFVariableName: 'Med',
     }),
 
@@ -136,7 +136,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.setvariable', {
-      WFInput: sc.Ref('Chosen Item', att=true),
+      WFInput: sc.Attach(sc.Ref('Chosen Item')),
       WFVariableName: 'Med',
     }),
 
@@ -172,7 +172,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.setvariable', {
-      WFInput: sc.Ref('Provided Input', att=true),
+      WFInput: sc.Attach(sc.Ref('Provided Input')),
       WFVariableName: 'Med',
     }),
 
@@ -363,7 +363,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.detect.date', {
-      WFInput: sc.Ref('Menu Result', att=true),
+      WFInput: sc.Attach(sc.Ref('Menu Result')),
     }),
 
   ]),

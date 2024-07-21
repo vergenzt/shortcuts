@@ -5,10 +5,7 @@ local sc = import 'shortcuts.libsonnet';
   WFWorkflowActions: sc.ActionsSeq([
 
     sc.Action('is.workflow.actions.detect.dictionary', name='Input Dict', params={
-      WFInput: {
-        Value: sc.Input,
-        WFSerializationType: 'WFTextTokenAttachment',
-      },
+      WFInput: sc.Attach(sc.Input),
     }),
 
     sc.Action('is.workflow.actions.url', name='URL', params={
@@ -30,7 +27,7 @@ local sc = import 'shortcuts.libsonnet';
 
     sc.Action('is.workflow.actions.getvalueforkey', name='Request Method', params={
       WFDictionaryKey: 'method',
-      WFInput: sc.Ref('Input Dict', att=true),
+      WFInput: sc.Attach(sc.Ref('Input Dict')),
     }),
 
     sc.Action('dk.simonbs.DataJar.GetValueIntent', name='Toggl Track API Token', params={
@@ -51,12 +48,12 @@ local sc = import 'shortcuts.libsonnet';
 
     sc.Action('is.workflow.actions.base64encode', name='Base64 Encoded', params={
       WFBase64LineBreakMode: 'None',
-      WFInput: sc.Ref('Text', att=true),
+      WFInput: sc.Attach(sc.Ref('Text')),
     }),
 
     sc.Action('is.workflow.actions.getvalueforkey', name='Query Params', params={
       WFDictionaryKey: 'params',
-      WFInput: sc.Ref('Input Dict', att=true),
+      WFInput: sc.Attach(sc.Ref('Input Dict')),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
@@ -65,14 +62,14 @@ local sc = import 'shortcuts.libsonnet';
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: sc.Ref('Query Params', att=true),
+        Variable: sc.Attach(sc.Ref('Query Params')),
       },
     }),
 
     sc.Action('is.workflow.actions.repeat.each', {
       GroupingIdentifier: 'CB0F08F7-D254-42C4-933F-CDCE8DCF4415',
       WFControlFlowMode: 0,
-      WFInput: sc.Ref('Query Params', aggs=[
+      WFInput: sc.Attach(sc.Ref('Query Params', aggs=[
         {
           CoercionItemClass: 'WFDictionaryContentItem',
           Type: 'WFCoercionVariableAggrandizement',
@@ -81,7 +78,7 @@ local sc = import 'shortcuts.libsonnet';
           PropertyName: 'Keys',
           Type: 'WFPropertyVariableAggrandizement',
         },
-      ], att=true),
+      ])),
     }),
 
     sc.Action('is.workflow.actions.urlencode', name='Key', params={
@@ -90,7 +87,7 @@ local sc = import 'shortcuts.libsonnet';
 
     sc.Action('is.workflow.actions.getvalueforkey', name='Value', params={
       WFDictionaryKey: sc.Str([sc.Ref('Vars.Repeat Item')]),
-      WFInput: sc.Ref('Query Params', att=true),
+      WFInput: sc.Attach(sc.Ref('Query Params')),
     }),
 
     sc.Action('is.workflow.actions.urlencode', name='Value', params={
@@ -118,7 +115,7 @@ local sc = import 'shortcuts.libsonnet';
     sc.Action('is.workflow.actions.text.combine', {
       WFTextCustomSeparator: '&',
       WFTextSeparator: 'Custom',
-      text: sc.Ref('Repeat Results', att=true),
+      text: sc.Attach(sc.Ref('Repeat Results')),
     }),
 
     sc.Action('is.workflow.actions.conditional', name='Query', params={
@@ -142,7 +139,7 @@ local sc = import 'shortcuts.libsonnet';
     sc.Action('is.workflow.actions.text.combine', name='Combined URL', params={
       WFTextCustomSeparator: '?',
       WFTextSeparator: 'Custom',
-      text: sc.Ref('List', att=true),
+      text: sc.Attach(sc.Ref('List')),
     }),
 
     sc.Action('is.workflow.actions.downloadurl', {
@@ -173,13 +170,13 @@ local sc = import 'shortcuts.libsonnet';
         },
         WFSerializationType: 'WFDictionaryFieldValue',
       },
-      WFHTTPMethod: sc.Ref('Request Method', att=true),
-      WFRequestVariable: sc.Ref('Input Dict', aggs=[
+      WFHTTPMethod: sc.Attach(sc.Ref('Request Method')),
+      WFRequestVariable: sc.Attach(sc.Ref('Input Dict', aggs=[
         {
           DictionaryKey: 'json',
           Type: 'WFDictionaryValueVariableAggrandizement',
         },
-      ], att=true),
+      ])),
       WFURL: sc.Str([sc.Ref('Combined URL')]),
     }),
 

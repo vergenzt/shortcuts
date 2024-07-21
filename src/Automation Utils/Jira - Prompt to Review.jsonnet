@@ -15,7 +15,7 @@ local sc = import 'shortcuts.libsonnet';
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: sc.Ref('Device Model', att=true),
+        Variable: sc.Attach(sc.Ref('Device Model')),
       },
     }),
 
@@ -44,7 +44,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.openurl', {
-      WFInput: sc.Ref('URL', att=true),
+      WFInput: sc.Attach(sc.Ref('URL')),
     }),
 
     sc.Action('is.workflow.actions.exit'),
@@ -95,7 +95,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.runworkflow', name='Get Issue Result', params={
-      WFInput: sc.Ref('Dictionary', att=true),
+      WFInput: sc.Attach(sc.Ref('Dictionary')),
       WFWorkflow: {
         isSelf: false,
         workflowIdentifier: 'B245F907-CA3B-4273-B2B7-BE1A4BAE3F79',
@@ -106,10 +106,7 @@ local sc = import 'shortcuts.libsonnet';
 
     sc.Action('is.workflow.actions.getvalueforkey', name='Do you want to review?', params={
       WFDictionaryKey: 'review_prompt_optional',
-      WFInput: {
-        Value: sc.Input,
-        WFSerializationType: 'WFTextTokenAttachment',
-      },
+      WFInput: sc.Attach(sc.Input),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
@@ -118,7 +115,7 @@ local sc = import 'shortcuts.libsonnet';
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: sc.Ref('Do you want to review?', att=true),
+        Variable: sc.Attach(sc.Ref('Do you want to review?')),
       },
     }),
 
@@ -159,7 +156,7 @@ local sc = import 'shortcuts.libsonnet';
         },
         WFSerializationType: 'WFTextTokenString',
       },
-      WFInput: sc.Ref('List', att=true),
+      WFInput: sc.Attach(sc.Ref('List')),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
@@ -169,7 +166,7 @@ local sc = import 'shortcuts.libsonnet';
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: sc.Ref('Chosen Item', att=true),
+        Variable: sc.Attach(sc.Ref('Chosen Item')),
       },
     }),
 
@@ -291,10 +288,7 @@ local sc = import 'shortcuts.libsonnet';
 
     sc.Action('is.workflow.actions.getvalueforkey', name='filter', params={
       WFDictionaryKey: 'filter',
-      WFInput: {
-        Value: sc.Input,
-        WFSerializationType: 'WFTextTokenAttachment',
-      },
+      WFInput: sc.Attach(sc.Input),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
@@ -303,7 +297,7 @@ local sc = import 'shortcuts.libsonnet';
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: sc.Ref('filter', att=true),
+        Variable: sc.Attach(sc.Ref('filter')),
       },
     }),
 
@@ -350,15 +344,12 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.openurl', {
-      WFInput: sc.Ref('URL', att=true),
+      WFInput: sc.Attach(sc.Ref('URL')),
     }),
 
     sc.Action('is.workflow.actions.getvalueforkey', name='skip_return', params={
       WFDictionaryKey: 'skip_return',
-      WFInput: {
-        Value: sc.Input,
-        WFSerializationType: 'WFTextTokenAttachment',
-      },
+      WFInput: sc.Attach(sc.Input),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
@@ -367,7 +358,7 @@ local sc = import 'shortcuts.libsonnet';
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: sc.Ref('skip_return', att=true),
+        Variable: sc.Attach(sc.Ref('skip_return')),
       },
     }),
 

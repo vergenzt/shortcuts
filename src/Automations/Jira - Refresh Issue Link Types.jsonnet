@@ -25,7 +25,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.runworkflow', name='Get Link Types Result', params={
-      WFInput: sc.Ref('Dictionary', att=true),
+      WFInput: sc.Attach(sc.Ref('Dictionary')),
       WFWorkflow: {
         isSelf: false,
         workflowIdentifier: 'B245F907-CA3B-4273-B2B7-BE1A4BAE3F79',
@@ -40,14 +40,14 @@ local sc = import 'shortcuts.libsonnet';
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: sc.Ref('Get Link Types Result', att=true),
+        Variable: sc.Attach(sc.Ref('Get Link Types Result')),
       },
     }),
 
     sc.Action('dk.simonbs.DataJar.SetValueIntent', {
       keyPath: 'jira-config.issueLinkTypes',
       overwriteStrategy: 'alwaysAllow',
-      values: sc.Ref('Get Link Types Result', att=true),
+      values: sc.Attach(sc.Ref('Get Link Types Result')),
     }),
 
     sc.Action('is.workflow.actions.conditional', {

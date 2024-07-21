@@ -27,7 +27,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.setclipboard', {
-      WFInput: sc.Ref('Text', att=true),
+      WFInput: sc.Attach(sc.Ref('Text')),
     }),
 
   ]),

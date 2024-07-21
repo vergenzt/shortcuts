@@ -45,54 +45,48 @@ local sc = import 'shortcuts.libsonnet';
     sc.Action('is.workflow.actions.repeat.each', {
       GroupingIdentifier: 'D61B3F28-18FE-47C0-87CB-8F871024AFE9',
       WFControlFlowMode: 0,
-      WFInput: sc.Ref('Filters by First Issue Age', aggs=[
+      WFInput: sc.Attach(sc.Ref('Filters by First Issue Age', aggs=[
         {
           CoercionItemClass: 'WFDictionaryContentItem',
           Type: 'WFCoercionVariableAggrandizement',
         },
-      ], att=true),
+      ])),
     }),
 
     sc.Action('is.workflow.actions.detect.dictionary', name='Filter Description Dictionary', params={
-      WFInput: {
-        Value: {
-          Aggrandizements: [
-            {
-              CoercionItemClass: 'WFDictionaryContentItem',
-              Type: 'WFCoercionVariableAggrandizement',
-            },
-            {
-              DictionaryKey: 'description',
-              Type: 'WFDictionaryValueVariableAggrandizement',
-            },
-          ],
-          Type: 'Variable',
-          VariableName: 'Repeat Item',
-        },
-        WFSerializationType: 'WFTextTokenAttachment',
-      },
+      WFInput: sc.Attach({
+        Aggrandizements: [
+          {
+            CoercionItemClass: 'WFDictionaryContentItem',
+            Type: 'WFCoercionVariableAggrandizement',
+          },
+          {
+            DictionaryKey: 'description',
+            Type: 'WFDictionaryValueVariableAggrandizement',
+          },
+        ],
+        Type: 'Variable',
+        VariableName: 'Repeat Item',
+      }),
     }),
 
     sc.Action('is.workflow.actions.repeat.each', {
       GroupingIdentifier: 'E0CA601A-6D60-4670-B03D-08FB3BEAA176',
       WFControlFlowMode: 0,
-      WFInput: {
-        Value: {
-          Aggrandizements: [
-            {
-              CoercionItemClass: 'WFDictionaryContentItem',
-              Type: 'WFCoercionVariableAggrandizement',
-            },
-            {
-              DictionaryKey: 'issues',
-              Type: 'WFDictionaryValueVariableAggrandizement',
-            },
-          ],
-          Type: 'Variable',
-          VariableName: 'Repeat Item',
-        },
-        WFSerializationType: 'WFTextTokenAttachment',
-      },
+      WFInput: sc.Attach({
+        Aggrandizements: [
+          {
+            CoercionItemClass: 'WFDictionaryContentItem',
+            Type: 'WFCoercionVariableAggrandizement',
+          },
+          {
+            DictionaryKey: 'issues',
+            Type: 'WFDictionaryValueVariableAggrandizement',
+          },
+        ],
+        Type: 'Variable',
+        VariableName: 'Repeat Item',
+      }),
     }),
 
     sc.Action('is.workflow.actions.dictionary', name='Dictionary', params={
@@ -182,7 +176,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.runworkflow', name='JQL Matches', params={
-      WFInput: sc.Ref('Dictionary', att=true),
+      WFInput: sc.Attach(sc.Ref('Dictionary')),
       WFWorkflow: {
         isSelf: false,
         workflowIdentifier: 'B245F907-CA3B-4273-B2B7-BE1A4BAE3F79',
@@ -192,12 +186,12 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('ke.bou.GizmoPack.QueryJSONIntent', name='Result', params={
-      input: sc.Ref('JQL Matches', aggs=[
+      input: sc.Attach(sc.Ref('JQL Matches', aggs=[
         {
           CoercionItemClass: 'WFDictionaryContentItem',
           Type: 'WFCoercionVariableAggrandizement',
         },
-      ], att=true),
+      ])),
       jqQuery: '.matches[].matchedIssues[]',
       queryType: 'jq',
     }),
@@ -208,12 +202,12 @@ local sc = import 'shortcuts.libsonnet';
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: sc.Ref('Result', aggs=[
+        Variable: sc.Attach(sc.Ref('Result', aggs=[
           {
             CoercionItemClass: 'WFNumberContentItem',
             Type: 'WFCoercionVariableAggrandizement',
           },
-        ], att=true),
+        ])),
       },
     }),
 
@@ -279,13 +273,13 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.setvalueforkey', name='Dictionary', params={
-      WFDictionary: sc.Ref('Dictionary', att=true),
+      WFDictionary: sc.Attach(sc.Ref('Dictionary')),
       WFDictionaryKey: 'filter',
       WFDictionaryValue: sc.Str([sc.Ref('Vars.Repeat Item')]),
     }),
 
     sc.Action('is.workflow.actions.setvalueforkey', name='Dictionary', params={
-      WFDictionary: sc.Ref('Dictionary', att=true),
+      WFDictionary: sc.Attach(sc.Ref('Dictionary')),
       WFDictionaryKey: 'issue',
       WFDictionaryValue: sc.Str([{
         Aggrandizements: [
@@ -300,7 +294,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.runworkflow', {
-      WFInput: sc.Ref('Dictionary', att=true),
+      WFInput: sc.Attach(sc.Ref('Dictionary')),
       WFWorkflow: {
         isSelf: false,
         workflowIdentifier: 'DE45228B-5A30-4A30-AF37-DA40929C57C2',
@@ -315,12 +309,12 @@ local sc = import 'shortcuts.libsonnet';
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: sc.Ref('Filter Description Dictionary', aggs=[
+        Variable: sc.Attach(sc.Ref('Filter Description Dictionary', aggs=[
           {
             DictionaryKey: 'skip_add_connected_issues',
             Type: 'WFDictionaryValueVariableAggrandizement',
           },
-        ], att=true),
+        ])),
       },
     }),
 

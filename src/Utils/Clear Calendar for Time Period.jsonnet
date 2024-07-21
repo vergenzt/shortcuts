@@ -122,8 +122,8 @@ local sc = import 'shortcuts.libsonnet';
               Property: 'Start Date',
               Removable: false,
               Values: {
-                AnotherDate: sc.Ref('End date', att=true),
-                Date: sc.Ref('Date', att=true),
+                AnotherDate: sc.Attach(sc.Ref('End date')),
+                Date: sc.Attach(sc.Ref('Date')),
                 Number: 7,
                 Unit: 16,
               },
@@ -139,14 +139,14 @@ local sc = import 'shortcuts.libsonnet';
     sc.Action('is.workflow.actions.dictionary', name='Empty Dictionary'),
 
     sc.Action('is.workflow.actions.setvariable', {
-      WFInput: sc.Ref('Empty Dictionary', att=true),
+      WFInput: sc.Attach(sc.Ref('Empty Dictionary')),
       WFVariableName: 'Calendars',
     }),
 
     sc.Action('is.workflow.actions.repeat.each', {
       GroupingIdentifier: 'CBB4D415-7EAF-43E8-B6A7-1525C5C1C213',
       WFControlFlowMode: 0,
-      WFInput: sc.Ref('Calendar Events', att=true),
+      WFInput: sc.Attach(sc.Ref('Calendar Events')),
     }),
 
     sc.Action('is.workflow.actions.getvalueforkey', name='Dictionary Value', params={
@@ -160,7 +160,7 @@ local sc = import 'shortcuts.libsonnet';
         Type: 'Variable',
         VariableName: 'Repeat Item',
       }]),
-      WFInput: sc.Ref('Vars.Calendars', att=true),
+      WFInput: sc.Attach(sc.Ref('Vars.Calendars')),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
@@ -169,12 +169,12 @@ local sc = import 'shortcuts.libsonnet';
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: sc.Ref('Dictionary Value', att=true),
+        Variable: sc.Attach(sc.Ref('Dictionary Value')),
       },
     }),
 
     sc.Action('is.workflow.actions.math', {
-      WFInput: sc.Ref('Dictionary Value', att=true),
+      WFInput: sc.Attach(sc.Ref('Dictionary Value')),
       WFMathOperand: '1',
     }),
 
@@ -193,7 +193,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.setvalueforkey', name='Dictionary', params={
-      WFDictionary: sc.Ref('Vars.Calendars', att=true),
+      WFDictionary: sc.Attach(sc.Ref('Vars.Calendars')),
       WFDictionaryKey: sc.Str([{
         Aggrandizements: [
           {
@@ -208,7 +208,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.setvariable', {
-      WFInput: sc.Ref('Dictionary', att=true),
+      WFInput: sc.Attach(sc.Ref('Dictionary')),
       WFVariableName: 'Calendars',
     }),
 
@@ -218,35 +218,32 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.setvariable', {
-      WFInput: sc.Ref('Empty Dictionary', att=true),
+      WFInput: sc.Attach(sc.Ref('Empty Dictionary')),
       WFVariableName: 'Calendar Labels',
     }),
 
     sc.Action('is.workflow.actions.repeat.each', {
       GroupingIdentifier: 'EBD046C5-2E6C-466F-99D6-E628B5EEF470',
       WFControlFlowMode: 0,
-      WFInput: {
-        Value: {
-          Aggrandizements: [
-            {
-              PropertyName: 'Keys',
-              Type: 'WFPropertyVariableAggrandizement',
-            },
-          ],
-          Type: 'Variable',
-          VariableName: 'Calendars',
-        },
-        WFSerializationType: 'WFTextTokenAttachment',
-      },
+      WFInput: sc.Attach({
+        Aggrandizements: [
+          {
+            PropertyName: 'Keys',
+            Type: 'WFPropertyVariableAggrandizement',
+          },
+        ],
+        Type: 'Variable',
+        VariableName: 'Calendars',
+      }),
     }),
 
     sc.Action('is.workflow.actions.getvalueforkey', name='# Events', params={
       WFDictionaryKey: sc.Str([sc.Ref('Vars.Repeat Item')]),
-      WFInput: sc.Ref('Vars.Calendars', att=true),
+      WFInput: sc.Attach(sc.Ref('Vars.Calendars')),
     }),
 
     sc.Action('is.workflow.actions.setvalueforkey', name='Dictionary', params={
-      WFDictionary: sc.Ref('Vars.Calendar Labels', att=true),
+      WFDictionary: sc.Attach(sc.Ref('Vars.Calendar Labels')),
       WFDictionaryKey: {
         Value: {
           attachmentsByRange: {
@@ -261,7 +258,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.setvariable', {
-      WFInput: sc.Ref('Dictionary', att=true),
+      WFInput: sc.Attach(sc.Ref('Dictionary')),
       WFVariableName: 'Calendar Labels',
     }),
 
@@ -274,19 +271,19 @@ local sc = import 'shortcuts.libsonnet';
       WFChooseFromListActionPrompt: 'Which calendar(s) would you like to remove events from?',
       WFChooseFromListActionSelectAll: true,
       WFChooseFromListActionSelectMultiple: true,
-      WFInput: sc.Ref('Vars.Calendar Labels', att=true),
+      WFInput: sc.Attach(sc.Ref('Vars.Calendar Labels')),
     }),
 
     sc.Action('is.workflow.actions.repeat.each', {
       GroupingIdentifier: '786CCF50-3303-4657-9611-7B2E70BC010B',
       WFControlFlowMode: 0,
-      WFInput: sc.Ref('Calendar Events', att=true),
+      WFInput: sc.Attach(sc.Ref('Calendar Events')),
     }),
 
     sc.Action('is.workflow.actions.repeat.each', {
       GroupingIdentifier: 'E0F92588-4F66-4EE0-A829-7CAC87548509',
       WFControlFlowMode: 0,
-      WFInput: sc.Ref('Chosen Item', att=true),
+      WFInput: sc.Attach(sc.Ref('Chosen Item')),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
@@ -305,24 +302,21 @@ local sc = import 'shortcuts.libsonnet';
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: {
-          Value: {
-            Aggrandizements: [
-              {
-                CoercionItemClass: 'WFStringContentItem',
-                Type: 'WFCoercionVariableAggrandizement',
-              },
-            ],
-            Type: 'Variable',
-            VariableName: 'Repeat Item 2',
-          },
-          WFSerializationType: 'WFTextTokenAttachment',
-        },
+        Variable: sc.Attach({
+          Aggrandizements: [
+            {
+              CoercionItemClass: 'WFStringContentItem',
+              Type: 'WFCoercionVariableAggrandizement',
+            },
+          ],
+          Type: 'Variable',
+          VariableName: 'Repeat Item 2',
+        }),
       },
     }),
 
     sc.Action('is.workflow.actions.getvariable', {
-      WFVariable: sc.Ref('Vars.Repeat Item', att=true),
+      WFVariable: sc.Attach(sc.Ref('Vars.Repeat Item')),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
@@ -350,11 +344,11 @@ local sc = import 'shortcuts.libsonnet';
     sc.Action('is.workflow.actions.choosefromlist', name='Chosen Item', params={
       WFChooseFromListActionPrompt: 'Which calendar event(s) would you like to delete?',
       WFChooseFromListActionSelectMultiple: true,
-      WFInput: sc.Ref('Repeat Results', att=true),
+      WFInput: sc.Attach(sc.Ref('Repeat Results')),
     }),
 
     sc.Action('is.workflow.actions.removeevents', {
-      WFInputEvents: sc.Ref('Chosen Item', att=true),
+      WFInputEvents: sc.Attach(sc.Ref('Chosen Item')),
     }),
 
   ]),

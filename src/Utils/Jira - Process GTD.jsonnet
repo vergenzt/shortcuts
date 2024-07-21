@@ -30,10 +30,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.detect.dictionary', name='Input As Dict', params={
-      WFInput: {
-        Value: sc.Input,
-        WFSerializationType: 'WFTextTokenAttachment',
-      },
+      WFInput: sc.Attach(sc.Input),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
@@ -42,13 +39,13 @@ local sc = import 'shortcuts.libsonnet';
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: sc.Ref('Input As Dict', att=true),
+        Variable: sc.Attach(sc.Ref('Input As Dict')),
       },
     }),
 
     sc.Action('is.workflow.actions.getvalueforkey', {
       WFDictionaryKey: 'issue_key',
-      WFInput: sc.Ref('Input As Dict', att=true),
+      WFInput: sc.Attach(sc.Ref('Input As Dict')),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
@@ -97,7 +94,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.runworkflow', name='Get Initial Issue Response', params={
-      WFInput: sc.Ref('Dictionary', att=true),
+      WFInput: sc.Attach(sc.Ref('Dictionary')),
       WFWorkflow: {
         isSelf: false,
         workflowIdentifier: 'B245F907-CA3B-4273-B2B7-BE1A4BAE3F79',
@@ -108,12 +105,12 @@ local sc = import 'shortcuts.libsonnet';
 
     sc.Action('is.workflow.actions.getvalueforkey', name='Initial Issue Key', params={
       WFDictionaryKey: 'key',
-      WFInput: sc.Ref('Get Initial Issue Response', att=true),
+      WFInput: sc.Attach(sc.Ref('Get Initial Issue Response')),
     }),
 
     sc.Action('is.workflow.actions.getvalueforkey', name='fields.summary', params={
       WFDictionaryKey: 'fields.summary',
-      WFInput: sc.Ref('Get Initial Issue Response', att=true),
+      WFInput: sc.Attach(sc.Ref('Get Initial Issue Response')),
     }),
 
     sc.Action('is.workflow.actions.gettext', name='Text', params={
@@ -147,7 +144,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.openurl', {
-      WFInput: sc.Ref('URL', att=true),
+      WFInput: sc.Attach(sc.Ref('URL')),
     }),
 
   ]),

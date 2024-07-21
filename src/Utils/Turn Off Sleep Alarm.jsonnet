@@ -28,7 +28,7 @@ local sc = import 'shortcuts.libsonnet';
     sc.Action('is.workflow.actions.repeat.each', {
       GroupingIdentifier: '8BA939C4-1433-40FC-BBF9-9FB225DA4ABE',
       WFControlFlowMode: 0,
-      WFInput: sc.Ref('Alarms', att=true),
+      WFInput: sc.Attach(sc.Ref('Alarms')),
     }),
 
     sc.Action('com.apple.mobiletimer-framework.MobileTimerIntents.MTToggleAlarmIntent', {
@@ -38,7 +38,7 @@ local sc = import 'shortcuts.libsonnet';
         Name: 'Clock',
         TeamIdentifier: '0000000000',
       },
-      alarm: sc.Ref('Vars.Repeat Item', att=true),
+      alarm: sc.Attach(sc.Ref('Vars.Repeat Item')),
       state: 0,
     }),
 

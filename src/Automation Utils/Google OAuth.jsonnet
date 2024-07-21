@@ -9,7 +9,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('ke.bou.GizmoPack.QueryJSONIntent', name='existing unexpired token', params={
-      input: sc.Ref('config', att=true),
+      input: sc.Attach(sc.Ref('config')),
       jqQuery: 'if .token.expires_at > (now | todate) and .token.access_token then .token else empty end',
       queryType: 'jq',
     }),
@@ -20,7 +20,7 @@ local sc = import 'shortcuts.libsonnet';
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: sc.Ref('existing unexpired token', att=true),
+        Variable: sc.Attach(sc.Ref('existing unexpired token')),
       },
     }),
 
@@ -63,7 +63,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('ke.bou.GizmoPack.QueryJSONIntent', name='refresh_uri', params={
-      input: sc.Ref('config', att=true),
+      input: sc.Attach(sc.Ref('config')),
       jqQuery: 'if .token.expires_at <= (now | todate) and .token.refresh_token then .token_uri + "?" + (.params + (.token | {refresh_token}) + { grant_type: "refresh_token" } | to_entries | map(map(@uri) | join("=")) | join("&")) else empty end',
       queryType: 'jq',
     }),
@@ -74,7 +74,7 @@ local sc = import 'shortcuts.libsonnet';
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: sc.Ref('refresh_uri', att=true),
+        Variable: sc.Attach(sc.Ref('refresh_uri')),
       },
     }),
 
@@ -84,7 +84,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('ke.bou.GizmoPack.QueryJSONIntent', name='timestamped_token', params={
-      input: sc.Ref('refresh_result', att=true),
+      input: sc.Attach(sc.Ref('refresh_result')),
       jqQuery: {
         Value: {
           attachmentsByRange: {
@@ -109,11 +109,11 @@ local sc = import 'shortcuts.libsonnet';
     sc.Action('dk.simonbs.DataJar.SetValueIntent', {
       keyPath: 'google-oauth.token',
       overwriteStrategy: 'alwaysAllow',
-      values: sc.Ref('timestamped_token', att=true),
+      values: sc.Attach(sc.Ref('timestamped_token')),
     }),
 
     sc.Action('ke.bou.GizmoPack.QueryJSONIntent', name='Result', params={
-      input: sc.Ref('timestamped_token', att=true),
+      input: sc.Attach(sc.Ref('timestamped_token')),
       jqQuery: '.token_type + " " + .access_token',
       queryType: 'jq',
     }),
@@ -155,7 +155,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('ke.bou.GizmoPack.QueryJSONIntent', name='auth_uri', params={
-      input: sc.Ref('config', att=true),
+      input: sc.Attach(sc.Ref('config')),
       jqQuery: {
         Value: {
           attachmentsByRange: {
@@ -177,7 +177,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.detect.dictionary', name='result', params={
-      WFInput: sc.Ref('X-Callback Result', att=true),
+      WFInput: sc.Attach(sc.Ref('X-Callback Result')),
     }),
 
     sc.Action('is.workflow.actions.dictionary', name='token_params', params={
@@ -196,7 +196,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('ke.bou.GizmoPack.QueryJSONIntent', name='token_uri', params={
-      input: sc.Ref('config', att=true),
+      input: sc.Attach(sc.Ref('config')),
       jqQuery: {
         Value: {
           attachmentsByRange: {
@@ -213,7 +213,7 @@ local sc = import 'shortcuts.libsonnet';
 
     sc.Action('is.workflow.actions.url', name='URL', params={
       'Show-WFURLActionURL': true,
-      WFURLActionURL: sc.Ref('token_uri', att=true),
+      WFURLActionURL: sc.Attach(sc.Ref('token_uri')),
     }),
 
     sc.Action('is.workflow.actions.downloadurl', name='token', params={
@@ -224,7 +224,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('ke.bou.GizmoPack.QueryJSONIntent', name='timestamped_token', params={
-      input: sc.Ref('token', att=true),
+      input: sc.Attach(sc.Ref('token')),
       jqQuery: '. + { refreshed_at: (now | todate), expires_at: (now + .expires_in | todate) }',
       queryType: 'jq',
     }),
@@ -232,11 +232,11 @@ local sc = import 'shortcuts.libsonnet';
     sc.Action('dk.simonbs.DataJar.SetValueIntent', {
       keyPath: 'google-oauth.token',
       overwriteStrategy: 'alwaysAllow',
-      values: sc.Ref('timestamped_token', att=true),
+      values: sc.Attach(sc.Ref('timestamped_token')),
     }),
 
     sc.Action('ke.bou.GizmoPack.QueryJSONIntent', name='Result', params={
-      input: sc.Ref('timestamped_token', att=true),
+      input: sc.Attach(sc.Ref('timestamped_token')),
       jqQuery: '.token_type + " " + .access_token',
       queryType: 'jq',
     }),

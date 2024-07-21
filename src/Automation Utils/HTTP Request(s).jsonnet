@@ -15,7 +15,7 @@ local sc = import 'shortcuts.libsonnet';
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: sc.Ref('Device Model', att=true),
+        Variable: sc.Attach(sc.Ref('Device Model')),
       },
     }),
 
@@ -24,16 +24,13 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.runshellscript', name='Shell Script Result', params={
-      Input: {
-        Value: sc.Input,
-        WFSerializationType: 'WFTextTokenAttachment',
-      },
+      Input: sc.Attach(sc.Input),
       InputMode: 'to stdin',
       Script: sc.Str([sc.Ref('Text')]),
     }),
 
     sc.Action('is.workflow.actions.previewdocument', {
-      WFInput: sc.Ref('Shell Script Result', att=true),
+      WFInput: sc.Attach(sc.Ref('Shell Script Result')),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
@@ -48,7 +45,7 @@ local sc = import 'shortcuts.libsonnet';
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: sc.Ref('Device Model', att=true),
+        Variable: sc.Attach(sc.Ref('Device Model')),
       },
     }),
 

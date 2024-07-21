@@ -60,7 +60,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.runworkflow', name='Search Issues Result', params={
-      WFInput: sc.Ref('Dictionary', att=true),
+      WFInput: sc.Attach(sc.Ref('Dictionary')),
       WFWorkflow: {
         isSelf: false,
         workflowIdentifier: 'B245F907-CA3B-4273-B2B7-BE1A4BAE3F79',
@@ -72,7 +72,7 @@ local sc = import 'shortcuts.libsonnet';
     sc.Action('is.workflow.actions.repeat.each', {
       GroupingIdentifier: 'AE423FC4-1D2B-4E43-AA6F-8E7BEDAEAFAB',
       WFControlFlowMode: 0,
-      WFInput: sc.Ref('Search Issues Result', aggs=[
+      WFInput: sc.Attach(sc.Ref('Search Issues Result', aggs=[
         {
           CoercionItemClass: 'WFDictionaryContentItem',
           Type: 'WFCoercionVariableAggrandizement',
@@ -81,7 +81,7 @@ local sc = import 'shortcuts.libsonnet';
           DictionaryKey: 'issues',
           Type: 'WFDictionaryValueVariableAggrandizement',
         },
-      ], att=true),
+      ])),
     }),
 
     sc.Action('is.workflow.actions.dictionary', name='Dictionary', params={
@@ -168,7 +168,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.runworkflow', {
-      WFInput: sc.Ref('Dictionary', att=true),
+      WFInput: sc.Attach(sc.Ref('Dictionary')),
       WFWorkflow: {
         isSelf: false,
         workflowIdentifier: 'B245F907-CA3B-4273-B2B7-BE1A4BAE3F79',
@@ -196,7 +196,7 @@ local sc = import 'shortcuts.libsonnet';
         },
         WFSerializationType: 'WFTextTokenString',
       },
-      WFInput: sc.Ref('Vars.Repeat Item', att=true),
+      WFInput: sc.Attach(sc.Ref('Vars.Repeat Item')),
     }),
 
     sc.Action('is.workflow.actions.getvalueforkey', name='Reopen Delay', params={
@@ -218,7 +218,7 @@ local sc = import 'shortcuts.libsonnet';
         },
         WFSerializationType: 'WFTextTokenString',
       },
-      WFInput: sc.Ref('Vars.Repeat Item', att=true),
+      WFInput: sc.Attach(sc.Ref('Vars.Repeat Item')),
     }),
 
     sc.Action('is.workflow.actions.getvalueforkey', name='Reopen Basis Field Key', params={
@@ -240,7 +240,7 @@ local sc = import 'shortcuts.libsonnet';
         },
         WFSerializationType: 'WFTextTokenString',
       },
-      WFInput: sc.Ref('Constants', att=true),
+      WFInput: sc.Attach(sc.Ref('Constants')),
     }),
 
     sc.Action('is.workflow.actions.getvalueforkey', name='Reopen Basis Field Value', params={
@@ -253,11 +253,11 @@ local sc = import 'shortcuts.libsonnet';
         },
         WFSerializationType: 'WFTextTokenString',
       },
-      WFInput: sc.Ref('Vars.Repeat Item', att=true),
+      WFInput: sc.Attach(sc.Ref('Vars.Repeat Item')),
     }),
 
     sc.Action('is.workflow.actions.detect.date', name='Reopen Basis Date', params={
-      WFInput: sc.Ref('Reopen Basis Field Value', att=true),
+      WFInput: sc.Attach(sc.Ref('Reopen Basis Field Value')),
     }),
 
     sc.Action('is.workflow.actions.adjustdate', name='New Start Date', params={
@@ -302,7 +302,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.setvariable', {
-      WFInput: sc.Ref('Dictionary', att=true),
+      WFInput: sc.Attach(sc.Ref('Dictionary')),
       WFVariableName: 'New Field Values',
     }),
 
@@ -325,7 +325,7 @@ local sc = import 'shortcuts.libsonnet';
         },
         WFSerializationType: 'WFTextTokenString',
       },
-      WFInput: sc.Ref('Vars.Repeat Item', att=true),
+      WFInput: sc.Attach(sc.Ref('Vars.Repeat Item')),
     }),
 
     sc.Action('is.workflow.actions.getvalueforkey', name='Start Date', params={
@@ -347,7 +347,7 @@ local sc = import 'shortcuts.libsonnet';
         },
         WFSerializationType: 'WFTextTokenString',
       },
-      WFInput: sc.Ref('Vars.Repeat Item', att=true),
+      WFInput: sc.Attach(sc.Ref('Vars.Repeat Item')),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
@@ -356,7 +356,7 @@ local sc = import 'shortcuts.libsonnet';
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: sc.Ref('Due Date', att=true),
+        Variable: sc.Attach(sc.Ref('Due Date')),
       },
     }),
 
@@ -366,7 +366,7 @@ local sc = import 'shortcuts.libsonnet';
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: sc.Ref('Start Date', att=true),
+        Variable: sc.Attach(sc.Ref('Start Date')),
       },
     }),
 
@@ -388,7 +388,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.setvalueforkey', name='Dictionary', params={
-      WFDictionary: sc.Ref('Vars.New Field Values', att=true),
+      WFDictionary: sc.Attach(sc.Ref('Vars.New Field Values')),
       WFDictionaryKey: sc.Str([sc.Ref('Constants', aggs=[
         {
           CoercionItemClass: 'WFDictionaryContentItem',
@@ -409,7 +409,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.setvariable', {
-      WFInput: sc.Ref('Dictionary', att=true),
+      WFInput: sc.Attach(sc.Ref('Dictionary')),
       WFVariableName: 'New Field Values',
     }),
 
@@ -465,19 +465,19 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.setvalueforkey', name='Fields Dictionary', params={
-      WFDictionary: sc.Ref('Empty Dictionary', att=true),
+      WFDictionary: sc.Attach(sc.Ref('Empty Dictionary')),
       WFDictionaryKey: 'fields',
       WFDictionaryValue: sc.Str([sc.Ref('Vars.New Field Values')]),
     }),
 
     sc.Action('is.workflow.actions.setvalueforkey', name='Dictionary', params={
-      WFDictionary: sc.Ref('Issue Edit Dictionary', att=true),
+      WFDictionary: sc.Attach(sc.Ref('Issue Edit Dictionary')),
       WFDictionaryKey: 'json',
       WFDictionaryValue: sc.Str([sc.Ref('Fields Dictionary')]),
     }),
 
     sc.Action('is.workflow.actions.runworkflow', {
-      WFInput: sc.Ref('Dictionary', att=true),
+      WFInput: sc.Attach(sc.Ref('Dictionary')),
       WFWorkflow: {
         isSelf: false,
         workflowIdentifier: 'B245F907-CA3B-4273-B2B7-BE1A4BAE3F79',

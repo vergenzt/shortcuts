@@ -67,27 +67,20 @@
     else x
   ),
 
-  Ref(name, aggs=[], att=false):: (
-    local ref = (
-      if std.startsWith(name, 'Vars.') then {
-        Type: 'Variable',
-        VariableName: std.substr(name, 5, std.length(name)),
-      }
-      else {
-        Type: 'ActionOutput',
-        OutputUUID: function(state) (
-          if std.objectHas(state, name) then state[name]
-          else std.trace('warning: output `%s` not found in state' % name, '???')
-        ),
-        OutputName: name,
-        [if aggs == [] then null else 'Aggrandizements']: aggs,
-      }
-    );
-    if att then {
-      WFSerializationType: 'WFTextTokenAttachment',
-      Value: ref,
+  Ref(name, aggs=[]):: (
+    if std.startsWith(name, 'Vars.') then {
+      Type: 'Variable',
+      VariableName: std.substr(name, 5, std.length(name)),
     }
-    else ref
+    else {
+      Type: 'ActionOutput',
+      OutputUUID: function(state) (
+        if std.objectHas(state, name) then state[name]
+        else std.trace('warning: output `%s` not found in state' % name, '???')
+      ),
+      OutputName: name,
+      [if aggs == [] then null else 'Aggrandizements']: aggs,
+    }
   ),
 
   _interpJoiner: std.char(65532),
@@ -147,7 +140,10 @@
     Type: 'ExtensionInput',
   },
 
-  // Att(val):: ,
+  Attach(val):: {
+    Value: val,
+    WFSerializationType: 'WFTextTokenAttachment',
+  },
 
   // Cond: {
   // 	LessThan:       0,

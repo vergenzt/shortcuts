@@ -9,7 +9,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.runworkflow', {
-      WFInput: sc.Ref('Value', aggs=[
+      WFInput: sc.Attach(sc.Ref('Value', aggs=[
         {
           CoercionItemClass: 'WFDictionaryContentItem',
           Type: 'WFCoercionVariableAggrandizement',
@@ -18,7 +18,7 @@ local sc = import 'shortcuts.libsonnet';
           DictionaryKey: 'spreadsheetId',
           Type: 'WFDictionaryValueVariableAggrandizement',
         },
-      ], att=true),
+      ])),
       WFWorkflow: {
         isSelf: false,
         workflowIdentifier: 'B96A6DDC-DDD1-4684-9AC3-BFF4D9C8DC54',

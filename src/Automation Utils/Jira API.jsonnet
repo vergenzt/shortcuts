@@ -5,10 +5,7 @@ local sc = import 'shortcuts.libsonnet';
   WFWorkflowActions: sc.ActionsSeq([
 
     sc.Action('is.workflow.actions.detect.dictionary', name='Input Dict', params={
-      WFInput: {
-        Value: sc.Input,
-        WFSerializationType: 'WFTextTokenAttachment',
-      },
+      WFInput: sc.Attach(sc.Input),
     }),
 
     sc.Action('dk.simonbs.DataJar.GetValueIntent', name='Jira Config', params={
@@ -52,11 +49,11 @@ local sc = import 'shortcuts.libsonnet';
     sc.Action('ch.marcela.ada.Pyto.GetScriptOutputIntent', name='Output'),
 
     sc.Action('is.workflow.actions.text.split', name='Split Text', params={
-      text: sc.Ref('Output', att=true),
+      text: sc.Attach(sc.Ref('Output')),
     }),
 
     sc.Action('is.workflow.actions.getitemfromlist', name='Item from List', params={
-      WFInput: sc.Ref('Split Text', att=true),
+      WFInput: sc.Attach(sc.Ref('Split Text')),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
@@ -66,25 +63,25 @@ local sc = import 'shortcuts.libsonnet';
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: sc.Ref('Item from List', att=true),
+        Variable: sc.Attach(sc.Ref('Item from List')),
       },
     }),
 
     sc.Action('is.workflow.actions.getitemfromlist', name='Error Context', params={
-      WFInput: sc.Ref('Split Text', att=true),
+      WFInput: sc.Attach(sc.Ref('Split Text')),
       WFItemIndex: '2',
       WFItemRangeStart: '2',
       WFItemSpecifier: 'Item At Index',
     }),
 
     sc.Action('is.workflow.actions.getitemfromlist', name='Error Message Lines', params={
-      WFInput: sc.Ref('Split Text', att=true),
+      WFInput: sc.Attach(sc.Ref('Split Text')),
       WFItemRangeStart: '3',
       WFItemSpecifier: 'Items in Range',
     }),
 
     sc.Action('is.workflow.actions.text.combine', name='Error Message', params={
-      text: sc.Ref('Error Message Lines', att=true),
+      text: sc.Attach(sc.Ref('Error Message Lines')),
     }),
 
     sc.Action('is.workflow.actions.alert', {

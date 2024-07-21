@@ -9,7 +9,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.previewdocument', {
-      WFInput: sc.Ref('Article', att=true),
+      WFInput: sc.Attach(sc.Ref('Article')),
     }),
 
   ]),

@@ -9,7 +9,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.setvariable', {
-      WFInput: sc.Ref('Text', att=true),
+      WFInput: sc.Attach(sc.Ref('Text')),
       WFVariableName: 'FID',
     }),
 
@@ -83,7 +83,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.runworkflow', name='Get Viewed Issues Result', params={
-      WFInput: sc.Ref('Dictionary', att=true),
+      WFInput: sc.Attach(sc.Ref('Dictionary')),
       WFWorkflow: {
         isSelf: false,
         workflowIdentifier: 'B245F907-CA3B-4273-B2B7-BE1A4BAE3F79',
@@ -95,7 +95,7 @@ local sc = import 'shortcuts.libsonnet';
     sc.Action('is.workflow.actions.repeat.each', {
       GroupingIdentifier: '6F192F82-E28B-4DA5-8E9D-3595CEE96F87',
       WFControlFlowMode: 0,
-      WFInput: sc.Ref('Get Viewed Issues Result', aggs=[
+      WFInput: sc.Attach(sc.Ref('Get Viewed Issues Result', aggs=[
         {
           CoercionItemClass: 'WFDictionaryContentItem',
           Type: 'WFCoercionVariableAggrandizement',
@@ -104,7 +104,7 @@ local sc = import 'shortcuts.libsonnet';
           DictionaryKey: 'issues',
           Type: 'WFDictionaryValueVariableAggrandizement',
         },
-      ], att=true),
+      ])),
     }),
 
     sc.Action('is.workflow.actions.gettext', name='jq', params={
@@ -120,7 +120,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('ke.bou.GizmoPack.QueryJSONIntent', name='Result', params={
-      input: sc.Ref('Vars.Repeat Item', att=true),
+      input: sc.Attach(sc.Ref('Vars.Repeat Item')),
       jqQuery: sc.Str([sc.Ref('jq')]),
       queryType: 'jq',
     }),
@@ -132,7 +132,7 @@ local sc = import 'shortcuts.libsonnet';
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: sc.Ref('Result', att=true),
+        Variable: sc.Attach(sc.Ref('Result')),
       },
     }),
 
@@ -224,7 +224,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.runworkflow', name='Shortcut Result', params={
-      WFInput: sc.Ref('Dictionary', att=true),
+      WFInput: sc.Attach(sc.Ref('Dictionary')),
       WFWorkflow: {
         isSelf: false,
         workflowIdentifier: 'B245F907-CA3B-4273-B2B7-BE1A4BAE3F79',
@@ -234,7 +234,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.appendvariable', {
-      WFInput: sc.Ref('Shortcut Result', att=true),
+      WFInput: sc.Attach(sc.Ref('Shortcut Result')),
       WFVariableName: 'Updated Issues',
     }),
 
@@ -249,7 +249,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.count', name='Count', params={
-      Input: sc.Ref('Vars.Updated Issues', att=true),
+      Input: sc.Attach(sc.Ref('Vars.Updated Issues')),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
@@ -258,7 +258,7 @@ local sc = import 'shortcuts.libsonnet';
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: sc.Ref('Count', att=true),
+        Variable: sc.Attach(sc.Ref('Count')),
       },
       WFNumberValue: '0',
     }),

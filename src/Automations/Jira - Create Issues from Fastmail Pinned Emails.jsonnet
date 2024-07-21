@@ -14,7 +14,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.runworkflow', name='Fastmail Auth', params={
-      WFInput: sc.Ref('Jira API Config', att=true),
+      WFInput: sc.Attach(sc.Ref('Jira API Config')),
       WFWorkflow: {
         isSelf: false,
         workflowIdentifier: 'B82F5A3B-057F-4A18-B930-C1CF65BF732A',
@@ -98,12 +98,12 @@ local sc = import 'shortcuts.libsonnet';
         },
         WFSerializationType: 'WFDictionaryFieldValue',
       },
-      WFRequestVariable: sc.Ref('Text', att=true),
+      WFRequestVariable: sc.Attach(sc.Ref('Text')),
       WFURL: 'https://api.fastmail.com/jmap/api',
     }),
 
     sc.Action('ke.bou.GizmoPack.QueryJSONIntent', name='Result', params={
-      input: sc.Ref('Contents of URL', att=true),
+      input: sc.Attach(sc.Ref('Contents of URL')),
       jqQuery: '.methodResponses[-1][1].list[]',
       queryType: 'jq',
     }),
@@ -111,16 +111,16 @@ local sc = import 'shortcuts.libsonnet';
     sc.Action('is.workflow.actions.repeat.each', {
       GroupingIdentifier: '690887DA-1DDA-448F-B8E8-AED755477B11',
       WFControlFlowMode: 0,
-      WFInput: sc.Ref('Result', att=true),
+      WFInput: sc.Attach(sc.Ref('Result')),
     }),
 
     sc.Action('is.workflow.actions.getvalueforkey', name='from', params={
       WFDictionaryKey: 'from',
-      WFInput: sc.Ref('Vars.Repeat Item', att=true),
+      WFInput: sc.Attach(sc.Ref('Vars.Repeat Item')),
     }),
 
     sc.Action('is.workflow.actions.getitemfromlist', name='from[0]', params={
-      WFInput: sc.Ref('from', att=true),
+      WFInput: sc.Attach(sc.Ref('from')),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
@@ -129,7 +129,7 @@ local sc = import 'shortcuts.libsonnet';
       WFControlFlowMode: 0,
       WFInput: {
         Type: 'Variable',
-        Variable: sc.Ref('from[0]', aggs=[
+        Variable: sc.Attach(sc.Ref('from[0]', aggs=[
           {
             CoercionItemClass: 'WFDictionaryContentItem',
             Type: 'WFCoercionVariableAggrandizement',
@@ -138,13 +138,13 @@ local sc = import 'shortcuts.libsonnet';
             DictionaryKey: 'name',
             Type: 'WFDictionaryValueVariableAggrandizement',
           },
-        ], att=true),
+        ])),
       },
     }),
 
     sc.Action('is.workflow.actions.getvalueforkey', {
       WFDictionaryKey: 'name',
-      WFInput: sc.Ref('from[0]', att=true),
+      WFInput: sc.Attach(sc.Ref('from[0]')),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
@@ -154,7 +154,7 @@ local sc = import 'shortcuts.libsonnet';
 
     sc.Action('is.workflow.actions.getvalueforkey', {
       WFDictionaryKey: 'email',
-      WFInput: sc.Ref('from[0]', att=true),
+      WFInput: sc.Attach(sc.Ref('from[0]')),
     }),
 
     sc.Action('is.workflow.actions.conditional', name='From', params={
@@ -163,23 +163,20 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.getitemfromlist', name='messageId', params={
-      WFInput: {
-        Value: {
-          Aggrandizements: [
-            {
-              CoercionItemClass: 'WFDictionaryContentItem',
-              Type: 'WFCoercionVariableAggrandizement',
-            },
-            {
-              DictionaryKey: 'messageId',
-              Type: 'WFDictionaryValueVariableAggrandizement',
-            },
-          ],
-          Type: 'Variable',
-          VariableName: 'Repeat Item',
-        },
-        WFSerializationType: 'WFTextTokenAttachment',
-      },
+      WFInput: sc.Attach({
+        Aggrandizements: [
+          {
+            CoercionItemClass: 'WFDictionaryContentItem',
+            Type: 'WFCoercionVariableAggrandizement',
+          },
+          {
+            DictionaryKey: 'messageId',
+            Type: 'WFDictionaryValueVariableAggrandizement',
+          },
+        ],
+        Type: 'Variable',
+        VariableName: 'Repeat Item',
+      }),
     }),
 
     sc.Action('is.workflow.actions.url', name='URL', params={
@@ -420,23 +417,20 @@ local sc = import 'shortcuts.libsonnet';
         },
         WFSerializationType: 'WFDictionaryFieldValue',
       },
-      WFRequestVariable: {
-        Value: {
-          Aggrandizements: [
-            {
-              CoercionItemClass: 'WFDictionaryContentItem',
-              Type: 'WFCoercionVariableAggrandizement',
-            },
-            {
-              DictionaryKey: 'jiraPostBody',
-              Type: 'WFDictionaryValueVariableAggrandizement',
-            },
-          ],
-          Type: 'Variable',
-          VariableName: 'Repeat Item',
-        },
-        WFSerializationType: 'WFTextTokenAttachment',
-      },
+      WFRequestVariable: sc.Attach({
+        Aggrandizements: [
+          {
+            CoercionItemClass: 'WFDictionaryContentItem',
+            Type: 'WFCoercionVariableAggrandizement',
+          },
+          {
+            DictionaryKey: 'jiraPostBody',
+            Type: 'WFDictionaryValueVariableAggrandizement',
+          },
+        ],
+        Type: 'Variable',
+        VariableName: 'Repeat Item',
+      }),
       WFURL: 'https://vergenz.atlassian.net/rest/api/3/issue',
     }),
 
@@ -548,7 +542,7 @@ local sc = import 'shortcuts.libsonnet';
         },
         WFSerializationType: 'WFDictionaryFieldValue',
       },
-      WFRequestVariable: sc.Ref('Text', att=true),
+      WFRequestVariable: sc.Attach(sc.Ref('Text')),
       WFURL: 'https://api.fastmail.com/jmap/api',
     }),
 

@@ -63,11 +63,11 @@ local sc = import 'shortcuts.libsonnet';
 
     sc.Action('is.workflow.actions.getvalueforkey', name='Link Header', params={
       WFDictionaryKey: 'Link',
-      WFInput: sc.Ref('Headers of URL', att=true),
+      WFInput: sc.Attach(sc.Ref('Headers of URL')),
     }),
 
     sc.Action('is.workflow.actions.previewdocument', {
-      WFInput: sc.Ref('Link Header', att=true),
+      WFInput: sc.Attach(sc.Ref('Link Header')),
     }),
 
     sc.Action('is.workflow.actions.text.match', name='Link Header Matches', params={
@@ -78,16 +78,16 @@ local sc = import 'shortcuts.libsonnet';
 
     sc.Action('is.workflow.actions.text.match.getgroup', name='Archive URL', params={
       WFGetGroupType: 'Group At Index',
-      matches: sc.Ref('Link Header Matches', att=true),
+      matches: sc.Attach(sc.Ref('Link Header Matches')),
     }),
 
     sc.Action('is.workflow.actions.setclipboard', {
-      WFInput: sc.Ref('Archive URL', att=true),
+      WFInput: sc.Attach(sc.Ref('Archive URL')),
       WFLocalOnly: false,
     }),
 
     sc.Action('is.workflow.actions.notification', {
-      WFInput: sc.Ref('Archive URL', att=true),
+      WFInput: sc.Attach(sc.Ref('Archive URL')),
       WFNotificationActionBody: 'Archive URL copied to clipboard',
     }),
 

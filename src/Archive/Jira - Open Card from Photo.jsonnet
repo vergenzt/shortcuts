@@ -9,7 +9,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.extracttextfromimage', name='Text from Image', params={
-      WFImage: sc.Ref('Photo', att=true),
+      WFImage: sc.Attach(sc.Ref('Photo')),
     }),
 
     sc.Action('is.workflow.actions.text.match', name='Matches', params={
@@ -18,7 +18,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.runworkflow', {
-      WFInput: sc.Ref('Matches', att=true),
+      WFInput: sc.Attach(sc.Ref('Matches')),
     }),
 
     sc.Action('com.atlassian.jira.app.GetIssueIntent', name='Issue', params={
@@ -28,7 +28,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('com.atlassian.jira.app.OpenIssueIntent', {
-      issue: sc.Ref('Issue', att=true),
+      issue: sc.Attach(sc.Ref('Issue')),
     }),
 
   ]),
