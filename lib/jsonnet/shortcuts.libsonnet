@@ -118,6 +118,11 @@
   //   }[std.type(f)],
   // },
 
+  Num(val):: {
+    Value: val,
+    WFSerializationType: 'WFNumberSubstitutableState',
+  },
+
   Str(parts):: (
     local partStrs = std.map(function(part) if std.isString(part) then part else $._interpJoiner, parts);
     local partStrLens = std.map(std.length, partStrs);

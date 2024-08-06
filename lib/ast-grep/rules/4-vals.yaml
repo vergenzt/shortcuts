@@ -61,6 +61,16 @@ rewriters:
   fix: >-
     sc.Attach($VAL)
 
+- id: &6 num
+  rule:
+    pattern: >-
+      {
+        Value: $VAL,
+        WFSerializationType: 'WFNumberSubstitutableState',
+      }
+  fix: >-
+    sc.Num($VAL)
+
 transform:
   X_RE:
     rewrite:
@@ -71,6 +81,7 @@ transform:
       - *3
       - *4
       - *5
+      - *6
 
 fix: >-
   $X_RE

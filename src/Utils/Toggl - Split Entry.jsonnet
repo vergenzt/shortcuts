@@ -312,23 +312,20 @@ local sc = import 'shortcuts.libsonnet';
             {
               WFItemType: 4,
               WFKey: sc.Str(['billable']),
-              WFValue: {
-                Value: sc.Attach({
-                  Aggrandizements: [
-                    {
-                      CoercionItemClass: 'WFDictionaryContentItem',
-                      Type: 'WFCoercionVariableAggrandizement',
-                    },
-                    {
-                      DictionaryKey: 'billable',
-                      Type: 'WFDictionaryValueVariableAggrandizement',
-                    },
-                  ],
-                  Type: 'Variable',
-                  VariableName: 'Repeat Item',
-                }),
-                WFSerializationType: 'WFNumberSubstitutableState',
-              },
+              WFValue: sc.Num(sc.Attach({
+                Aggrandizements: [
+                  {
+                    CoercionItemClass: 'WFDictionaryContentItem',
+                    Type: 'WFCoercionVariableAggrandizement',
+                  },
+                  {
+                    DictionaryKey: 'billable',
+                    Type: 'WFDictionaryValueVariableAggrandizement',
+                  },
+                ],
+                Type: 'Variable',
+                VariableName: 'Repeat Item',
+              })),
             },
           ],
         },
@@ -493,23 +490,20 @@ local sc = import 'shortcuts.libsonnet';
                       {
                         WFItemType: 4,
                         WFKey: sc.Str(['billable']),
-                        WFValue: {
-                          Value: sc.Attach({
-                            Aggrandizements: [
-                              {
-                                CoercionItemClass: 'WFDictionaryContentItem',
-                                Type: 'WFCoercionVariableAggrandizement',
-                              },
-                              {
-                                DictionaryKey: 'billable',
-                                Type: 'WFDictionaryValueVariableAggrandizement',
-                              },
-                            ],
-                            Type: 'Variable',
-                            VariableName: 'Repeat Item',
-                          }),
-                          WFSerializationType: 'WFNumberSubstitutableState',
-                        },
+                        WFValue: sc.Num(sc.Attach({
+                          Aggrandizements: [
+                            {
+                              CoercionItemClass: 'WFDictionaryContentItem',
+                              Type: 'WFCoercionVariableAggrandizement',
+                            },
+                            {
+                              DictionaryKey: 'billable',
+                              Type: 'WFDictionaryValueVariableAggrandizement',
+                            },
+                          ],
+                          Type: 'Variable',
+                          VariableName: 'Repeat Item',
+                        })),
                       },
                     ],
                   },

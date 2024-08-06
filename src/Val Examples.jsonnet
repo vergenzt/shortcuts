@@ -72,10 +72,7 @@ local sc = import 'shortcuts.libsonnet';
                         },
                         {
                           WFItemType: 4,
-                          WFValue: {
-                            Value: false,
-                            WFSerializationType: 'WFNumberSubstitutableState',
-                          },
+                          WFValue: sc.Num(false),
                         },
                         {
                           WFItemType: 1,
