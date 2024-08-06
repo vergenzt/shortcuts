@@ -83,7 +83,36 @@
     }
   ),
 
-  _interpJoiner: std.char(65532),
+  // Dict(dict):: {
+  //   WFSerializationType: 'WFDictionaryFieldValue',
+  //   Value: {
+  //     WFDictionaryFieldValueItems: [
+  //       {
+  //         WFItemType: (
+  //           local type = dict[WFSerializationType];
+  //           local typeNumsByType = {
+  //             WFTextTokenString: 0,
+  //             WFDictionaryFieldValue: 1,
+  //             WFArrayParameterState: 2,
+  //             WFNumberSubstitutableState: 3,
+
+  //           };
+  //           typeNumsByType[type]
+  //         )
+
+  // //     string: 0,
+  // //     object: 1,
+  // //     array: 2,
+  // //     number: 3,
+  // //     boolean: 4,
+  //         },
+  //         WFKey: $.Str([key]),
+
+  //       }
+  //       for key in std.objectFields(dict)
+  //     ]
+  //   },
+  // },
 
   // _wrapItem(f, state=null, key=null):: {
   //   [if key != null then 'WFKey']: $.Val(key),
@@ -123,6 +152,8 @@
     WFSerializationType: 'WFNumberSubstitutableState',
   },
 
+  _interpJoiner: std.char(65532),
+
   Str(parts):: (
     local partStrs = std.map(function(part) if std.isString(part) then part else $._interpJoiner, parts);
     local partStrLens = std.map(std.length, partStrs);
@@ -133,11 +164,11 @@
       if !std.isString(parts[i])
     };
     {
-      WFSerializationType: 'WFTextTokenString',
       Value: std.prune({
         string: std.join('', partStrs),
         attachmentsByRange: attachments,
       }),
+      WFSerializationType: 'WFTextTokenString',
     }
   ),
 

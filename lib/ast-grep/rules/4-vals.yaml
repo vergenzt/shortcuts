@@ -71,6 +71,35 @@ rewriters:
   fix: >-
     sc.Num($VAL)
 
+# - id: dict-item
+#   rule:
+#     pattern: >-
+#       {
+#         WFItemType:
+#       }
+
+# - id: dict
+#   rule:
+#     pattern: >-
+#       {
+#         Value: {
+#           WFDictionaryFieldValueItems: [
+#             $$$ITEMS
+#           ],
+#         },
+#         WFSerializationType: 'WFDictionaryFieldValue',
+#       }
+#   transform:
+#     ITEMS_AS_DICT:
+#       rewrite:
+#         source: $$$ITEMS
+#         rewriters:
+#         - dict-item
+#   fix: >-
+#     sc.Dict({
+#       $ITEMS_AS_DICT
+#     })
+
 transform:
   X_RE:
     rewrite:
