@@ -11,24 +11,16 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.urlencode', name='JQL', params={
-      WFInput: {
-        Value: {
-          attachmentsByRange: {
-            '{0, 1}': sc.Ref('Constants', aggs=[
-              {
-                CoercionItemClass: 'WFDictionaryContentItem',
-                Type: 'WFCoercionVariableAggrandizement',
-              },
-              {
-                DictionaryKey: 'Filter: Recurring Tasks',
-                Type: 'WFDictionaryValueVariableAggrandizement',
-              },
-            ]),
-          },
-          string: '￼ and status = Done',
+      WFInput: sc.Str([sc.Ref('Constants', aggs=[
+        {
+          CoercionItemClass: 'WFDictionaryContentItem',
+          Type: 'WFCoercionVariableAggrandizement',
         },
-        WFSerializationType: 'WFTextTokenString',
-      },
+        {
+          DictionaryKey: 'Filter: Recurring Tasks',
+          Type: 'WFDictionaryValueVariableAggrandizement',
+        },
+      ]), ' and status = Done']),
     }),
 
     sc.Action('is.workflow.actions.dictionary', name='Dictionary', params={
@@ -43,15 +35,7 @@ local sc = import 'shortcuts.libsonnet';
             {
               WFItemType: 0,
               WFKey: sc.Str(['path']),
-              WFValue: {
-                Value: {
-                  attachmentsByRange: {
-                    '{11, 1}': sc.Ref('JQL'),
-                  },
-                  string: 'search?jql=￼',
-                },
-                WFSerializationType: 'WFTextTokenString',
-              },
+              WFValue: sc.Str(['search?jql=', sc.Ref('JQL')]),
             },
           ],
         },
@@ -96,28 +80,20 @@ local sc = import 'shortcuts.libsonnet';
             {
               WFItemType: 0,
               WFKey: sc.Str(['path']),
-              WFValue: {
-                Value: {
-                  attachmentsByRange: {
-                    '{6, 1}': {
-                      Aggrandizements: [
-                        {
-                          CoercionItemClass: 'WFDictionaryContentItem',
-                          Type: 'WFCoercionVariableAggrandizement',
-                        },
-                        {
-                          DictionaryKey: 'key',
-                          Type: 'WFDictionaryValueVariableAggrandizement',
-                        },
-                      ],
-                      Type: 'Variable',
-                      VariableName: 'Repeat Item',
-                    },
+              WFValue: sc.Str(['issue/', {
+                Aggrandizements: [
+                  {
+                    CoercionItemClass: 'WFDictionaryContentItem',
+                    Type: 'WFCoercionVariableAggrandizement',
                   },
-                  string: 'issue/￼/transitions',
-                },
-                WFSerializationType: 'WFTextTokenString',
-              },
+                  {
+                    DictionaryKey: 'key',
+                    Type: 'WFDictionaryValueVariableAggrandizement',
+                  },
+                ],
+                Type: 'Variable',
+                VariableName: 'Repeat Item',
+              }, '/transitions']),
             },
             {
               WFItemType: 1,
@@ -178,81 +154,49 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.getvalueforkey', name='Reopen Basis Option ID', params={
-      WFDictionaryKey: {
-        Value: {
-          attachmentsByRange: {
-            '{7, 1}': sc.Ref('Constants', aggs=[
-              {
-                CoercionItemClass: 'WFDictionaryContentItem',
-                Type: 'WFCoercionVariableAggrandizement',
-              },
-              {
-                DictionaryKey: 'Field: Reopen Basis',
-                Type: 'WFDictionaryValueVariableAggrandizement',
-              },
-            ]),
-          },
-          string: 'fields.￼',
+      WFDictionaryKey: sc.Str(['fields.', sc.Ref('Constants', aggs=[
+        {
+          CoercionItemClass: 'WFDictionaryContentItem',
+          Type: 'WFCoercionVariableAggrandizement',
         },
-        WFSerializationType: 'WFTextTokenString',
-      },
+        {
+          DictionaryKey: 'Field: Reopen Basis',
+          Type: 'WFDictionaryValueVariableAggrandizement',
+        },
+      ])]),
       WFInput: sc.Attach(sc.Ref('Vars.Repeat Item')),
     }),
 
     sc.Action('is.workflow.actions.getvalueforkey', name='Reopen Delay', params={
-      WFDictionaryKey: {
-        Value: {
-          attachmentsByRange: {
-            '{7, 1}': sc.Ref('Constants', aggs=[
-              {
-                CoercionItemClass: 'WFDictionaryContentItem',
-                Type: 'WFCoercionVariableAggrandizement',
-              },
-              {
-                DictionaryKey: 'Field: Reopen Delay',
-                Type: 'WFDictionaryValueVariableAggrandizement',
-              },
-            ]),
-          },
-          string: 'fields.￼',
+      WFDictionaryKey: sc.Str(['fields.', sc.Ref('Constants', aggs=[
+        {
+          CoercionItemClass: 'WFDictionaryContentItem',
+          Type: 'WFCoercionVariableAggrandizement',
         },
-        WFSerializationType: 'WFTextTokenString',
-      },
+        {
+          DictionaryKey: 'Field: Reopen Delay',
+          Type: 'WFDictionaryValueVariableAggrandizement',
+        },
+      ])]),
       WFInput: sc.Attach(sc.Ref('Vars.Repeat Item')),
     }),
 
     sc.Action('is.workflow.actions.getvalueforkey', name='Reopen Basis Field Key', params={
-      WFDictionaryKey: {
-        Value: {
-          attachmentsByRange: {
-            '{7, 1}': sc.Ref('Reopen Basis Option ID', aggs=[
-              {
-                CoercionItemClass: 'WFDictionaryContentItem',
-                Type: 'WFCoercionVariableAggrandizement',
-              },
-              {
-                DictionaryKey: 'id',
-                Type: 'WFDictionaryValueVariableAggrandizement',
-              },
-            ]),
-          },
-          string: 'Basis: ￼',
+      WFDictionaryKey: sc.Str(['Basis: ', sc.Ref('Reopen Basis Option ID', aggs=[
+        {
+          CoercionItemClass: 'WFDictionaryContentItem',
+          Type: 'WFCoercionVariableAggrandizement',
         },
-        WFSerializationType: 'WFTextTokenString',
-      },
+        {
+          DictionaryKey: 'id',
+          Type: 'WFDictionaryValueVariableAggrandizement',
+        },
+      ])]),
       WFInput: sc.Attach(sc.Ref('Constants')),
     }),
 
     sc.Action('is.workflow.actions.getvalueforkey', name='Reopen Basis Field Value', params={
-      WFDictionaryKey: {
-        Value: {
-          attachmentsByRange: {
-            '{7, 1}': sc.Ref('Reopen Basis Field Key'),
-          },
-          string: 'fields.￼',
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
+      WFDictionaryKey: sc.Str(['fields.', sc.Ref('Reopen Basis Field Key')]),
       WFInput: sc.Attach(sc.Ref('Vars.Repeat Item')),
     }),
 
@@ -307,46 +251,30 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.getvalueforkey', name='Due Date', params={
-      WFDictionaryKey: {
-        Value: {
-          attachmentsByRange: {
-            '{7, 1}': sc.Ref('Constants', aggs=[
-              {
-                CoercionItemClass: 'WFDictionaryContentItem',
-                Type: 'WFCoercionVariableAggrandizement',
-              },
-              {
-                DictionaryKey: 'Field: Due Date',
-                Type: 'WFDictionaryValueVariableAggrandizement',
-              },
-            ]),
-          },
-          string: 'fields.￼',
+      WFDictionaryKey: sc.Str(['fields.', sc.Ref('Constants', aggs=[
+        {
+          CoercionItemClass: 'WFDictionaryContentItem',
+          Type: 'WFCoercionVariableAggrandizement',
         },
-        WFSerializationType: 'WFTextTokenString',
-      },
+        {
+          DictionaryKey: 'Field: Due Date',
+          Type: 'WFDictionaryValueVariableAggrandizement',
+        },
+      ])]),
       WFInput: sc.Attach(sc.Ref('Vars.Repeat Item')),
     }),
 
     sc.Action('is.workflow.actions.getvalueforkey', name='Start Date', params={
-      WFDictionaryKey: {
-        Value: {
-          attachmentsByRange: {
-            '{7, 1}': sc.Ref('Constants', aggs=[
-              {
-                CoercionItemClass: 'WFDictionaryContentItem',
-                Type: 'WFCoercionVariableAggrandizement',
-              },
-              {
-                DictionaryKey: 'Field: Start Date',
-                Type: 'WFDictionaryValueVariableAggrandizement',
-              },
-            ]),
-          },
-          string: 'fields.￼',
+      WFDictionaryKey: sc.Str(['fields.', sc.Ref('Constants', aggs=[
+        {
+          CoercionItemClass: 'WFDictionaryContentItem',
+          Type: 'WFCoercionVariableAggrandizement',
         },
-        WFSerializationType: 'WFTextTokenString',
-      },
+        {
+          DictionaryKey: 'Field: Start Date',
+          Type: 'WFDictionaryValueVariableAggrandizement',
+        },
+      ])]),
       WFInput: sc.Attach(sc.Ref('Vars.Repeat Item')),
     }),
 
@@ -435,28 +363,20 @@ local sc = import 'shortcuts.libsonnet';
             {
               WFItemType: 0,
               WFKey: sc.Str(['path']),
-              WFValue: {
-                Value: {
-                  attachmentsByRange: {
-                    '{6, 1}': {
-                      Aggrandizements: [
-                        {
-                          CoercionItemClass: 'WFDictionaryContentItem',
-                          Type: 'WFCoercionVariableAggrandizement',
-                        },
-                        {
-                          DictionaryKey: 'key',
-                          Type: 'WFDictionaryValueVariableAggrandizement',
-                        },
-                      ],
-                      Type: 'Variable',
-                      VariableName: 'Repeat Item',
-                    },
+              WFValue: sc.Str(['issue/', {
+                Aggrandizements: [
+                  {
+                    CoercionItemClass: 'WFDictionaryContentItem',
+                    Type: 'WFCoercionVariableAggrandizement',
                   },
-                  string: 'issue/￼',
-                },
-                WFSerializationType: 'WFTextTokenString',
-              },
+                  {
+                    DictionaryKey: 'key',
+                    Type: 'WFDictionaryValueVariableAggrandizement',
+                  },
+                ],
+                Type: 'Variable',
+                VariableName: 'Repeat Item',
+              }]),
             },
           ],
         },

@@ -19,15 +19,7 @@ local sc = import 'shortcuts.libsonnet';
     sc.Action('is.workflow.actions.date', name='Date'),
 
     sc.Action('dk.simonbs.DataJar.SetValueIntent', {
-      keyPath: {
-        Value: {
-          attachmentsByRange: {
-            '{23, 1}': sc.Ref('Device Model'),
-          },
-          string: 'Repeat Hash Signatures.￼.started_at',
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
+      keyPath: sc.Str(['Repeat Hash Signatures.', sc.Ref('Device Model'), '.started_at']),
       values: sc.Attach(sc.Ref('Date', aggs=[
         {
           Type: 'WFDateFormatVariableAggrandizement',
@@ -64,49 +56,16 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.gettext', name='Result', params={
-      WFTextActionText: {
-        Value: {
-          attachmentsByRange: {
-            '{18, 1}': sc.Ref('Num Repetitions'),
-            '{32, 1}': sc.Ref('Time Between Dates'),
-            '{48, 1}': sc.Ref('Hash Suffix'),
-            '{62, 1}': sc.Ref('Date', aggs=[
-              {
-                Type: 'WFDateFormatVariableAggrandizement',
-                WFDateFormatStyle: 'ISO 8601',
-                WFISO8601IncludeTime: true,
-              },
-            ]),
-          },
-          string: 'Hash repetitions: ￼\nTotal time: ￼s\nHash suffix: ￼\nStarted at: ￼',
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
+      WFTextActionText: sc.Str(['Hash repetitions: ', sc.Ref('Num Repetitions'), '\nTotal time: ', sc.Ref('Time Between Dates'), 's\nHash suffix: ', sc.Ref('Hash Suffix')]),
     }),
 
     sc.Action('dk.simonbs.DataJar.SetValueIntent', {
-      keyPath: {
-        Value: {
-          attachmentsByRange: {
-            '{23, 1}': sc.Ref('Device Model'),
-          },
-          string: 'Repeat Hash Signatures.￼.result',
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
+      keyPath: sc.Str(['Repeat Hash Signatures.', sc.Ref('Device Model'), '.result']),
       values: sc.Attach(sc.Ref('Result')),
     }),
 
     sc.Action('is.workflow.actions.gettext', name='Prompt', params={
-      WFTextActionText: {
-        Value: {
-          attachmentsByRange: {
-            '{0, 1}': sc.Ref('Result'),
-          },
-          string: '￼\n\nView leading digits?',
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
+      WFTextActionText: sc.Str([sc.Ref('Result'), '\n\nView leading digits?']),
     }),
 
     sc.Action('is.workflow.actions.choosefrommenu', {

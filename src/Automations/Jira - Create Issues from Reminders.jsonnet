@@ -135,16 +135,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.gettext', {
-      WFTextActionText: {
-        Value: {
-          attachmentsByRange: {
-            '{0, 1}': sc.Ref('Vars.Repeat Item 2'),
-            '{3, 1}': sc.Ref('Dictionary Value'),
-          },
-          string: '￼: ￼',
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
+      WFTextActionText: sc.Str([sc.Ref('Vars.Repeat Item 2')]),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
@@ -184,36 +175,21 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.gettext', name='Text', params={
-      WFTextActionText: {
-        Value: {
-          attachmentsByRange: {
-            '{0, 1}': {
-              Aggrandizements: [
-                {
-                  PropertyName: 'Notes',
-                  Type: 'WFPropertyVariableAggrandizement',
-                },
-              ],
-              Type: 'Variable',
-              VariableName: 'Repeat Item',
-            },
-            '{11, 1}': sc.Ref('Issue', aggs=[
-              {
-                PropertyName: 'site',
-                Type: 'WFPropertyVariableAggrandizement',
-              },
-            ]),
-            '{34, 1}': sc.Ref('Issue', aggs=[
-              {
-                PropertyName: 'key',
-                Type: 'WFPropertyVariableAggrandizement',
-              },
-            ]),
+      WFTextActionText: sc.Str([{
+        Aggrandizements: [
+          {
+            PropertyName: 'Notes',
+            Type: 'WFPropertyVariableAggrandizement',
           },
-          string: '￼\n\nhttps://￼.atlassian.net/browse/￼',
+        ],
+        Type: 'Variable',
+        VariableName: 'Repeat Item',
+      }, '\n\nhttps://', sc.Ref('Issue', aggs=[
+        {
+          PropertyName: 'site',
+          Type: 'WFPropertyVariableAggrandizement',
         },
-        WFSerializationType: 'WFTextTokenString',
-      },
+      ])]),
     }),
 
     sc.Action('is.workflow.actions.setters.reminders', {
@@ -222,15 +198,7 @@ local sc = import 'shortcuts.libsonnet';
       WFContentItemPropertyName: 'Notes',
       WFInput: sc.Attach(sc.Ref('Vars.Repeat Item')),
       WFReminderContentItemIsCompleted: 1,
-      WFReminderContentItemNotes: {
-        Value: {
-          attachmentsByRange: {
-            '{1, 1}': sc.Ref('Text'),
-          },
-          string: ' ￼',
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
+      WFReminderContentItemNotes: sc.Str([' ', sc.Ref('Text')]),
     }),
 
     sc.Action('is.workflow.actions.repeat.each', {

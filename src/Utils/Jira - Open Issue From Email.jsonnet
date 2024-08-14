@@ -35,15 +35,7 @@ local sc = import 'shortcuts.libsonnet';
                       {
                         WFItemType: 0,
                         WFKey: sc.Str(['jql']),
-                        WFValue: {
-                          Value: {
-                            attachmentsByRange: {
-                              '{22, 1}': sc.Ref('Updated Text'),
-                            },
-                            string: '"Email Message ID" ~ "￼"',
-                          },
-                          WFSerializationType: 'WFTextTokenString',
-                        },
+                        WFValue: sc.Str(['"Email Message ID" ~ "', sc.Ref('Updated Text'), '"']),
                       },
                     ],
                   },

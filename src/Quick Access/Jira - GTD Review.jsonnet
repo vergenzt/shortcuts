@@ -18,24 +18,16 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.url', {
-      WFURLActionURL: {
-        Value: {
-          attachmentsByRange: {
-            '{46, 1}': sc.Ref('Value', aggs=[
-              {
-                CoercionItemClass: 'WFDictionaryContentItem',
-                Type: 'WFCoercionVariableAggrandizement',
-              },
-              {
-                DictionaryKey: 'spreadsheet_id',
-                Type: 'WFDictionaryValueVariableAggrandizement',
-              },
-            ]),
-          },
-          string: 'https://sheets.googleapis.com/v4/spreadsheets/￼/values',
+      WFURLActionURL: sc.Str(['https://sheets.googleapis.com/v4/spreadsheets/', sc.Ref('Value', aggs=[
+        {
+          CoercionItemClass: 'WFDictionaryContentItem',
+          Type: 'WFCoercionVariableAggrandizement',
         },
-        WFSerializationType: 'WFTextTokenString',
-      },
+        {
+          DictionaryKey: 'spreadsheet_id',
+          Type: 'WFDictionaryValueVariableAggrandizement',
+        },
+      ]), '/values']),
     }),
 
     sc.Action('dk.simonbs.DataJar.GetValueIntent', name='Filters by First Issue Age', params={
@@ -228,43 +220,20 @@ local sc = import 'shortcuts.libsonnet';
             {
               WFItemType: 0,
               WFKey: sc.Str(['progress_info']),
-              WFValue: {
-                Value: {
-                  attachmentsByRange: {
-                    '{0, 1}': {
-                      Aggrandizements: [
-                        {
-                          CoercionItemClass: 'WFDictionaryContentItem',
-                          Type: 'WFCoercionVariableAggrandizement',
-                        },
-                        {
-                          DictionaryKey: 'name',
-                          Type: 'WFDictionaryValueVariableAggrandizement',
-                        },
-                      ],
-                      Type: 'Variable',
-                      VariableName: 'Repeat Item',
-                    },
-                    '{3, 1}': sc.Ref('Vars.Repeat Index 2'),
-                    '{5, 1}': {
-                      Aggrandizements: [
-                        {
-                          CoercionItemClass: 'WFDictionaryContentItem',
-                          Type: 'WFCoercionVariableAggrandizement',
-                        },
-                        {
-                          DictionaryKey: 'total',
-                          Type: 'WFDictionaryValueVariableAggrandizement',
-                        },
-                      ],
-                      Type: 'Variable',
-                      VariableName: 'Repeat Item',
-                    },
+              WFValue: sc.Str([{
+                Aggrandizements: [
+                  {
+                    CoercionItemClass: 'WFDictionaryContentItem',
+                    Type: 'WFCoercionVariableAggrandizement',
                   },
-                  string: '￼ (￼/￼) ',
-                },
-                WFSerializationType: 'WFTextTokenString',
-              },
+                  {
+                    DictionaryKey: 'name',
+                    Type: 'WFDictionaryValueVariableAggrandizement',
+                  },
+                ],
+                Type: 'Variable',
+                VariableName: 'Repeat Item',
+              }, ' (', sc.Ref('Vars.Repeat Index 2')]),
             },
           ],
         },

@@ -24,34 +24,16 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.gettext', name='Text', params={
-      WFTextActionText: {
-        Value: {
-          attachmentsByRange: {
-            '{161, 1}': sc.Ref('Fastmail Auth', aggs=[
-              {
-                CoercionItemClass: 'WFDictionaryContentItem',
-                Type: 'WFCoercionVariableAggrandizement',
-              },
-              {
-                DictionaryKey: 'accountId',
-                Type: 'WFDictionaryValueVariableAggrandizement',
-              },
-            ]),
-            '{397, 1}': sc.Ref('Fastmail Auth', aggs=[
-              {
-                CoercionItemClass: 'WFDictionaryContentItem',
-                Type: 'WFCoercionVariableAggrandizement',
-              },
-              {
-                DictionaryKey: 'accountId',
-                Type: 'WFDictionaryValueVariableAggrandizement',
-              },
-            ]),
-          },
-          string: '{\n  "using": [\n    "urn:ietf:params:jmap:core",\n    "urn:ietf:params:jmap:mail"\n  ],\n  "methodCalls": [\n    [\n      "Email/query",\n      {\n        "accountId": "￼",\n        "filter": {\n          "hasKeyword": "$flagged",\n          "notKeyword": "jira-created"\n        },\n        "sort": [{ "property": "receivedAt" }]\n      },\n      1\n    ],\n    [\n      "Email/get",\n      {\n        "accountId": "￼",\n        "#ids": {\n          "resultOf": 1,\n          "name": "Email/query",\n          "path": "/ids"\n        },\n        "properties": [\n          "messageId",\n          "threadId",\n          "subject",\n          "from",\n          "preview"\n        ]\n      },\n      2\n    ]\n  ]\n}\n',
+      WFTextActionText: sc.Str(['{\n  "using": [\n    "urn:ietf:params:jmap:core",\n    "urn:ietf:params:jmap:mail"\n  ],\n  "methodCalls": [\n    [\n      "Email/query",\n      {\n        "accountId": "', sc.Ref('Fastmail Auth', aggs=[
+        {
+          CoercionItemClass: 'WFDictionaryContentItem',
+          Type: 'WFCoercionVariableAggrandizement',
         },
-        WFSerializationType: 'WFTextTokenString',
-      },
+        {
+          DictionaryKey: 'accountId',
+          Type: 'WFDictionaryValueVariableAggrandizement',
+        },
+      ])]),
     }),
 
     sc.Action('is.workflow.actions.downloadurl', name='Contents of URL', params={
@@ -63,24 +45,16 @@ local sc = import 'shortcuts.libsonnet';
             {
               WFItemType: 0,
               WFKey: sc.Str(['Authorization']),
-              WFValue: {
-                Value: {
-                  attachmentsByRange: {
-                    '{7, 1}': sc.Ref('Fastmail Auth', aggs=[
-                      {
-                        CoercionItemClass: 'WFDictionaryContentItem',
-                        Type: 'WFCoercionVariableAggrandizement',
-                      },
-                      {
-                        DictionaryKey: 'auth',
-                        Type: 'WFDictionaryValueVariableAggrandizement',
-                      },
-                    ]),
-                  },
-                  string: 'Bearer ￼',
+              WFValue: sc.Str(['Bearer ', sc.Ref('Fastmail Auth', aggs=[
+                {
+                  CoercionItemClass: 'WFDictionaryContentItem',
+                  Type: 'WFCoercionVariableAggrandizement',
                 },
-                WFSerializationType: 'WFTextTokenString',
-              },
+                {
+                  DictionaryKey: 'auth',
+                  Type: 'WFDictionaryValueVariableAggrandizement',
+                },
+              ])]),
             },
             {
               WFItemType: 0,
@@ -180,52 +154,33 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.url', name='URL', params={
-      WFURLActionURL: {
-        Value: {
-          attachmentsByRange: {
-            '{36, 1}': {
-              Aggrandizements: [
-                {
-                  CoercionItemClass: 'WFDictionaryContentItem',
-                  Type: 'WFCoercionVariableAggrandizement',
-                },
-                {
-                  DictionaryKey: 'threadId',
-                  Type: 'WFDictionaryValueVariableAggrandizement',
-                },
-              ],
-              Type: 'Variable',
-              VariableName: 'Repeat Item',
-            },
-            '{38, 1}': {
-              Aggrandizements: [
-                {
-                  CoercionItemClass: 'WFDictionaryContentItem',
-                  Type: 'WFCoercionVariableAggrandizement',
-                },
-                {
-                  DictionaryKey: 'id',
-                  Type: 'WFDictionaryValueVariableAggrandizement',
-                },
-              ],
-              Type: 'Variable',
-              VariableName: 'Repeat Item',
-            },
-            '{42, 1}': sc.Ref('Fastmail Auth', aggs=[
-              {
-                CoercionItemClass: 'WFDictionaryContentItem',
-                Type: 'WFCoercionVariableAggrandizement',
-              },
-              {
-                DictionaryKey: 'accountId',
-                Type: 'WFDictionaryValueVariableAggrandizement',
-              },
-            ]),
+      WFURLActionURL: sc.Str(['https://app.fastmail.com/mail/Inbox/', {
+        Aggrandizements: [
+          {
+            CoercionItemClass: 'WFDictionaryContentItem',
+            Type: 'WFCoercionVariableAggrandizement',
           },
-          string: 'https://app.fastmail.com/mail/Inbox/￼.￼?u=￼',
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
+          {
+            DictionaryKey: 'threadId',
+            Type: 'WFDictionaryValueVariableAggrandizement',
+          },
+        ],
+        Type: 'Variable',
+        VariableName: 'Repeat Item',
+      }, '.', {
+        Aggrandizements: [
+          {
+            CoercionItemClass: 'WFDictionaryContentItem',
+            Type: 'WFCoercionVariableAggrandizement',
+          },
+          {
+            DictionaryKey: 'id',
+            Type: 'WFDictionaryValueVariableAggrandizement',
+          },
+        ],
+        Type: 'Variable',
+        VariableName: 'Repeat Item',
+      }]),
     }),
 
     sc.Action('is.workflow.actions.downloadurl', {
@@ -327,29 +282,7 @@ local sc = import 'shortcuts.libsonnet';
                       {
                         WFItemType: 0,
                         WFKey: sc.Str(['summary']),
-                        WFValue: {
-                          Value: {
-                            attachmentsByRange: {
-                              '{5, 1}': sc.Ref('From'),
-                              '{8, 1}': {
-                                Aggrandizements: [
-                                  {
-                                    CoercionItemClass: 'WFDictionaryContentItem',
-                                    Type: 'WFCoercionVariableAggrandizement',
-                                  },
-                                  {
-                                    DictionaryKey: 'subject',
-                                    Type: 'WFDictionaryValueVariableAggrandizement',
-                                  },
-                                ],
-                                Type: 'Variable',
-                                VariableName: 'Repeat Item',
-                              },
-                            },
-                            string: 'From ￼: ￼',
-                          },
-                          WFSerializationType: 'WFTextTokenString',
-                        },
+                        WFValue: sc.Str(['From ', sc.Ref('From')]),
                       },
                       {
                         WFItemType: 0,
@@ -435,38 +368,16 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.gettext', name='Text', params={
-      WFTextActionText: {
-        Value: {
-          attachmentsByRange: {
-            '{159, 1}': sc.Ref('Fastmail Auth', aggs=[
-              {
-                CoercionItemClass: 'WFDictionaryContentItem',
-                Type: 'WFCoercionVariableAggrandizement',
-              },
-              {
-                DictionaryKey: 'accountId',
-                Type: 'WFDictionaryValueVariableAggrandizement',
-              },
-            ]),
-            '{194, 1}': {
-              Aggrandizements: [
-                {
-                  CoercionItemClass: 'WFDictionaryContentItem',
-                  Type: 'WFCoercionVariableAggrandizement',
-                },
-                {
-                  DictionaryKey: 'id',
-                  Type: 'WFDictionaryValueVariableAggrandizement',
-                },
-              ],
-              Type: 'Variable',
-              VariableName: 'Repeat Item',
-            },
-          },
-          string: '{\n  "using": [\n    "urn:ietf:params:jmap:core",\n    "urn:ietf:params:jmap:mail"\n  ],\n  "methodCalls": [\n    [\n      "Email/set",\n      {\n        "accountId": "￼",\n        "update": {\n          "￼": {\n            "keywords/jira-created": true\n          }\n        }\n      },\n      1\n    ]\n  ]\n}\n',
+      WFTextActionText: sc.Str(['{\n  "using": [\n    "urn:ietf:params:jmap:core",\n    "urn:ietf:params:jmap:mail"\n  ],\n  "methodCalls": [\n    [\n      "Email/set",\n      {\n        "accountId": "', sc.Ref('Fastmail Auth', aggs=[
+        {
+          CoercionItemClass: 'WFDictionaryContentItem',
+          Type: 'WFCoercionVariableAggrandizement',
         },
-        WFSerializationType: 'WFTextTokenString',
-      },
+        {
+          DictionaryKey: 'accountId',
+          Type: 'WFDictionaryValueVariableAggrandizement',
+        },
+      ])]),
     }),
 
     sc.Action('is.workflow.actions.downloadurl', {
@@ -478,24 +389,16 @@ local sc = import 'shortcuts.libsonnet';
             {
               WFItemType: 0,
               WFKey: sc.Str(['Authorization']),
-              WFValue: {
-                Value: {
-                  attachmentsByRange: {
-                    '{7, 1}': sc.Ref('Fastmail Auth', aggs=[
-                      {
-                        CoercionItemClass: 'WFDictionaryContentItem',
-                        Type: 'WFCoercionVariableAggrandizement',
-                      },
-                      {
-                        DictionaryKey: 'auth',
-                        Type: 'WFDictionaryValueVariableAggrandizement',
-                      },
-                    ]),
-                  },
-                  string: 'Bearer ￼',
+              WFValue: sc.Str(['Bearer ', sc.Ref('Fastmail Auth', aggs=[
+                {
+                  CoercionItemClass: 'WFDictionaryContentItem',
+                  Type: 'WFCoercionVariableAggrandizement',
                 },
-                WFSerializationType: 'WFTextTokenString',
-              },
+                {
+                  DictionaryKey: 'auth',
+                  Type: 'WFDictionaryValueVariableAggrandizement',
+                },
+              ])]),
             },
             {
               WFItemType: 0,

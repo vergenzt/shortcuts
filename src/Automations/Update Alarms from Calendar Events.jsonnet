@@ -108,15 +108,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.text.match', name='Matches', params={
-      WFMatchTextPattern: {
-        Value: {
-          attachmentsByRange: {
-            '{1, 1}': sc.Ref('Combined Text'),
-          },
-          string: '(￼) 🗓️: (.*) at ([0-9: APM]+)',
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
+      WFMatchTextPattern: sc.Str(['(', sc.Ref('Combined Text'), ') 🗓️: (.*) at ([0-9: APM]+)']),
       text: sc.Str([{
         Aggrandizements: [
           {
@@ -292,24 +284,14 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.gettext', name='Desired Alarm Name', params={
-      WFTextActionText: {
-        Value: {
-          attachmentsByRange: {
-            '{0, 1}': sc.Ref('Calendar Label'),
-            '{12, 1}': sc.Ref('Start Date', aggs=[
-              {
-                Type: 'WFDateFormatVariableAggrandizement',
-                WFDateFormatStyle: 'None',
-                WFISO8601IncludeTime: false,
-                WFTimeFormatStyle: 'Short',
-              },
-            ]),
-            '{7, 1}': sc.Ref('Title'),
-          },
-          string: '￼ 🗓️: ￼ at ￼',
+      WFTextActionText: sc.Str([sc.Ref('Calendar Label'), ' 🗓️: ', sc.Ref('Start Date', aggs=[
+        {
+          Type: 'WFDateFormatVariableAggrandizement',
+          WFDateFormatStyle: 'None',
+          WFISO8601IncludeTime: false,
+          WFTimeFormatStyle: 'Short',
         },
-        WFSerializationType: 'WFTextTokenString',
-      },
+      ])]),
     }),
 
     sc.Action('is.workflow.actions.repeat.each', {
@@ -407,25 +389,17 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.alert', {
-      WFAlertActionMessage: {
-        Value: {
-          attachmentsByRange: {
-            '{87, 1}': {
-              Aggrandizements: [
-                {
-                  PropertyName: 'Name',
-                  PropertyUserInfo: 'WFItemName',
-                  Type: 'WFPropertyVariableAggrandizement',
-                },
-              ],
-              Type: 'Variable',
-              VariableName: 'Alarm',
-            },
+      WFAlertActionMessage: sc.Str(['Alarm name matched but alarm time minus event time was outside range of [-4hr, -0min]! ', {
+        Aggrandizements: [
+          {
+            PropertyName: 'Name',
+            PropertyUserInfo: 'WFItemName',
+            Type: 'WFPropertyVariableAggrandizement',
           },
-          string: 'Alarm name matched but alarm time minus event time was outside range of [-4hr, -0min]! ￼',
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
+        ],
+        Type: 'Variable',
+        VariableName: 'Alarm',
+      }]),
     }),
 
     sc.Action('is.workflow.actions.conditional', name='If Result', params={
@@ -493,15 +467,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.notification', {
-      WFNotificationActionBody: {
-        Value: {
-          attachmentsByRange: {
-            '{14, 1}': sc.Ref('Desired Alarm Name'),
-          },
-          string: 'Created alarm ￼',
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
+      WFNotificationActionBody: sc.Str(['Created alarm ', sc.Ref('Desired Alarm Name')]),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
@@ -641,25 +607,17 @@ local sc = import 'shortcuts.libsonnet';
 
     sc.Action('is.workflow.actions.notification', {
       WFInput: sc.Attach(sc.Ref('Item from List')),
-      WFNotificationActionBody: {
-        Value: {
-          attachmentsByRange: {
-            '{16, 1}': {
-              Aggrandizements: [
-                {
-                  PropertyName: 'label',
-                  PropertyUserInfo: 'label',
-                  Type: 'WFPropertyVariableAggrandizement',
-                },
-              ],
-              Type: 'Variable',
-              VariableName: 'Alarm to Disable',
-            },
+      WFNotificationActionBody: sc.Str(['Disabling alarm ', {
+        Aggrandizements: [
+          {
+            PropertyName: 'label',
+            PropertyUserInfo: 'label',
+            Type: 'WFPropertyVariableAggrandizement',
           },
-          string: 'Disabling alarm ￼',
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
+        ],
+        Type: 'Variable',
+        VariableName: 'Alarm to Disable',
+      }]),
     }),
 
     sc.Action('com.apple.mobiletimer-framework.MobileTimerIntents.MTToggleAlarmIntent', {

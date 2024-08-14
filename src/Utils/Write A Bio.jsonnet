@@ -27,15 +27,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.gettext', {
-      WFTextActionText: {
-        Value: {
-          attachmentsByRange: {
-            '{2, 1}': sc.Ref('Vars.Repeat Item'),
-          },
-          string: '- ￼',
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
+      WFTextActionText: sc.Str(['- ', sc.Ref('Vars.Repeat Item')]),
     }),
 
     sc.Action('is.workflow.actions.repeat.each', name='Repeat Results', params={
@@ -48,16 +40,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.gettext', name='Text', params={
-      WFTextActionText: {
-        Value: {
-          attachmentsByRange: {
-            '{56, 1}': sc.Ref('Bio Purpose'),
-            '{98, 1}': sc.Ref('Combined Factoids List'),
-          },
-          string: 'Please generate a short bio with the following purpose: ￼\n\nPlease include the following factoids:\n￼',
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
+      WFTextActionText: sc.Str(['Please generate a short bio with the following purpose: ', sc.Ref('Bio Purpose')]),
     }),
 
     sc.Action('is.workflow.actions.urlencode', name='URL Encoded Text', params={
@@ -65,15 +48,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.url', name='URL', params={
-      WFURLActionURL: {
-        Value: {
-          attachmentsByRange: {
-            '{22, 1}': sc.Ref('URL Encoded Text'),
-          },
-          string: 'https://chatgpt.com?q=￼',
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
+      WFURLActionURL: sc.Str(['https://chatgpt.com?q=', sc.Ref('URL Encoded Text')]),
     }),
 
     sc.Action('is.workflow.actions.openurl', {
