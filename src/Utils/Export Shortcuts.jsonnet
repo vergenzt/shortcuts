@@ -63,5 +63,7 @@ local sc = import 'shortcuts.libsonnet';
   WFWorkflowOutputContentItemClasses: [
     'WFGenericFileContentItem',
   ],
-  WFWorkflowTypes: [],
+  WFWorkflowTypes: [
+    'Watch',
+  ],
 }

@@ -70,5 +70,7 @@ local sc = import 'shortcuts.libsonnet';
   WFWorkflowMinimumClientVersion: 900,
   WFWorkflowMinimumClientVersionString: '900',
   WFWorkflowOutputContentItemClasses: [],
-  WFWorkflowTypes: [],
+  WFWorkflowTypes: [
+    'Watch',
+  ],
 }

@@ -458,5 +458,6 @@ local sc = import 'shortcuts.libsonnet';
     'MenuBar',
     'QuickActions',
     'ReceivesOnScreenContent',
+    'Watch',
   ],
 }
