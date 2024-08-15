@@ -1,7 +1,3 @@
-# /// script
-# dependencies = ["jsonpatch", "json-pointer"]
-# ///
-
 import json
 import sys
 from collections import defaultdict

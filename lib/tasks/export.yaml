@@ -50,7 +50,7 @@ tasks:
     - '{{.JSON_OUT}}'
     interactive: true # to work around weird KeyboardInterrupt?
     cmds:
-    - pip-run lib/python/jsonnet_render.py {{q .JSONNET}} > {{q .JSON_OUT}}
+    - .venv/bin/python lib/python/jsonnet_render.py {{q .JSONNET}} > {{q .JSON_OUT}}
 
   validate:
     label: *label-by-path
@@ -71,7 +71,7 @@ tasks:
     - ! test -f {{.JSON_IN}}
     interactive: true # to work around weird KeyboardInterrupt?
     cmds:
-    - pip-run lib/python/validate_json_output_matches_input.py {{q .JSON_IN}} {{q .JSON_OUT}}
+    - .venv/bin/python lib/python/validate_json_output_matches_input.py {{q .JSON_IN}} {{q .JSON_OUT}}
 
   convert:
     label: *label-by-path

@@ -1,7 +1,3 @@
-# /// script
-# dependencies = ["jsonnet"]
-# ///
-
 import os
 import sys
 from inspect import signature
