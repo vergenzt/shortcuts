@@ -20,8 +20,3 @@ tasks:
       vars: [BUILD_DIR]
     cmds:
     - cmd: find "{{q .BUILD_DIR}}" -depth -mindepth 1 -delete
-
-  open-all:
-    prompt: Would you like to re-import built Shortcuts?
-    cmds:
-    - find build -type f -name "*.shortcut" -execdir open -n -W '{}' \;
