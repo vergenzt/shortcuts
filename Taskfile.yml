@@ -16,13 +16,10 @@ includes:
 
 tasks:
   clean:
-    vars:
-      dirs: |-
-        {{.EXPORT_DIR}}
-        {{.IMPORT_DIR}}
+    requires:
+      vars: [BUILD_DIR]
     cmds:
-    - for: { var: dirs, as: dir, split: "\n" }
-      cmd: find "{{.dir}}" -depth -mindepth 1 -delete
+    - cmd: find "{{q .BUILD_DIR}}" -depth -mindepth 1 -delete
 
   open-all:
     prompt: Would you like to re-import built Shortcuts?

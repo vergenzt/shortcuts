@@ -13,9 +13,9 @@ tasks:
       task: default
       vars:
         SHORTCUT_PATH: '{{.SHORTCUT_PATH}}'
-    - task: clean
+    - task: remove-deleted
 
-  clean:
+  remove-deleted:
     desc: Removes Apple Shortcut source files that no longer exist in account.
     interactive: true
     cmds:

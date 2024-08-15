@@ -19,18 +19,87 @@ tasks:
 
   default:
     desc: Exports a single Apple Shortcut from `{{.SOURCE_DIR}}` into your iCloud account.
+    deps: [{task: re-import, vars: { SHORTCUT_PATH: '{{.SHORTCUT_PATH}}' }}]
     requires:
       vars: ["SOURCE_DIR", "BUILD_DIR", "SHORTCUT_PATH"]
 
+  mkdir:
+    internal: true
+    requires:
+      vars: ["BUILD_DIR", "SHORTCUT_PATH"]
     cmds:
     - { silent: true, cmd: 'mkdir -p {{q .BUILD_DIR}}/{{q (dir .SHORTCUT_PATH)}}' }
 
-    - >
-      pip-run lib/python/jsonnet_render.py {{q .SOURCE_DIR}}/{{q .SHORTCUT_PATH}}.jsonnet
-      | tee {{q .BUILD_DIR}}/{{q .SHORTCUT_PATH}}-out.json
-      | plutil -convert xml1 - -o {{q .BUILD_DIR}}/{{q .SHORTCUT_PATH}}.wflow
+  compile:
+    internal: true
+    deps:
+    - { vars: { SHORTCUT_PATH: '{{.SHORTCUT_PATH}}' }, task: mkdir }
+    vars: &src-vars
+      JSONNET: '{{.SOURCE_DIR}}/{{.SHORTCUT_PATH}}.jsonnet'
+      JSON_IN: '{{.BUILD_DIR}}/{{.SHORTCUT_PATH}}-in.json'
+      JSON_OUT: '{{.BUILD_DIR}}/{{.SHORTCUT_PATH}}-out.json'
+      UNSIGNED: '{{.BUILD_DIR}}/{{.SHORTCUT_PATH}}.wflow'
+      SIGNED: '{{.BUILD_DIR}}/{{.SHORTCUT_PATH}}.shortcut'
+    sources:
+    - lib/python/jsonnet_render.py
+    - lib/python/jsonnet_methods.py
+    - lib/jsonnet/shortcuts.libsonnet
+    - '{{.JSONNET}}'
+    generates:
+    - '{{.JSON_OUT}}'
+    cmds:
+    - pip-run lib/python/jsonnet_render.py {{q .JSONNET}} > {{q .JSON_OUT}}
 
-    - >
-      shortcuts sign
-      -i {{q .BUILD_DIR}}/{{q .SHORTCUT_PATH}}.wflow
-      -o {{q .BUILD_DIR}}/{{q .SHORTCUT_PATH}}.shortcut
+  validate:
+    desc: >
+      Validates that JSON output matches JSON input. Only executed if import artifacts
+      are still in `{{.BUILD_DIR}}`.
+
+      If the output has changed deliberately, you may suppress this task by clearing
+      import artifacts with `task clean` and then running again.
+
+    vars: *src-vars
+    deps:
+    - { vars: { SHORTCUT_PATH: '{{.SHORTCUT_PATH}}' }, task: compile }
+    sources:
+    - '{{.JSON_OUT}}'
+    status:
+    - ! test -f {{.JSON_IN}}
+    cmds:
+    - pip-run lib/python/validate_json_output_matches_input.py {{q .JSON_IN}} {{q .JSON_OUT}}
+
+  convert:
+    internal: true
+    vars: *src-vars
+    deps:
+    - { vars: { SHORTCUT_PATH: '{{.SHORTCUT_PATH}}' }, task: compile }
+    sources:
+    - '{{.JSON_OUT}}'
+    generates:
+    - '{{.UNSIGNED}}'
+    cmds:
+    - plutil -convert xml1 {{q .JSON_OUT}} -o {{q .UNSIGNED}}
+
+  sign:
+    internal: true
+    vars: *src-vars
+    deps:
+    - { vars: { SHORTCUT_PATH: '{{.SHORTCUT_PATH}}' }, task: convert }
+    sources:
+    - '{{.UNSIGNED}}'
+    generates:
+    - '{{.SIGNED}}'
+    cmds:
+    - shortcuts sign -i {{q .UNSIGNED}} -o {{q .SIGNED}}
+
+  re-import:
+    internal: true
+    vars: *src-vars
+    deps:
+    - { vars: { SHORTCUT_PATH: '{{.SHORTCUT_PATH}}' }, task: sign }
+    - { vars: { SHORTCUT_PATH: '{{.SHORTCUT_PATH}}' }, task: validate }
+    sources:
+    - '{{.SIGNED}}'
+    interactive: true
+    cmds:
+    - open -W '{{.SIGNED}}'
