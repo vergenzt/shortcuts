@@ -48,6 +48,7 @@ tasks:
     - '{{.JSONNET}}'
     generates:
     - '{{.JSON_OUT}}'
+    interactive: true # to work around weird KeyboardInterrupt?
     cmds:
     - pip-run lib/python/jsonnet_render.py {{q .JSONNET}} > {{q .JSON_OUT}}
 
@@ -68,6 +69,7 @@ tasks:
     - '{{.JSON_OUT}}'
     status:
     - ! test -f {{.JSON_IN}}
+    interactive: true # to work around weird KeyboardInterrupt?
     cmds:
     - pip-run lib/python/validate_json_output_matches_input.py {{q .JSON_IN}} {{q .JSON_OUT}}
 
