@@ -1,7 +1,6 @@
 version: '3'
 
 vars:
-  IMPORT_DIR: '{{.HOME}}/Library/Mobile Documents/iCloud~is~workflow~my~workflows/Documents'
   SHORTCUT_PATHS:
     sh: shortcuts run 'List Shortcuts'
 

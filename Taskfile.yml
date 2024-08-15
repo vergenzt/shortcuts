@@ -5,6 +5,7 @@ set: [errexit, nounset, pipefail]
 vars:
   BUILD_DIR: build
   SOURCE_DIR: src
+  IMPORT_DIR: '{{.HOME}}/Library/Mobile Documents/iCloud~is~workflow~my~workflows/Documents'
 
 env:
   PARALLEL_SHELL: bash

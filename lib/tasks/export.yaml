@@ -8,6 +8,9 @@ vars:
   SHORTCUT_PATHS:
     sh: shortcuts run 'List Shortcuts'
 
+includes:
+  import: ./import.yaml
+
 tasks:
   all:
     desc: Exports all Apple Shortcuts from `{{.SOURCE_DIR}}` into your iCloud account.
@@ -106,8 +109,13 @@ tasks:
     deps:
     - { vars: { SHORTCUT_PATH: '{{.SHORTCUT_PATH}}' }, task: sign }
     - { vars: { SHORTCUT_PATH: '{{.SHORTCUT_PATH}}' }, task: validate }
+    - { vars: { SHORTCUT_PATH: '{{.SHORTCUT_PATH}}' }, task: 'import:extract' }
     sources:
-    - '{{.SIGNED}}'
-    interactive: true
+    - '{{.JSON_IN}}'
+    - '{{.JSON_OUT}}'
+    generates:
+    - 'build/'
+    status:
+    - diff -q '{{q .JSON_IN}}' '{{q .JSON_OUT}}'
     cmds:
     - open -W '{{.SIGNED}}'
