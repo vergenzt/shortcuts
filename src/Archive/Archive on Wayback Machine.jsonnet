@@ -94,7 +94,7 @@ local sc = import 'shortcuts.libsonnet';
   ]),
   WFWorkflowClientVersion: '2302.0.4',
   WFWorkflowHasOutputFallback: false,
-  WFWorkflowHasShortcutInputVariables: false,
+  WFWorkflowHasShortcutInputVariables: true,
   WFWorkflowIcon: {
     WFWorkflowIconGlyphNumber: 59457,
     WFWorkflowIconStartColor: -12365313,
@@ -108,5 +108,7 @@ local sc = import 'shortcuts.libsonnet';
   WFWorkflowMinimumClientVersion: 900,
   WFWorkflowMinimumClientVersionString: '900',
   WFWorkflowOutputContentItemClasses: [],
-  WFWorkflowTypes: [],
+  WFWorkflowTypes: [
+    'Watch',
+  ],
 }

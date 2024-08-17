@@ -4,28 +4,36 @@ local sc = import 'shortcuts.libsonnet';
   WFQuickActionSurfaces: [],
   WFWorkflowActions: sc.ActionsSeq([
 
-    sc.Action('is.workflow.actions.getmyworkflows', name='My Shortcuts', params={
-      Folder: {
-        DisplayString: 'Automations',
-        Identifier: 'D53EB35E-8044-4094-97D9-BD272C132E32',
+    sc.Action('is.workflow.actions.getdevicedetails', name='Device Model', params={
+      WFDeviceDetail: 'Device Model',
+    }),
+
+    sc.Action('is.workflow.actions.conditional', {
+      GroupingIdentifier: '39F2BFB3-A292-4441-8C7D-348DB762BFA0',
+      WFCondition: 5,
+      WFConditionalActionString: 'Mac',
+      WFControlFlowMode: 0,
+      WFInput: {
+        Type: 'Variable',
+        Variable: sc.Attach(sc.Ref('Device Model')),
       },
     }),
 
-    sc.Action('is.workflow.actions.repeat.each', {
-      GroupingIdentifier: 'B4F3CD09-4BC6-4CBD-B8AC-2DC99998DBF2',
-      WFControlFlowMode: 0,
-      WFInput: sc.Attach(sc.Ref('My Shortcuts')),
+    sc.Action('is.workflow.actions.alert', {
+      WFAlertActionCancelButtonShown: false,
+      WFAlertActionMessage: 'Must run on a Mac!',
     }),
 
-    sc.Action('is.workflow.actions.runworkflow', {
-      WFInput: sc.Attach(sc.Ref('Vars.Repeat Item')),
-      WFWorkflow: sc.Attach(sc.Ref('Vars.Repeat Item')),
-      WFWorkflowName: sc.Attach(sc.Ref('Vars.Repeat Item')),
-    }),
+    sc.Action('is.workflow.actions.exit'),
 
-    sc.Action('is.workflow.actions.repeat.each', {
-      GroupingIdentifier: 'B4F3CD09-4BC6-4CBD-B8AC-2DC99998DBF2',
+    sc.Action('is.workflow.actions.conditional', {
+      GroupingIdentifier: '39F2BFB3-A292-4441-8C7D-348DB762BFA0',
       WFControlFlowMode: 2,
+    }),
+
+    sc.Action('is.workflow.actions.runshellscript', {
+      Script: '',
+      Shell: '/bin/bash',
     }),
 
   ]),
@@ -33,11 +41,12 @@ local sc = import 'shortcuts.libsonnet';
   WFWorkflowHasOutputFallback: false,
   WFWorkflowHasShortcutInputVariables: false,
   WFWorkflowIcon: {
-    WFWorkflowIconGlyphNumber: 59699,
-    WFWorkflowIconStartColor: -12365313,
+    WFWorkflowIconGlyphNumber: 61440,
+    WFWorkflowIconStartColor: 946986751,
   },
   WFWorkflowImportQuestions: [],
   WFWorkflowInputContentItemClasses: [
+    'WFAppContentItem',
     'WFAppStoreAppContentItem',
     'WFArticleContentItem',
     'WFContactContentItem',
@@ -60,7 +69,5 @@ local sc = import 'shortcuts.libsonnet';
   WFWorkflowMinimumClientVersion: 900,
   WFWorkflowMinimumClientVersionString: '900',
   WFWorkflowOutputContentItemClasses: [],
-  WFWorkflowTypes: [
-    'Watch',
-  ],
+  WFWorkflowTypes: [],
 }

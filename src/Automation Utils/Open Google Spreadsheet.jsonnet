@@ -78,5 +78,7 @@ local sc = import 'shortcuts.libsonnet';
     },
   },
   WFWorkflowOutputContentItemClasses: [],
-  WFWorkflowTypes: [],
+  WFWorkflowTypes: [
+    'Watch',
+  ],
 }

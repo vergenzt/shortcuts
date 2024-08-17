@@ -99,5 +99,6 @@ local sc = import 'shortcuts.libsonnet';
   WFWorkflowOutputContentItemClasses: [],
   WFWorkflowTypes: [
     'ActionExtension',
+    'Watch',
   ],
 }

@@ -270,5 +270,6 @@ local sc = import 'shortcuts.libsonnet';
   ],
   WFWorkflowTypes: [
     'NCWidget',
+    'Watch',
   ],
 }
