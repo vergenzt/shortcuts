@@ -42,12 +42,10 @@ def main(old_path: Path, new_path: Path) -> None:
                 raise ValueError(f"Unhandled json patch action! {json.dumps(action)}")
 
     for path, vals in path_vals.items():
-        _path_pfx, _, path_sfx = path.rpartition("/")
-
         match (list(vals.old), list(vals.new)):
             case ([old_val], [_new_val]):
                 assert all(
-                    path.rpartition("/")[-1] in ("UUID", "OutputUUID")
+                    path.split("/")[-1] in ("UUID", "OutputUUID")
                     for path in old_val_paths[old_val]
                 ), f"Replacement of non-UUID value {old_val}!"
 
@@ -61,13 +59,16 @@ def main(old_path: Path, new_path: Path) -> None:
                 ), f"Inconsistent replacement of value {old_val}!"
 
             case ([_old_val], []):
-                assert path_sfx in [
-                    "UUID",
-                    "CustomOutputName",
-                ], f"Unrecognized removal at {path}!"
+                assert any(
+                    path.endswith(s)
+                    for s in [
+                        "/UUID",
+                        "/CustomOutputName",
+                    ]
+                ), f"Unrecognized removal at {path}!"
 
             case ([], [_new_val]):
-                assert path_sfx in [
+                assert path.split("/")[-1] in [
                     "CustomOutputName"
                 ], f"Unrecognized removal at {path}!"
 

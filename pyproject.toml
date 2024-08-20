@@ -1,7 +1,8 @@
 [tool.poetry]
 name = "shortcuts"
-description = "Source code for my personal collection of Apple/iOS Shortcuts"
+version = "0.1.0"
 authors = ["Tim Vergenz <vergenzt@gmail.com>"]
+readme = "README.md"
 package-mode = false
 
 [tool.poetry.dependencies]
@@ -9,6 +10,7 @@ python = "^3.10"
 jsonnet = "^0.20.0"
 jsonpatch = "^1.33"
 json-pointer = "^0.1.2"
+
 
 [build-system]
 requires = ["poetry-core"]

@@ -17,12 +17,12 @@ tasks:
     deps:
     - for: { var: SHORTCUT_PATHS, split: "\n", as: SHORTCUT_PATH }
       task: default
-      vars:
+      vars: &pass-sc-path
         SHORTCUT_PATH: '{{.SHORTCUT_PATH}}'
 
   default:
     desc: Exports a single Apple Shortcut from `{{.SOURCE_DIR}}` into your iCloud account.
-    deps: [{task: re-import, vars: { SHORTCUT_PATH: '{{.SHORTCUT_PATH}}' }}]
+    deps: [{task: re-import, vars: *pass-sc-path}]
     requires:
       vars: ["SOURCE_DIR", "BUILD_DIR", "SHORTCUT_PATH"]
 
@@ -37,7 +37,7 @@ tasks:
     label: &label-by-path '{{.TASK}}-{{.SHORTCUT_PATH}}'
     internal: true
     deps:
-    - { vars: { SHORTCUT_PATH: '{{.SHORTCUT_PATH}}' }, task: mkdir }
+    - { vars: *pass-sc-path, task: mkdir }
     vars: &src-vars
       JSONNET: '{{.SOURCE_DIR}}/{{.SHORTCUT_PATH}}.jsonnet'
       JSON_IN: '{{.BUILD_DIR}}/{{.SHORTCUT_PATH}}-in.json'
@@ -48,44 +48,23 @@ tasks:
     - lib/python/jsonnet_render.py
     - lib/python/jsonnet_methods.py
     - lib/jsonnet/shortcuts.libsonnet
-    - '{{.JSONNET}}'
+    - { ref: .JSONNET }
     generates:
-    - '{{.JSON_OUT}}'
+    - { ref: .JSON_OUT }
     interactive: true # to work around weird KeyboardInterrupt?
     cmds:
     - .venv/bin/python lib/python/jsonnet_render.py {{q .JSONNET}} > {{q .JSON_OUT}}
-
-  validate:
-    label: *label-by-path
-    desc: >
-      Validates that JSON output matches JSON input. Only executed if import artifacts
-      are still in `{{.BUILD_DIR}}`.
-
-      If the output has changed deliberately, you may suppress this task by clearing
-      import artifacts with `task clean` and then running again.
-
-    vars: *src-vars
-    deps:
-    - { vars: { SHORTCUT_PATH: '{{.SHORTCUT_PATH}}' }, task: compile }
-    sources:
-    - '{{.JSON_IN}}'
-    - '{{.JSON_OUT}}'
-    status:
-    - ! test -f {{.JSON_IN}}
-    interactive: true # to work around weird KeyboardInterrupt?
-    cmds:
-    - .venv/bin/python lib/python/validate_json_output_matches_input.py {{q .JSON_IN}} {{q .JSON_OUT}}
 
   convert:
     label: *label-by-path
     internal: true
     vars: *src-vars
     deps:
-    - { vars: { SHORTCUT_PATH: '{{.SHORTCUT_PATH}}' }, task: compile }
+    - { vars: *pass-sc-path, task: compile }
     sources:
-    - '{{.JSON_OUT}}'
+    - { ref: .JSON_OUT }
     generates:
-    - '{{.UNSIGNED}}'
+    - { ref: .UNSIGNED }
     cmds:
     - plutil -convert xml1 {{q .JSON_OUT}} -o {{q .UNSIGNED}}
 
@@ -94,11 +73,11 @@ tasks:
     internal: true
     vars: *src-vars
     deps:
-    - { vars: { SHORTCUT_PATH: '{{.SHORTCUT_PATH}}' }, task: convert }
+    - { vars: *pass-sc-path, task: convert }
     sources:
-    - '{{.UNSIGNED}}'
+    - { ref: .UNSIGNED }
     generates:
-    - '{{.SIGNED}}'
+    - { ref: .SIGNED }
     cmds:
     - shortcuts sign -i {{q .UNSIGNED}} -o {{q .SIGNED}}
 
@@ -107,15 +86,12 @@ tasks:
     internal: true
     vars: *src-vars
     deps:
-    - { vars: { SHORTCUT_PATH: '{{.SHORTCUT_PATH}}' }, task: sign }
-    - { vars: { SHORTCUT_PATH: '{{.SHORTCUT_PATH}}' }, task: validate }
-    - { vars: { SHORTCUT_PATH: '{{.SHORTCUT_PATH}}' }, task: 'import:extract' }
-    sources:
-    - '{{.JSON_IN}}'
-    - '{{.JSON_OUT}}'
-    generates:
-    - 'build/'
+    - { vars: *pass-sc-path, task: sign }
+    - { vars: *pass-sc-path, task: 'import:extract' } # fresh import for status check
     status:
-    - diff -q '{{q .JSON_IN}}' '{{q .JSON_OUT}}'
+    - echo foo >&2
+    - .venv/bin/python lib/python/validate_json_output_matches_input.py {{q .JSON_IN}} {{q .JSON_OUT}}
+
+
     cmds:
-    - open -W '{{.SIGNED}}'
+    - open -W {{q .SIGNED}}
