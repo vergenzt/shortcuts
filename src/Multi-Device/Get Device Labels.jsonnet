@@ -4,36 +4,9 @@ local sc = import 'shortcuts.libsonnet';
   WFQuickActionSurfaces: [],
   WFWorkflowActions: sc.ActionsSeq([
 
-    sc.Action('is.workflow.actions.getdevicedetails', name='Device Model', params={
-      WFDeviceDetail: 'Device Model',
-    }),
-
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '39F2BFB3-A292-4441-8C7D-348DB762BFA0',
-      WFCondition: 5,
-      WFConditionalActionString: 'Mac',
-      WFControlFlowMode: 0,
-      WFInput: {
-        Type: 'Variable',
-        Variable: sc.Attach(sc.Ref('Device Model')),
-      },
-    }),
-
-    sc.Action('is.workflow.actions.alert', {
-      WFAlertActionCancelButtonShown: false,
-      WFAlertActionMessage: 'Must run on a Mac!',
-    }),
-
-    sc.Action('is.workflow.actions.exit'),
-
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '39F2BFB3-A292-4441-8C7D-348DB762BFA0',
-      WFControlFlowMode: 2,
-    }),
-
-    sc.Action('is.workflow.actions.runshellscript', {
-      Script: '',
-      Shell: '/bin/bash',
+    sc.Action('dk.simonbs.DataJar.GetValueIntent', {
+      fallbackValues: sc.Attach(sc.Ref('Text')),
+      keyPath: 'Device Labels',
     }),
 
   ]),
@@ -42,7 +15,7 @@ local sc = import 'shortcuts.libsonnet';
   WFWorkflowHasShortcutInputVariables: false,
   WFWorkflowIcon: {
     WFWorkflowIconGlyphNumber: 61440,
-    WFWorkflowIconStartColor: 946986751,
+    WFWorkflowIconStartColor: 431817727,
   },
   WFWorkflowImportQuestions: [],
   WFWorkflowInputContentItemClasses: [

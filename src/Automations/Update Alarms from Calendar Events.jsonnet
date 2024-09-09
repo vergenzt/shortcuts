@@ -11,7 +11,7 @@ local sc = import 'shortcuts.libsonnet';
             {
               WFItemType: 0,
               WFKey: sc.Str(['Nava']),
-              WFValue: sc.Str(['20']),
+              WFValue: sc.Str(['18']),
             },
             {
               WFItemType: 0,
