@@ -15,7 +15,7 @@ tasks:
   all:
     desc: Exports all Apple Shortcuts from `{{.SOURCE_DIR}}` into your iCloud account.
     deps:
-    - for: { var: SHORTCUT_PATHS, split: "\n", as: SHORTCUT_PATH }
+    - for: {var: SHORTCUT_PATHS, split: "\n", as: SHORTCUT_PATH}
       task: default
       vars: &pass-sc-path
         SHORTCUT_PATH: '{{.SHORTCUT_PATH}}'
@@ -27,17 +27,18 @@ tasks:
       vars: ["SOURCE_DIR", "BUILD_DIR", "SHORTCUT_PATH"]
 
   mkdir:
+    label: &label-by-path '{{.TASK}}-{{.SHORTCUT_PATH}}'
     internal: true
     requires:
       vars: ["BUILD_DIR", "SHORTCUT_PATH"]
     cmds:
-    - { silent: true, cmd: 'mkdir -p {{q .BUILD_DIR}}/{{q (dir .SHORTCUT_PATH)}}' }
+    - {silent: true, cmd: 'mkdir -p {{q .BUILD_DIR}}/{{q (dir .SHORTCUT_PATH)}}',}
 
   compile:
-    label: &label-by-path '{{.TASK}}-{{.SHORTCUT_PATH}}'
+    label: *label-by-path
     internal: true
     deps:
-    - { vars: *pass-sc-path, task: mkdir }
+    - {vars: *pass-sc-path, task: mkdir}
     vars: &src-vars
       JSONNET: '{{.SOURCE_DIR}}/{{.SHORTCUT_PATH}}.jsonnet'
       JSON_IN: '{{.BUILD_DIR}}/{{.SHORTCUT_PATH}}-in.json'
@@ -48,9 +49,9 @@ tasks:
     - lib/python/jsonnet_render.py
     - lib/python/jsonnet_methods.py
     - lib/jsonnet/shortcuts.libsonnet
-    - { ref: .JSONNET }
+    - {ref: .JSONNET}
     generates:
-    - { ref: .JSON_OUT }
+    - {ref: .JSON_OUT}
     interactive: true # to work around weird KeyboardInterrupt?
     cmds:
     - .venv/bin/python lib/python/jsonnet_render.py {{q .JSONNET}} > {{q .JSON_OUT}}
@@ -60,11 +61,11 @@ tasks:
     internal: true
     vars: *src-vars
     deps:
-    - { vars: *pass-sc-path, task: compile }
+    - {vars: *pass-sc-path, task: compile}
     sources:
-    - { ref: .JSON_OUT }
+    - {ref: .JSON_OUT}
     generates:
-    - { ref: .UNSIGNED }
+    - {ref: .UNSIGNED}
     cmds:
     - plutil -convert xml1 {{q .JSON_OUT}} -o {{q .UNSIGNED}}
 
@@ -73,11 +74,11 @@ tasks:
     internal: true
     vars: *src-vars
     deps:
-    - { vars: *pass-sc-path, task: convert }
+    - {vars: *pass-sc-path, task: convert}
     sources:
-    - { ref: .UNSIGNED }
+    - {ref: .UNSIGNED}
     generates:
-    - { ref: .SIGNED }
+    - {ref: .SIGNED}
     cmds:
     - shortcuts sign -i {{q .UNSIGNED}} -o {{q .SIGNED}}
 
@@ -86,12 +87,11 @@ tasks:
     internal: true
     vars: *src-vars
     deps:
-    - { vars: *pass-sc-path, task: sign }
-    - { vars: *pass-sc-path, task: 'import:extract' } # fresh import for status check
+    - {vars: *pass-sc-path, task: sign}
+    - {vars: *pass-sc-path, task: 'import:extract'} # fresh import for status check
     status:
-    - echo foo >&2
     - .venv/bin/python lib/python/validate_json_output_matches_input.py {{q .JSON_IN}} {{q .JSON_OUT}}
 
-
     cmds:
+    - .venv/bin/python lib/python/validate_json_output_matches_input.py {{q .JSON_IN}} {{q .JSON_OUT}}
     - open -W {{q .SIGNED}}

@@ -1,11 +1,13 @@
+from functools import partial
 import json
 import sys
 from collections import defaultdict
 from pathlib import Path
+from sysconfig import get_path
 from typing import Any, NamedTuple
 
-from jsonpatch import JsonPatch
-from jsonpointer import resolve_pointer
+from jsonpatch import JsonPatch  # type: ignore
+from jsonpointer import resolve_pointer  # type: ignore
 
 
 OldValue = Any
@@ -26,6 +28,7 @@ def main(old_path: Path, new_path: Path) -> None:
     path_vals: dict[JSONPath, Vals] = defaultdict(lambda: Vals(set(), set()))
     old_val_paths: dict[OldValue, set[JSONPath]] = defaultdict(set)
 
+    print(patch)
     for action in patch.patch:
         match action:
             case {"path": path}:
@@ -41,36 +44,43 @@ def main(old_path: Path, new_path: Path) -> None:
             case _:
                 raise ValueError(f"Unhandled json patch action! {json.dumps(action)}")
 
+    def get_path_tail(path: str) -> str:
+        return path.rpartition("/")[-1]
+
     for path, vals in path_vals.items():
+        path_tail = get_path_tail(path)
         match (list(vals.old), list(vals.new)):
-            case ([old_val], [_new_val]):
+            case ([old_val], [new_val]):
                 assert all(
-                    path.split("/")[-1] in ("UUID", "OutputUUID")
-                    for path in old_val_paths[old_val]
+                    get_path_tail(old_path) in ("UUID", "OutputUUID")
+                    for old_path in old_val_paths[old_val]
                 ), f"Replacement of non-UUID value {old_val}!"
 
                 all_new_vals = set(
                     new_val
-                    for path in old_val_paths[old_val]
-                    for new_val in path_vals[path].new
+                    for old_path in old_val_paths[old_val]
+                    for new_val in path_vals[old_path].new
                 )
                 assert (
                     len(all_new_vals) == 1
                 ), f"Inconsistent replacement of value {old_val}!"
 
-            case ([_old_val], []):
-                assert any(
-                    path.endswith(s)
-                    for s in [
-                        "/UUID",
-                        "/CustomOutputName",
-                    ]
-                ), f"Unrecognized removal at {path}!"
+                print(f"Replacing UUID: {old_val} -> {new_val}", file=sys.stderr)
 
-            case ([], [_new_val]):
-                assert path.split("/")[-1] in [
+            case ([old_val], []):
+                assert path_tail in [
+                    "UUID",
+                    "CustomOutputName",
+                ], f"Unrecognized removal at {path}!"
+
+                print(f"Removing {path_tail} {old_val}", file=sys.stderr)
+
+            case ([], [new_val]):
+                assert path_tail in [
                     "CustomOutputName"
                 ], f"Unrecognized removal at {path}!"
+
+                print(f"Adding {path_tail} {new_val}", file=sys.stderr)
 
             case _:
                 raise ValueError(f"Unexpected case at {path} ({vals})")
