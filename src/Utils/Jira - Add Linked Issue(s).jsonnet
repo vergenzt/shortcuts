@@ -396,8 +396,14 @@ local sc = import 'shortcuts.libsonnet';
       },
     }),
 
+    sc.Action('ke.bou.GizmoPack.QueryJSONIntent', name='Result', params={
+      input: sc.Attach(sc.Ref('Create Issue Request')),
+      jqQuery: 'walk(if type == "" then empty else . end)',
+      queryType: 'jq',
+    }),
+
     sc.Action('is.workflow.actions.runworkflow', name='Create Issue Result', params={
-      WFInput: sc.Attach(sc.Ref('Create Issue Request')),
+      WFInput: sc.Attach(sc.Ref('Result')),
       WFWorkflow: {
         isSelf: false,
         workflowIdentifier: 'B245F907-CA3B-4273-B2B7-BE1A4BAE3F79',
@@ -458,5 +464,6 @@ local sc = import 'shortcuts.libsonnet';
     'MenuBar',
     'QuickActions',
     'ReceivesOnScreenContent',
+    'Watch',
   ],
 }

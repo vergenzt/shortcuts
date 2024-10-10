@@ -8,29 +8,90 @@ vars:
   SHORTCUT_PATHS:
     sh: shortcuts run 'List Shortcuts'
 
+includes:
+  import: ./import.yaml
+
 tasks:
   all:
     desc: Exports all Apple Shortcuts from `{{.SOURCE_DIR}}` into your iCloud account.
     deps:
-    - for: { var: SHORTCUT_PATHS, split: "\n", as: SHORTCUT_PATH }
+    - for: {var: SHORTCUT_PATHS, split: "\n", as: SHORTCUT_PATH}
       task: default
-      vars:
+      vars: &pass-sc-path
         SHORTCUT_PATH: '{{.SHORTCUT_PATH}}'
 
   default:
     desc: Exports a single Apple Shortcut from `{{.SOURCE_DIR}}` into your iCloud account.
+    deps: [{task: re-import, vars: *pass-sc-path}]
     requires:
       vars: ["SOURCE_DIR", "BUILD_DIR", "SHORTCUT_PATH"]
 
+  mkdir:
+    label: &label-by-path '{{.TASK}}-{{.SHORTCUT_PATH}}'
+    internal: true
+    requires:
+      vars: ["BUILD_DIR", "SHORTCUT_PATH"]
     cmds:
-    - { silent: true, cmd: 'mkdir -p {{q .BUILD_DIR}}/{{q (dir .SHORTCUT_PATH)}}' }
+    - {silent: true, cmd: 'mkdir -p {{q .BUILD_DIR}}/{{q (dir .SHORTCUT_PATH)}}',}
 
-    - >
-      pip-run lib/python/jsonnet_render.py {{q .SOURCE_DIR}}/{{q .SHORTCUT_PATH}}.jsonnet
-      | tee {{q .BUILD_DIR}}/{{q .SHORTCUT_PATH}}-out.json
-      | plutil -convert xml1 - -o {{q .BUILD_DIR}}/{{q .SHORTCUT_PATH}}.wflow
+  compile:
+    label: *label-by-path
+    internal: true
+    deps:
+    - {vars: *pass-sc-path, task: mkdir}
+    vars: &src-vars
+      JSONNET: '{{.SOURCE_DIR}}/{{.SHORTCUT_PATH}}.jsonnet'
+      JSON_IN: '{{.BUILD_DIR}}/{{.SHORTCUT_PATH}}-in.json'
+      JSON_OUT: '{{.BUILD_DIR}}/{{.SHORTCUT_PATH}}-out.json'
+      UNSIGNED: '{{.BUILD_DIR}}/{{.SHORTCUT_PATH}}.wflow'
+      SIGNED: '{{.BUILD_DIR}}/{{.SHORTCUT_PATH}}.shortcut'
+    sources:
+    - lib/python/jsonnet_render.py
+    - lib/python/jsonnet_methods.py
+    - lib/jsonnet/shortcuts.libsonnet
+    - {ref: .JSONNET}
+    generates:
+    - {ref: .JSON_OUT}
+    interactive: true # to work around weird KeyboardInterrupt?
+    cmds:
+    - .venv/bin/python lib/python/jsonnet_render.py {{q .JSONNET}} > {{q .JSON_OUT}}
 
-    - >
-      shortcuts sign
-      -i {{q .BUILD_DIR}}/{{q .SHORTCUT_PATH}}.wflow
-      -o {{q .BUILD_DIR}}/{{q .SHORTCUT_PATH}}.shortcut
+  convert:
+    label: *label-by-path
+    internal: true
+    vars: *src-vars
+    deps:
+    - {vars: *pass-sc-path, task: compile}
+    sources:
+    - {ref: .JSON_OUT}
+    generates:
+    - {ref: .UNSIGNED}
+    cmds:
+    - plutil -convert xml1 {{q .JSON_OUT}} -o {{q .UNSIGNED}}
+
+  sign:
+    label: *label-by-path
+    internal: true
+    vars: *src-vars
+    deps:
+    - {vars: *pass-sc-path, task: convert}
+    sources:
+    - {ref: .UNSIGNED}
+    generates:
+    - {ref: .SIGNED}
+    cmds:
+    - shortcuts sign -i {{q .UNSIGNED}} -o {{q .SIGNED}}
+
+  re-import:
+    label: *label-by-path
+    internal: true
+    vars: *src-vars
+    deps:
+    - {vars: *pass-sc-path, task: sign}
+    - {vars: *pass-sc-path, task: 'import:extract'} # fresh import for status check
+    status:
+    - .venv/bin/python lib/python/validate_json_output_matches_input.py {{q .JSON_IN}} {{q .JSON_OUT}}
+
+    cmds:
+    - .venv/bin/python lib/python/validate_json_output_matches_input.py {{q .JSON_IN}} {{q .JSON_OUT}}
+    - open -W {{q .SIGNED}}

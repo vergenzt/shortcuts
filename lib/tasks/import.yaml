@@ -1,7 +1,6 @@
 version: '3'
 
 vars:
-  IMPORT_DIR: '{{.HOME}}/Library/Mobile Documents/iCloud~is~workflow~my~workflows/Documents'
   SHORTCUT_PATHS:
     sh: shortcuts run 'List Shortcuts'
 
@@ -13,9 +12,9 @@ tasks:
       task: default
       vars:
         SHORTCUT_PATH: '{{.SHORTCUT_PATH}}'
-    - task: clean
+    - task: remove-deleted
 
-  clean:
+  remove-deleted:
     desc: Removes Apple Shortcut source files that no longer exist in account.
     interactive: true
     cmds:

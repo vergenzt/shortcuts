@@ -15,7 +15,7 @@ local sc = import 'shortcuts.libsonnet';
               Removable: true,
               Values: {
                 Enumeration: {
-                  Value: 'Reminders',
+                  Value: 'Jira',
                   WFSerializationType: 'WFStringSubstitutableState',
                 },
               },
@@ -25,7 +25,10 @@ local sc = import 'shortcuts.libsonnet';
               Property: 'Is Completed',
               Removable: true,
               Values: {
-                Bool: false,
+                Bool: {
+                  Value: false,
+                  WFSerializationType: 'WFBooleanSubstitutableState',
+                },
               },
             },
           ],
@@ -270,5 +273,7 @@ local sc = import 'shortcuts.libsonnet';
   WFWorkflowMinimumClientVersion: 900,
   WFWorkflowMinimumClientVersionString: '900',
   WFWorkflowOutputContentItemClasses: [],
-  WFWorkflowTypes: [],
+  WFWorkflowTypes: [
+    'Watch',
+  ],
 }

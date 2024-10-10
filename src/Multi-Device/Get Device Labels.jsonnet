@@ -4,37 +4,9 @@ local sc = import 'shortcuts.libsonnet';
   WFQuickActionSurfaces: [],
   WFWorkflowActions: sc.ActionsSeq([
 
-    sc.Action('is.workflow.actions.getdevicedetails', name='Device Model', params={
-      WFDeviceDetail: 'Device Model',
-    }),
-
-    sc.Action('is.workflow.actions.dictionary', name='Dictionary', params={
-      WFItems: {
-        Value: {
-          WFDictionaryFieldValueItems: [
-            {
-              WFItemType: 0,
-              WFKey: sc.Str(['iPhone']),
-              WFValue: sc.Str(['prefs:root=Bluetooth']),
-            },
-            {
-              WFItemType: 0,
-              WFKey: sc.Str(['Mac']),
-              WFValue: sc.Str(['file:///System/Library/PreferencePanes/Bluetooth.prefPane']),
-            },
-          ],
-        },
-        WFSerializationType: 'WFDictionaryFieldValue',
-      },
-    }),
-
-    sc.Action('is.workflow.actions.getvalueforkey', name='Dictionary Value', params={
-      WFDictionaryKey: sc.Str([sc.Ref('Device Model')]),
-      WFInput: sc.Attach(sc.Ref('Dictionary')),
-    }),
-
-    sc.Action('is.workflow.actions.openurl', {
-      WFInput: sc.Str([sc.Ref('Dictionary Value')]),
+    sc.Action('dk.simonbs.DataJar.GetValueIntent', {
+      fallbackValues: sc.Attach(sc.Ref('Text')),
+      keyPath: 'Device Labels',
     }),
 
   ]),
@@ -43,7 +15,7 @@ local sc = import 'shortcuts.libsonnet';
   WFWorkflowHasShortcutInputVariables: false,
   WFWorkflowIcon: {
     WFWorkflowIconGlyphNumber: 61440,
-    WFWorkflowIconStartColor: 946986751,
+    WFWorkflowIconStartColor: 431817727,
   },
   WFWorkflowImportQuestions: [],
   WFWorkflowInputContentItemClasses: [

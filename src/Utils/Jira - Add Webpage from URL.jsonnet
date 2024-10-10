@@ -37,5 +37,6 @@ local sc = import 'shortcuts.libsonnet';
   WFWorkflowTypes: [
     'MenuBar',
     'ReceivesOnScreenContent',
+    'Watch',
   ],
 }

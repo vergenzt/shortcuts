@@ -1,0 +1,11 @@
+{
+  "$schema": "https://raw.githubusercontent.com/jetpack-io/devbox/0.10.3/.schema/devbox.schema.json",
+  "packages": [
+    "ast-grep@latest",
+    "findutils@latest",
+    "fq@latest",
+    "go-task@latest",
+    "lzfse@latest",
+    "python@latest",
+  ],
+}

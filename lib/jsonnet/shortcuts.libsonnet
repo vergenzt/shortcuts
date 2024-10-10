@@ -76,7 +76,7 @@
       Type: 'ActionOutput',
       OutputUUID: function(state) (
         if std.objectHas(state, name) then state[name]
-        else std.trace('warning: output `%s` not found in state' % name, '???')
+        else error ('warning: output `%s` not found in state' % name)
       ),
       OutputName: name,
       [if aggs == [] then null else 'Aggrandizements']: aggs,

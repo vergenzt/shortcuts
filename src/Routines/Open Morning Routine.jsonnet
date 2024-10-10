@@ -4,21 +4,11 @@ local sc = import 'shortcuts.libsonnet';
   WFQuickActionSurfaces: [],
   WFWorkflowActions: sc.ActionsSeq([
 
-    sc.Action('is.workflow.actions.timer.start', {
-      IntentAppDefinition: {
-        BundleIdentifier: 'com.apple.clock',
-        ExtensionBundleIdentifier: 'com.apple.mobiletimer-framework.MobileTimerIntents',
-        Name: 'Clock',
-        TeamIdentifier: '0000000000',
-      },
-      WFDuration: {
-        Value: {
-          Magnitude: {
-            Type: 'Ask',
-          },
-          Unit: 'min',
-        },
-        WFSerializationType: 'WFQuantityFieldValue',
+    sc.Action('is.workflow.actions.reminders.showlist', {
+      WFList: {
+        Identifier: '<x-apple-reminderkit://REMCDList/7982506F-1E00-4D06-8AE6-D81954C9E581>',
+        IsAllCalendar: false,
+        Title: 'Morning Routine',
       },
     }),
 
@@ -28,7 +18,7 @@ local sc = import 'shortcuts.libsonnet';
   WFWorkflowHasShortcutInputVariables: false,
   WFWorkflowIcon: {
     WFWorkflowIconGlyphNumber: 61440,
-    WFWorkflowIconStartColor: -1263359489,
+    WFWorkflowIconStartColor: -615917313,
   },
   WFWorkflowImportQuestions: [],
   WFWorkflowInputContentItemClasses: [
@@ -55,7 +45,5 @@ local sc = import 'shortcuts.libsonnet';
   WFWorkflowMinimumClientVersion: 900,
   WFWorkflowMinimumClientVersionString: '900',
   WFWorkflowOutputContentItemClasses: [],
-  WFWorkflowTypes: [
-    'Watch',
-  ],
+  WFWorkflowTypes: [],
 }

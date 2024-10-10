@@ -5,6 +5,7 @@ set: [errexit, nounset, pipefail]
 vars:
   BUILD_DIR: build
   SOURCE_DIR: src
+  IMPORT_DIR: '{{.HOME}}/Library/Mobile Documents/iCloud~is~workflow~my~workflows/Documents'
 
 env:
   PARALLEL_SHELL: bash
@@ -14,17 +15,12 @@ includes:
   import: ./lib/tasks/import.yaml
   export: ./lib/tasks/export.yaml
 
+# for skipping up-to-date tasks
+method: timestamp
+
 tasks:
   clean:
-    vars:
-      dirs: |-
-        {{.EXPORT_DIR}}
-        {{.IMPORT_DIR}}
+    requires:
+      vars: [BUILD_DIR]
     cmds:
-    - for: { var: dirs, as: dir, split: "\n" }
-      cmd: find "{{.dir}}" -depth -mindepth 1 -delete
-
-  open-all:
-    prompt: Would you like to re-import built Shortcuts?
-    cmds:
-    - find build -type f -name "*.shortcut" -execdir open -n -W '{}' \;
+    - cmd: find "{{q .BUILD_DIR}}" -depth -mindepth 1 -delete

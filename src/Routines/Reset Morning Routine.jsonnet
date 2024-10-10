@@ -4,27 +4,44 @@ local sc = import 'shortcuts.libsonnet';
   WFQuickActionSurfaces: [],
   WFWorkflowActions: sc.ActionsSeq([
 
-    sc.Action('is.workflow.actions.getmyworkflows', name='My Shortcuts', params={
-      Folder: {
-        DisplayString: 'Automations',
-        Identifier: 'D53EB35E-8044-4094-97D9-BD272C132E32',
+    sc.Action('is.workflow.actions.filter.reminders', name='Reminders', params={
+      WFContentItemFilter: {
+        Value: {
+          WFActionParameterFilterPrefix: 1,
+          WFActionParameterFilterTemplates: [
+            {
+              Operator: 4,
+              Property: 'List',
+              Removable: true,
+              Values: {
+                Enumeration: {
+                  Value: 'Morning Routine',
+                  WFSerializationType: 'WFStringSubstitutableState',
+                },
+              },
+            },
+          ],
+          WFContentPredicateBoundedDate: false,
+        },
+        WFSerializationType: 'WFContentPredicateTableTemplate',
       },
     }),
 
     sc.Action('is.workflow.actions.repeat.each', {
-      GroupingIdentifier: 'B4F3CD09-4BC6-4CBD-B8AC-2DC99998DBF2',
+      GroupingIdentifier: 'D83672DB-3976-48BC-8E57-4BE508D2A7C3',
       WFControlFlowMode: 0,
-      WFInput: sc.Attach(sc.Ref('My Shortcuts')),
+      WFInput: sc.Attach(sc.Ref('Reminders')),
     }),
 
-    sc.Action('is.workflow.actions.runworkflow', {
+    sc.Action('is.workflow.actions.setters.reminders', {
+      Mode: 'Set',
+      WFContentItemPropertyName: 'Is Completed',
       WFInput: sc.Attach(sc.Ref('Vars.Repeat Item')),
-      WFWorkflow: sc.Attach(sc.Ref('Vars.Repeat Item')),
-      WFWorkflowName: sc.Attach(sc.Ref('Vars.Repeat Item')),
+      WFReminderContentItemIsCompleted: 0,
     }),
 
     sc.Action('is.workflow.actions.repeat.each', {
-      GroupingIdentifier: 'B4F3CD09-4BC6-4CBD-B8AC-2DC99998DBF2',
+      GroupingIdentifier: 'D83672DB-3976-48BC-8E57-4BE508D2A7C3',
       WFControlFlowMode: 2,
     }),
 
@@ -33,11 +50,12 @@ local sc = import 'shortcuts.libsonnet';
   WFWorkflowHasOutputFallback: false,
   WFWorkflowHasShortcutInputVariables: false,
   WFWorkflowIcon: {
-    WFWorkflowIconGlyphNumber: 59699,
+    WFWorkflowIconGlyphNumber: 61440,
     WFWorkflowIconStartColor: -12365313,
   },
   WFWorkflowImportQuestions: [],
   WFWorkflowInputContentItemClasses: [
+    'WFAppContentItem',
     'WFAppStoreAppContentItem',
     'WFArticleContentItem',
     'WFContactContentItem',
@@ -60,7 +78,5 @@ local sc = import 'shortcuts.libsonnet';
   WFWorkflowMinimumClientVersion: 900,
   WFWorkflowMinimumClientVersionString: '900',
   WFWorkflowOutputContentItemClasses: [],
-  WFWorkflowTypes: [
-    'Watch',
-  ],
+  WFWorkflowTypes: [],
 }
