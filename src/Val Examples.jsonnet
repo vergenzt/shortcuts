@@ -9,7 +9,15 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.gettext', {
-      WFTextActionText: sc.Str(['Foo bar ', sc.Input]),
+      WFTextActionText: {
+        Value: {
+          attachmentsByRange: {
+            '{8, 1}': sc.Input,
+          },
+          string: 'Foo bar ￼',
+        },
+        WFSerializationType: 'WFTextTokenString',
+      },
     }),
 
     sc.Action('is.workflow.actions.dictionary', {

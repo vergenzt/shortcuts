@@ -39,7 +39,16 @@ local sc = import 'shortcuts.libsonnet';
 
     sc.Action('is.workflow.actions.url', name='URL', params={
       'Show-WFURLActionURL': true,
-      WFURLActionURL: sc.Str([sc.Ref('Scheme')]),
+      WFURLActionURL: {
+        Value: {
+          attachmentsByRange: {
+            '{0, 1}': sc.Ref('Scheme'),
+            '{35, 1}': sc.Input,
+          },
+          string: '￼://docs.google.com/spreadsheets/d/￼/edit',
+        },
+        WFSerializationType: 'WFTextTokenString',
+      },
     }),
 
     sc.Action('is.workflow.actions.openurl', {

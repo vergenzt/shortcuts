@@ -9,12 +9,20 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.url', name='URL', params={
-      WFURLActionURL: sc.Str(['https://api.track.toggl.com/api/v9/', sc.Ref('Input Dict', aggs=[
-        {
-          DictionaryKey: 'path',
-          Type: 'WFDictionaryValueVariableAggrandizement',
+      WFURLActionURL: {
+        Value: {
+          attachmentsByRange: {
+            '{35, 1}': sc.Ref('Input Dict', aggs=[
+              {
+                DictionaryKey: 'path',
+                Type: 'WFDictionaryValueVariableAggrandizement',
+              },
+            ]),
+          },
+          string: 'https://api.track.toggl.com/api/v9/￼',
         },
-      ])]),
+        WFSerializationType: 'WFTextTokenString',
+      },
     }),
 
     sc.Action('is.workflow.actions.getvalueforkey', name='Request Method', params={
@@ -27,7 +35,15 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.gettext', name='Text', params={
-      WFTextActionText: sc.Str([sc.Ref('Toggl Track API Token'), ':api_token']),
+      WFTextActionText: {
+        Value: {
+          attachmentsByRange: {
+            '{0, 1}': sc.Ref('Toggl Track API Token'),
+          },
+          string: '￼:api_token',
+        },
+        WFSerializationType: 'WFTextTokenString',
+      },
     }),
 
     sc.Action('is.workflow.actions.base64encode', name='Base64 Encoded', params={
@@ -79,7 +95,16 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.gettext', {
-      WFTextActionText: sc.Str([sc.Ref('Key')]),
+      WFTextActionText: {
+        Value: {
+          attachmentsByRange: {
+            '{0, 1}': sc.Ref('Key'),
+            '{2, 1}': sc.Ref('Value'),
+          },
+          string: '￼=￼',
+        },
+        WFSerializationType: 'WFTextTokenString',
+      },
     }),
 
     sc.Action('is.workflow.actions.repeat.each', name='Repeat Results', params={
@@ -126,7 +151,15 @@ local sc = import 'shortcuts.libsonnet';
             {
               WFItemType: 0,
               WFKey: sc.Str(['Authorization']),
-              WFValue: sc.Str(['Basic ', sc.Ref('Base64 Encoded')]),
+              WFValue: {
+                Value: {
+                  attachmentsByRange: {
+                    '{6, 1}': sc.Ref('Base64 Encoded'),
+                  },
+                  string: 'Basic ￼',
+                },
+                WFSerializationType: 'WFTextTokenString',
+              },
             },
             {
               WFItemType: 0,

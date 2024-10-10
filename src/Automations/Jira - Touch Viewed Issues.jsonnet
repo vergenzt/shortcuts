@@ -14,7 +14,15 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.gettext', name='JQL', params={
-      WFTextActionText: sc.Str(['lastViewed is not EMPTY or cf[', sc.Ref('Vars.FID'), '] is EMPTY']),
+      WFTextActionText: {
+        Value: {
+          attachmentsByRange: {
+            '{30, 1}': sc.Ref('Vars.FID'),
+          },
+          string: 'lastViewed is not EMPTY or cf[￼] is EMPTY',
+        },
+        WFSerializationType: 'WFTextTokenString',
+      },
     }),
 
     sc.Action('is.workflow.actions.dictionary', name='Dictionary', params={
@@ -46,7 +54,15 @@ local sc = import 'shortcuts.libsonnet';
                       {
                         WFItemType: 0,
                         WFKey: sc.Str(['fields']),
-                        WFValue: sc.Str(['updated,lastViewed,customfield_', sc.Ref('Vars.FID')]),
+                        WFValue: {
+                          Value: {
+                            attachmentsByRange: {
+                              '{31, 1}': sc.Ref('Vars.FID'),
+                            },
+                            string: 'updated,lastViewed,customfield_￼',
+                          },
+                          WFSerializationType: 'WFTextTokenString',
+                        },
                       },
                       {
                         WFItemType: 0,
@@ -92,7 +108,15 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.gettext', name='jq', params={
-      WFTextActionText: sc.Str(['([.fields[]] | max) as $max\n| (\n  if .fields.customfield_', sc.Ref('Vars.FID'), ' == $max\n  then empty\n  else { key, newValue: $max }\n  end\n)']),
+      WFTextActionText: {
+        Value: {
+          attachmentsByRange: {
+            '{57, 1}': sc.Ref('Vars.FID'),
+          },
+          string: '([.fields[]] | max) as $max\n| (\n  if .fields.customfield_￼ == $max\n  then empty\n  else { key, newValue: $max }\n  end\n)',
+        },
+        WFSerializationType: 'WFTextTokenString',
+      },
     }),
 
     sc.Action('ke.bou.GizmoPack.QueryJSONIntent', name='Result', params={
@@ -124,16 +148,24 @@ local sc = import 'shortcuts.libsonnet';
             {
               WFItemType: 0,
               WFKey: sc.Str(['path']),
-              WFValue: sc.Str(['issue/', sc.Ref('Result', aggs=[
-                {
-                  CoercionItemClass: 'WFDictionaryContentItem',
-                  Type: 'WFCoercionVariableAggrandizement',
+              WFValue: {
+                Value: {
+                  attachmentsByRange: {
+                    '{6, 1}': sc.Ref('Result', aggs=[
+                      {
+                        CoercionItemClass: 'WFDictionaryContentItem',
+                        Type: 'WFCoercionVariableAggrandizement',
+                      },
+                      {
+                        DictionaryKey: 'key',
+                        Type: 'WFDictionaryValueVariableAggrandizement',
+                      },
+                    ]),
+                  },
+                  string: 'issue/￼',
                 },
-                {
-                  DictionaryKey: 'key',
-                  Type: 'WFDictionaryValueVariableAggrandizement',
-                },
-              ])]),
+                WFSerializationType: 'WFTextTokenString',
+              },
             },
             {
               WFItemType: 1,
@@ -151,7 +183,15 @@ local sc = import 'shortcuts.libsonnet';
                               WFDictionaryFieldValueItems: [
                                 {
                                   WFItemType: 0,
-                                  WFKey: sc.Str(['customfield_', sc.Ref('Vars.FID')]),
+                                  WFKey: {
+                                    Value: {
+                                      attachmentsByRange: {
+                                        '{12, 1}': sc.Ref('Vars.FID'),
+                                      },
+                                      string: 'customfield_￼',
+                                    },
+                                    WFSerializationType: 'WFTextTokenString',
+                                  },
                                   WFValue: sc.Str([sc.Ref('Result', aggs=[
                                     {
                                       CoercionItemClass: 'WFDictionaryContentItem',
@@ -224,7 +264,15 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.notification', {
-      WFNotificationActionBody: sc.Str(['Updated ', sc.Ref('Count'), ' issues']),
+      WFNotificationActionBody: {
+        Value: {
+          attachmentsByRange: {
+            '{8, 1}': sc.Ref('Count'),
+          },
+          string: 'Updated ￼ issues',
+        },
+        WFSerializationType: 'WFTextTokenString',
+      },
     }),
 
     sc.Action('is.workflow.actions.conditional', {

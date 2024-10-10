@@ -194,16 +194,24 @@ local sc = import 'shortcuts.libsonnet';
 
     sc.Action('is.workflow.actions.setitemname', name='Icon Image', params={
       WFInput: sc.Attach(sc.Ref('Contents of URL')),
-      WFName: sc.Str([sc.Ref('File of Type', aggs=[
-        {
-          CoercionItemClass: 'WFDictionaryContentItem',
-          Type: 'WFCoercionVariableAggrandizement',
+      WFName: {
+        Value: {
+          attachmentsByRange: {
+            '{0, 1}': sc.Ref('File of Type', aggs=[
+              {
+                CoercionItemClass: 'WFDictionaryContentItem',
+                Type: 'WFCoercionVariableAggrandizement',
+              },
+              {
+                DictionaryKey: 'fields.name.value',
+                Type: 'WFDictionaryValueVariableAggrandizement',
+              },
+            ]),
+          },
+          string: '￼.png',
         },
-        {
-          DictionaryKey: 'fields.name.value',
-          Type: 'WFDictionaryValueVariableAggrandizement',
-        },
-      ]), '.png']),
+        WFSerializationType: 'WFTextTokenString',
+      },
     }),
 
     sc.Action('is.workflow.actions.image.resize', name='Resized Icon', params={
@@ -271,7 +279,15 @@ local sc = import 'shortcuts.libsonnet';
 
     sc.Action('dk.simonbs.DataJar.GetChildCountIntent', name='Count', params={
       errorWhenValueNotFound: false,
-      keyPath: sc.Str(['Version Control.', sc.Ref('Provided Input')]),
+      keyPath: {
+        Value: {
+          attachmentsByRange: {
+            '{16, 1}': sc.Ref('Provided Input'),
+          },
+          string: 'Version Control.￼',
+        },
+        WFSerializationType: 'WFTextTokenString',
+      },
     }),
 
     sc.Action('is.workflow.actions.conditional', {
@@ -286,7 +302,16 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('dk.simonbs.DataJar.GetValueIntent', name='Value', params={
-      keyPath: sc.Str(['Version Control.', sc.Ref('Provided Input')]),
+      keyPath: {
+        Value: {
+          attachmentsByRange: {
+            '{16, 1}': sc.Ref('Provided Input'),
+            '{18, 1}': sc.Ref('Count'),
+          },
+          string: 'Version Control.￼.￼.version',
+        },
+        WFSerializationType: 'WFTextTokenString',
+      },
     }),
 
     sc.Action('is.workflow.actions.conditional', {
@@ -351,34 +376,61 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('dk.simonbs.DataJar.SetValueIntent', {
-      keyPath: sc.Str(['Version Control.', sc.Ref('Dictionary', aggs=[
-        {
-          DictionaryKey: 'name',
-          Type: 'WFDictionaryValueVariableAggrandizement',
+      keyPath: {
+        Value: {
+          attachmentsByRange: {
+            '{16, 1}': sc.Ref('Dictionary', aggs=[
+              {
+                DictionaryKey: 'name',
+                Type: 'WFDictionaryValueVariableAggrandizement',
+              },
+            ]),
+            '{18, 1}': sc.Ref('Calculation Result'),
+          },
+          string: 'Version Control.￼.￼',
         },
-      ])]),
+        WFSerializationType: 'WFTextTokenString',
+      },
       overwriteStrategy: 'alwaysAllow',
       values: sc.Attach(sc.Ref('Dictionary')),
     }),
 
     sc.Action('dk.simonbs.DataJar.SetValueIntent', {
-      keyPath: sc.Str(['Version Control.', sc.Ref('Dictionary', aggs=[
-        {
-          DictionaryKey: 'name',
-          Type: 'WFDictionaryValueVariableAggrandizement',
+      keyPath: {
+        Value: {
+          attachmentsByRange: {
+            '{16, 1}': sc.Ref('Dictionary', aggs=[
+              {
+                DictionaryKey: 'name',
+                Type: 'WFDictionaryValueVariableAggrandizement',
+              },
+            ]),
+            '{18, 1}': sc.Ref('Calculation Result'),
+          },
+          string: 'Version Control.￼.￼.icon',
         },
-      ])]),
+        WFSerializationType: 'WFTextTokenString',
+      },
       overwriteStrategy: 'alwaysAllow',
       values: sc.Attach(sc.Ref('Resized Icon')),
     }),
 
     sc.Action('dk.simonbs.DataJar.SetValueIntent', {
-      keyPath: sc.Str(['Version Control.', sc.Ref('Dictionary', aggs=[
-        {
-          DictionaryKey: 'name',
-          Type: 'WFDictionaryValueVariableAggrandizement',
+      keyPath: {
+        Value: {
+          attachmentsByRange: {
+            '{16, 1}': sc.Ref('Dictionary', aggs=[
+              {
+                DictionaryKey: 'name',
+                Type: 'WFDictionaryValueVariableAggrandizement',
+              },
+            ]),
+            '{18, 1}': sc.Ref('Calculation Result'),
+          },
+          string: 'Version Control.￼.￼.exporticon',
         },
-      ])]),
+        WFSerializationType: 'WFTextTokenString',
+      },
       overwriteStrategy: 'alwaysAllow',
       values: sc.Attach(sc.Ref('Icon Image')),
     }),
@@ -431,16 +483,43 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('dk.simonbs.DataJar.GetValueIntent', name='Value', params={
-      keyPath: sc.Str(['Version Control.', sc.Ref('Vars.Repeat Item'), '.1.b64icon']),
+      keyPath: {
+        Value: {
+          attachmentsByRange: {
+            '{16, 1}': sc.Ref('Vars.Repeat Item'),
+          },
+          string: 'Version Control.￼.1.b64icon',
+        },
+        WFSerializationType: 'WFTextTokenString',
+      },
     }),
 
     sc.Action('is.workflow.actions.gettext', name='Text', params={
-      WFTextActionText: sc.Str(['title: ', sc.Ref('Value', aggs=[
-        {
-          CoercionItemClass: 'WFStringContentItem',
-          Type: 'WFCoercionVariableAggrandizement',
+      WFTextActionText: {
+        Value: {
+          attachmentsByRange: {
+            '{17, 1}': sc.Ref('Value', aggs=[
+              {
+                CoercionItemClass: 'WFStringContentItem',
+                Type: 'WFCoercionVariableAggrandizement',
+              },
+            ]),
+            '{7, 1}': {
+              Aggrandizements: [
+                {
+                  PropertyName: 'Name',
+                  PropertyUserInfo: 'WFItemName',
+                  Type: 'WFPropertyVariableAggrandizement',
+                },
+              ],
+              Type: 'Variable',
+              VariableName: 'Repeat Item',
+            },
+          },
+          string: 'title: ￼\nbase64: ￼',
         },
-      ])]),
+        WFSerializationType: 'WFTextTokenString',
+      },
     }),
 
     sc.Action('com.alexhay.ToolboxProForShortcuts.QuickMenu2Intent', {
@@ -458,12 +537,20 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('dk.simonbs.DataJar.GetValueIntent', name='Value', params={
-      keyPath: sc.Str(['Version Control.', sc.Ref('Chosen Item', aggs=[
-        {
-          PropertyName: 'title',
-          Type: 'WFPropertyVariableAggrandizement',
+      keyPath: {
+        Value: {
+          attachmentsByRange: {
+            '{16, 1}': sc.Ref('Chosen Item', aggs=[
+              {
+                PropertyName: 'title',
+                Type: 'WFPropertyVariableAggrandizement',
+              },
+            ]),
+          },
+          string: 'Version Control.￼',
         },
-      ])]),
+        WFSerializationType: 'WFTextTokenString',
+      },
     }),
 
     sc.Action('is.workflow.actions.setvariable', {
@@ -478,7 +565,16 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('dk.simonbs.DataJar.GetValueIntent', name='Value', params={
-      keyPath: sc.Str(['Version Control.', sc.Ref('Chosen Item')]),
+      keyPath: {
+        Value: {
+          attachmentsByRange: {
+            '{16, 1}': sc.Ref('Chosen Item'),
+            '{18, 1}': sc.Ref('Vars.Repeat Index'),
+          },
+          string: 'Version Control.￼.￼',
+        },
+        WFSerializationType: 'WFTextTokenString',
+      },
     }),
 
     sc.Action('is.workflow.actions.setvariable', {
@@ -496,43 +592,64 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.gettext', name='Text', params={
-      WFTextActionText: sc.Str(['title: ', sc.Ref('Value', aggs=[
-        {
-          CoercionItemClass: 'WFDictionaryContentItem',
-          Type: 'WFCoercionVariableAggrandizement',
+      WFTextActionText: {
+        Value: {
+          attachmentsByRange: {
+            '{11, 1}': sc.Ref('Value', aggs=[
+              {
+                CoercionItemClass: 'WFDictionaryContentItem',
+                Type: 'WFCoercionVariableAggrandizement',
+              },
+              {
+                DictionaryKey: 'date',
+                Type: 'WFDictionaryValueVariableAggrandizement',
+              },
+            ]),
+            '{27, 1}': sc.Ref('Value', aggs=[
+              {
+                CoercionItemClass: 'WFDictionaryContentItem',
+                Type: 'WFCoercionVariableAggrandizement',
+              },
+              {
+                DictionaryKey: 'actions count',
+                Type: 'WFDictionaryValueVariableAggrandizement',
+              },
+            ]),
+            '{31, 1}': sc.Ref('Value', aggs=[
+              {
+                CoercionItemClass: 'WFDictionaryContentItem',
+                Type: 'WFCoercionVariableAggrandizement',
+              },
+              {
+                DictionaryKey: 'note',
+                Type: 'WFDictionaryValueVariableAggrandizement',
+              },
+            ]),
+            '{41, 1}': sc.Ref('Value', aggs=[
+              {
+                CoercionItemClass: 'WFDictionaryContentItem',
+                Type: 'WFCoercionVariableAggrandizement',
+              },
+              {
+                DictionaryKey: 'b64icon',
+                Type: 'WFDictionaryValueVariableAggrandizement',
+              },
+            ]),
+            '{7, 1}': sc.Ref('Value', aggs=[
+              {
+                CoercionItemClass: 'WFDictionaryContentItem',
+                Type: 'WFCoercionVariableAggrandizement',
+              },
+              {
+                DictionaryKey: 'version',
+                Type: 'WFDictionaryValueVariableAggrandizement',
+              },
+            ]),
+          },
+          string: 'title: ￼ : ￼\nsub: Actions: ￼ | ￼\nbase64: ￼',
         },
-        {
-          DictionaryKey: 'date',
-          Type: 'WFDictionaryValueVariableAggrandizement',
-        },
-      ]), ' : ', sc.Ref('Value', aggs=[
-        {
-          CoercionItemClass: 'WFDictionaryContentItem',
-          Type: 'WFCoercionVariableAggrandizement',
-        },
-        {
-          DictionaryKey: 'actions count',
-          Type: 'WFDictionaryValueVariableAggrandizement',
-        },
-      ]), '\nsub: Actions: ', sc.Ref('Value', aggs=[
-        {
-          CoercionItemClass: 'WFDictionaryContentItem',
-          Type: 'WFCoercionVariableAggrandizement',
-        },
-        {
-          DictionaryKey: 'note',
-          Type: 'WFDictionaryValueVariableAggrandizement',
-        },
-      ]), ' | ', sc.Ref('Value', aggs=[
-        {
-          CoercionItemClass: 'WFDictionaryContentItem',
-          Type: 'WFCoercionVariableAggrandizement',
-        },
-        {
-          DictionaryKey: 'b64icon',
-          Type: 'WFDictionaryValueVariableAggrandizement',
-        },
-      ])]),
+        WFSerializationType: 'WFTextTokenString',
+      },
     }),
 
     sc.Action('com.alexhay.ToolboxProForShortcuts.QuickMenu2Intent', {
@@ -568,7 +685,15 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.choosefromlist', name='Chosen Item', params={
-      WFChooseFromListActionPrompt: sc.Str(['Which version of ', sc.Ref('Chosen Item'), ' would you like to restore?']),
+      WFChooseFromListActionPrompt: {
+        Value: {
+          attachmentsByRange: {
+            '{17, 1}': sc.Ref('Chosen Item'),
+          },
+          string: 'Which version of ￼ would you like to restore?',
+        },
+        WFSerializationType: 'WFTextTokenString',
+      },
       WFInput: sc.Attach(sc.Ref('Vars.Menu')),
     }),
 
@@ -628,12 +753,21 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('dk.simonbs.DataJar.GetValueIntent', name='Value', params={
-      keyPath: sc.Str(['Version Control.', sc.Ref('Chosen Item', aggs=[
-        {
-          PropertyName: 'title',
-          Type: 'WFPropertyVariableAggrandizement',
+      keyPath: {
+        Value: {
+          attachmentsByRange: {
+            '{16, 1}': sc.Ref('Chosen Item', aggs=[
+              {
+                PropertyName: 'title',
+                Type: 'WFPropertyVariableAggrandizement',
+              },
+            ]),
+            '{18, 1}': sc.Ref('Vars.Repeat Index'),
+          },
+          string: 'Version Control.￼.￼.version',
         },
-      ])]),
+        WFSerializationType: 'WFTextTokenString',
+      },
     }),
 
     sc.Action('is.workflow.actions.conditional', {
@@ -648,7 +782,16 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('dk.simonbs.DataJar.GetValueIntent', name='Value', params={
-      keyPath: sc.Str(['Version Control.', sc.Ref('Vars.name')]),
+      keyPath: {
+        Value: {
+          attachmentsByRange: {
+            '{16, 1}': sc.Ref('Vars.name'),
+            '{18, 1}': sc.Ref('Vars.Repeat Index'),
+          },
+          string: 'Version Control.￼.￼.url',
+        },
+        WFSerializationType: 'WFTextTokenString',
+      },
     }),
 
     sc.Action('is.workflow.actions.showwebpage', {
@@ -739,7 +882,20 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.gettext', name='Text', params={
-      WFTextActionText: sc.Str([sc.Ref('Date'), '\n[', sc.Ref('URL'), ' : v', sc.Ref('Actions'), '](', sc.Ref('Note'), ') : ', sc.Ref('Name')]),
+      WFTextActionText: {
+        Value: {
+          attachmentsByRange: {
+            '{0, 1}': sc.Ref('Date'),
+            '{11, 1}': sc.Ref('URL'),
+            '{16, 1}': sc.Ref('Actions'),
+            '{26, 1}': sc.Ref('Note'),
+            '{3, 1}': sc.Ref('Name'),
+            '{8, 1}': sc.Ref('Version'),
+          },
+          string: '￼\n[￼ : v￼](￼) : ￼ Actions\n￼\n\n-',
+        },
+        WFSerializationType: 'WFTextTokenString',
+      },
     }),
 
     sc.Action('is.workflow.actions.getrichtextfrommarkdown', {
@@ -752,7 +908,15 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('dk.simonbs.DataJar.CheckIfValueExistsIntent', name='Value Exists', params={
-      keyPath: sc.Str(['Version Control.', sc.Ref('Name'), '.1.exporticon']),
+      keyPath: {
+        Value: {
+          attachmentsByRange: {
+            '{16, 1}': sc.Ref('Name'),
+          },
+          string: 'Version Control.￼.1.exporticon',
+        },
+        WFSerializationType: 'WFTextTokenString',
+      },
     }),
 
     sc.Action('is.workflow.actions.conditional', {
@@ -774,7 +938,15 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('dk.simonbs.DataJar.GetValueIntent', {
-      keyPath: sc.Str(['Version Control.', sc.Ref('Name'), '.1.exporticon']),
+      keyPath: {
+        Value: {
+          attachmentsByRange: {
+            '{16, 1}': sc.Ref('Name'),
+          },
+          string: 'Version Control.￼.1.exporticon',
+        },
+        WFSerializationType: 'WFTextTokenString',
+      },
     }),
 
     sc.Action('is.workflow.actions.conditional', {
@@ -783,7 +955,15 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('dk.simonbs.DataJar.GetValueIntent', name='Value', params={
-      keyPath: sc.Str(['Version Control.', sc.Ref('Name'), '.1.url']),
+      keyPath: {
+        Value: {
+          attachmentsByRange: {
+            '{16, 1}': sc.Ref('Name'),
+          },
+          string: 'Version Control.￼.1.url',
+        },
+        WFSerializationType: 'WFTextTokenString',
+      },
     }),
 
     sc.Action('is.workflow.actions.text.replace', name='Updated Text', params={
@@ -831,25 +1011,41 @@ local sc = import 'shortcuts.libsonnet';
 
     sc.Action('is.workflow.actions.setitemname', name='Icon Image', params={
       WFInput: sc.Attach(sc.Ref('Contents of URL')),
-      WFName: sc.Str([sc.Ref('File of Type', aggs=[
-        {
-          CoercionItemClass: 'WFDictionaryContentItem',
-          Type: 'WFCoercionVariableAggrandizement',
+      WFName: {
+        Value: {
+          attachmentsByRange: {
+            '{0, 1}': sc.Ref('File of Type', aggs=[
+              {
+                CoercionItemClass: 'WFDictionaryContentItem',
+                Type: 'WFCoercionVariableAggrandizement',
+              },
+              {
+                DictionaryKey: 'fields.name.value',
+                Type: 'WFDictionaryValueVariableAggrandizement',
+              },
+            ]),
+          },
+          string: '￼.png',
         },
-        {
-          DictionaryKey: 'fields.name.value',
-          Type: 'WFDictionaryValueVariableAggrandizement',
-        },
-      ]), '.png']),
+        WFSerializationType: 'WFTextTokenString',
+      },
     }),
 
     sc.Action('dk.simonbs.DataJar.SetValueIntent', {
-      keyPath: sc.Str(['Version Control.', sc.Ref('Chosen Item', aggs=[
-        {
-          PropertyName: 'title',
-          Type: 'WFPropertyVariableAggrandizement',
+      keyPath: {
+        Value: {
+          attachmentsByRange: {
+            '{16, 1}': sc.Ref('Chosen Item', aggs=[
+              {
+                PropertyName: 'title',
+                Type: 'WFPropertyVariableAggrandizement',
+              },
+            ]),
+          },
+          string: 'Version Control.￼.1.exporticon',
         },
-      ]), '.1.exporticon']),
+        WFSerializationType: 'WFTextTokenString',
+      },
       overwriteStrategy: 'alwaysAllow',
       valueConversionMode: 'file',
       values: sc.Attach(sc.Ref('Icon Image')),
@@ -858,12 +1054,20 @@ local sc = import 'shortcuts.libsonnet';
     sc.Action('is.workflow.actions.delay'),
 
     sc.Action('dk.simonbs.DataJar.GetValueIntent', {
-      keyPath: sc.Str(['Version Control.', sc.Ref('Chosen Item', aggs=[
-        {
-          PropertyName: 'title',
-          Type: 'WFPropertyVariableAggrandizement',
+      keyPath: {
+        Value: {
+          attachmentsByRange: {
+            '{16, 1}': sc.Ref('Chosen Item', aggs=[
+              {
+                PropertyName: 'title',
+                Type: 'WFPropertyVariableAggrandizement',
+              },
+            ]),
+          },
+          string: 'Version Control.￼.1.exporticon',
         },
-      ]), '.1.exporticon']),
+        WFSerializationType: 'WFTextTokenString',
+      },
     }),
 
     sc.Action('is.workflow.actions.conditional', name='If Result', params={
@@ -882,7 +1086,16 @@ local sc = import 'shortcuts.libsonnet';
         Name: 'Notes',
         TeamIdentifier: '0000000000',
       },
-      WFCreateNoteInput: sc.Str([sc.Ref('Name')]),
+      WFCreateNoteInput: {
+        Value: {
+          attachmentsByRange: {
+            '{0, 1}': sc.Ref('Name'),
+            '{2, 1}': sc.Ref('If Result'),
+          },
+          string: '￼ ￼',
+        },
+        WFSerializationType: 'WFTextTokenString',
+      },
       folder: sc.Attach(sc.Ref('Text')),
     }),
 
@@ -940,11 +1153,38 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('dk.simonbs.DataJar.GetValueIntent', name='Value', params={
-      keyPath: sc.Str(['Version Control.', sc.Ref('Vars.Repeat Item'), '.1.b64icon']),
+      keyPath: {
+        Value: {
+          attachmentsByRange: {
+            '{16, 1}': sc.Ref('Vars.Repeat Item'),
+          },
+          string: 'Version Control.￼.1.b64icon',
+        },
+        WFSerializationType: 'WFTextTokenString',
+      },
     }),
 
     sc.Action('is.workflow.actions.gettext', name='Text', params={
-      WFTextActionText: sc.Str(['title: ', sc.Ref('Value')]),
+      WFTextActionText: {
+        Value: {
+          attachmentsByRange: {
+            '{17, 1}': sc.Ref('Value'),
+            '{7, 1}': {
+              Aggrandizements: [
+                {
+                  PropertyName: 'Name',
+                  PropertyUserInfo: 'WFItemName',
+                  Type: 'WFPropertyVariableAggrandizement',
+                },
+              ],
+              Type: 'Variable',
+              VariableName: 'Repeat Item',
+            },
+          },
+          string: 'title: ￼\nbase64: ￼',
+        },
+        WFSerializationType: 'WFTextTokenString',
+      },
     }),
 
     sc.Action('com.alexhay.ToolboxProForShortcuts.QuickMenu2Intent', {
@@ -998,12 +1238,20 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('dk.simonbs.DataJar.GetValueIntent', name='Value', params={
-      keyPath: sc.Str(['Version Control.', sc.Ref('Chosen Item', aggs=[
-        {
-          PropertyName: 'title',
-          Type: 'WFPropertyVariableAggrandizement',
+      keyPath: {
+        Value: {
+          attachmentsByRange: {
+            '{16, 1}': sc.Ref('Chosen Item', aggs=[
+              {
+                PropertyName: 'title',
+                Type: 'WFPropertyVariableAggrandizement',
+              },
+            ]),
+          },
+          string: 'Version Control.￼',
         },
-      ])]),
+        WFSerializationType: 'WFTextTokenString',
+      },
     }),
 
     sc.Action('is.workflow.actions.repeat.each', {
@@ -1013,7 +1261,16 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('dk.simonbs.DataJar.GetValueIntent', name='Value', params={
-      keyPath: sc.Str(['Version Control.', sc.Ref('Chosen Item')]),
+      keyPath: {
+        Value: {
+          attachmentsByRange: {
+            '{16, 1}': sc.Ref('Chosen Item'),
+            '{18, 1}': sc.Ref('Vars.Repeat Index'),
+          },
+          string: 'Version Control.￼.￼',
+        },
+        WFSerializationType: 'WFTextTokenString',
+      },
     }),
 
     sc.Action('is.workflow.actions.setvariable', {
@@ -1031,61 +1288,84 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.gettext', name='Text', params={
-      WFTextActionText: sc.Str(['title: ', sc.Ref('Value', aggs=[
-        {
-          CoercionItemClass: 'WFDictionaryContentItem',
-          Type: 'WFCoercionVariableAggrandizement',
+      WFTextActionText: {
+        Value: {
+          attachmentsByRange: {
+            '{11, 1}': sc.Ref('Value', aggs=[
+              {
+                CoercionItemClass: 'WFDictionaryContentItem',
+                Type: 'WFCoercionVariableAggrandizement',
+              },
+              {
+                DictionaryKey: 'date',
+                Type: 'WFDictionaryValueVariableAggrandizement',
+              },
+            ]),
+            '{27, 1}': sc.Ref('Value', aggs=[
+              {
+                CoercionItemClass: 'WFDictionaryContentItem',
+                Type: 'WFCoercionVariableAggrandizement',
+              },
+              {
+                DictionaryKey: 'actions count',
+                Type: 'WFDictionaryValueVariableAggrandizement',
+              },
+            ]),
+            '{31, 1}': sc.Ref('Value', aggs=[
+              {
+                CoercionItemClass: 'WFDictionaryContentItem',
+                Type: 'WFCoercionVariableAggrandizement',
+              },
+              {
+                DictionaryKey: 'note',
+                Type: 'WFDictionaryValueVariableAggrandizement',
+              },
+            ]),
+            '{41, 1}': sc.Ref('Value', aggs=[
+              {
+                CoercionItemClass: 'WFDictionaryContentItem',
+                Type: 'WFCoercionVariableAggrandizement',
+              },
+              {
+                DictionaryKey: 'b64icon',
+                Type: 'WFDictionaryValueVariableAggrandizement',
+              },
+            ]),
+            '{52, 1}': sc.Ref('Value', aggs=[
+              {
+                CoercionItemClass: 'WFDictionaryContentItem',
+                Type: 'WFCoercionVariableAggrandizement',
+              },
+              {
+                DictionaryKey: 'name',
+                Type: 'WFDictionaryValueVariableAggrandizement',
+              },
+            ]),
+            '{63, 1}': sc.Ref('Value', aggs=[
+              {
+                CoercionItemClass: 'WFDictionaryContentItem',
+                Type: 'WFCoercionVariableAggrandizement',
+              },
+              {
+                DictionaryKey: 'version',
+                Type: 'WFDictionaryValueVariableAggrandizement',
+              },
+            ]),
+            '{7, 1}': sc.Ref('Value', aggs=[
+              {
+                CoercionItemClass: 'WFDictionaryContentItem',
+                Type: 'WFCoercionVariableAggrandizement',
+              },
+              {
+                DictionaryKey: 'version',
+                Type: 'WFDictionaryValueVariableAggrandizement',
+              },
+            ]),
+          },
+          string: 'title: ￼ : ￼\nsub: Actions: ￼ | ￼\nbase64: ￼\nfield 1: ￼\nfield 2: ￼',
         },
-        {
-          DictionaryKey: 'date',
-          Type: 'WFDictionaryValueVariableAggrandizement',
-        },
-      ]), ' : ', sc.Ref('Value', aggs=[
-        {
-          CoercionItemClass: 'WFDictionaryContentItem',
-          Type: 'WFCoercionVariableAggrandizement',
-        },
-        {
-          DictionaryKey: 'actions count',
-          Type: 'WFDictionaryValueVariableAggrandizement',
-        },
-      ]), '\nsub: Actions: ', sc.Ref('Value', aggs=[
-        {
-          CoercionItemClass: 'WFDictionaryContentItem',
-          Type: 'WFCoercionVariableAggrandizement',
-        },
-        {
-          DictionaryKey: 'note',
-          Type: 'WFDictionaryValueVariableAggrandizement',
-        },
-      ]), ' | ', sc.Ref('Value', aggs=[
-        {
-          CoercionItemClass: 'WFDictionaryContentItem',
-          Type: 'WFCoercionVariableAggrandizement',
-        },
-        {
-          DictionaryKey: 'b64icon',
-          Type: 'WFDictionaryValueVariableAggrandizement',
-        },
-      ]), '\nbase64: ', sc.Ref('Value', aggs=[
-        {
-          CoercionItemClass: 'WFDictionaryContentItem',
-          Type: 'WFCoercionVariableAggrandizement',
-        },
-        {
-          DictionaryKey: 'name',
-          Type: 'WFDictionaryValueVariableAggrandizement',
-        },
-      ]), '\nfield 1: ', sc.Ref('Value', aggs=[
-        {
-          CoercionItemClass: 'WFDictionaryContentItem',
-          Type: 'WFCoercionVariableAggrandizement',
-        },
-        {
-          DictionaryKey: 'version',
-          Type: 'WFDictionaryValueVariableAggrandizement',
-        },
-      ])]),
+        WFSerializationType: 'WFTextTokenString',
+      },
     }),
 
     sc.Action('com.alexhay.ToolboxProForShortcuts.QuickMenu2Intent', {
@@ -1144,12 +1424,21 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('dk.simonbs.DataJar.GetValueIntent', name='Value', params={
-      keyPath: sc.Str(['Version Control.', sc.Ref('Chosen Item', aggs=[
-        {
-          PropertyName: 'title',
-          Type: 'WFPropertyVariableAggrandizement',
+      keyPath: {
+        Value: {
+          attachmentsByRange: {
+            '{16, 1}': sc.Ref('Chosen Item', aggs=[
+              {
+                PropertyName: 'title',
+                Type: 'WFPropertyVariableAggrandizement',
+              },
+            ]),
+            '{18, 1}': sc.Ref('Vars.Repeat Index 2'),
+          },
+          string: 'Version Control.￼.￼.version',
         },
-      ])]),
+        WFSerializationType: 'WFTextTokenString',
+      },
     }),
 
     sc.Action('is.workflow.actions.conditional', {
@@ -1164,17 +1453,34 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.alert', {
-      WFAlertActionMessage: sc.Str(['Are you sure you want to delete version ', sc.Ref('Value'), '? If so, press OK.']),
+      WFAlertActionMessage: {
+        Value: {
+          attachmentsByRange: {
+            '{40, 1}': sc.Ref('Value'),
+          },
+          string: 'Are you sure you want to delete version ￼? If so, press OK.',
+        },
+        WFSerializationType: 'WFTextTokenString',
+      },
     }),
 
     sc.Action('dk.simonbs.DataJar.DeleteValueIntent', {
       deleteStrategy: 'alwaysAllow',
-      keyPath: sc.Str(['Version Control.', sc.Ref('Chosen Item', aggs=[
-        {
-          PropertyName: 'title',
-          Type: 'WFPropertyVariableAggrandizement',
+      keyPath: {
+        Value: {
+          attachmentsByRange: {
+            '{16, 1}': sc.Ref('Chosen Item', aggs=[
+              {
+                PropertyName: 'title',
+                Type: 'WFPropertyVariableAggrandizement',
+              },
+            ]),
+            '{18, 1}': sc.Ref('Vars.Repeat Index 2'),
+          },
+          string: 'Version Control.￼.￼',
         },
-      ])]),
+        WFSerializationType: 'WFTextTokenString',
+      },
     }),
 
     sc.Action('is.workflow.actions.number', name='Number', params={
@@ -1207,12 +1513,20 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('dk.simonbs.DataJar.GetChildCountIntent', name='Count', params={
-      keyPath: sc.Str(['Version Control.', sc.Ref('Chosen Item', aggs=[
-        {
-          PropertyName: 'title',
-          Type: 'WFPropertyVariableAggrandizement',
+      keyPath: {
+        Value: {
+          attachmentsByRange: {
+            '{16, 1}': sc.Ref('Chosen Item', aggs=[
+              {
+                PropertyName: 'title',
+                Type: 'WFPropertyVariableAggrandizement',
+              },
+            ]),
+          },
+          string: 'Version Control.￼',
         },
-      ])]),
+        WFSerializationType: 'WFTextTokenString',
+      },
     }),
 
     sc.Action('is.workflow.actions.conditional', {
@@ -1228,12 +1542,20 @@ local sc = import 'shortcuts.libsonnet';
 
     sc.Action('dk.simonbs.DataJar.DeleteValueIntent', {
       deleteStrategy: 'alwaysAllow',
-      keyPath: sc.Str(['Version Control.', sc.Ref('Chosen Item', aggs=[
-        {
-          PropertyName: 'title',
-          Type: 'WFPropertyVariableAggrandizement',
+      keyPath: {
+        Value: {
+          attachmentsByRange: {
+            '{16, 1}': sc.Ref('Chosen Item', aggs=[
+              {
+                PropertyName: 'title',
+                Type: 'WFPropertyVariableAggrandizement',
+              },
+            ]),
+          },
+          string: 'Version Control.￼',
         },
-      ])]),
+        WFSerializationType: 'WFTextTokenString',
+      },
     }),
 
     sc.Action('is.workflow.actions.conditional', {

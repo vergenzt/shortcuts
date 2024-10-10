@@ -5,7 +5,15 @@ local sc = import 'shortcuts.libsonnet';
   WFWorkflowActions: sc.ActionsSeq([
 
     sc.Action('is.workflow.actions.ask', name='Provided Input', params={
-      WFAskActionDefaultAnswer: sc.Str(['Hey {{First Name}}! ', sc.Input]),
+      WFAskActionDefaultAnswer: {
+        Value: {
+          attachmentsByRange: {
+            '{20, 1}': sc.Input,
+          },
+          string: 'Hey {{First Name}}! ￼',
+        },
+        WFSerializationType: 'WFTextTokenString',
+      },
       WFAskActionPrompt: 'What’s the message?',
       WFInputType: 'Text',
     }),
@@ -40,7 +48,15 @@ local sc = import 'shortcuts.libsonnet';
     sc.Action('is.workflow.actions.text.replace', name='Updated Text', params={
       WFInput: sc.Str([sc.Ref('Provided Input')]),
       WFReplaceTextCaseSensitive: false,
-      WFReplaceTextFind: sc.Str(['{{', sc.Ref('Vars.Repeat Item 2'), '}}']),
+      WFReplaceTextFind: {
+        Value: {
+          attachmentsByRange: {
+            '{2, 1}': sc.Ref('Vars.Repeat Item 2'),
+          },
+          string: '{{￼}}',
+        },
+        WFSerializationType: 'WFTextTokenString',
+      },
       WFReplaceTextReplace: sc.Str([sc.Ref('Details of Contacts')]),
     }),
 

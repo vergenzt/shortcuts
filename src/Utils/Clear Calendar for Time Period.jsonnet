@@ -99,7 +99,15 @@ local sc = import 'shortcuts.libsonnet';
 
     sc.Action('is.workflow.actions.ask', name='End date', params={
       WFAskActionDefaultAnswerDateAndTime: sc.Str([sc.Ref('EOD-1m')]),
-      WFAskActionPrompt: sc.Str(['From ', sc.Ref('Date'), ' until when?']),
+      WFAskActionPrompt: {
+        Value: {
+          attachmentsByRange: {
+            '{5, 1}': sc.Ref('Date'),
+          },
+          string: 'From ￼ until when?',
+        },
+        WFSerializationType: 'WFTextTokenString',
+      },
       WFInputType: 'Date and Time',
     }),
 
@@ -236,7 +244,16 @@ local sc = import 'shortcuts.libsonnet';
 
     sc.Action('is.workflow.actions.setvalueforkey', name='Dictionary', params={
       WFDictionary: sc.Attach(sc.Ref('Vars.Calendar Labels')),
-      WFDictionaryKey: sc.Str([sc.Ref('Vars.Repeat Item')]),
+      WFDictionaryKey: {
+        Value: {
+          attachmentsByRange: {
+            '{0, 1}': sc.Ref('Vars.Repeat Item'),
+            '{3, 1}': sc.Ref('# Events'),
+          },
+          string: '￼ (￼ events)',
+        },
+        WFSerializationType: 'WFTextTokenString',
+      },
       WFDictionaryValue: sc.Str([sc.Ref('Vars.Repeat Item')]),
     }),
 

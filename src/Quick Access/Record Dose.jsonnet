@@ -18,16 +18,24 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.url', name='URL', params={
-      WFURLActionURL: sc.Str(['https://sheets.googleapis.com/v4/spreadsheets/', sc.Ref('Value', aggs=[
-        {
-          CoercionItemClass: 'WFDictionaryContentItem',
-          Type: 'WFCoercionVariableAggrandizement',
+      WFURLActionURL: {
+        Value: {
+          attachmentsByRange: {
+            '{46, 1}': sc.Ref('Value', aggs=[
+              {
+                CoercionItemClass: 'WFDictionaryContentItem',
+                Type: 'WFCoercionVariableAggrandizement',
+              },
+              {
+                DictionaryKey: 'spreadsheetId',
+                Type: 'WFDictionaryValueVariableAggrandizement',
+              },
+            ]),
+          },
+          string: 'https://sheets.googleapis.com/v4/spreadsheets/￼/values',
         },
-        {
-          DictionaryKey: 'spreadsheetId',
-          Type: 'WFDictionaryValueVariableAggrandizement',
-        },
-      ]), '/values']),
+        WFSerializationType: 'WFTextTokenString',
+      },
     }),
 
     sc.Action('is.workflow.actions.urlencode', name='menuRange', params={
@@ -57,7 +65,16 @@ local sc = import 'shortcuts.libsonnet';
         },
         WFSerializationType: 'WFDictionaryFieldValue',
       },
-      WFURL: sc.Str([sc.Ref('URL')]),
+      WFURL: {
+        Value: {
+          attachmentsByRange: {
+            '{0, 1}': sc.Ref('URL'),
+            '{2, 1}': sc.Ref('menuRange'),
+          },
+          string: '￼/￼?valueRenderOption=FORMATTED_VALUE',
+        },
+        WFSerializationType: 'WFTextTokenString',
+      },
     }),
 
     sc.Action('is.workflow.actions.repeat.each', {
@@ -143,7 +160,15 @@ local sc = import 'shortcuts.libsonnet';
 
     sc.Action('is.workflow.actions.ask', name='Provided Input', params={
       WFAskActionDefaultAnswer: sc.Str([sc.Ref('Vars.Med')]),
-      WFAskActionPrompt: sc.Str(['Record dose? ', sc.Ref('Formatted Date')]),
+      WFAskActionPrompt: {
+        Value: {
+          attachmentsByRange: {
+            '{13, 1}': sc.Ref('Formatted Date'),
+          },
+          string: 'Record dose? ￼',
+        },
+        WFSerializationType: 'WFTextTokenString',
+      },
     }),
 
     sc.Action('is.workflow.actions.setvariable', {
@@ -218,7 +243,16 @@ local sc = import 'shortcuts.libsonnet';
         },
         WFSerializationType: 'WFDictionaryFieldValue',
       },
-      WFURL: sc.Str([sc.Ref('URL')]),
+      WFURL: {
+        Value: {
+          attachmentsByRange: {
+            '{0, 1}': sc.Ref('URL'),
+            '{2, 1}': sc.Ref('dataRange'),
+          },
+          string: '￼/￼:append?valueInputOption=USER_ENTERED',
+        },
+        WFSerializationType: 'WFTextTokenString',
+      },
     }),
 
     sc.Action('is.workflow.actions.alert', {

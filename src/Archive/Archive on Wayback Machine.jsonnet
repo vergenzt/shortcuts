@@ -9,7 +9,15 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.gettext', name='Archive Save URL', params={
-      WFTextActionText: sc.Str(['https://web.archive.org/save/', sc.Ref('Encoded URL')]),
+      WFTextActionText: {
+        Value: {
+          attachmentsByRange: {
+            '{29, 1}': sc.Ref('Encoded URL'),
+          },
+          string: 'https://web.archive.org/save/￼',
+        },
+        WFSerializationType: 'WFTextTokenString',
+      },
     }),
 
     sc.Action('is.workflow.actions.downloadurl', {
@@ -19,7 +27,13 @@ local sc = import 'shortcuts.libsonnet';
           WFDictionaryFieldValueItems: [
             {
               WFItemType: 0,
-              WFKey: sc.Str(['url']),
+              WFKey: {
+                Value: {
+                  attachmentsByRange: {},
+                  string: 'url',
+                },
+                WFSerializationType: 'WFTextTokenString',
+              },
               WFValue: sc.Str([sc.Ref('Vars.URL')]),
             },
           ],
@@ -32,7 +46,15 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.gettext', name='Archive Root URL', params={
-      WFTextActionText: sc.Str(['https://web.archive.org/web/', sc.Ref('Encoded URL')]),
+      WFTextActionText: {
+        Value: {
+          attachmentsByRange: {
+            '{28, 1}': sc.Ref('Encoded URL'),
+          },
+          string: 'https://web.archive.org/web/￼',
+        },
+        WFSerializationType: 'WFTextTokenString',
+      },
     }),
 
     sc.Action('is.workflow.actions.url.getheaders', name='Headers of URL', params={

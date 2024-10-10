@@ -9,16 +9,24 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.url', name='URL', params={
-      WFURLActionURL: sc.Str([sc.Ref('Value', aggs=[
-        {
-          CoercionItemClass: 'WFDictionaryContentItem',
-          Type: 'WFCoercionVariableAggrandizement',
+      WFURLActionURL: {
+        Value: {
+          attachmentsByRange: {
+            '{0, 1}': sc.Ref('Value', aggs=[
+              {
+                CoercionItemClass: 'WFDictionaryContentItem',
+                Type: 'WFCoercionVariableAggrandizement',
+              },
+              {
+                DictionaryKey: 'typeform_url',
+                Type: 'WFDictionaryValueVariableAggrandizement',
+              },
+            ]),
+          },
+          string: '￼#jira_key=',
         },
-        {
-          DictionaryKey: 'typeform_url',
-          Type: 'WFDictionaryValueVariableAggrandizement',
-        },
-      ]), '#jira_key=']),
+        WFSerializationType: 'WFTextTokenString',
+      },
     }),
 
     sc.Action('is.workflow.actions.detect.dictionary', name='Input As Dict', params={
@@ -69,7 +77,15 @@ local sc = import 'shortcuts.libsonnet';
             {
               WFItemType: 0,
               WFKey: sc.Str(['path']),
-              WFValue: sc.Str(['issue/', sc.Ref('Issue key')]),
+              WFValue: {
+                Value: {
+                  attachmentsByRange: {
+                    '{6, 1}': sc.Ref('Issue key'),
+                  },
+                  string: 'issue/￼',
+                },
+                WFSerializationType: 'WFTextTokenString',
+              },
             },
           ],
         },
@@ -98,7 +114,16 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.gettext', name='Text', params={
-      WFTextActionText: sc.Str([sc.Ref('Initial Issue Key')]),
+      WFTextActionText: {
+        Value: {
+          attachmentsByRange: {
+            '{0, 1}': sc.Ref('Initial Issue Key'),
+            '{2, 1}': sc.Ref('fields.summary'),
+          },
+          string: '￼ ￼',
+        },
+        WFSerializationType: 'WFTextTokenString',
+      },
     }),
 
     sc.Action('is.workflow.actions.urlencode', name='URL Encoded Text', params={
@@ -106,7 +131,16 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.url', name='URL', params={
-      WFURLActionURL: sc.Str([sc.Ref('URL')]),
+      WFURLActionURL: {
+        Value: {
+          attachmentsByRange: {
+            '{0, 1}': sc.Ref('URL'),
+            '{1, 1}': sc.Ref('URL Encoded Text'),
+          },
+          string: '￼￼',
+        },
+        WFSerializationType: 'WFTextTokenString',
+      },
     }),
 
     sc.Action('is.workflow.actions.openurl', {

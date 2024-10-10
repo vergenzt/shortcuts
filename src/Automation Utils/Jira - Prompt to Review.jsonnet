@@ -20,19 +20,27 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.url', name='URL', params={
-      WFURLActionURL: sc.Str(['https://vergenz.atlassian.net/browse/', {
-        Aggrandizements: [
-          {
-            CoercionItemClass: 'WFDictionaryContentItem',
-            Type: 'WFCoercionVariableAggrandizement',
+      WFURLActionURL: {
+        Value: {
+          attachmentsByRange: {
+            '{37, 1}': {
+              Aggrandizements: [
+                {
+                  CoercionItemClass: 'WFDictionaryContentItem',
+                  Type: 'WFCoercionVariableAggrandizement',
+                },
+                {
+                  DictionaryKey: 'issue.key',
+                  Type: 'WFDictionaryValueVariableAggrandizement',
+                },
+              ],
+              Type: 'ExtensionInput',
+            },
           },
-          {
-            DictionaryKey: 'issue.key',
-            Type: 'WFDictionaryValueVariableAggrandizement',
-          },
-        ],
-        Type: 'ExtensionInput',
-      }]),
+          string: 'https://vergenz.atlassian.net/browse/￼',
+        },
+        WFSerializationType: 'WFTextTokenString',
+      },
     }),
 
     sc.Action('is.workflow.actions.openurl', {
@@ -58,19 +66,27 @@ local sc = import 'shortcuts.libsonnet';
             {
               WFItemType: 0,
               WFKey: sc.Str(['path']),
-              WFValue: sc.Str(['issue/', {
-                Aggrandizements: [
-                  {
-                    CoercionItemClass: 'WFDictionaryContentItem',
-                    Type: 'WFCoercionVariableAggrandizement',
+              WFValue: {
+                Value: {
+                  attachmentsByRange: {
+                    '{6, 1}': {
+                      Aggrandizements: [
+                        {
+                          CoercionItemClass: 'WFDictionaryContentItem',
+                          Type: 'WFCoercionVariableAggrandizement',
+                        },
+                        {
+                          DictionaryKey: 'issue.key',
+                          Type: 'WFDictionaryValueVariableAggrandizement',
+                        },
+                      ],
+                      Type: 'ExtensionInput',
+                    },
                   },
-                  {
-                    DictionaryKey: 'issue.key',
-                    Type: 'WFDictionaryValueVariableAggrandizement',
-                  },
-                ],
-                Type: 'ExtensionInput',
-              }]),
+                  string: 'issue/￼',
+                },
+                WFSerializationType: 'WFTextTokenString',
+              },
             },
           ],
         },
@@ -111,16 +127,35 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.choosefromlist', name='Chosen Item', params={
-      WFChooseFromListActionPrompt: sc.Str([sc.Ref('Do you want to review?'), ' [', sc.Ref('Get Issue Result', aggs=[
-        {
-          CoercionItemClass: 'WFDictionaryContentItem',
-          Type: 'WFCoercionVariableAggrandizement',
+      WFChooseFromListActionPrompt: {
+        Value: {
+          attachmentsByRange: {
+            '{0, 1}': sc.Ref('Do you want to review?'),
+            '{3, 1}': sc.Ref('Get Issue Result', aggs=[
+              {
+                CoercionItemClass: 'WFDictionaryContentItem',
+                Type: 'WFCoercionVariableAggrandizement',
+              },
+              {
+                DictionaryKey: 'key',
+                Type: 'WFDictionaryValueVariableAggrandizement',
+              },
+            ]),
+            '{6, 1}': sc.Ref('Get Issue Result', aggs=[
+              {
+                CoercionItemClass: 'WFDictionaryContentItem',
+                Type: 'WFCoercionVariableAggrandizement',
+              },
+              {
+                DictionaryKey: 'fields.summary',
+                Type: 'WFDictionaryValueVariableAggrandizement',
+              },
+            ]),
+          },
+          string: '￼ [￼] ￼',
         },
-        {
-          DictionaryKey: 'key',
-          Type: 'WFDictionaryValueVariableAggrandizement',
-        },
-      ])]),
+        WFSerializationType: 'WFTextTokenString',
+      },
       WFInput: sc.Attach(sc.Ref('List')),
     }),
 
@@ -148,41 +183,68 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.alert', {
-      WFAlertActionMessage: sc.Str(['Press OK to review the issue in Jira, ', {
-        Aggrandizements: [
-          {
-            CoercionItemClass: 'WFDictionaryContentItem',
-            Type: 'WFCoercionVariableAggrandizement',
+      WFAlertActionMessage: {
+        Value: {
+          attachmentsByRange: {
+            '{38, 1}': {
+              Aggrandizements: [
+                {
+                  CoercionItemClass: 'WFDictionaryContentItem',
+                  Type: 'WFCoercionVariableAggrandizement',
+                },
+                {
+                  DictionaryKey: 'review_prompt',
+                  Type: 'WFDictionaryValueVariableAggrandizement',
+                },
+              ],
+              Type: 'ExtensionInput',
+            },
           },
-          {
-            DictionaryKey: 'review_prompt',
-            Type: 'WFDictionaryValueVariableAggrandizement',
-          },
-        ],
-        Type: 'ExtensionInput',
-      }, 'then return to Shortcuts to continue.']),
-      WFAlertActionTitle: sc.Str([{
-        Aggrandizements: [
-          {
-            CoercionItemClass: 'WFDictionaryContentItem',
-            Type: 'WFCoercionVariableAggrandizement',
-          },
-          {
-            DictionaryKey: 'progress_info',
-            Type: 'WFDictionaryValueVariableAggrandizement',
-          },
-        ],
-        Type: 'ExtensionInput',
-      }, '[', sc.Ref('Get Issue Result', aggs=[
-        {
-          CoercionItemClass: 'WFDictionaryContentItem',
-          Type: 'WFCoercionVariableAggrandizement',
+          string: 'Press OK to review the issue in Jira, ￼then return to Shortcuts to continue.',
         },
-        {
-          DictionaryKey: 'key',
-          Type: 'WFDictionaryValueVariableAggrandizement',
+        WFSerializationType: 'WFTextTokenString',
+      },
+      WFAlertActionTitle: {
+        Value: {
+          attachmentsByRange: {
+            '{0, 1}': {
+              Aggrandizements: [
+                {
+                  CoercionItemClass: 'WFDictionaryContentItem',
+                  Type: 'WFCoercionVariableAggrandizement',
+                },
+                {
+                  DictionaryKey: 'progress_info',
+                  Type: 'WFDictionaryValueVariableAggrandizement',
+                },
+              ],
+              Type: 'ExtensionInput',
+            },
+            '{2, 1}': sc.Ref('Get Issue Result', aggs=[
+              {
+                CoercionItemClass: 'WFDictionaryContentItem',
+                Type: 'WFCoercionVariableAggrandizement',
+              },
+              {
+                DictionaryKey: 'key',
+                Type: 'WFDictionaryValueVariableAggrandizement',
+              },
+            ]),
+            '{5, 1}': sc.Ref('Get Issue Result', aggs=[
+              {
+                CoercionItemClass: 'WFDictionaryContentItem',
+                Type: 'WFCoercionVariableAggrandizement',
+              },
+              {
+                DictionaryKey: 'fields.summary',
+                Type: 'WFDictionaryValueVariableAggrandizement',
+              },
+            ]),
+          },
+          string: '￼[￼] ￼',
         },
-      ])]),
+        WFSerializationType: 'WFTextTokenString',
+      },
     }),
 
     sc.Action('is.workflow.actions.text.replace', name='Browse URL', params={
@@ -201,19 +263,27 @@ local sc = import 'shortcuts.libsonnet';
       }]),
       WFReplaceTextFind: '/rest/api/.*$',
       WFReplaceTextRegularExpression: true,
-      WFReplaceTextReplace: sc.Str(['/browse/', {
-        Aggrandizements: [
-          {
-            CoercionItemClass: 'WFDictionaryContentItem',
-            Type: 'WFCoercionVariableAggrandizement',
+      WFReplaceTextReplace: {
+        Value: {
+          attachmentsByRange: {
+            '{8, 1}': {
+              Aggrandizements: [
+                {
+                  CoercionItemClass: 'WFDictionaryContentItem',
+                  Type: 'WFCoercionVariableAggrandizement',
+                },
+                {
+                  DictionaryKey: 'issue.key',
+                  Type: 'WFDictionaryValueVariableAggrandizement',
+                },
+              ],
+              Type: 'ExtensionInput',
+            },
           },
-          {
-            DictionaryKey: 'issue.key',
-            Type: 'WFDictionaryValueVariableAggrandizement',
-          },
-        ],
-        Type: 'ExtensionInput',
-      }]),
+          string: '/browse/￼',
+        },
+        WFSerializationType: 'WFTextTokenString',
+      },
     }),
 
     sc.Action('is.workflow.actions.getvalueforkey', name='filter', params={
@@ -232,19 +302,27 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.gettext', {
-      WFTextActionText: sc.Str(['?filter=', {
-        Aggrandizements: [
-          {
-            CoercionItemClass: 'WFDictionaryContentItem',
-            Type: 'WFCoercionVariableAggrandizement',
+      WFTextActionText: {
+        Value: {
+          attachmentsByRange: {
+            '{8, 1}': {
+              Aggrandizements: [
+                {
+                  CoercionItemClass: 'WFDictionaryContentItem',
+                  Type: 'WFCoercionVariableAggrandizement',
+                },
+                {
+                  DictionaryKey: 'filter.id',
+                  Type: 'WFDictionaryValueVariableAggrandizement',
+                },
+              ],
+              Type: 'ExtensionInput',
+            },
           },
-          {
-            DictionaryKey: 'filter.id',
-            Type: 'WFDictionaryValueVariableAggrandizement',
-          },
-        ],
-        Type: 'ExtensionInput',
-      }]),
+          string: '?filter=￼',
+        },
+        WFSerializationType: 'WFTextTokenString',
+      },
     }),
 
     sc.Action('is.workflow.actions.conditional', name='If Result', params={
@@ -253,7 +331,16 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.url', name='URL', params={
-      WFURLActionURL: sc.Str([sc.Ref('Browse URL')]),
+      WFURLActionURL: {
+        Value: {
+          attachmentsByRange: {
+            '{0, 1}': sc.Ref('Browse URL'),
+            '{1, 1}': sc.Ref('If Result'),
+          },
+          string: '￼￼',
+        },
+        WFSerializationType: 'WFTextTokenString',
+      },
     }),
 
     sc.Action('is.workflow.actions.openurl', {

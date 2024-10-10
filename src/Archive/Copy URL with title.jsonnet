@@ -9,12 +9,21 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.gettext', name='Text', params={
-      WFTextActionText: sc.Str([sc.Ref('Article', aggs=[
-        {
-          PropertyName: 'Title',
-          Type: 'WFPropertyVariableAggrandizement',
+      WFTextActionText: {
+        Value: {
+          attachmentsByRange: {
+            '{0, 1}': sc.Ref('Article', aggs=[
+              {
+                PropertyName: 'Title',
+                Type: 'WFPropertyVariableAggrandizement',
+              },
+            ]),
+            '{3, 1}': sc.Input,
+          },
+          string: '￼: ￼',
         },
-      ])]),
+        WFSerializationType: 'WFTextTokenString',
+      },
     }),
 
     sc.Action('is.workflow.actions.setclipboard', {

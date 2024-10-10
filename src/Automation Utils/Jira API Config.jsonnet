@@ -22,7 +22,15 @@ local sc = import 'shortcuts.libsonnet';
         },
       ])),
       WFDictionaryKey: 'authorization',
-      WFDictionaryValue: sc.Str(['Basic ', sc.Ref('Result')]),
+      WFDictionaryValue: {
+        Value: {
+          attachmentsByRange: {
+            '{6, 1}': sc.Ref('Result'),
+          },
+          string: 'Basic ￼',
+        },
+        WFSerializationType: 'WFTextTokenString',
+      },
     }),
 
   ]),

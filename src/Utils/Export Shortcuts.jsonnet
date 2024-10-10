@@ -14,16 +14,25 @@ local sc = import 'shortcuts.libsonnet';
 
     sc.Action('is.workflow.actions.documentpicker.save', {
       WFAskWhereToSave: false,
-      WFFileDestinationPath: sc.Str(['/', {
-        Aggrandizements: [
-          {
-            PropertyName: 'Folder',
-            Type: 'WFPropertyVariableAggrandizement',
+      WFFileDestinationPath: {
+        Value: {
+          attachmentsByRange: {
+            '{1, 1}': {
+              Aggrandizements: [
+                {
+                  PropertyName: 'Folder',
+                  Type: 'WFPropertyVariableAggrandizement',
+                },
+              ],
+              Type: 'Variable',
+              VariableName: 'Repeat Item',
+            },
+            '{3, 1}': sc.Ref('Vars.Repeat Item'),
           },
-        ],
-        Type: 'Variable',
-        VariableName: 'Repeat Item',
-      }]),
+          string: '/￼/￼',
+        },
+        WFSerializationType: 'WFTextTokenString',
+      },
       WFInput: sc.Attach(sc.Ref('Vars.Repeat Item')),
       WFSaveFileOverwrite: true,
     }),
