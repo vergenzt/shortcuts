@@ -15,7 +15,7 @@ local sc = import 'shortcuts.libsonnet';
             },
             {
               WFItemType: 0,
-              WFKey: sc.Str(['Events']),
+              WFKey: sc.Str(['Tim']),
               WFValue: sc.Str(['20']),
             },
             {
@@ -50,7 +50,7 @@ local sc = import 'shortcuts.libsonnet';
             },
             {
               WFItemType: 0,
-              WFKey: sc.Str(['Events']),
+              WFKey: sc.Str(['Tim']),
               WFValue: sc.Str(['Tim']),
             },
             {

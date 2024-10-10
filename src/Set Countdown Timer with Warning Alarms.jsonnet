@@ -35,15 +35,13 @@ local sc = import 'shortcuts.libsonnet';
 
     sc.Action('is.workflow.actions.list', name='Warnings', params={
       WFItems: [
-        '0',
-        '1',
         '2',
-        '3',
         '5',
         '10',
         '15',
         '20',
         '30',
+        '45',
         '60',
         '90',
         '120',
@@ -123,21 +121,35 @@ local sc = import 'shortcuts.libsonnet';
       },
     }),
 
-    sc.Action('is.workflow.actions.conditional', name='If Result', params={
+    sc.Action('is.workflow.actions.conditional', name='Alarm Text', params={
       GroupingIdentifier: 'ED0FE990-3E15-4138-9443-BCC1D8B3F4F8',
       WFControlFlowMode: 2,
     }),
 
-    sc.Action('com.apple.mobiletimer-framework.MobileTimerIntents.MTCreateAlarmIntent', {
-      AppIntentDescriptor: {
-        AppIntentIdentifier: 'CreateAlarmIntent',
-        BundleIdentifier: 'com.apple.mobiletimer',
-        Name: 'Clock',
-        TeamIdentifier: '0000000000',
-      },
-      allowsSnooze: false,
-      dateComponents: sc.Str([sc.Ref('Warning Time')]),
-      name: sc.Str([sc.Ref('If Result')]),
+    sc.Action('is.workflow.actions.list', name='List', params={
+      WFItems: [
+        {
+          WFItemType: 0,
+          WFValue: sc.Str([sc.Ref('Alarm Text')]),
+        },
+        {
+          WFItemType: 0,
+          WFValue: sc.Str([sc.Ref('Warning Time', aggs=[
+            {
+              Type: 'WFDateFormatVariableAggrandizement',
+              WFDateFormatStyle: 'None',
+              WFISO8601IncludeTime: false,
+              WFTimeFormatStyle: 'Short',
+            },
+          ])]),
+        },
+      ],
+    }),
+
+    sc.Action('is.workflow.actions.text.combine', {
+      WFTextCustomSeparator: ' — ',
+      WFTextSeparator: 'Custom',
+      text: sc.Attach(sc.Ref('List')),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
@@ -156,19 +168,99 @@ local sc = import 'shortcuts.libsonnet';
       WFVariable: sc.Attach(sc.Ref('If Result')),
     }),
 
-    sc.Action('is.workflow.actions.repeat.each', {
+    sc.Action('is.workflow.actions.repeat.each', name='Warning Alarms', params={
       GroupingIdentifier: '5FA1F184-7575-4977-9FC7-F3D1979F89C1',
       WFControlFlowMode: 2,
     }),
 
-    sc.Action('com.apple.mobiletimer.OpenTab', {
+    sc.Action('is.workflow.actions.choosefromlist', name='Selected Item', params={
+      WFChooseFromListActionPrompt: 'Which alarms would you like?',
+      WFChooseFromListActionSelectAll: true,
+      WFChooseFromListActionSelectMultiple: true,
+      WFInput: sc.Attach(sc.Ref('Warning Alarms')),
+    }),
+
+    sc.Action('is.workflow.actions.repeat.each', {
+      GroupingIdentifier: 'F2754B79-7EB4-4008-847C-7EA8373C0F63',
+      WFControlFlowMode: 0,
+      WFInput: sc.Attach(sc.Ref('Selected Item')),
+    }),
+
+    sc.Action('is.workflow.actions.previewdocument', {
+      WFInput: sc.Attach(sc.Ref('Vars.Repeat Item')),
+    }),
+
+    sc.Action('is.workflow.actions.text.split', name='Split Text', params={
+      WFTextCustomSeparator: ' — ',
+      WFTextSeparator: 'Custom',
+      text: sc.Attach(sc.Ref('Vars.Repeat Item')),
+    }),
+
+    sc.Action('is.workflow.actions.getitemfromlist', name='First Item', params={
+      WFInput: sc.Attach(sc.Ref('Split Text')),
+    }),
+
+    sc.Action('is.workflow.actions.getitemfromlist', name='Last Item', params={
+      WFInput: sc.Attach(sc.Ref('Split Text')),
+      WFItemSpecifier: 'Last Item',
+    }),
+
+    sc.Action('com.apple.mobiletimer-framework.MobileTimerIntents.MTCreateAlarmIntent', {
       AppIntentDescriptor: {
-        AppIntentIdentifier: 'OpenTab',
+        AppIntentIdentifier: 'CreateAlarmIntent',
         BundleIdentifier: 'com.apple.mobiletimer',
         Name: 'Clock',
         TeamIdentifier: '0000000000',
       },
-      tab: 'alarm',
+      allowsSnooze: false,
+      dateComponents: sc.Str([sc.Ref('Last Item', aggs=[
+        {
+          CoercionItemClass: 'WFDateContentItem',
+          Type: 'WFCoercionVariableAggrandizement',
+        },
+        {
+          Type: 'WFDateFormatVariableAggrandizement',
+          WFDateFormatStyle: 'None',
+          WFISO8601IncludeTime: false,
+          WFTimeFormatStyle: 'Short',
+        },
+      ])]),
+      name: sc.Str([sc.Ref('First Item')]),
+    }),
+
+    sc.Action('is.workflow.actions.repeat.each', {
+      GroupingIdentifier: 'F2754B79-7EB4-4008-847C-7EA8373C0F63',
+      WFControlFlowMode: 2,
+    }),
+
+    sc.Action('is.workflow.actions.gettimebetweendates', name='Time Between Dates', params={
+      WFInput: sc.Str([sc.Ref('Vars.End Time')]),
+      WFTimeUntilFromDate: sc.Str([{
+        Type: 'CurrentDate',
+      }]),
+      WFTimeUntilUnit: 'Seconds',
+    }),
+
+    sc.Action('is.workflow.actions.timer.start', {
+      AppIntentDescriptor: {
+        AppIntentIdentifier: 'INCreateTimerIntent',
+        BundleIdentifier: 'com.apple.mobiletimer',
+        Name: 'Clock',
+        TeamIdentifier: '0000000000',
+      },
+      IntentAppDefinition: {
+        BundleIdentifier: 'com.apple.clock',
+        ExtensionBundleIdentifier: 'com.apple.mobiletimer-framework.MobileTimerIntents',
+        Name: 'Clock',
+        TeamIdentifier: '0000000000',
+      },
+      WFDuration: {
+        Value: {
+          Magnitude: sc.Ref('Time Between Dates'),
+          Unit: 'sec',
+        },
+        WFSerializationType: 'WFQuantityFieldValue',
+      },
     }),
 
   ]),
@@ -205,6 +297,7 @@ local sc = import 'shortcuts.libsonnet';
   WFWorkflowMinimumClientVersionString: '900',
   WFWorkflowOutputContentItemClasses: [],
   WFWorkflowTypes: [
+    'MenuBar',
     'Watch',
   ],
 }
