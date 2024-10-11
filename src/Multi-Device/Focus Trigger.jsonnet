@@ -14,15 +14,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('dk.simonbs.DataJar.GetValueIntent', name='Value', params={
-      keyPath: {
-        Value: {
-          attachmentsByRange: {
-            '{21, 1}': sc.Ref('Device ID'),
-          },
-          string: 'Focus Trigger.Queues.￼',
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
+      keyPath: sc.Str(['Focus Trigger.Queues.', sc.Ref('Device ID')]),
     }),
 
     sc.Action('is.workflow.actions.repeat.each', {
@@ -62,15 +54,7 @@ local sc = import 'shortcuts.libsonnet';
     sc.Action('dk.simonbs.DataJar.DeleteValueIntent', {
       deleteStrategy: 'alwaysAllow',
       errorWhenValueNotFound: true,
-      keyPath: {
-        Value: {
-          attachmentsByRange: {
-            '{21, 1}': sc.Ref('Device ID'),
-          },
-          string: 'Focus Trigger.Queues.￼.1',
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
+      keyPath: sc.Str(['Focus Trigger.Queues.', sc.Ref('Device ID'), '.1']),
     }),
 
     sc.Action('is.workflow.actions.repeat.each', {

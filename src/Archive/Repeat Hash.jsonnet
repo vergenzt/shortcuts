@@ -19,15 +19,7 @@ local sc = import 'shortcuts.libsonnet';
     sc.Action('is.workflow.actions.date', name='Date'),
 
     sc.Action('dk.simonbs.DataJar.SetValueIntent', {
-      keyPath: {
-        Value: {
-          attachmentsByRange: {
-            '{23, 1}': sc.Ref('Device Model'),
-          },
-          string: 'Repeat Hash Signatures.￼.started_at',
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
+      keyPath: sc.Str(['Repeat Hash Signatures.', sc.Ref('Device Model'), '.started_at']),
       values: sc.Attach(sc.Ref('Date', aggs=[
         {
           Type: 'WFDateFormatVariableAggrandizement',
@@ -42,7 +34,17 @@ local sc = import 'shortcuts.libsonnet';
         sc.Str([sc.Ref('Input')]),
         sc.Str([sc.Ref('Num Repetitions')]),
       ],
-      code: 'import sys, ast, hashlib\n\ndata = sys.argv[1]\nn = int(ast.literal_eval(sys.argv[2]))\n\nfor i in range(n):\n  data = hashlib.sha1(data.encode()).hexdigest()\n\nprint(data)',
+      code: |||
+        import sys, ast, hashlib
+
+        data = sys.argv[1]
+        n = int(ast.literal_eval(sys.argv[2]))
+
+        for i in range(n):
+          data = hashlib.sha1(data.encode()).hexdigest()
+
+        print(data)
+      |||,
       input: '',
     }),
 
@@ -78,22 +80,19 @@ local sc = import 'shortcuts.libsonnet';
               },
             ]),
           },
-          string: 'Hash repetitions: ￼\nTotal time: ￼s\nHash suffix: ￼\nStarted at: ￼',
+          string: |||
+            Hash repetitions: ￼
+            Total time: ￼s
+            Hash suffix: ￼
+            Started at: ￼
+          |||,
         },
         WFSerializationType: 'WFTextTokenString',
       },
     }),
 
     sc.Action('dk.simonbs.DataJar.SetValueIntent', {
-      keyPath: {
-        Value: {
-          attachmentsByRange: {
-            '{23, 1}': sc.Ref('Device Model'),
-          },
-          string: 'Repeat Hash Signatures.￼.result',
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
+      keyPath: sc.Str(['Repeat Hash Signatures.', sc.Ref('Device Model'), '.result']),
       values: sc.Attach(sc.Ref('Result')),
     }),
 
@@ -103,7 +102,11 @@ local sc = import 'shortcuts.libsonnet';
           attachmentsByRange: {
             '{0, 1}': sc.Ref('Result'),
           },
-          string: '￼\n\nView leading digits?',
+          string: |||
+            ￼
+
+            View leading digits?
+          |||,
         },
         WFSerializationType: 'WFTextTokenString',
       },

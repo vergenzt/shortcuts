@@ -129,16 +129,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.calculateexpression', {
-      Input: {
-        Value: {
-          attachmentsByRange: {
-            '{0, 1}': sc.Ref('Endpoint Interval'),
-            '{8, 1}': sc.Ref('Endpoint Interval'),
-          },
-          string: '￼ / abs(￼)',
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
+      Input: sc.Str([sc.Ref('Endpoint Interval')]),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
@@ -161,16 +152,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.gettext', {
-      WFTextActionText: {
-        Value: {
-          attachmentsByRange: {
-            '{0, 1}': sc.Ref('Vars.Repeat Item 2'),
-            '{2, 1}': sc.Ref('If Result'),
-          },
-          string: '￼:￼',
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
+      WFTextActionText: sc.Str([sc.Ref('Vars.Repeat Item 2')]),
     }),
 
     sc.Action('is.workflow.actions.repeat.each', name='Repeat Results', params={
@@ -220,7 +202,11 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.comment', {
-      WFCommentActionText: 'Split Time splits Repeat Item\n→ create new pre-split entry\n→ update Repeat Item entry to set start time to Split Time',
+      WFCommentActionText: |||
+        Split Time splits Repeat Item
+        → create new pre-split entry
+        → update Repeat Item entry to set start time to Split Time
+      |||,
     }),
 
     sc.Action('is.workflow.actions.dictionary', name='New Entry Request', params={
@@ -375,28 +361,20 @@ local sc = import 'shortcuts.libsonnet';
             {
               WFItemType: 0,
               WFKey: sc.Str(['path']),
-              WFValue: {
-                Value: {
-                  attachmentsByRange: {
-                    '{11, 1}': {
-                      Aggrandizements: [
-                        {
-                          CoercionItemClass: 'WFDictionaryContentItem',
-                          Type: 'WFCoercionVariableAggrandizement',
-                        },
-                        {
-                          DictionaryKey: 'workspace_id',
-                          Type: 'WFDictionaryValueVariableAggrandizement',
-                        },
-                      ],
-                      Type: 'Variable',
-                      VariableName: 'Repeat Item',
-                    },
+              WFValue: sc.Str(['workspaces/', {
+                Aggrandizements: [
+                  {
+                    CoercionItemClass: 'WFDictionaryContentItem',
+                    Type: 'WFCoercionVariableAggrandizement',
                   },
-                  string: 'workspaces/￼/time_entries',
-                },
-                WFSerializationType: 'WFTextTokenString',
-              },
+                  {
+                    DictionaryKey: 'workspace_id',
+                    Type: 'WFDictionaryValueVariableAggrandizement',
+                  },
+                ],
+                Type: 'Variable',
+                VariableName: 'Repeat Item',
+              }, '/time_entries']),
             },
             {
               WFItemType: 1,

@@ -138,16 +138,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.gettext', {
-      WFTextActionText: {
-        Value: {
-          attachmentsByRange: {
-            '{0, 1}': sc.Ref('Vars.Repeat Item 2'),
-            '{3, 1}': sc.Ref('Dictionary Value'),
-          },
-          string: '￼: ￼',
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
+      WFTextActionText: sc.Str([sc.Ref('Vars.Repeat Item 2')]),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
@@ -213,7 +204,11 @@ local sc = import 'shortcuts.libsonnet';
               },
             ]),
           },
-          string: '￼\n\nhttps://￼.atlassian.net/browse/￼',
+          string: |||
+            ￼
+
+            https://￼.atlassian.net/browse/￼
+          |||,
         },
         WFSerializationType: 'WFTextTokenString',
       },
@@ -225,15 +220,7 @@ local sc = import 'shortcuts.libsonnet';
       WFContentItemPropertyName: 'Notes',
       WFInput: sc.Attach(sc.Ref('Vars.Repeat Item')),
       WFReminderContentItemIsCompleted: 1,
-      WFReminderContentItemNotes: {
-        Value: {
-          attachmentsByRange: {
-            '{1, 1}': sc.Ref('Text'),
-          },
-          string: ' ￼',
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
+      WFReminderContentItemNotes: sc.Str([' ', sc.Ref('Text')]),
     }),
 
     sc.Action('is.workflow.actions.repeat.each', {

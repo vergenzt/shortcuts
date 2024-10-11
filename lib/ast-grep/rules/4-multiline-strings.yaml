@@ -12,9 +12,15 @@ transform:
     replace:
       source: $CONTENTS
       replace: '\\n' # escaped newline
-      by: "- \n" # literal newline
+      by: "\n" # literal newline
+
+  CONTENTS_INDENTED:
+    replace:
+      source: $CONTENTS_UNESCAPED_NL
+      replace: "\n"
+      by: "\n  "
 
 fix: |-
   |||
-    $CONTENTS_UNESCAPED_NL
+    $CONTENTS_INDENTED
   |||

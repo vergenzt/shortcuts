@@ -35,15 +35,7 @@ local sc = import 'shortcuts.libsonnet';
 
     sc.Action('dk.simonbs.DataJar.InsertValueInArrayIntent', {
       insertionPoint: 'end',
-      keyPath: {
-        Value: {
-          attachmentsByRange: {
-            '{21, 1}': sc.Ref('ID'),
-          },
-          string: 'Focus Trigger.Queues.￼',
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
+      keyPath: sc.Str(['Focus Trigger.Queues.', sc.Ref('ID')]),
       values: sc.Attach(sc.Ref('Dictionary')),
     }),
 

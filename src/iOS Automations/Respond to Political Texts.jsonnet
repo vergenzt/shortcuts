@@ -18,7 +18,12 @@ local sc = import 'shortcuts.libsonnet';
               Type: 'ExtensionInput',
             },
           },
-          string: 'Is the following text message a political ad? Message contents are included after the "---". Reply only "Yes" or "No". Do not explain your answer.\n\n---\n￼',
+          string: |||
+            Is the following text message a political ad? Message contents are included after the "---". Reply only "Yes" or "No". Do not explain your answer.
+
+            ---
+            ￼
+          |||,
         },
         WFSerializationType: 'WFTextTokenString',
       },

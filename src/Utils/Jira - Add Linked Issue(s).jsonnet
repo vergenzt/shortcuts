@@ -115,15 +115,7 @@ local sc = import 'shortcuts.libsonnet';
             {
               WFItemType: 0,
               WFKey: sc.Str(['path']),
-              WFValue: {
-                Value: {
-                  attachmentsByRange: {
-                    '{6, 1}': sc.Ref('Issue key'),
-                  },
-                  string: 'issue/￼?fields=summary,parent',
-                },
-                WFSerializationType: 'WFTextTokenString',
-              },
+              WFValue: sc.Str(['issue/', sc.Ref('Issue key'), '?fields=summary,parent']),
             },
             {
               WFItemType: 0,
@@ -148,25 +140,7 @@ local sc = import 'shortcuts.libsonnet';
 
     sc.Action('is.workflow.actions.ask', name='New Issue Summary', params={
       WFAllowsMultilineText: false,
-      WFAskActionDefaultAnswer: {
-        Value: {
-          attachmentsByRange: {
-            '{0, 1}': sc.Ref('Link Type Name'),
-            '{5, 1}': sc.Ref('Origin Issue', aggs=[
-              {
-                CoercionItemClass: 'WFDictionaryContentItem',
-                Type: 'WFCoercionVariableAggrandizement',
-              },
-              {
-                DictionaryKey: 'fields.summary',
-                Type: 'WFDictionaryValueVariableAggrandizement',
-              },
-            ]),
-          },
-          string: '￼ to ￼',
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
+      WFAskActionDefaultAnswer: sc.Str([sc.Ref('Link Type Name')]),
       WFAskActionPrompt: 'What’s the connected issue summary?',
     }),
 
