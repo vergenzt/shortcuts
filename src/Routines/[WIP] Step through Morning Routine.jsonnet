@@ -80,15 +80,7 @@ local sc = import 'shortcuts.libsonnet';
         '✅ Done',
         '➡️ Defer',
       ],
-      WFMenuPrompt: {
-        Value: {
-          attachmentsByRange: {
-            '{3, 1}': sc.Ref('Vars.Reminder'),
-          },
-          string: '📥 ￼',
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
+      WFMenuPrompt: sc.Str(['📥 ', sc.Ref('Vars.Reminder')]),
     }),
 
     sc.Action('is.workflow.actions.choosefrommenu', {
@@ -120,15 +112,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.calculateexpression', name='Calculation Result', params={
-      Input: {
-        Value: {
-          attachmentsByRange: {
-            '{0, 1}': sc.Ref('Vars.Index'),
-          },
-          string: '￼+1',
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
+      Input: sc.Str([sc.Ref('Vars.Index'), '+1']),
     }),
 
     sc.Action('is.workflow.actions.setvariable', {

@@ -20,7 +20,19 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.gettext', name='Text', params={
-      WFTextActionText: "jq -c 'if type == \"array\" then .[] else . end' \\\n| parallel '\\\n  curl \\\n  --no-progress-meter \\\n  --fail-with-body \\\n  --url {[ [.base_url, .path] | join(\"/\") ]} \\\n  {[ .method // empty | \"--request\", . ]} \\\n  {[ .params // empty | to_entries | map(\"--url-query\", \"\\(.key)=\\(.value)\")[] ]} \\\n  {[ .data // empty | to_entries | map(\"--data-urlencode\", \"(\\.key)=\\(.value)\")[] ]} \\\n  {[ .form // empty | to_entries | map(\"--form-string\", \"(\\.key)=\\(.value)\")[] ]} \\\n  {[ .json // empty | \"--json\", . ]}",
+      WFTextActionText: |||
+        jq -c 'if type == \"array\" then .[] else . end' \\
+        | parallel '\\
+          curl \\
+          --no-progress-meter \\
+          --fail-with-body \\
+          --url {[ [.base_url, .path] | join(\"/\") ]} \\
+          {[ .method // empty | \"--request\", . ]} \\
+          {[ .params // empty | to_entries | map(\"--url-query\", \"\\(.key)=\\(.value)\")[] ]} \\
+          {[ .data // empty | to_entries | map(\"--data-urlencode\", \"(\\.key)=\\(.value)\")[] ]} \\
+          {[ .form // empty | to_entries | map(\"--form-string\", \"(\\.key)=\\(.value)\")[] ]} \\
+          {[ .json // empty | \"--json\", . ]}
+      |||,
     }),
 
     sc.Action('is.workflow.actions.runshellscript', name='Shell Script Result', params={

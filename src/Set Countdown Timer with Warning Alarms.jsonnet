@@ -110,15 +110,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.gettext', {
-      WFTextActionText: {
-        Value: {
-          attachmentsByRange: {
-            '{0, 1}': sc.Ref('Vars.Repeat Item'),
-          },
-          string: '￼ minutes left!',
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
+      WFTextActionText: sc.Str([sc.Ref('Vars.Repeat Item'), ' minutes left!']),
     }),
 
     sc.Action('is.workflow.actions.conditional', name='Alarm Text', params={

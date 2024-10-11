@@ -22,15 +22,7 @@ local sc = import 'shortcuts.libsonnet';
 
     sc.Action('is.workflow.actions.notification', {
       WFInput: sc.Attach(sc.Input),
-      WFNotificationActionBody: {
-        Value: {
-          attachmentsByRange: {
-            '{24, 1}': sc.Input,
-          },
-          string: 'No Github URL detected: ￼',
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
+      WFNotificationActionBody: sc.Str(['No Github URL detected: ', sc.Input]),
       WFNotificationActionSound: false,
     }),
 

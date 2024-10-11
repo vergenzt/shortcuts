@@ -71,6 +71,69 @@ rewriters:
   fix: >-
     sc.Num($VAL)
 
+- id: &7 val-string-recursive-start
+  rule:
+    pattern: >-
+      {
+        Value: {
+          attachmentsByRange: $ATTS,
+          string: '$STR',
+        },
+        WFSerializationType: 'WFTextTokenString',
+      }
+  fix: >-
+    sc.Str([ '' ], $ATTS, '$STR')
+
+- id: &8 val-string-recursive-continue
+  rule:
+    pattern: >-
+      sc.Str([ $$$ITEMS ], { $_ATT1KEY: $ATT1, $$$ATTS }, '$STR')
+  constraints:
+    STR:
+      regex: &re '(.*?)\uFFFC(.*)'
+  transform:
+    STR_PFX:
+      replace:
+        source: $STR
+        replace: *re
+        by: $1
+    STR_PFX_QUOTED:
+      replace:
+        source: $STR_PFX
+        replace: '(.+)'
+        by: ", '$1'"
+    STR_SFX:
+      replace:
+        source: $STR
+        replace: *re
+        by: $2
+  fix: >-
+    sc.Str([ $$$ITEMS $STR_PFX_QUOTED, $ATT1 ], { $$$ATTS }, '$STR_SFX')
+
+- id: &9 val-string-recursive-stop
+  rule:
+    pattern: >-
+      sc.Str([ $$$ITEMS ], {}, '$STR_SFX')
+  constraints:
+    STR_SFX:
+      not:
+        regex: *re
+  transform:
+    STR_SFX_QUOTED:
+      replace:
+        source: $STR_SFX
+        replace: '(.+)'
+        by: ", '$1'"
+  fix: >-
+    sc.Str([ $$$ITEMS $STR_SFX_QUOTED ])
+
+- id: &10 val-string-recursive-clean
+  rule:
+    pattern: sc.Str([ '', $$$ITEMS ])
+  fix: >-
+    sc.Str([ $$$ITEMS ])
+
+
 # - id: dict-item
 #   rule:
 #     pattern: >-
@@ -111,6 +174,10 @@ transform:
       - *4
       - *5
       - *6
+      - *7
+      - *8
+      - *9
+      - *10
 
 fix: >-
   $X_RE

@@ -41,15 +41,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('dk.simonbs.DataJar.SetValueIntent', {
-      keyPath: {
-        Value: {
-          attachmentsByRange: {
-            '{14, 1}': sc.Ref('Network Details'),
-          },
-          string: 'Device Labels.￼',
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
+      keyPath: sc.Str(['Device Labels.', sc.Ref('Network Details')]),
       overwriteStrategy: 'alwaysDisallow',
       valueConversionMode: 'text',
       values: sc.Attach(sc.Ref('Provided Input')),

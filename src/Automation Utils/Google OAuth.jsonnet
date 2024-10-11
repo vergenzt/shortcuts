@@ -26,34 +26,16 @@ local sc = import 'shortcuts.libsonnet';
 
     sc.Action('is.workflow.actions.output', {
       WFNoOutputSurfaceBehavior: 'Respond',
-      WFOutput: {
-        Value: {
-          attachmentsByRange: {
-            '{0, 1}': sc.Ref('existing unexpired token', aggs=[
-              {
-                CoercionItemClass: 'WFDictionaryContentItem',
-                Type: 'WFCoercionVariableAggrandizement',
-              },
-              {
-                DictionaryKey: 'token_type',
-                Type: 'WFDictionaryValueVariableAggrandizement',
-              },
-            ]),
-            '{2, 1}': sc.Ref('existing unexpired token', aggs=[
-              {
-                CoercionItemClass: 'WFDictionaryContentItem',
-                Type: 'WFCoercionVariableAggrandizement',
-              },
-              {
-                DictionaryKey: 'access_token',
-                Type: 'WFDictionaryValueVariableAggrandizement',
-              },
-            ]),
-          },
-          string: '￼ ￼',
+      WFOutput: sc.Str([sc.Ref('existing unexpired token', aggs=[
+        {
+          CoercionItemClass: 'WFDictionaryContentItem',
+          Type: 'WFCoercionVariableAggrandizement',
         },
-        WFSerializationType: 'WFTextTokenString',
-      },
+        {
+          DictionaryKey: 'token_type',
+          Type: 'WFDictionaryValueVariableAggrandizement',
+        },
+      ])]),
       WFResponse: 'Successfully authenticated to Google. ✅',
     }),
 
@@ -85,24 +67,16 @@ local sc = import 'shortcuts.libsonnet';
 
     sc.Action('ke.bou.GizmoPack.QueryJSONIntent', name='timestamped_token', params={
       input: sc.Attach(sc.Ref('refresh_result')),
-      jqQuery: {
-        Value: {
-          attachmentsByRange: {
-            '{0, 1}': sc.Ref('config', aggs=[
-              {
-                CoercionItemClass: 'WFDictionaryContentItem',
-                Type: 'WFCoercionVariableAggrandizement',
-              },
-              {
-                DictionaryKey: 'token',
-                Type: 'WFDictionaryValueVariableAggrandizement',
-              },
-            ]),
-          },
-          string: '￼ + . + { refreshed_at: (now | todate), expires_at: (now + .expires_in | todate) }',
+      jqQuery: sc.Str([sc.Ref('config', aggs=[
+        {
+          CoercionItemClass: 'WFDictionaryContentItem',
+          Type: 'WFCoercionVariableAggrandizement',
         },
-        WFSerializationType: 'WFTextTokenString',
-      },
+        {
+          DictionaryKey: 'token',
+          Type: 'WFDictionaryValueVariableAggrandizement',
+        },
+      ]), ' + . + { refreshed_at: (now | todate), expires_at: (now + .expires_in | todate) }']),
       queryType: 'jq',
     }),
 
@@ -156,15 +130,7 @@ local sc = import 'shortcuts.libsonnet';
 
     sc.Action('ke.bou.GizmoPack.QueryJSONIntent', name='auth_uri', params={
       input: sc.Attach(sc.Ref('config')),
-      jqQuery: {
-        Value: {
-          attachmentsByRange: {
-            '{29, 1}': sc.Ref('auth_params'),
-          },
-          string: '.auth_uri + "?" + (.params + ￼| del(.client_secret) | to_entries | map(map(@uri) | join("=")) | join("&"))',
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
+      jqQuery: sc.Str(['.auth_uri + "?" + (.params + ', sc.Ref('auth_params'), '| del(.client_secret) | to_entries | map(map(@uri) | join("=")) | join("&"))']),
       queryType: 'jq',
       slurp: false,
     }),
@@ -197,16 +163,7 @@ local sc = import 'shortcuts.libsonnet';
 
     sc.Action('ke.bou.GizmoPack.QueryJSONIntent', name='token_uri', params={
       input: sc.Attach(sc.Ref('config')),
-      jqQuery: {
-        Value: {
-          attachmentsByRange: {
-            '{20, 1}': sc.Ref('token_params'),
-            '{24, 1}': sc.Ref('result'),
-          },
-          string: '.token_uri + "?" + (￼ + ￼ + .params | to_entries | map(map(@uri | gsub("\\\\+"; "%20")) | join("=")) | join("&"))',
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
+      jqQuery: sc.Str(['.token_uri + "?" + (', sc.Ref('token_params')]),
       queryType: 'jq',
       slurp: false,
     }),
