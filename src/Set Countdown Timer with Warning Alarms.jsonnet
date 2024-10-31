@@ -36,7 +36,9 @@ local sc = import 'shortcuts.libsonnet';
     sc.Action('is.workflow.actions.list', name='Warnings', params={
       WFItems: [
         '2',
+        '3',
         '5',
+        '7',
         '10',
         '15',
         '20',
@@ -176,10 +178,6 @@ local sc = import 'shortcuts.libsonnet';
       GroupingIdentifier: 'F2754B79-7EB4-4008-847C-7EA8373C0F63',
       WFControlFlowMode: 0,
       WFInput: sc.Attach(sc.Ref('Selected Item')),
-    }),
-
-    sc.Action('is.workflow.actions.previewdocument', {
-      WFInput: sc.Attach(sc.Ref('Vars.Repeat Item')),
     }),
 
     sc.Action('is.workflow.actions.text.split', name='Split Text', params={

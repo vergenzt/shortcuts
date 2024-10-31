@@ -10,7 +10,7 @@ local sc = import 'shortcuts.libsonnet';
           WFDictionaryFieldValueItems: [
             {
               WFItemType: 0,
-              WFKey: sc.Str(['Nava']),
+              WFKey: sc.Str(['Tim Nava']),
               WFValue: sc.Str(['18']),
             },
             {
@@ -45,7 +45,7 @@ local sc = import 'shortcuts.libsonnet';
           WFDictionaryFieldValueItems: [
             {
               WFItemType: 0,
-              WFKey: sc.Str(['Nava']),
+              WFKey: sc.Str(['Tim Nava']),
               WFValue: sc.Str(['Nava']),
             },
             {
