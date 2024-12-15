@@ -1,0 +1,18 @@
+id: multiline-strings
+language: jsonnet
+
+rule:
+  pattern: $STR
+  kind: string
+  regex: &re '^(?<quote>.)(?<pfx>.+\\n)(?<sfx>.+).$'
+
+transform:
+  STR_SPLIT:
+    replace:
+      source: $STR
+      replace: *re
+      by: '($quote$pfx$quote + $quote$sfx$quote)'
+
+fix: |-
+  $STR_SPLIT
+  

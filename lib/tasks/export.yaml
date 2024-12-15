@@ -85,6 +85,7 @@ tasks:
   re-import:
     label: *label-by-path
     internal: true
+    interactive: true
     vars: *src-vars
     deps:
     - {vars: *pass-sc-path, task: sign}
