@@ -16,13 +16,12 @@ tasks:
 
   remove-deleted:
     desc: Removes Apple Shortcut source files that no longer exist in account.
-    interactive: true
     cmds:
     - >
       {{$src := .SOURCE_DIR}}
       find {{q $src}} -name "*.jsonnet" -type f -print0
       | { grep -zZv {{range .SHORTCUT_PATHS | splitList "\n"}} -e {{q $src}}/{{q .}} {{end}} || true ;}
-      | { xargs -0or rm -i || true ;}
+      | { xargs -0or -I '{}' rm -i '{}' || true ;}
 
   export-from-account:
     internal: true
