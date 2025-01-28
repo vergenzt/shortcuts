@@ -5,28 +5,17 @@ local sc = import 'shortcuts.libsonnet';
   WFWorkflowActions: sc.ActionsSeq([
 
     sc.Action('com.apple.mobiletimer-framework.MobileTimerIntents.MTGetAlarmsIntent', name='Alarms', params={
-      WFContentItemFilter: {
-        Value: {
-          WFActionParameterFilterPrefix: 1,
-          WFActionParameterFilterTemplates: [
-            {
-              Operator: 99,
-              Property: 'label',
-              Removable: true,
-              Values: {
-                String: 'Go to sleep',
-                Unit: 4,
-              },
-            },
-          ],
-          WFContentPredicateBoundedDate: false,
-        },
-        WFSerializationType: 'WFContentPredicateTableTemplate',
+      AppIntentDescriptor: {
+        ActionRequiresAppInstallation: true,
+        AppIntentIdentifier: 'AlarmEntity',
+        BundleIdentifier: 'com.apple.mobiletimer',
+        Name: 'Clock',
+        TeamIdentifier: '0000000000',
       },
     }),
 
     sc.Action('is.workflow.actions.repeat.each', {
-      GroupingIdentifier: '8BA939C4-1433-40FC-BBF9-9FB225DA4ABE',
+      GroupingIdentifier: 'F8CC6CBC-E25D-4ADF-AE2B-81BCD99438AA',
       WFControlFlowMode: 0,
       WFInput: sc.Attach(sc.Ref('Alarms')),
     }),
@@ -38,12 +27,13 @@ local sc = import 'shortcuts.libsonnet';
         Name: 'Clock',
         TeamIdentifier: '0000000000',
       },
+      ShowWhenRun: false,
       alarm: sc.Attach(sc.Ref('Vars.Repeat Item')),
       state: 0,
     }),
 
     sc.Action('is.workflow.actions.repeat.each', {
-      GroupingIdentifier: '8BA939C4-1433-40FC-BBF9-9FB225DA4ABE',
+      GroupingIdentifier: 'F8CC6CBC-E25D-4ADF-AE2B-81BCD99438AA',
       WFControlFlowMode: 2,
     }),
 
@@ -53,7 +43,7 @@ local sc = import 'shortcuts.libsonnet';
   WFWorkflowHasShortcutInputVariables: false,
   WFWorkflowIcon: {
     WFWorkflowIconGlyphNumber: 61440,
-    WFWorkflowIconStartColor: -1448498689,
+    WFWorkflowIconStartColor: -615917313,
   },
   WFWorkflowImportQuestions: [],
   WFWorkflowInputContentItemClasses: [
@@ -80,7 +70,5 @@ local sc = import 'shortcuts.libsonnet';
   WFWorkflowMinimumClientVersion: 900,
   WFWorkflowMinimumClientVersionString: '900',
   WFWorkflowOutputContentItemClasses: [],
-  WFWorkflowTypes: [
-    'Watch',
-  ],
+  WFWorkflowTypes: [],
 }

@@ -20,6 +20,58 @@ local sc = import 'shortcuts.libsonnet';
                 },
               },
             },
+            {
+              Operator: 4,
+              Property: 'Is Completed',
+              Removable: true,
+              Values: {
+                Bool: {
+                  Value: false,
+                  WFSerializationType: 'WFBooleanSubstitutableState',
+                },
+              },
+            },
+          ],
+          WFContentPredicateBoundedDate: false,
+        },
+        WFSerializationType: 'WFContentPredicateTableTemplate',
+      },
+    }),
+
+    sc.Action('is.workflow.actions.repeat.each', {
+      GroupingIdentifier: 'C50725B5-1A7B-4FBE-80AC-28DFADDBD8DF',
+      WFControlFlowMode: 0,
+      WFInput: sc.Attach(sc.Ref('Reminders')),
+    }),
+
+    sc.Action('is.workflow.actions.setters.reminders', {
+      Mode: 'Set',
+      WFContentItemPropertyName: 'Is Completed',
+      WFInput: sc.Attach(sc.Ref('Vars.Repeat Item')),
+      WFReminderContentItemIsCompleted: 1,
+    }),
+
+    sc.Action('is.workflow.actions.repeat.each', {
+      GroupingIdentifier: 'C50725B5-1A7B-4FBE-80AC-28DFADDBD8DF',
+      WFControlFlowMode: 2,
+    }),
+
+    sc.Action('is.workflow.actions.filter.reminders', name='Reminders', params={
+      WFContentItemFilter: {
+        Value: {
+          WFActionParameterFilterPrefix: 1,
+          WFActionParameterFilterTemplates: [
+            {
+              Operator: 4,
+              Property: 'List',
+              Removable: true,
+              Values: {
+                Enumeration: {
+                  Value: 'Morning Routine',
+                  WFSerializationType: 'WFStringSubstitutableState',
+                },
+              },
+            },
           ],
           WFContentPredicateBoundedDate: false,
         },

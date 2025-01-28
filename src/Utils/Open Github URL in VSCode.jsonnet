@@ -4,9 +4,13 @@ local sc = import 'shortcuts.libsonnet';
   WFQuickActionSurfaces: [],
   WFWorkflowActions: sc.ActionsSeq([
 
+    sc.Action('is.workflow.actions.gettext', name='Github URL Regex', params={
+      WFTextActionText: '(?:https://)?github.com/(?:\\w+)/(\\w+)/(?:blob|tree)/(?:[0-9a-f]+/)([^#]*)(?:#L(\\d+).*)?',
+    }),
+
     sc.Action('is.workflow.actions.text.match', name='Matches', params={
       WFMatchTextCaseSensitive: false,
-      WFMatchTextPattern: 'https://github.com/(?:\\w+)/(?:\\w+)/(?:blob|tree)/(?:[0-9a-f]+/)(.*)',
+      WFMatchTextPattern: sc.Str([sc.Ref('Github URL Regex')]),
       text: sc.Str([sc.Input]),
     }),
 
@@ -33,31 +37,38 @@ local sc = import 'shortcuts.libsonnet';
       WFControlFlowMode: 2,
     }),
 
-    sc.Action('is.workflow.actions.text.match.getgroup', name='Text', params={
-      WFGroupIndex: '1',
-      matches: sc.Attach(sc.Ref('Matches')),
+    sc.Action('is.workflow.actions.file', name='Code Folder', params={
+      WFFile: {
+        displayName: 'code',
+        fileLocation: {
+          WFFileLocationType: 'Home',
+          relativeSubpath: 'code',
+        },
+        filename: 'code',
+      },
     }),
 
-    sc.Action('is.workflow.actions.setvariable', {
-      WFInput: sc.Attach(sc.Ref('Text')),
-      WFVariableName: 'path',
+    sc.Action('is.workflow.actions.text.replace', name='VSCode URL', params={
+      WFInput: sc.Str([sc.Input]),
+      WFReplaceTextCaseSensitive: false,
+      WFReplaceTextFind: sc.Str([sc.Ref('Github URL Regex')]),
+      WFReplaceTextRegularExpression: true,
+      WFReplaceTextReplace: sc.Str(['vscode://file/', sc.Ref('Code Folder', aggs=[
+        {
+          PropertyName: 'File Path',
+          PropertyUserInfo: {},
+          Type: 'WFPropertyVariableAggrandizement',
+        },
+      ]), '/$1/$2:$3']),
     }),
 
-    sc.Action('is.workflow.actions.notification', {
-      WFInput: sc.Attach(sc.Input),
-      WFNotificationActionBody: sc.Str([sc.Ref('Vars.path')]),
-      WFNotificationActionSound: false,
-    }),
-
-    sc.Action('is.workflow.actions.output', {
-      WFNoOutputSurfaceBehavior: 'Copy to Clipboard',
-      WFOutput: sc.Str([sc.Ref('Vars.path')]),
-      WFResponse: sc.Str([sc.Ref('Text')]),
+    sc.Action('is.workflow.actions.openurl', {
+      WFInput: sc.Attach(sc.Ref('VSCode URL')),
     }),
 
   ]),
   WFWorkflowClientVersion: '2607.1',
-  WFWorkflowHasOutputFallback: true,
+  WFWorkflowHasOutputFallback: false,
   WFWorkflowHasShortcutInputVariables: true,
   WFWorkflowIcon: {
     WFWorkflowIconGlyphNumber: 61440,
@@ -73,9 +84,7 @@ local sc = import 'shortcuts.libsonnet';
     Name: 'WFWorkflowNoInputBehaviorGetClipboard',
     Parameters: {},
   },
-  WFWorkflowOutputContentItemClasses: [
-    'WFStringContentItem',
-  ],
+  WFWorkflowOutputContentItemClasses: [],
   WFWorkflowTypes: [
     'QuickActions',
     'ReceivesOnScreenContent',

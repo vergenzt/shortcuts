@@ -4,6 +4,32 @@ local sc = import 'shortcuts.libsonnet';
   WFQuickActionSurfaces: [],
   WFWorkflowActions: sc.ActionsSeq([
 
+    sc.Action('is.workflow.actions.dnd.getfocus', name='Current Focus'),
+
+    sc.Action('is.workflow.actions.conditional', {
+      GroupingIdentifier: '6FD56B0C-8DAD-4E1D-8D81-7EDD616A30E2',
+      WFCondition: 4,
+      WFConditionalActionString: 'Do Not Disturb',
+      WFControlFlowMode: 0,
+      WFInput: {
+        Type: 'Variable',
+        Variable: sc.Attach(sc.Ref('Current Focus', aggs=[
+          {
+            PropertyName: 'Name',
+            PropertyUserInfo: 'WFItemName',
+            Type: 'WFPropertyVariableAggrandizement',
+          },
+        ])),
+      },
+    }),
+
+    sc.Action('is.workflow.actions.exit'),
+
+    sc.Action('is.workflow.actions.conditional', {
+      GroupingIdentifier: '6FD56B0C-8DAD-4E1D-8D81-7EDD616A30E2',
+      WFControlFlowMode: 2,
+    }),
+
     sc.Action('is.workflow.actions.dictionary', name='Dictionary', params={
       WFItems: {
         Value: {
@@ -27,6 +53,11 @@ local sc = import 'shortcuts.libsonnet';
               WFItemType: 0,
               WFKey: sc.Str(['Health Reminders']),
               WFValue: sc.Str(['0']),
+            },
+            {
+              WFItemType: 3,
+              WFKey: sc.Str(['Calendar']),
+              WFValue: sc.Str(['18']),
             },
           ],
         },
@@ -63,6 +94,11 @@ local sc = import 'shortcuts.libsonnet';
               WFKey: sc.Str(['Health Reminders']),
               WFValue: sc.Str(['Meds']),
             },
+            {
+              WFItemType: 0,
+              WFKey: sc.Str(['Calendar']),
+              WFValue: sc.Str(['Mass.gov']),
+            },
           ],
         },
         WFSerializationType: 'WFDictionaryFieldValue',
@@ -90,6 +126,13 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('com.apple.mobiletimer-framework.MobileTimerIntents.MTGetAlarmsIntent', name='Alarm', params={
+      AppIntentDescriptor: {
+        ActionRequiresAppInstallation: true,
+        AppIntentIdentifier: 'AlarmEntity',
+        BundleIdentifier: 'com.apple.mobiletimer',
+        Name: 'Clock',
+        TeamIdentifier: '0000000000',
+      },
       ShowWhenRun: false,
       WFContentItemFilter: {
         Value: {
@@ -198,10 +241,22 @@ local sc = import 'shortcuts.libsonnet';
               Property: 'Start Date',
               Removable: false,
               Values: {
-                AnotherDate: sc.Attach(sc.Ref('24 Hours Out')),
-                Date: sc.Attach(sc.Ref('4 Hours Ago')),
-                Number: 7,
-                Unit: 16,
+                AnotherDate: {
+                  Value: sc.Attach(sc.Ref('24 Hours Out')),
+                  WFSerializationType: 'WFDateSubstitutableState',
+                },
+                Date: {
+                  Value: sc.Attach(sc.Ref('4 Hours Ago')),
+                  WFSerializationType: 'WFDateSubstitutableState',
+                },
+                Number: {
+                  Value: 7,
+                  WFSerializationType: 'WFNumberStringSubstitutableState',
+                },
+                Unit: {
+                  Value: 16,
+                  WFSerializationType: 'WFCalendarUnitSubstitutableState',
+                },
               },
             },
             {
@@ -209,7 +264,10 @@ local sc = import 'shortcuts.libsonnet';
               Property: 'Is All Day',
               Removable: true,
               Values: {
-                Bool: false,
+                Bool: {
+                  Value: false,
+                  WFSerializationType: 'WFBooleanSubstitutableState',
+                },
               },
             },
           ],
