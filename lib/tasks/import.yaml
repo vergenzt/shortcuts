@@ -7,7 +7,7 @@ vars:
 tasks:
   all:
     desc: Imports all Apple Shortcuts from your account into `{{.SOURCE_DIR}}`.
-    deps:
+    cmds:
     - for: { var: SHORTCUT_PATHS, split: "\n", as: SHORTCUT_PATH }
       task: default
       vars:
@@ -16,13 +16,16 @@ tasks:
 
   remove-deleted:
     desc: Removes Apple Shortcut source files that no longer exist in account.
-    interactive: true
+    preconditions:
+    - sh: >
+        test -z "$(git status --porcelain)" ||
+        { echo "Error: Working tree is not clean. Commit or stash changes first." >&2; exit 1; }
     cmds:
     - >
       {{$src := .SOURCE_DIR}}
       find {{q $src}} -name "*.jsonnet" -type f -print0
       | { grep -zZv {{range .SHORTCUT_PATHS | splitList "\n"}} -e {{q $src}}/{{q .}} {{end}} || true ;}
-      | { xargs -0or rm -i || true ;}
+      | { xargs -0r rm || true ;}
 
   export-from-account:
     internal: true
