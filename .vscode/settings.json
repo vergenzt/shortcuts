@@ -1,5 +1,8 @@
 {
   "jsonnet.libPaths": [
     "lib/jsonnet"
+  ],
+  "jsonnet.languageServer.jpath": [
+    "lib/jsonnet"
   ]
 }
