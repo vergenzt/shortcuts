@@ -65,9 +65,22 @@ tasks:
       | jq --sort-keys '(.WFWorkflowTypes, .WFWorkflowOutputContentItemClasses) |= sort'
       > {{q .BUILD_DIR}}/{{q .SHORTCUT_PATH}}-in.json
 
+  init-sg-lang:
+    internal: true
+    run: once
+    status:
+    - ! test -e lib/ast-grep/custom-language/tree-sitter-jsonnet.so
+    cmds:
+    - >
+      cd lib/ast-grep/custom-language/tree-sitter-jsonnet
+      && npm install
+      && TREE_SITTER_LIBDIR=build
+         npm test
+
   default:
     desc: Imports a single Apple Shortcut at {{"{{.SHORTCUT_PATH}}"}} into `{{.SOURCE_DIR}}`.
     deps:
+    - task: init-sg-lang
     - task: extract
       vars:
         SHORTCUT_PATH: '{{.SHORTCUT_PATH}}'
@@ -90,7 +103,7 @@ tasks:
         find lib/ast-grep/rules/{{.PHASE}}-*
         -exec sg scan --update-all --rule='{}' {{q .SRC}} \;
         -exec jsonnetfmt -i {{q .SRC}} \;
-        ;
+        || break;
         next_sha=$(sha1sum {{q .SRC}} | awk '{print $1}');
         if printf '%s\n' "${seen[@]}" | grep -Fq "$next_sha"; then
         break;
