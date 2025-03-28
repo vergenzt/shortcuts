@@ -20,7 +20,7 @@ transform:
       replace: "\n"
       by: "\n  "
 
-fix: |-
+fix: |
   |||
     $CONTENTS_INDENTED
   |||
