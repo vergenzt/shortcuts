@@ -40,21 +40,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.gettext', name='Text', params={
-      WFTextActionText: {
-        Value: {
-          attachmentsByRange: {
-            '{56, 1}': sc.Ref('Bio Purpose'),
-            '{98, 1}': sc.Ref('Combined Factoids List'),
-          },
-          string: |||
-            Please generate a short bio with the following purpose: ￼
-
-            Please include the following factoids:
-            ￼
-          |||,
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
+      WFTextActionText: sc.Str(['Please generate a short bio with the following purpose: ', sc.Ref('Bio Purpose')]),
     }),
 
     sc.Action('is.workflow.actions.urlencode', name='URL Encoded Text', params={
@@ -70,7 +56,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
   ]),
-  WFWorkflowClientVersion: '2607.1',
+  WFWorkflowClientVersion: '2302.0.4',
   WFWorkflowHasOutputFallback: false,
   WFWorkflowHasShortcutInputVariables: false,
   WFWorkflowIcon: {

@@ -58,7 +58,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
   ]),
-  WFWorkflowClientVersion: '2607.1',
+  WFWorkflowClientVersion: '2302.0.4',
   WFWorkflowHasOutputFallback: false,
   WFWorkflowHasShortcutInputVariables: true,
   WFWorkflowIcon: {

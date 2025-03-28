@@ -241,22 +241,8 @@ local sc = import 'shortcuts.libsonnet';
               Property: 'Start Date',
               Removable: false,
               Values: {
-                AnotherDate: {
-                  Value: sc.Attach(sc.Ref('24 Hours Out')),
-                  WFSerializationType: 'WFDateSubstitutableState',
-                },
-                Date: {
-                  Value: sc.Attach(sc.Ref('4 Hours Ago')),
-                  WFSerializationType: 'WFDateSubstitutableState',
-                },
-                Number: {
-                  Value: 7,
-                  WFSerializationType: 'WFNumberStringSubstitutableState',
-                },
-                Unit: {
-                  Value: 16,
-                  WFSerializationType: 'WFCalendarUnitSubstitutableState',
-                },
+                AnotherDate: sc.Attach(sc.Ref('24 Hours Out')),
+                Date: sc.Attach(sc.Ref('4 Hours Ago')),
               },
             },
             {
@@ -264,10 +250,7 @@ local sc = import 'shortcuts.libsonnet';
               Property: 'Is All Day',
               Removable: true,
               Values: {
-                Bool: {
-                  Value: false,
-                  WFSerializationType: 'WFBooleanSubstitutableState',
-                },
+                Bool: false,
               },
             },
           ],
@@ -701,11 +684,11 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
   ]),
-  WFWorkflowClientVersion: '2607.1',
+  WFWorkflowClientVersion: '2302.0.4',
   WFWorkflowHasOutputFallback: false,
   WFWorkflowHasShortcutInputVariables: false,
   WFWorkflowIcon: {
-    WFWorkflowIconGlyphNumber: 61440,
+    WFWorkflowIconGlyphNumber: 59846,
     WFWorkflowIconStartColor: 431817727,
   },
   WFWorkflowImportQuestions: [],

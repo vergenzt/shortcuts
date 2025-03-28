@@ -140,19 +140,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.gettext', name='Params Setup', params={
-      WFTextActionText: {
-        Value: {
-          attachmentsByRange: {
-            '{88, 1}': sc.Ref('Combined Text'),
-          },
-          string: |||
-            create temp table params (name text primary key, value any);
-
-            insert into params values ￼;
-          |||,
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
+      WFTextActionText: sc.Str(['create temp table params (name text primary key, value any);\n\ninsert into params values ', sc.Ref('Combined Text'), ';']),
     }),
 
     sc.Action('is.workflow.actions.dictionary', name='Dictionary', params={
@@ -192,19 +180,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.gettext', {
-      WFTextActionText: {
-        Value: {
-          attachmentsByRange: {
-            '{0, 1}': sc.Ref('Params Setup'),
-            '{2, 1}': sc.Ref('Formatted Query'),
-          },
-          string: |||
-            ￼
-            ￼
-          |||,
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
+      WFTextActionText: sc.Str([sc.Ref('Params Setup')]),
     }),
 
     sc.Action('is.workflow.actions.conditional', {
@@ -254,7 +230,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
   ]),
-  WFWorkflowClientVersion: '2607.1',
+  WFWorkflowClientVersion: '2302.0.4',
   WFWorkflowHasOutputFallback: false,
   WFWorkflowHasShortcutInputVariables: true,
   WFWorkflowIcon: {

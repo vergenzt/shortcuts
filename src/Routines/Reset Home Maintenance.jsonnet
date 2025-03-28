@@ -15,7 +15,7 @@ local sc = import 'shortcuts.libsonnet';
               Removable: true,
               Values: {
                 Enumeration: {
-                  Value: 'Morning Routine',
+                  Value: 'Home Maintenance',
                   WFSerializationType: 'WFStringSubstitutableState',
                 },
               },
@@ -67,7 +67,7 @@ local sc = import 'shortcuts.libsonnet';
               Removable: true,
               Values: {
                 Enumeration: {
-                  Value: 'Morning Routine',
+                  Value: 'Home Maintenance',
                   WFSerializationType: 'WFStringSubstitutableState',
                 },
               },

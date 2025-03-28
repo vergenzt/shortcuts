@@ -34,17 +34,7 @@ local sc = import 'shortcuts.libsonnet';
         sc.Str([sc.Ref('Input')]),
         sc.Str([sc.Ref('Num Repetitions')]),
       ],
-      code: |||
-        import sys, ast, hashlib
-
-        data = sys.argv[1]
-        n = int(ast.literal_eval(sys.argv[2]))
-
-        for i in range(n):
-          data = hashlib.sha1(data.encode()).hexdigest()
-
-        print(data)
-      |||,
+      code: 'import sys, ast, hashlib\n\ndata = sys.argv[1]\nn = int(ast.literal_eval(sys.argv[2]))\n\nfor i in range(n):\n  data = hashlib.sha1(data.encode()).hexdigest()\n\nprint(data)',
       input: '',
     }),
 
@@ -66,29 +56,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.gettext', name='Result', params={
-      WFTextActionText: {
-        Value: {
-          attachmentsByRange: {
-            '{18, 1}': sc.Ref('Num Repetitions'),
-            '{32, 1}': sc.Ref('Time Between Dates'),
-            '{48, 1}': sc.Ref('Hash Suffix'),
-            '{62, 1}': sc.Ref('Date', aggs=[
-              {
-                Type: 'WFDateFormatVariableAggrandizement',
-                WFDateFormatStyle: 'ISO 8601',
-                WFISO8601IncludeTime: true,
-              },
-            ]),
-          },
-          string: |||
-            Hash repetitions: ￼
-            Total time: ￼s
-            Hash suffix: ￼
-            Started at: ￼
-          |||,
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
+      WFTextActionText: sc.Str(['Hash repetitions: ', sc.Ref('Num Repetitions'), '\nTotal time: ', sc.Ref('Time Between Dates'), 's\nHash suffix: ', sc.Ref('Hash Suffix')]),
     }),
 
     sc.Action('dk.simonbs.DataJar.SetValueIntent', {
@@ -97,19 +65,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.gettext', name='Prompt', params={
-      WFTextActionText: {
-        Value: {
-          attachmentsByRange: {
-            '{0, 1}': sc.Ref('Result'),
-          },
-          string: |||
-            ￼
-
-            View leading digits?
-          |||,
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
+      WFTextActionText: sc.Str([sc.Ref('Result'), '\n\nView leading digits?']),
     }),
 
     sc.Action('is.workflow.actions.choosefrommenu', {
@@ -155,7 +111,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
   ]),
-  WFWorkflowClientVersion: '2607.1',
+  WFWorkflowClientVersion: '2302.0.4',
   WFWorkflowHasOutputFallback: false,
   WFWorkflowHasShortcutInputVariables: false,
   WFWorkflowIcon: {

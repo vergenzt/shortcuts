@@ -202,11 +202,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.comment', {
-      WFCommentActionText: |||
-        Split Time splits Repeat Item
-        → create new pre-split entry
-        → update Repeat Item entry to set start time to Split Time
-      |||,
+      WFCommentActionText: 'Split Time splits Repeat Item\n→ create new pre-split entry\n→ update Repeat Item entry to set start time to Split Time',
     }),
 
     sc.Action('is.workflow.actions.dictionary', name='New Entry Request', params={
@@ -517,7 +513,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
   ]),
-  WFWorkflowClientVersion: '2607.1',
+  WFWorkflowClientVersion: '2302.0.4',
   WFWorkflowHasOutputFallback: false,
   WFWorkflowHasShortcutInputVariables: false,
   WFWorkflowIcon: {

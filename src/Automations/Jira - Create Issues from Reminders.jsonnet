@@ -178,40 +178,21 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.gettext', name='Text', params={
-      WFTextActionText: {
-        Value: {
-          attachmentsByRange: {
-            '{0, 1}': {
-              Aggrandizements: [
-                {
-                  PropertyName: 'Notes',
-                  Type: 'WFPropertyVariableAggrandizement',
-                },
-              ],
-              Type: 'Variable',
-              VariableName: 'Repeat Item',
-            },
-            '{11, 1}': sc.Ref('Issue', aggs=[
-              {
-                PropertyName: 'site',
-                Type: 'WFPropertyVariableAggrandizement',
-              },
-            ]),
-            '{34, 1}': sc.Ref('Issue', aggs=[
-              {
-                PropertyName: 'key',
-                Type: 'WFPropertyVariableAggrandizement',
-              },
-            ]),
+      WFTextActionText: sc.Str([{
+        Aggrandizements: [
+          {
+            PropertyName: 'Notes',
+            Type: 'WFPropertyVariableAggrandizement',
           },
-          string: |||
-            ￼
-
-            https://￼.atlassian.net/browse/￼
-          |||,
+        ],
+        Type: 'Variable',
+        VariableName: 'Repeat Item',
+      }, '\n\nhttps://', sc.Ref('Issue', aggs=[
+        {
+          PropertyName: 'site',
+          Type: 'WFPropertyVariableAggrandizement',
         },
-        WFSerializationType: 'WFTextTokenString',
-      },
+      ])]),
     }),
 
     sc.Action('is.workflow.actions.setters.reminders', {
@@ -229,7 +210,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
   ]),
-  WFWorkflowClientVersion: '2607.1',
+  WFWorkflowClientVersion: '2302.0.4',
   WFWorkflowHasOutputFallback: false,
   WFWorkflowHasShortcutInputVariables: false,
   WFWorkflowIcon: {

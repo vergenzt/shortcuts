@@ -4,24 +4,38 @@ local sc = import 'shortcuts.libsonnet';
   WFQuickActionSurfaces: [],
   WFWorkflowActions: sc.ActionsSeq([
 
-    sc.Action('dk.simonbs.DataJar.GetValueIntent', name='Value', params={
-      keyPath: 'Created Colorful.Amanda',
+    sc.Action('is.workflow.actions.dictionary', name='Dictionary', params={
+      WFItems: {
+        Value: {
+          WFDictionaryFieldValueItems: [
+            {
+              WFItemType: 0,
+              WFKey: sc.Str(['val']),
+              WFValue: sc.Str([sc.Input]),
+            },
+          ],
+        },
+        WFSerializationType: 'WFDictionaryFieldValue',
+      },
     }),
 
-    sc.Action('is.workflow.actions.openurl', {
-      WFInput: sc.Attach(sc.Ref('Value')),
+    sc.Action('ke.bou.GizmoPack.QueryJSONIntent', {
+      input: sc.Attach(sc.Ref('Dictionary')),
+      jqQuery: '.val | @sh',
+      queryType: 'jq',
     }),
 
   ]),
   WFWorkflowClientVersion: '2302.0.4',
   WFWorkflowHasOutputFallback: false,
-  WFWorkflowHasShortcutInputVariables: false,
+  WFWorkflowHasShortcutInputVariables: true,
   WFWorkflowIcon: {
     WFWorkflowIconGlyphNumber: 61440,
-    WFWorkflowIconStartColor: -12365313,
+    WFWorkflowIconStartColor: -615917313,
   },
   WFWorkflowImportQuestions: [],
   WFWorkflowInputContentItemClasses: [
+    'WFAppContentItem',
     'WFAppStoreAppContentItem',
     'WFArticleContentItem',
     'WFContactContentItem',
@@ -41,8 +55,14 @@ local sc = import 'shortcuts.libsonnet';
     'WFStringContentItem',
     'WFURLContentItem',
   ],
-  WFWorkflowMinimumClientVersion: 900,
-  WFWorkflowMinimumClientVersionString: '900',
+  WFWorkflowMinimumClientVersion: 1113,
+  WFWorkflowMinimumClientVersionString: '1113',
+  WFWorkflowNoInputBehavior: {
+    Name: 'WFWorkflowNoInputBehaviorAskForInput',
+    Parameters: {
+      ItemClass: 'WFStringContentItem',
+    },
+  },
   WFWorkflowOutputContentItemClasses: [],
   WFWorkflowTypes: [],
 }

@@ -4,31 +4,37 @@ local sc = import 'shortcuts.libsonnet';
   WFQuickActionSurfaces: [],
   WFWorkflowActions: sc.ActionsSeq([
 
-    sc.Action('is.workflow.actions.takephoto', name='Photo', params={
-      WFCameraCaptureShowPreview: true,
+    sc.Action('com.apple.mobiletimer-framework.MobileTimerIntents.MTGetAlarmsIntent', name='Alarms', params={
+      AppIntentDescriptor: {
+        ActionRequiresAppInstallation: true,
+        AppIntentIdentifier: 'AlarmEntity',
+        BundleIdentifier: 'com.apple.mobiletimer',
+        Name: 'Clock',
+        TeamIdentifier: '0000000000',
+      },
     }),
 
-    sc.Action('is.workflow.actions.extracttextfromimage', name='Text from Image', params={
-      WFImage: sc.Attach(sc.Ref('Photo')),
+    sc.Action('is.workflow.actions.repeat.each', {
+      GroupingIdentifier: 'F8CC6CBC-E25D-4ADF-AE2B-81BCD99438AA',
+      WFControlFlowMode: 0,
+      WFInput: sc.Attach(sc.Ref('Alarms')),
     }),
 
-    sc.Action('is.workflow.actions.text.match', name='Matches', params={
-      WFMatchTextPattern: 'CARD-(\\d+)',
-      text: sc.Str([sc.Ref('Text from Image')]),
+    sc.Action('com.apple.mobiletimer-framework.MobileTimerIntents.MTToggleAlarmIntent', {
+      AppIntentDescriptor: {
+        AppIntentIdentifier: 'ToggleAlarmIntent',
+        BundleIdentifier: 'com.apple.mobiletimer',
+        Name: 'Clock',
+        TeamIdentifier: '0000000000',
+      },
+      ShowWhenRun: false,
+      alarm: sc.Attach(sc.Ref('Vars.Repeat Item')),
+      state: 0,
     }),
 
-    sc.Action('is.workflow.actions.runworkflow', {
-      WFInput: sc.Attach(sc.Ref('Matches')),
-    }),
-
-    sc.Action('com.atlassian.jira.app.GetIssueIntent', name='Issue', params={
-      account: 'vergenzt@gmail.com',
-      issueKey: sc.Str([sc.Ref('Matches')]),
-      site: 'vergenz',
-    }),
-
-    sc.Action('com.atlassian.jira.app.OpenIssueIntent', {
-      issue: sc.Attach(sc.Ref('Issue')),
+    sc.Action('is.workflow.actions.repeat.each', {
+      GroupingIdentifier: 'F8CC6CBC-E25D-4ADF-AE2B-81BCD99438AA',
+      WFControlFlowMode: 2,
     }),
 
   ]),
@@ -41,6 +47,7 @@ local sc = import 'shortcuts.libsonnet';
   },
   WFWorkflowImportQuestions: [],
   WFWorkflowInputContentItemClasses: [
+    'WFAppContentItem',
     'WFAppStoreAppContentItem',
     'WFArticleContentItem',
     'WFContactContentItem',
