@@ -34,7 +34,7 @@ local sc = import 'shortcuts.libsonnet';
         WFSerializationType: 'WFContentPredicateTableTemplate',
       },
       WFContentItemLimitEnabled: true,
-      WFContentItemLimitNumber: 1,
+      WFContentItemLimitNumber: 5,
     }),
 
     sc.Action('is.workflow.actions.repeat.each', {
