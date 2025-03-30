@@ -108,12 +108,12 @@ local sc = import 'shortcuts.libsonnet';
       WFControlFlowMode: 2,
     }),
 
-    sc.Action('is.workflow.actions.gettext', name='Text', params={
+    sc.Action('is.workflow.actions.gettext', name='Two Newlines', params={
       WFTextActionText: '\n\n',
     }),
 
     sc.Action('is.workflow.actions.text.combine', name='Combined Text', params={
-      WFTextCustomSeparator: sc.Str([sc.Ref('Text')]),
+      WFTextCustomSeparator: sc.Str([sc.Ref('Two Newlines')]),
       WFTextSeparator: 'Custom',
       text: sc.Attach(sc.Ref('Repeat Results')),
     }),
@@ -335,42 +335,6 @@ local sc = import 'shortcuts.libsonnet';
       WFTextActionText: sc.Str(['---\n', sc.Ref('Vars.Content')]),
     }),
 
-    sc.Action('dk.simonbs.DataJar.GetValueIntent', name='Vault ID', params={
-      keyPath: 'Obsidian.vault-ids.personal',
-    }),
-
-    sc.Action('is.workflow.actions.runworkflow', name='Inbox', params={
-      WFInput: sc.Attach(sc.Ref('Vault ID')),
-      WFWorkflow: {
-        isSelf: false,
-        workflowIdentifier: '8CE27821-6B97-4281-8779-6CA395A5C84F',
-        workflowName: 'Get Obsidian Inbox',
-      },
-      WFWorkflowName: 'Get Obsidian Inbox',
-    }),
-
-    sc.Action('is.workflow.actions.runworkflow', name='Vault Path', params={
-      WFInput: sc.Attach(sc.Ref('Vault ID')),
-      WFWorkflow: {
-        isSelf: false,
-        workflowIdentifier: 'F9603A60-27B0-4FA8-AAE3-D958D9F7121E',
-        workflowName: 'Get Obsidian Vault Path',
-      },
-      WFWorkflowName: 'Get Obsidian Vault Path',
-    }),
-
-    sc.Action('is.workflow.actions.file.createfolder', name='Inbox Folder', params={
-      WFFilePath: sc.Str([sc.Ref('Vault Path')]),
-      WFFolder: {
-        displayName: 'Macintosh HD',
-        fileLocation: {
-          WFFileLocationType: 'Absolute',
-          relativeSubpath: '/',
-        },
-        filename: '/',
-      },
-    }),
-
     sc.Action('is.workflow.actions.gettext', name='New Note Filename', params={
       WFTextActionText: sc.Str(['@', {
         Aggrandizements: [
@@ -393,8 +357,15 @@ local sc = import 'shortcuts.libsonnet';
 
     sc.Action('is.workflow.actions.documentpicker.save', name='Saved File', params={
       WFAskWhereToSave: false,
-      WFFileDestinationPath: sc.Str(['/', sc.Ref('New Note Filename')]),
-      WFFolder: sc.Attach(sc.Ref('Inbox Folder')),
+      WFFileDestinationPath: sc.Str([sc.Ref('New Note Filename')]),
+      WFFolder: {
+        displayName: 'Inbox',
+        fileLocation: {
+          WFFileLocationType: 'Home',
+          relativeSubpath: 'brain/Inbox',
+        },
+        filename: 'Inbox',
+      },
       WFInput: sc.Attach(sc.Ref('New Note File Body')),
     }),
 
@@ -404,27 +375,72 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.url', name='Obsidian URL', params={
-      WFURLActionURL: sc.Str(['obsidian://open?vault=', sc.Ref('Vault ID')]),
+      WFURLActionURL: sc.Str(['obsidian://open?vault=brain&file=', sc.Ref('New Note Filename')]),
     }),
 
-    sc.Action('is.workflow.actions.gettext', name='New Reminder Notes', params={
-      WFTextActionText: sc.Str([{
-        Aggrandizements: [
-          {
-            PropertyName: 'Notes',
-            Type: 'WFPropertyVariableAggrandizement',
-          },
-        ],
+    sc.Action('is.workflow.actions.list', name='List', params={
+      WFItems: [
+        {
+          WFItemType: 0,
+          WFValue: sc.Str([{
+            Aggrandizements: [
+              {
+                PropertyName: 'Notes',
+                Type: 'WFPropertyVariableAggrandizement',
+              },
+            ],
+            Type: 'Variable',
+            VariableName: 'Repeat Item',
+          }]),
+        },
+        {
+          WFItemType: 0,
+          WFValue: sc.Str([sc.Ref('Obsidian URL')]),
+        },
+      ],
+    }),
+
+    sc.Action('is.workflow.actions.repeat.each', {
+      GroupingIdentifier: 'A8687361-9785-48CE-83F9-0C7E2B08D4E0',
+      WFControlFlowMode: 0,
+      WFInput: sc.Attach(sc.Ref('List')),
+    }),
+
+    sc.Action('is.workflow.actions.conditional', {
+      GroupingIdentifier: '6B3C089D-98D0-499C-A3DD-D1F928C7C56B',
+      WFCondition: 100,
+      WFControlFlowMode: 0,
+      WFInput: {
         Type: 'Variable',
-        VariableName: 'Repeat Item',
-      }]),
+        Variable: sc.Attach(sc.Ref('Vars.Repeat Item 2')),
+      },
+    }),
+
+    sc.Action('is.workflow.actions.getvariable', {
+      WFVariable: sc.Attach(sc.Ref('Vars.Repeat Item 2')),
+    }),
+
+    sc.Action('is.workflow.actions.conditional', {
+      GroupingIdentifier: '6B3C089D-98D0-499C-A3DD-D1F928C7C56B',
+      WFControlFlowMode: 2,
+    }),
+
+    sc.Action('is.workflow.actions.repeat.each', name='Repeat Results', params={
+      GroupingIdentifier: 'A8687361-9785-48CE-83F9-0C7E2B08D4E0',
+      WFControlFlowMode: 2,
+    }),
+
+    sc.Action('is.workflow.actions.text.combine', name='Reminder Notes with Obsidian URL', params={
+      WFTextCustomSeparator: sc.Str([sc.Ref('Two Newlines')]),
+      WFTextSeparator: 'Custom',
+      text: sc.Attach(sc.Ref('Repeat Results')),
     }),
 
     sc.Action('is.workflow.actions.setters.reminders', name='Edited Reminder', params={
       Mode: 'Set',
       WFContentItemPropertyName: 'Notes',
       WFInput: sc.Attach(sc.Ref('Vars.Repeat Item')),
-      WFReminderContentItemNotes: sc.Str([sc.Ref('New Reminder Notes')]),
+      WFReminderContentItemNotes: sc.Str([sc.Ref('Reminder Notes with Obsidian URL')]),
     }),
 
     sc.Action('is.workflow.actions.setters.reminders', {
@@ -476,5 +492,7 @@ local sc = import 'shortcuts.libsonnet';
   WFWorkflowMinimumClientVersion: 1106,
   WFWorkflowMinimumClientVersionString: '1106',
   WFWorkflowOutputContentItemClasses: [],
-  WFWorkflowTypes: [],
+  WFWorkflowTypes: [
+    'Watch',
+  ],
 }
