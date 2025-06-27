@@ -4,14 +4,19 @@ local sc = import 'shortcuts.libsonnet';
   WFQuickActionSurfaces: [],
   WFWorkflowActions: sc.ActionsSeq([
 
+    sc.Action('is.workflow.actions.filter.calendarevents', {
+      WFContentItemInputParameter: sc.Attach(sc.Input),
+      WFContentItemLimitEnabled: true,
+      WFContentItemLimitNumber: 1,
+    }),
 
   ]),
-  WFWorkflowClientVersion: '2607.1',
+  WFWorkflowClientVersion: '2302.0.4',
   WFWorkflowHasOutputFallback: false,
-  WFWorkflowHasShortcutInputVariables: false,
+  WFWorkflowHasShortcutInputVariables: true,
   WFWorkflowIcon: {
     WFWorkflowIconGlyphNumber: 61440,
-    WFWorkflowIconStartColor: -1448498689,
+    WFWorkflowIconStartColor: -20702977,
   },
   WFWorkflowImportQuestions: [],
   WFWorkflowInputContentItemClasses: [

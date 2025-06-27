@@ -33,7 +33,7 @@ local sc = import 'shortcuts.libsonnet';
         },
         WFSerializationType: 'WFContentPredicateTableTemplate',
       },
-      WFContentItemLimitEnabled: true,
+      WFContentItemLimitEnabled: false,
       WFContentItemLimitNumber: 5,
     }),
 
@@ -196,7 +196,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.gettext', name='Reminder URL Meta', params={
-      WFTextActionText: sc.Str(['import_source_url: ', sc.Ref('Reminder URL')]),
+      WFTextActionText: sc.Str(['reminder_url: ', sc.Ref('Reminder URL')]),
     }),
 
     sc.Action('is.workflow.actions.appendvariable', {
@@ -313,13 +313,18 @@ local sc = import 'shortcuts.libsonnet';
       WFInput: sc.Attach(sc.Ref('Vars.Repeat Item')),
     }),
 
-    sc.Action('is.workflow.actions.gettext', {
-      WFTextActionText: sc.Str(['reminder_location_address: ', sc.Ref('Reminder Location'), '\nreminder_location_geo: geo:', sc.Ref('Reminder Location', aggs=[
+    sc.Action('is.workflow.actions.gettext', name='Text', params={
+      WFTextActionText: sc.Str(['reminder_location_geo: geo:', sc.Ref('Reminder Location', aggs=[
         {
           PropertyName: 'Latitude',
           Type: 'WFPropertyVariableAggrandizement',
         },
       ])]),
+    }),
+
+    sc.Action('is.workflow.actions.appendvariable', {
+      WFInput: sc.Attach(sc.Ref('Text')),
+      WFVariableName: 'Frontmatter',
     }),
 
     sc.Action('is.workflow.actions.conditional', {
@@ -361,7 +366,10 @@ local sc = import 'shortcuts.libsonnet';
       WFFolder: {
         displayName: 'Inbox',
         fileLocation: {
-          WFFileLocationType: 'Home',
+          WFFileLocationType: 'LocalStorage',
+          appContainerBundleIdentifier: 'md.obsidian',
+          crossDeviceItemID: 'deviceSpecific:CB3CF8B9-7192-4227-9973-42070585C008:fp:/VRZ969UewqEk1hn_bxR0mIxWUDXsI0TA5Y_+yJ15_Vs=/com.apple.FileProvider.LocalStorage//fid=16742731',
+          fileProviderDomainID: 'com.apple.FileProvider.LocalStorage',
           relativeSubpath: 'brain/Inbox',
         },
         filename: 'Inbox',

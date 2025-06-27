@@ -23,6 +23,16 @@ local sc = import 'shortcuts.libsonnet';
       },
     }),
 
+    sc.Action('is.workflow.actions.runworkflow', {
+      WFInput: sc.Attach(sc.Ref('Current Focus')),
+      WFWorkflow: {
+        isSelf: false,
+        workflowIdentifier: '7E7C366E-33CB-4140-BA10-E70031A1AFDD',
+        workflowName: 'Turn Off All Alarms',
+      },
+      WFWorkflowName: 'Turn Off All Alarms',
+    }),
+
     sc.Action('is.workflow.actions.exit'),
 
     sc.Action('is.workflow.actions.conditional', {
@@ -47,7 +57,7 @@ local sc = import 'shortcuts.libsonnet';
             {
               WFItemType: 0,
               WFKey: sc.Str(['Routine']),
-              WFValue: sc.Str(['0']),
+              WFValue: sc.Str(['20']),
             },
             {
               WFItemType: 0,
@@ -691,12 +701,23 @@ local sc = import 'shortcuts.libsonnet';
     WFWorkflowIconGlyphNumber: 59846,
     WFWorkflowIconStartColor: 431817727,
   },
-  WFWorkflowImportQuestions: [],
+  WFWorkflowImportQuestions: [
+    {
+      ActionIndex: 5,
+      Category: 'Parameter',
+      ParameterKey: 'WFItems',
+      Text: 'Map calendar names to alarm lead times in minutes',
+    },
+    {
+      ActionIndex: 7,
+      Category: 'Parameter',
+      ParameterKey: 'WFItems',
+      Text: 'Calendar labels for alarm names',
+    },
+  ],
   WFWorkflowInputContentItemClasses: [],
   WFWorkflowMinimumClientVersion: 900,
   WFWorkflowMinimumClientVersionString: '900',
   WFWorkflowOutputContentItemClasses: [],
-  WFWorkflowTypes: [
-    'Watch',
-  ],
+  WFWorkflowTypes: [],
 }

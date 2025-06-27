@@ -18,9 +18,38 @@ local sc = import 'shortcuts.libsonnet';
       keyPath: 'Obsidian.vault-ids',
     }),
 
+    sc.Action('is.workflow.actions.count', name='Count', params={
+      Input: sc.Attach(sc.Ref('Keys')),
+    }),
+
+    sc.Action('is.workflow.actions.conditional', {
+      GroupingIdentifier: '142EBE4F-E7A8-4440-BE33-A4418469082E',
+      WFCondition: 2,
+      WFControlFlowMode: 0,
+      WFInput: {
+        Type: 'Variable',
+        Variable: sc.Attach(sc.Ref('Count')),
+      },
+      WFNumberValue: '1',
+    }),
+
     sc.Action('is.workflow.actions.choosefromlist', {
       WFChooseFromListActionPrompt: 'Which Obsidian vault?',
       WFInput: sc.Attach(sc.Ref('Keys')),
+    }),
+
+    sc.Action('is.workflow.actions.conditional', {
+      GroupingIdentifier: '142EBE4F-E7A8-4440-BE33-A4418469082E',
+      WFControlFlowMode: 1,
+    }),
+
+    sc.Action('is.workflow.actions.getvariable', {
+      WFVariable: sc.Attach(sc.Ref('Keys')),
+    }),
+
+    sc.Action('is.workflow.actions.conditional', {
+      GroupingIdentifier: '142EBE4F-E7A8-4440-BE33-A4418469082E',
+      WFControlFlowMode: 2,
     }),
 
     sc.Action('is.workflow.actions.conditional', name='Shortcut Input', params={
@@ -65,10 +94,6 @@ local sc = import 'shortcuts.libsonnet';
         Type: 'Variable',
         Variable: sc.Attach(sc.Ref('Device Model')),
       },
-    }),
-
-    sc.Action('is.workflow.actions.alert', {
-      WFAlertActionMessage: 'This shortcut does not yet work on mobile!',
     }),
 
     sc.Action('is.workflow.actions.file', {

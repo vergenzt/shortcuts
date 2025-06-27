@@ -4,36 +4,27 @@ local sc = import 'shortcuts.libsonnet';
   WFQuickActionSurfaces: [],
   WFWorkflowActions: sc.ActionsSeq([
 
-    sc.Action('is.workflow.actions.file', name='File', params={
-      WFFile: {
-        displayName: 'brain',
-        fileLocation: {
-          WFFileLocationType: 'LocalStorage',
-          appContainerBundleIdentifier: 'md.obsidian',
-          crossDeviceItemID: 'deviceSpecific:CB3CF8B9-7192-4227-9973-42070585C008:fp:/gRNihUUV8bXXEqkmVzRgIuZLozlkwwRifiVVznDPS2Y=/com.apple.FileProvider.LocalStorage//fid=13252279',
-          fileProviderDomainID: 'com.apple.FileProvider.LocalStorage',
-          relativeSubpath: 'brain',
-        },
-        filename: 'brain',
-      },
+    sc.Action('is.workflow.actions.number.random', name='Random Number', params={
+      WFRandomNumberMaximum: '49151',
+      WFRandomNumberMinimum: '1024',
     }),
 
-    sc.Action('is.workflow.actions.openin', {
-      WFInput: sc.Attach(sc.Ref('File')),
-      WFOpenInAppIdentifier: 'com.apple.DocumentsApp',
-      WFSelectedApp: {
-        BundleIdentifier: 'com.apple.DocumentsApp',
-        Name: 'Files',
-        TeamIdentifier: '0000000000',
-      },
+    sc.Action('is.workflow.actions.setclipboard', {
+      WFInput: sc.Attach(sc.Ref('Random Number')),
+    }),
+
+    sc.Action('is.workflow.actions.output', {
+      WFNoOutputSurfaceBehavior: 'Respond',
+      WFOutput: sc.Str([sc.Ref('Random Number')]),
+      WFResponse: sc.Str(['Copied ', sc.Ref('Random Number'), ' to clipboard.']),
     }),
 
   ]),
   WFWorkflowClientVersion: '2302.0.4',
-  WFWorkflowHasOutputFallback: false,
+  WFWorkflowHasOutputFallback: true,
   WFWorkflowHasShortcutInputVariables: false,
   WFWorkflowIcon: {
-    WFWorkflowIconGlyphNumber: 59737,
+    WFWorkflowIconGlyphNumber: 61440,
     WFWorkflowIconStartColor: 2071128575,
   },
   WFWorkflowImportQuestions: [],
@@ -60,6 +51,8 @@ local sc = import 'shortcuts.libsonnet';
   ],
   WFWorkflowMinimumClientVersion: 900,
   WFWorkflowMinimumClientVersionString: '900',
-  WFWorkflowOutputContentItemClasses: [],
+  WFWorkflowOutputContentItemClasses: [
+    'WFNumberContentItem',
+  ],
   WFWorkflowTypes: [],
 }

@@ -14,7 +14,28 @@ local sc = import 'shortcuts.libsonnet';
       },
     }),
 
-    sc.Action('is.workflow.actions.filter.reminders', name='Reminders'),
+    sc.Action('is.workflow.actions.filter.reminders', name='Reminders', params={
+      WFContentItemFilter: {
+        Value: {
+          WFActionParameterFilterPrefix: 1,
+          WFActionParameterFilterTemplates: [
+            {
+              Operator: 4,
+              Property: 'List',
+              Removable: true,
+              Values: {
+                Enumeration: {
+                  Value: 'Reminders',
+                  WFSerializationType: 'WFStringSubstitutableState',
+                },
+              },
+            },
+          ],
+          WFContentPredicateBoundedDate: false,
+        },
+        WFSerializationType: 'WFContentPredicateTableTemplate',
+      },
+    }),
 
     sc.Action('is.workflow.actions.choosefromlist', {
       WFChooseFromListActionPrompt: 'Select a reminder to get the UUID from.',
@@ -36,14 +57,9 @@ local sc = import 'shortcuts.libsonnet';
       WFName: 'reminder.txt',
     }),
 
-    sc.Action('is.workflow.actions.text.split', name='Split Text', params={
-      'Show-text': true,
-      text: sc.Attach(sc.Ref('Renamed Item')),
-    }),
-
     sc.Action('is.workflow.actions.text.match', name='Matches', params={
-      WFMatchTextPattern: 'UID:(.*)\\n',
-      text: sc.Str([sc.Ref('Split Text')]),
+      WFMatchTextPattern: '\\nUID:(.*)\\n',
+      text: sc.Str([sc.Ref('Renamed Item')]),
     }),
 
     sc.Action('is.workflow.actions.text.match.getgroup', name='UUID', params={

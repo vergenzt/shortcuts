@@ -4,6 +4,10 @@ local sc = import 'shortcuts.libsonnet';
   WFQuickActionSurfaces: [],
   WFWorkflowActions: sc.ActionsSeq([
 
+    sc.Action('is.workflow.actions.setclipboard', {
+      WFInput: sc.Attach(sc.Input),
+    }),
+
     sc.Action('is.workflow.actions.gettext', name='Content', params={
       WFTextActionText: sc.Str(['---\nupdated_at: ', {
         Aggrandizements: [
@@ -70,15 +74,19 @@ local sc = import 'shortcuts.libsonnet';
       WFCommentActionText: '^always seems to always set the file extension to .txt\n\nThis works around that:',
     }),
 
-    sc.Action('is.workflow.actions.file.rename', name='File', params={
+    sc.Action('is.workflow.actions.file.rename', {
       WFFile: sc.Attach(sc.Ref('Saved File')),
       WFNewFilename: sc.Str([sc.Ref('New File Name')]),
     }),
 
+    sc.Action('is.workflow.actions.url', name='URL', params={
+      WFURLActionURL: sc.Str(['obsidian://open?vault=brain&file=', sc.Ref('New File Name')]),
+    }),
+
     sc.Action('is.workflow.actions.output', {
       WFNoOutputSurfaceBehavior: 'Respond',
-      WFOutput: sc.Str([sc.Ref('File')]),
-      WFResponse: sc.Str(['Okay. Added "', sc.Input]),
+      WFOutput: sc.Str([sc.Ref('URL')]),
+      WFResponse: sc.Str(['Added "', sc.Ref('Inbox Path')]),
     }),
 
   ]),
@@ -120,7 +128,7 @@ local sc = import 'shortcuts.libsonnet';
     },
   },
   WFWorkflowOutputContentItemClasses: [
-    'WFGenericFileContentItem',
+    'WFURLContentItem',
   ],
   WFWorkflowTypes: [
     'ActionExtension',
