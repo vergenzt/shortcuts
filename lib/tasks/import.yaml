@@ -61,7 +61,7 @@ tasks:
       mv "$tmp"/Shortcut.wflow {{q .BUILD_DIR}}/{{q .SHORTCUT_PATH}}.wflow
       &&
       cat {{q .BUILD_DIR}}/{{q .SHORTCUT_PATH}}.wflow
-      | plutil -convert json -o - -
+      | plist-to-json
       | jq --sort-keys '(.WFWorkflowTypes, .WFWorkflowOutputContentItemClasses) |= sort'
       > {{q .BUILD_DIR}}/{{q .SHORTCUT_PATH}}-in.json
 

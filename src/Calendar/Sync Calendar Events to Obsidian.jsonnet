@@ -7,11 +7,11 @@ local sc = import 'shortcuts.libsonnet';
     sc.Action('is.workflow.actions.filter.calendarevents', {
       WFContentItemInputParameter: sc.Attach(sc.Input),
       WFContentItemLimitEnabled: true,
-      WFContentItemLimitNumber: 1,
+      WFContentItemLimitNumber: 1.0,
     }),
 
   ]),
-  WFWorkflowClientVersion: '2302.0.4',
+  WFWorkflowClientVersion: '3607.0.2',
   WFWorkflowHasOutputFallback: false,
   WFWorkflowHasShortcutInputVariables: true,
   WFWorkflowIcon: {

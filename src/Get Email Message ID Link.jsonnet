@@ -4,42 +4,46 @@ local sc = import 'shortcuts.libsonnet';
   WFQuickActionSurfaces: [],
   WFWorkflowActions: sc.ActionsSeq([
 
-    sc.Action('is.workflow.actions.getarticle', name='Article', params={
-      WFWebPage: sc.Str([sc.Input]),
+    sc.Action('is.workflow.actions.urlencode', name='URL Encoded Text', params={
+      WFInput: sc.Str([sc.Input]),
     }),
 
     sc.Action('is.workflow.actions.gettext', name='Text', params={
-      WFTextActionText: sc.Str([sc.Ref('Article', aggs=[
-        {
-          PropertyName: 'Title',
-          Type: 'WFPropertyVariableAggrandizement',
-        },
-      ])]),
+      WFTextActionText: sc.Str(['message://', sc.Ref('URL Encoded Text')]),
     }),
 
     sc.Action('is.workflow.actions.setclipboard', {
       WFInput: sc.Attach(sc.Ref('Text')),
     }),
 
+    sc.Action('is.workflow.actions.output', {
+      WFNoOutputSurfaceBehavior: 'Copy to Clipboard',
+      WFOutput: sc.Str([sc.Ref('Text')]),
+      WFResponse: sc.Str([sc.Ref('Text')]),
+    }),
+
   ]),
   WFWorkflowClientVersion: '3607.0.2',
-  WFWorkflowHasOutputFallback: false,
+  WFWorkflowHasOutputFallback: true,
   WFWorkflowHasShortcutInputVariables: true,
   WFWorkflowIcon: {
-    WFWorkflowIconGlyphNumber: 59791,
-    WFWorkflowIconStartColor: 255,
+    WFWorkflowIconGlyphNumber: 62041,
+    WFWorkflowIconStartColor: 3031607807,
   },
   WFWorkflowImportQuestions: [],
   WFWorkflowInputContentItemClasses: [
+    'WFStringContentItem',
     'WFURLContentItem',
   ],
   WFWorkflowMinimumClientVersion: 1113,
   WFWorkflowMinimumClientVersionString: '1113',
   WFWorkflowNoInputBehavior: {
-    Name: 'WFWorkflowNoInputBehaviorShowError',
+    Name: 'WFWorkflowNoInputBehaviorGetClipboard',
     Parameters: {},
   },
-  WFWorkflowOutputContentItemClasses: [],
+  WFWorkflowOutputContentItemClasses: [
+    'WFStringContentItem',
+  ],
   WFWorkflowTypes: [
     'ActionExtension',
     'Watch',

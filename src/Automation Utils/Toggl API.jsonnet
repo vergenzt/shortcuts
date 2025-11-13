@@ -148,12 +148,12 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
   ]),
-  WFWorkflowClientVersion: '2302.0.4',
+  WFWorkflowClientVersion: '3607.0.2',
   WFWorkflowHasOutputFallback: false,
   WFWorkflowHasShortcutInputVariables: true,
   WFWorkflowIcon: {
     WFWorkflowIconGlyphNumber: 61440,
-    WFWorkflowIconStartColor: 4271458815,
+    WFWorkflowIconStartColor: -23508481,
   },
   WFWorkflowImportQuestions: [],
   WFWorkflowInputContentItemClasses: [

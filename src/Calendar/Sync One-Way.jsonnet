@@ -19,7 +19,7 @@ local sc = import 'shortcuts.libsonnet';
     sc.Action('is.workflow.actions.repeat.count', {
       GroupingIdentifier: '1DD36090-71D0-4A2E-8298-27600CDC450F',
       WFControlFlowMode: 0,
-      WFRepeatCount: 2,
+      WFRepeatCount: 2.0,
     }),
 
     sc.Action('is.workflow.actions.setvariable', {
@@ -106,7 +106,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
   ]),
-  WFWorkflowClientVersion: '2302.0.4',
+  WFWorkflowClientVersion: '3607.0.2',
   WFWorkflowHasOutputFallback: false,
   WFWorkflowHasShortcutInputVariables: true,
   WFWorkflowIcon: {
