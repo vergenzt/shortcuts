@@ -181,36 +181,68 @@
     WFSerializationType: 'WFTextTokenAttachment',
   },
 
-  // Cond: {
-  // 	LessThan:       0,
-  // 	LessOrEqual:    1,
-  // 	GreaterThan:    2,
-  // 	GreaterOrEqual: 3,
-  //   Is:             4,
-  // 	Not:            5,
-  // 	BeginsWith:     8,
-  // 	EndsWith:       9,
-  // 	Contains:       99,
-  // 	Any:            100,
-  // 	Empty:          101,
-  // 	DoesNotContain: 999,
-  // 	Between:        1003,
-  // },
+  Cond:: {
+    "<": 0,
+    "≤": 1,
+    ">": 2,
+    "≥": 3,
+    "is": 4,
+    "is not": 5,
+    "begins with": 8,
+    "ends with": 9,
+    "contains": 99,
+    "has any value": 100,
+    "has no value": 101,
+    "does not contain": 999,
+    "is between": 1003,  // dates! includes additional WFDate and WFAnotherDate params
+  },
 
-  // If(input, cond, then_acts, else_acts=[], name=null):: (
+  ControlFlowMode:: {
+    Begin: 0,
+    Else: 1,
+    End: 2,
+  },
 
-  //   sc.Action('is.workflow.actions.conditional', {
-  //     GroupingIdentifier: '...',
-  //     WFCondition: 100,
-  //     WFControlFlowMode: 0,
-  //     WFInput: {
-  //       Type: 'Variable',
-  //       Variable: {
-  //         Value: sc.Ref(state, 'Matches'),
-  //         WFSerializationType: 'WFTextTokenAttachment',
-  //       },
-  //     },
-  //   }),
+  If(input, cond, comp=null, then_, else_=[], name=null):: std._flattenDeepArray(
+    local id = $._uuid('conditional', std.manifestJsonMinified([input, cond, comp, then_, else_]));
+    [
+
+      $.Action('is.workflow.actions.conditional', (
+        {
+          GroupingIdentifier: id,
+          WFControlFlowMode: $.ControlFlowMode.Begin,
+          WFCondition: cond_id,
+          WFInput: input,
+        }
+        + (
+          if cond == $.Cond["is between"] then
+            std.assertTrue(std.isArray(comp) && std.length(comp) == 2) &&
+            { WFDate: comp[0], WFAnotherDate: comp[1] }
+          else if cond then
+            { WFConditionalActionString: comp }
+          else
+            {}
+        )
+      ),
+
+      then_,
+
+      if else_ then [
+        $.Action('is.workflow.actions.conditional', {
+          GroupingIdentifier: id,
+          WFControlFlowMode: $.ControlFlowMode.Else,
+        }),
+        else_,
+      ]
+      else [],
+
+      $.Action('is.workflow.actions.conditional', {
+        GroupingIdentifier: id,
+        WFControlFlowMode: $.ControlFlowMode.End,
+      }),
+
+    ]
+  ),
 
 
   // ),

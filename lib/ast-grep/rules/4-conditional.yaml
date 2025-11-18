@@ -1,0 +1,80 @@
+id: conditional
+language: jsonnet
+
+utils:
+
+  if:
+    any:
+    - pattern: sc.Action('is.workflow.actions.conditional', $IFPARAMS)
+    - pattern: sc.Action('is.workflow.actions.conditional', name=$IFNAME, params=$IFPARAMS)
+    has:
+      stopBy: end
+      all:
+      - pattern: $IFPARAMS
+      - has: { pattern: { selector: field, context: '{ GroupingIdentifier: $ID }' } }
+      - has: { pattern: { selector: field, context: '{ WFControlFlowMode: 0 }' } }
+      - has: { pattern: { selector: field, context: '{ WFCondition: $COND }' } }
+      - any: [ has: { pattern: { selector: field, context: '{ WFConditionalActionString: $COMP }' } }, pattern: $_ ]
+
+  else:
+    pattern: >-
+      sc.Action('is.workflow.actions.conditional', {
+        GroupingIdentifier: $ID,
+        WFControlFlowMode: 1,
+      })
+
+  endif:
+    pattern: >-
+      sc.Action('is.workflow.actions.conditional', {
+        GroupingIdentifier: $ID,
+        WFControlFlowMode: 2,
+      })
+
+rule:
+  pattern: sc.ActionSeq($ACTIONS)
+  has:
+    stopBy: end
+    matches: if
+
+transform:
+  ACTIONS_WITH_IFS:
+    rewrite:
+      source: $ACTIONS
+      rewriters:
+      - rewrite-if
+      - rewrite-else
+      - rewrite-endif
+
+rewriters:
+
+- name: rewrite-if
+  rule:
+    matches: if
+  fix: >-
+    sc.If($INPUT, $COND, )
+
+  - has: 
+      pattern: $IF
+      any:
+      - pattern: sc.Action('is.workflow.actions.conditional', $PARAMS)
+      - pattern: sc.Action('is.workflow.actions.conditional', name=$NAME, params=$PARAMS)
+      has:
+        stopBy: end
+        all:
+        - pattern: $PARAMS
+        - pattern: >-
+            {
+              GroupingIdentifier: $ID,
+              WFCondition: $COND,
+              WFConditionalActionString: $COMP,
+              WFControlFlowMode: 0,
+              WFInput: $INPUT,
+            }
+          - pattern: >-
+              {
+                GroupingIdentifier: $ID,
+                WFCondition: $COND,
+                WFControlFlowMode: 0,
+                WFInput: $INPUT,
+              }
+
