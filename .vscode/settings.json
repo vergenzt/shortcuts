@@ -4,5 +4,11 @@
   ],
   "jsonnet.languageServer.jpath": [
     "lib/jsonnet"
-  ]
+  ],
+  "yaml.schemas": {
+    "https://raw.githubusercontent.com/ast-grep/ast-grep/refs/heads/main/schemas/rule.json": [
+      "lib/ast-grep/rules/*.yaml",
+      "lib/ast-grep/rules/*.yml",
+    ]
+  }
 }

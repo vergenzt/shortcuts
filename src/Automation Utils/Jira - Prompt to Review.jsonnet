@@ -8,43 +8,40 @@ local sc = import 'shortcuts.libsonnet';
       WFDeviceDetail: 'Device Model',
     }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '02B87892-2116-4AE0-8BE0-9FAC4433A3B7',
-      WFCondition: 4,
-      WFConditionalActionString: 'Mac',
-      WFControlFlowMode: 0,
-      WFInput: {
+    sc.If_(sc.Cond(
+      {
         Type: 'Variable',
         Variable: sc.Attach(sc.Ref('Device Model')),
       },
-    }),
+      'is',
+      {
+        WFConditionalActionString: 'Mac',
+      }
+    )).Then_([
 
-    sc.Action('is.workflow.actions.url', name='URL', params={
-      WFURLActionURL: sc.Str(['https://vergenz.atlassian.net/browse/', {
-        Aggrandizements: [
-          {
-            CoercionItemClass: 'WFDictionaryContentItem',
-            Type: 'WFCoercionVariableAggrandizement',
-          },
-          {
-            DictionaryKey: 'issue.key',
-            Type: 'WFDictionaryValueVariableAggrandizement',
-          },
-        ],
-        Type: 'ExtensionInput',
-      }]),
-    }),
+      sc.Action('is.workflow.actions.url', name='URL', params={
+        WFURLActionURL: sc.Str(['https://vergenz.atlassian.net/browse/', {
+          Aggrandizements: [
+            {
+              CoercionItemClass: 'WFDictionaryContentItem',
+              Type: 'WFCoercionVariableAggrandizement',
+            },
+            {
+              DictionaryKey: 'issue.key',
+              Type: 'WFDictionaryValueVariableAggrandizement',
+            },
+          ],
+          Type: 'ExtensionInput',
+        }]),
+      }),
 
-    sc.Action('is.workflow.actions.openurl', {
-      WFInput: sc.Attach(sc.Ref('URL')),
-    }),
+      sc.Action('is.workflow.actions.openurl', {
+        WFInput: sc.Attach(sc.Ref('URL')),
+      }),
 
-    sc.Action('is.workflow.actions.exit'),
+      sc.Action('is.workflow.actions.exit'),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '02B87892-2116-4AE0-8BE0-9FAC4433A3B7',
-      WFControlFlowMode: 2,
-    }),
+    ]).EndIf_(),
 
     sc.Action('is.workflow.actions.dictionary', name='Dictionary', params={
       WFItems: {
@@ -93,59 +90,51 @@ local sc = import 'shortcuts.libsonnet';
       WFInput: sc.Attach(sc.Input),
     }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '6C91002C-93EC-4B86-8427-F5C7EE4EC8EF',
-      WFCondition: 100,
-      WFControlFlowMode: 0,
-      WFInput: {
+    sc.If_(sc.Cond(
+      {
         Type: 'Variable',
         Variable: sc.Attach(sc.Ref('Do you want to review?')),
       },
-    }),
+      'has any value'
+    )).Then_([
 
-    sc.Action('is.workflow.actions.list', name='List', params={
-      WFItems: [
-        'Yes',
-        'No',
-      ],
-    }),
+      sc.Action('is.workflow.actions.list', name='List', params={
+        WFItems: [
+          'Yes',
+          'No',
+        ],
+      }),
 
-    sc.Action('is.workflow.actions.choosefromlist', name='Chosen Item', params={
-      WFChooseFromListActionPrompt: sc.Str([sc.Ref('Do you want to review?'), ' [', sc.Ref('Get Issue Result', aggs=[
+      sc.Action('is.workflow.actions.choosefromlist', name='Chosen Item', params={
+        WFChooseFromListActionPrompt: sc.Str([sc.Ref('Do you want to review?'), ' [', sc.Ref('Get Issue Result', aggs=[
+          {
+            CoercionItemClass: 'WFDictionaryContentItem',
+            Type: 'WFCoercionVariableAggrandizement',
+          },
+          {
+            DictionaryKey: 'key',
+            Type: 'WFDictionaryValueVariableAggrandizement',
+          },
+        ])]),
+        WFInput: sc.Attach(sc.Ref('List')),
+      }),
+
+      sc.If_(sc.Cond(
         {
-          CoercionItemClass: 'WFDictionaryContentItem',
-          Type: 'WFCoercionVariableAggrandizement',
+          Type: 'Variable',
+          Variable: sc.Attach(sc.Ref('Chosen Item')),
         },
+        'is',
         {
-          DictionaryKey: 'key',
-          Type: 'WFDictionaryValueVariableAggrandizement',
-        },
-      ])]),
-      WFInput: sc.Attach(sc.Ref('List')),
-    }),
+          WFConditionalActionString: 'No',
+        }
+      )).Then_([
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '6900C0B4-3E34-4A84-9B58-320F50893101',
-      WFCondition: 4,
-      WFConditionalActionString: 'No',
-      WFControlFlowMode: 0,
-      WFInput: {
-        Type: 'Variable',
-        Variable: sc.Attach(sc.Ref('Chosen Item')),
-      },
-    }),
+        sc.Action('is.workflow.actions.exit'),
 
-    sc.Action('is.workflow.actions.exit'),
+      ]).EndIf_(),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '6900C0B4-3E34-4A84-9B58-320F50893101',
-      WFControlFlowMode: 2,
-    }),
-
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '6C91002C-93EC-4B86-8427-F5C7EE4EC8EF',
-      WFControlFlowMode: 2,
-    }),
+    ]).EndIf_(),
 
     sc.Action('is.workflow.actions.alert', {
       WFAlertActionMessage: sc.Str(['Press OK to review the issue in Jira, ', {
@@ -221,36 +210,31 @@ local sc = import 'shortcuts.libsonnet';
       WFInput: sc.Attach(sc.Input),
     }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: 'AE978332-38D0-467A-BA94-F5D047219387',
-      WFCondition: 100,
-      WFControlFlowMode: 0,
-      WFInput: {
+    sc.If_(sc.Cond(
+      {
         Type: 'Variable',
         Variable: sc.Attach(sc.Ref('filter')),
       },
-    }),
+      'has any value'
+    )).Then_([
 
-    sc.Action('is.workflow.actions.gettext', {
-      WFTextActionText: sc.Str(['?filter=', {
-        Aggrandizements: [
-          {
-            CoercionItemClass: 'WFDictionaryContentItem',
-            Type: 'WFCoercionVariableAggrandizement',
-          },
-          {
-            DictionaryKey: 'filter.id',
-            Type: 'WFDictionaryValueVariableAggrandizement',
-          },
-        ],
-        Type: 'ExtensionInput',
-      }]),
-    }),
+      sc.Action('is.workflow.actions.gettext', {
+        WFTextActionText: sc.Str(['?filter=', {
+          Aggrandizements: [
+            {
+              CoercionItemClass: 'WFDictionaryContentItem',
+              Type: 'WFCoercionVariableAggrandizement',
+            },
+            {
+              DictionaryKey: 'filter.id',
+              Type: 'WFDictionaryValueVariableAggrandizement',
+            },
+          ],
+          Type: 'ExtensionInput',
+        }]),
+      }),
 
-    sc.Action('is.workflow.actions.conditional', name='If Result', params={
-      GroupingIdentifier: 'AE978332-38D0-467A-BA94-F5D047219387',
-      WFControlFlowMode: 2,
-    }),
+    ]).EndIf_(name='If Result'),
 
     sc.Action('is.workflow.actions.url', name='URL', params={
       WFURLActionURL: sc.Str([sc.Ref('Browse URL')]),
@@ -265,22 +249,17 @@ local sc = import 'shortcuts.libsonnet';
       WFInput: sc.Attach(sc.Input),
     }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '2DD74F72-F042-47FF-8317-8749CC2A2A5A',
-      WFCondition: 101,
-      WFControlFlowMode: 0,
-      WFInput: {
+    sc.If_(sc.Cond(
+      {
         Type: 'Variable',
         Variable: sc.Attach(sc.Ref('skip_return')),
       },
-    }),
+      'does not have any value'
+    )).Then_([
 
-    sc.Action('is.workflow.actions.waittoreturn'),
+      sc.Action('is.workflow.actions.waittoreturn'),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '2DD74F72-F042-47FF-8317-8749CC2A2A5A',
-      WFControlFlowMode: 2,
-    }),
+    ]).EndIf_(),
 
   ]),
   WFWorkflowClientVersion: '3607.0.2',

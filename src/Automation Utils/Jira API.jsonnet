@@ -46,52 +46,46 @@ local sc = import 'shortcuts.libsonnet';
       WFInput: sc.Attach(sc.Ref('Split Text')),
     }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: 'B8B9F0F6-0B7F-4C5D-9FF3-1256A1C48B93',
-      WFCondition: 4,
-      WFConditionalActionString: sc.Str([sc.Ref('Error Nonce')]),
-      WFControlFlowMode: 0,
-      WFInput: {
+    sc.If_(sc.Cond(
+      {
         Type: 'Variable',
         Variable: sc.Attach(sc.Ref('Item from List')),
       },
-    }),
+      'is',
+      {
+        WFConditionalActionString: sc.Str([sc.Ref('Error Nonce')]),
+      }
+    )).Then_([
 
-    sc.Action('is.workflow.actions.getitemfromlist', name='Error Context', params={
-      WFInput: sc.Attach(sc.Ref('Split Text')),
-      WFItemIndex: '2',
-      WFItemRangeStart: '2',
-      WFItemSpecifier: 'Item At Index',
-    }),
+      sc.Action('is.workflow.actions.getitemfromlist', name='Error Context', params={
+        WFInput: sc.Attach(sc.Ref('Split Text')),
+        WFItemIndex: '2',
+        WFItemRangeStart: '2',
+        WFItemSpecifier: 'Item At Index',
+      }),
 
-    sc.Action('is.workflow.actions.getitemfromlist', name='Error Message Lines', params={
-      WFInput: sc.Attach(sc.Ref('Split Text')),
-      WFItemRangeStart: '3',
-      WFItemSpecifier: 'Items in Range',
-    }),
+      sc.Action('is.workflow.actions.getitemfromlist', name='Error Message Lines', params={
+        WFInput: sc.Attach(sc.Ref('Split Text')),
+        WFItemRangeStart: '3',
+        WFItemSpecifier: 'Items in Range',
+      }),
 
-    sc.Action('is.workflow.actions.text.combine', name='Error Message', params={
-      text: sc.Attach(sc.Ref('Error Message Lines')),
-    }),
+      sc.Action('is.workflow.actions.text.combine', name='Error Message', params={
+        text: sc.Attach(sc.Ref('Error Message Lines')),
+      }),
 
-    sc.Action('is.workflow.actions.alert', {
-      WFAlertActionMessage: sc.Str([sc.Ref('Error Message')]),
-      WFAlertActionTitle: sc.Str([sc.Ref('Error Context')]),
-    }),
+      sc.Action('is.workflow.actions.alert', {
+        WFAlertActionMessage: sc.Str([sc.Ref('Error Message')]),
+        WFAlertActionTitle: sc.Str([sc.Ref('Error Context')]),
+      }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: 'B8B9F0F6-0B7F-4C5D-9FF3-1256A1C48B93',
-      WFControlFlowMode: 1,
-    }),
+    ]).Else_([
 
-    sc.Action('is.workflow.actions.output', {
-      WFOutput: sc.Str([sc.Ref('Output')]),
-    }),
+      sc.Action('is.workflow.actions.output', {
+        WFOutput: sc.Str([sc.Ref('Output')]),
+      }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: 'B8B9F0F6-0B7F-4C5D-9FF3-1256A1C48B93',
-      WFControlFlowMode: 2,
-    }),
+    ]).EndIf_(),
 
   ]),
   WFWorkflowClientVersion: '3607.0.2',

@@ -18,39 +18,34 @@ local sc = import 'shortcuts.libsonnet';
       boolean: sc.Attach(sc.Ref('Device Is Locked')),
     }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '63914A09-FF3C-4C62-B91A-E0D79A03A7A7',
-      WFCondition: 4,
-      WFControlFlowMode: 0,
-      WFInput: {
+    sc.If_(sc.Cond(
+      {
         Type: 'Variable',
         Variable: sc.Attach(sc.Ref('Not Locked')),
       },
-    }),
+      'is'
+    )).Then_([
 
-    sc.Action('com.sindresorhus.Actions.ShowNotificationIntent', {
-      AppIntentDescriptor: {
-        AppIntentIdentifier: 'ShowNotificationIntent',
-        BundleIdentifier: 'com.sindresorhus.Actions',
-        Name: 'Actions',
-        TeamIdentifier: 'YG56YK5RN5',
-      },
-      isTimeSensitive: true,
-      sound: 'default',
-      subtitle: '',
-      title: 'Go to bed!',
-    }),
+      sc.Action('com.sindresorhus.Actions.ShowNotificationIntent', {
+        AppIntentDescriptor: {
+          AppIntentIdentifier: 'ShowNotificationIntent',
+          BundleIdentifier: 'com.sindresorhus.Actions',
+          Name: 'Actions',
+          TeamIdentifier: 'YG56YK5RN5',
+        },
+        isTimeSensitive: true,
+        sound: 'default',
+        subtitle: '',
+        title: 'Go to bed!',
+      }),
 
-    sc.Action('is.workflow.actions.delay', {
-      WFDelayTime: 3.0,
-    }),
+      sc.Action('is.workflow.actions.delay', {
+        WFDelayTime: 3.0,
+      }),
 
-    sc.Action('is.workflow.actions.lockscreen'),
+      sc.Action('is.workflow.actions.lockscreen'),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '63914A09-FF3C-4C62-B91A-E0D79A03A7A7',
-      WFControlFlowMode: 2,
-    }),
+    ]).EndIf_(),
 
   ]),
   WFWorkflowClientVersion: '3607.0.2',

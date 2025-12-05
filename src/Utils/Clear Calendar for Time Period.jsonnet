@@ -155,34 +155,26 @@ local sc = import 'shortcuts.libsonnet';
       WFInput: sc.Attach(sc.Ref('Vars.Calendars')),
     }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '907D0584-C928-4F10-AB21-A7932B7DDF58',
-      WFCondition: 100,
-      WFControlFlowMode: 0,
-      WFInput: {
+    sc.If_(sc.Cond(
+      {
         Type: 'Variable',
         Variable: sc.Attach(sc.Ref('Dictionary Value')),
       },
-    }),
+      'has any value'
+    )).Then_([
 
-    sc.Action('is.workflow.actions.math', {
-      WFInput: sc.Attach(sc.Ref('Dictionary Value')),
-      WFMathOperand: '1',
-    }),
+      sc.Action('is.workflow.actions.math', {
+        WFInput: sc.Attach(sc.Ref('Dictionary Value')),
+        WFMathOperand: '1',
+      }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '907D0584-C928-4F10-AB21-A7932B7DDF58',
-      WFControlFlowMode: 1,
-    }),
+    ]).Else_([
 
-    sc.Action('is.workflow.actions.number', {
-      WFNumberActionNumber: '1',
-    }),
+      sc.Action('is.workflow.actions.number', {
+        WFNumberActionNumber: '1',
+      }),
 
-    sc.Action('is.workflow.actions.conditional', name='If Result', params={
-      GroupingIdentifier: '907D0584-C928-4F10-AB21-A7932B7DDF58',
-      WFControlFlowMode: 2,
-    }),
+    ]).EndIf_(name='If Result'),
 
     sc.Action('is.workflow.actions.setvalueforkey', name='Dictionary', params={
       WFDictionary: sc.Attach(sc.Ref('Vars.Calendars')),
@@ -269,21 +261,8 @@ local sc = import 'shortcuts.libsonnet';
       WFInput: sc.Attach(sc.Ref('Chosen Item')),
     }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: 'CCFFDFAE-73C1-4ADD-BB35-FAA95260BB8D',
-      WFCondition: 4,
-      WFConditionalActionString: sc.Str([{
-        Aggrandizements: [
-          {
-            PropertyName: 'Calendar',
-            Type: 'WFPropertyVariableAggrandizement',
-          },
-        ],
-        Type: 'Variable',
-        VariableName: 'Repeat Item',
-      }]),
-      WFControlFlowMode: 0,
-      WFInput: {
+    sc.If_(sc.Cond(
+      {
         Type: 'Variable',
         Variable: sc.Attach({
           Aggrandizements: [
@@ -296,23 +275,30 @@ local sc = import 'shortcuts.libsonnet';
           VariableName: 'Repeat Item 2',
         }),
       },
-    }),
+      'is',
+      {
+        WFConditionalActionString: sc.Str([{
+          Aggrandizements: [
+            {
+              PropertyName: 'Calendar',
+              Type: 'WFPropertyVariableAggrandizement',
+            },
+          ],
+          Type: 'Variable',
+          VariableName: 'Repeat Item',
+        }]),
+      }
+    )).Then_([
 
-    sc.Action('is.workflow.actions.getvariable', {
-      WFVariable: sc.Attach(sc.Ref('Vars.Repeat Item')),
-    }),
+      sc.Action('is.workflow.actions.getvariable', {
+        WFVariable: sc.Attach(sc.Ref('Vars.Repeat Item')),
+      }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: 'CCFFDFAE-73C1-4ADD-BB35-FAA95260BB8D',
-      WFControlFlowMode: 1,
-    }),
+    ]).Else_([
 
-    sc.Action('is.workflow.actions.nothing'),
+      sc.Action('is.workflow.actions.nothing'),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: 'CCFFDFAE-73C1-4ADD-BB35-FAA95260BB8D',
-      WFControlFlowMode: 2,
-    }),
+    ]).EndIf_(),
 
     sc.Action('is.workflow.actions.repeat.each', {
       GroupingIdentifier: 'E0F92588-4F66-4EE0-A829-7CAC87548509',

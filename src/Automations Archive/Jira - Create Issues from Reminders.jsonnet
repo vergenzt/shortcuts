@@ -127,31 +127,23 @@ local sc = import 'shortcuts.libsonnet';
       WFInput: sc.Attach(sc.Ref('Dictionary')),
     }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '9AE5FB23-74B1-44AD-B47A-D9977F4FCCAD',
-      WFCondition: 100,
-      WFControlFlowMode: 0,
-      WFInput: {
+    sc.If_(sc.Cond(
+      {
         Type: 'Variable',
         Variable: sc.Attach(sc.Ref('Dictionary Value')),
       },
-    }),
+      'has any value'
+    )).Then_([
 
-    sc.Action('is.workflow.actions.gettext', {
-      WFTextActionText: sc.Str([sc.Ref('Vars.Repeat Item 2')]),
-    }),
+      sc.Action('is.workflow.actions.gettext', {
+        WFTextActionText: sc.Str([sc.Ref('Vars.Repeat Item 2')]),
+      }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '9AE5FB23-74B1-44AD-B47A-D9977F4FCCAD',
-      WFControlFlowMode: 1,
-    }),
+    ]).Else_([
 
-    sc.Action('is.workflow.actions.nothing'),
+      sc.Action('is.workflow.actions.nothing'),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '9AE5FB23-74B1-44AD-B47A-D9977F4FCCAD',
-      WFControlFlowMode: 2,
-    }),
+    ]).EndIf_(),
 
     sc.Action('is.workflow.actions.repeat.each', name='Repeat Results', params={
       GroupingIdentifier: 'F24C9B98-1D8E-40A2-BE15-5494F2260456',

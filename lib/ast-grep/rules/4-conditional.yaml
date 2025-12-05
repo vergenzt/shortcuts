@@ -1,80 +1,135 @@
 id: conditional
 language: jsonnet
 
-utils:
-
-  if:
-    any:
-    - pattern: sc.Action('is.workflow.actions.conditional', $IFPARAMS)
-    - pattern: sc.Action('is.workflow.actions.conditional', name=$IFNAME, params=$IFPARAMS)
-    has:
-      stopBy: end
-      all:
-      - pattern: $IFPARAMS
-      - has: { pattern: { selector: field, context: '{ GroupingIdentifier: $ID }' } }
-      - has: { pattern: { selector: field, context: '{ WFControlFlowMode: 0 }' } }
-      - has: { pattern: { selector: field, context: '{ WFCondition: $COND }' } }
-      - any: [ has: { pattern: { selector: field, context: '{ WFConditionalActionString: $COMP }' } }, pattern: $_ ]
-
-  else:
-    pattern: >-
-      sc.Action('is.workflow.actions.conditional', {
-        GroupingIdentifier: $ID,
-        WFControlFlowMode: 1,
-      })
-
-  endif:
-    pattern: >-
-      sc.Action('is.workflow.actions.conditional', {
-        GroupingIdentifier: $ID,
-        WFControlFlowMode: 2,
-      })
-
 rule:
-  pattern: sc.ActionSeq($ACTIONS)
+  pattern: sc.ActionsSeq($ACTIONS)
   has:
     stopBy: end
-    matches: if
+    pattern: sc.Action('is.workflow.actions.conditional', $$$)
 
 transform:
-  ACTIONS_WITH_IFS:
+  ACTIONS_REWRITTEN:
     rewrite:
       source: $ACTIONS
       rewriters:
-      - rewrite-if
-      - rewrite-else
-      - rewrite-endif
+      - rewrite_if
+      - rewrite_else
+      - rewrite_endif
+
+fix: |-
+  sc.ActionsSeq($ACTIONS_REWRITTEN)
+
+utils:
+  conditional:
+    any:
+    - pattern: sc.Action('is.workflow.actions.conditional', name=$NAME, params=$IF_PARAMS)
+    - pattern: sc.Action('is.workflow.actions.conditional', $IF_PARAMS)
 
 rewriters:
 
-- name: rewrite-if
+- id: rewrite_if
   rule:
-    matches: if
+    matches: conditional
+  constraints:
+    IF_PARAMS:
+      has: { pattern: { selector: member, context: '{ WFControlFlowMode: 0, }' } }
+  transform:
+    IF_COND: rewrite($IF_PARAMS, rewriters=[rewrite_if_conds_single, rewrite_if_conds_multi])
+  fix:
+    expandEnd:
+      regex: ','
+    template: >-
+      sc.If_($IF_COND).Then_([
+
+- id: rewrite_if_conds_single
+  rule:
+    pattern: $IF_PARAMS_SINGLE
+    all:
+    - has: { pattern: { selector: member, context: '{ WFCondition: $OPCODE, }' } }
+    - has: { pattern: { selector: member, context: '{ WFInput: $INPUT, }' } }
+  transform:
+    OPEXPR: >-
+      rewrite($OPCODE, rewriters=[
+        'cond-<', 'cond-≤', 'cond->', 'cond-≥', 'cond-=', 'cond-≠', 'cond-^',
+        'cond-$', 'cond-∈', 'cond-∉', 'cond-∃', 'cond-∄', 'cond-⦷'
+      ]
+    OPERANDS: rewrite($IF_PARAMS_SINGLE, rewriters=[operand_members])
+    OPERANDS_CONTRACTED: { replace: { source: $OPERANDS, replace: '(\n\s*)+\n', by: "\n" }}
+    OPERANDS_NONEMPTY: { replace: { source: $OPERANDS_CONTRACTED, replace: '\{[\n\s]*\}', by: '' }}
+    OPERANDS_WITH_LEADING_COMMA: { replace: { source: $OPERANDS_NONEMPTY, replace: '\A.+', by: ",\n$0" }}
+  fix: |-
+    sc.Cond(
+      $INPUT,
+      $OPEXPR$OPERANDS_WITH_LEADING_COMMA
+    )
+
+- id: rewrite_if_conds_multi
+  rule:
+    pattern: $IF_PARAMS_MULTI
+    has:
+      pattern:
+        selector: member
+        context: >-
+          {
+            WFConditions: {
+              Value: {
+                WFActionParameterFilterPrefix: $FILTER_PFX_INT,
+                WFActionParameterFilterTemplates: $IF_PARAM_SINGLES,
+                WFContentPredicateBoundedDate: false,
+              },
+              WFSerializationType: 'WFContentPredicateTableTemplate',
+            },
+          }
+  transform:
+    FILTER_PFX_ANY: replace($FILTER_PFX_INT, replace='0', by='AnyOf')
+    FILTER_PFX_ALL: replace($FILTER_PFX_ANY, replace='1', by='AllOf')
+    IF_CONDS_SINGLE: rewrite($IF_PARAM_SINGLES, rewriters=[rewrite_if_conds_single])
   fix: >-
-    sc.If($INPUT, $COND, )
+    sc.$FILTER_PFX_ALL($IF_CONDS_SINGLE)
 
-  - has: 
-      pattern: $IF
-      any:
-      - pattern: sc.Action('is.workflow.actions.conditional', $PARAMS)
-      - pattern: sc.Action('is.workflow.actions.conditional', name=$NAME, params=$PARAMS)
-      has:
-        stopBy: end
-        all:
-        - pattern: $PARAMS
-        - pattern: >-
-            {
-              GroupingIdentifier: $ID,
-              WFCondition: $COND,
-              WFConditionalActionString: $COMP,
-              WFControlFlowMode: 0,
-              WFInput: $INPUT,
-            }
-          - pattern: >-
-              {
-                GroupingIdentifier: $ID,
-                WFCondition: $COND,
-                WFControlFlowMode: 0,
-                WFInput: $INPUT,
-              }
+- id: operand_members
+  rule:
+    pattern: { selector: member, context: '{ $KEY: $_VAL, }' }
+  constraints:
+    KEY: { regex: '^(GroupingIdentifier|WFCondition|WFControlFlowMode|WFInput)$' }
+  fix:
+    expandEnd:
+      regex: ','
+    template: ''
 
+- id: rewrite_else
+  rule:
+    matches: conditional
+  constraints:
+    IF_PARAMS:
+      has: { pattern: { selector: member, context: '{ WFControlFlowMode: 1, }' } }
+  fix:
+    expandEnd:
+      regex: ','
+    template: |-
+      ]).Else_([
+
+- id: rewrite_endif
+  rule:
+    matches: conditional
+  constraints:
+    IF_PARAMS:
+      has: { pattern: { selector: member, context: '{ WFControlFlowMode: 2, }' } }
+  transform:
+    NAME_ARG: { replace: { source: $NAME, replace: '.+', by: "name=$0" } }
+  fix: |-
+    ]).EndIf_($NAME_ARG)
+
+- { id: 'cond-<', rule: { pattern: '0' }, fix: "'<'" }
+- { id: 'cond-≤', rule: { pattern: '1' }, fix: "'≤'" }
+- { id: 'cond->', rule: { pattern: '2' }, fix: "'>'" }
+- { id: 'cond-≥', rule: { pattern: '3' }, fix: "'≥'" }
+- { id: 'cond-=', rule: { pattern: '4' }, fix: "'is'" }
+- { id: 'cond-≠', rule: { pattern: '5' }, fix: "'is not'" }
+- { id: 'cond-^', rule: { pattern: '8' }, fix: "'starts with'" }
+- { id: 'cond-$', rule: { pattern: '9' }, fix: "'ends with'" }
+- { id: 'cond-∈', rule: { pattern: '99' }, fix: "'contains'" }
+- { id: 'cond-∉', rule: { pattern: '999' }, fix: "'does not contain'" }
+- { id: 'cond-∃', rule: { pattern: '100' }, fix: "'has any value'" }
+- { id: 'cond-∄', rule: { pattern: '101' }, fix: "'does not have any value'" }
+- { id: 'cond-⦷', rule: { pattern: '1003' }, fix: "'is between'" }

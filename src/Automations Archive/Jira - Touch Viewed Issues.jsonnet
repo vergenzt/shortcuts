@@ -101,107 +101,104 @@ local sc = import 'shortcuts.libsonnet';
       queryType: 'jq',
     }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: 'FAC0F958-C6D7-4969-9830-1BE2C0B6472C',
-      WFCondition: 100,
-      WFConditionalActionString: sc.Str([sc.Ref('Updated')]),
-      WFControlFlowMode: 0,
-      WFInput: {
+    sc.If_(sc.Cond(
+      {
         Type: 'Variable',
         Variable: sc.Attach(sc.Ref('Result')),
       },
-    }),
+      'has any value',
+      {
+        WFConditionalActionString: sc.Str([sc.Ref('Updated')]),
+      }
+    )).Then_([
 
-    sc.Action('is.workflow.actions.dictionary', name='Dictionary', params={
-      WFItems: {
-        Value: {
-          WFDictionaryFieldValueItems: [
-            {
-              WFItemType: 0,
-              WFKey: sc.Str(['method']),
-              WFValue: sc.Str(['PUT']),
-            },
-            {
-              WFItemType: 0,
-              WFKey: sc.Str(['path']),
-              WFValue: sc.Str(['issue/', sc.Ref('Result', aggs=[
-                {
-                  CoercionItemClass: 'WFDictionaryContentItem',
-                  Type: 'WFCoercionVariableAggrandizement',
-                },
-                {
-                  DictionaryKey: 'key',
-                  Type: 'WFDictionaryValueVariableAggrandizement',
-                },
-              ])]),
-            },
-            {
-              WFItemType: 1,
-              WFKey: sc.Str(['json']),
-              WFValue: {
-                Value: {
+      sc.Action('is.workflow.actions.dictionary', name='Dictionary', params={
+        WFItems: {
+          Value: {
+            WFDictionaryFieldValueItems: [
+              {
+                WFItemType: 0,
+                WFKey: sc.Str(['method']),
+                WFValue: sc.Str(['PUT']),
+              },
+              {
+                WFItemType: 0,
+                WFKey: sc.Str(['path']),
+                WFValue: sc.Str(['issue/', sc.Ref('Result', aggs=[
+                  {
+                    CoercionItemClass: 'WFDictionaryContentItem',
+                    Type: 'WFCoercionVariableAggrandizement',
+                  },
+                  {
+                    DictionaryKey: 'key',
+                    Type: 'WFDictionaryValueVariableAggrandizement',
+                  },
+                ])]),
+              },
+              {
+                WFItemType: 1,
+                WFKey: sc.Str(['json']),
+                WFValue: {
                   Value: {
-                    WFDictionaryFieldValueItems: [
-                      {
-                        WFItemType: 1,
-                        WFKey: sc.Str(['fields']),
-                        WFValue: {
-                          Value: {
+                    Value: {
+                      WFDictionaryFieldValueItems: [
+                        {
+                          WFItemType: 1,
+                          WFKey: sc.Str(['fields']),
+                          WFValue: {
                             Value: {
-                              WFDictionaryFieldValueItems: [
-                                {
-                                  WFItemType: 0,
-                                  WFKey: sc.Str(['customfield_', sc.Ref('Vars.FID')]),
-                                  WFValue: sc.Str([sc.Ref('Result', aggs=[
-                                    {
-                                      CoercionItemClass: 'WFDictionaryContentItem',
-                                      Type: 'WFCoercionVariableAggrandizement',
-                                    },
-                                    {
-                                      DictionaryKey: 'newValue',
-                                      Type: 'WFDictionaryValueVariableAggrandizement',
-                                    },
-                                  ])]),
-                                },
-                              ],
+                              Value: {
+                                WFDictionaryFieldValueItems: [
+                                  {
+                                    WFItemType: 0,
+                                    WFKey: sc.Str(['customfield_', sc.Ref('Vars.FID')]),
+                                    WFValue: sc.Str([sc.Ref('Result', aggs=[
+                                      {
+                                        CoercionItemClass: 'WFDictionaryContentItem',
+                                        Type: 'WFCoercionVariableAggrandizement',
+                                      },
+                                      {
+                                        DictionaryKey: 'newValue',
+                                        Type: 'WFDictionaryValueVariableAggrandizement',
+                                      },
+                                    ])]),
+                                  },
+                                ],
+                              },
+                              WFSerializationType: 'WFDictionaryFieldValue',
                             },
                             WFSerializationType: 'WFDictionaryFieldValue',
                           },
-                          WFSerializationType: 'WFDictionaryFieldValue',
                         },
-                      },
-                    ],
+                      ],
+                    },
+                    WFSerializationType: 'WFDictionaryFieldValue',
                   },
                   WFSerializationType: 'WFDictionaryFieldValue',
                 },
-                WFSerializationType: 'WFDictionaryFieldValue',
               },
-            },
-          ],
+            ],
+          },
+          WFSerializationType: 'WFDictionaryFieldValue',
         },
-        WFSerializationType: 'WFDictionaryFieldValue',
-      },
-    }),
+      }),
 
-    sc.Action('is.workflow.actions.runworkflow', name='Shortcut Result', params={
-      WFInput: sc.Attach(sc.Ref('Dictionary')),
-      WFWorkflow: {
-        isSelf: false,
-        workflowIdentifier: 'B245F907-CA3B-4273-B2B7-BE1A4BAE3F79',
-        workflowName: 'Jira API',
-      },
-      WFWorkflowName: 'Jira API',
-    }),
+      sc.Action('is.workflow.actions.runworkflow', name='Shortcut Result', params={
+        WFInput: sc.Attach(sc.Ref('Dictionary')),
+        WFWorkflow: {
+          isSelf: false,
+          workflowIdentifier: 'B245F907-CA3B-4273-B2B7-BE1A4BAE3F79',
+          workflowName: 'Jira API',
+        },
+        WFWorkflowName: 'Jira API',
+      }),
 
-    sc.Action('is.workflow.actions.appendvariable', {
-      WFInput: sc.Attach(sc.Ref('Shortcut Result')),
-      WFVariableName: 'Updated Issues',
-    }),
+      sc.Action('is.workflow.actions.appendvariable', {
+        WFInput: sc.Attach(sc.Ref('Shortcut Result')),
+        WFVariableName: 'Updated Issues',
+      }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: 'FAC0F958-C6D7-4969-9830-1BE2C0B6472C',
-      WFControlFlowMode: 2,
-    }),
+    ]).EndIf_(),
 
     sc.Action('is.workflow.actions.repeat.each', {
       GroupingIdentifier: '6F192F82-E28B-4DA5-8E9D-3595CEE96F87',
@@ -212,25 +209,22 @@ local sc = import 'shortcuts.libsonnet';
       Input: sc.Attach(sc.Ref('Vars.Updated Issues')),
     }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '732DECE0-5E84-43B1-A972-8FEC52FECF86',
-      WFCondition: 2,
-      WFControlFlowMode: 0,
-      WFInput: {
+    sc.If_(sc.Cond(
+      {
         Type: 'Variable',
         Variable: sc.Attach(sc.Ref('Count')),
       },
-      WFNumberValue: '0',
-    }),
+      '>',
+      {
+        WFNumberValue: '0',
+      }
+    )).Then_([
 
-    sc.Action('is.workflow.actions.notification', {
-      WFNotificationActionBody: sc.Str(['Updated ', sc.Ref('Count'), ' issues']),
-    }),
+      sc.Action('is.workflow.actions.notification', {
+        WFNotificationActionBody: sc.Str(['Updated ', sc.Ref('Count'), ' issues']),
+      }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '732DECE0-5E84-43B1-A972-8FEC52FECF86',
-      WFControlFlowMode: 2,
-    }),
+    ]).EndIf_(),
 
   ]),
   WFWorkflowClientVersion: '3607.0.2',

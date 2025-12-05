@@ -18,38 +18,32 @@ local sc = import 'shortcuts.libsonnet';
       WFDeviceDetail: 'Device Model',
     }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '14D3C7FB-6CB6-4E50-98A5-FEB8D79961F5',
-      WFCondition: 4,
-      WFConditionalActionString: 'iPhone',
-      WFControlFlowMode: 0,
-      WFInput: {
+    sc.If_(sc.Cond(
+      {
         Type: 'Variable',
         Variable: sc.Attach(sc.Ref('Device Model')),
       },
-    }),
+      'is',
+      {
+        WFConditionalActionString: 'iPhone',
+      }
+    )).Then_([
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '14D3C7FB-6CB6-4E50-98A5-FEB8D79961F5',
-      WFControlFlowMode: 1,
-    }),
+    ]).Else_([
 
-    sc.Action('is.workflow.actions.file.createfolder', {
-      WFFilePath: sc.Str([sc.Ref('Vault Path')]),
-      WFFolder: {
-        displayName: 'Macintosh HD',
-        fileLocation: {
-          WFFileLocationType: 'Absolute',
-          relativeSubpath: '/',
+      sc.Action('is.workflow.actions.file.createfolder', {
+        WFFilePath: sc.Str([sc.Ref('Vault Path')]),
+        WFFolder: {
+          displayName: 'Macintosh HD',
+          fileLocation: {
+            WFFileLocationType: 'Absolute',
+            relativeSubpath: '/',
+          },
+          filename: '/',
         },
-        filename: '/',
-      },
-    }),
+      }),
 
-    sc.Action('is.workflow.actions.conditional', name='Folder Path', params={
-      GroupingIdentifier: '14D3C7FB-6CB6-4E50-98A5-FEB8D79961F5',
-      WFControlFlowMode: 2,
-    }),
+    ]).EndIf_(name='Folder Path'),
 
     sc.Action('is.workflow.actions.documentpicker.open', name='File', params={
       WFFile: sc.Attach(sc.Ref('Folder Path')),

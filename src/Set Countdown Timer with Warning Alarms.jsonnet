@@ -68,95 +68,83 @@ local sc = import 'shortcuts.libsonnet';
       },
     }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: 'C8873D9E-7395-476B-9B3D-905A85EC35EE',
-      WFCondition: 2,
-      WFControlFlowMode: 0,
-      WFDate: sc.Attach({
-        Type: 'CurrentDate',
-      }),
-      WFInput: {
+    sc.If_(sc.Cond(
+      {
         Type: 'Variable',
         Variable: sc.Attach(sc.Ref('Warning Time')),
       },
-      WFNumberValue: sc.Attach(sc.Ref('N')),
-    }),
-
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: 'ED0FE990-3E15-4138-9443-BCC1D8B3F4F8',
-      WFCondition: 1,
-      WFControlFlowMode: 0,
-      WFInput: {
-        Type: 'Variable',
-        Variable: sc.Attach({
-          Aggrandizements: [
-            {
-              CoercionItemClass: 'WFNumberContentItem',
-              Type: 'WFCoercionVariableAggrandizement',
-            },
-          ],
-          Type: 'Variable',
-          VariableName: 'Repeat Item',
+      '>',
+      {
+        WFDate: sc.Attach({
+          Type: 'CurrentDate',
         }),
-      },
-      WFNumberValue: '0',
-    }),
+        WFNumberValue: sc.Attach(sc.Ref('N')),
+      }
+    )).Then_([
 
-    sc.Action('is.workflow.actions.gettext', {
-      WFTextActionText: "Time's up!",
-    }),
-
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: 'ED0FE990-3E15-4138-9443-BCC1D8B3F4F8',
-      WFControlFlowMode: 1,
-    }),
-
-    sc.Action('is.workflow.actions.gettext', {
-      WFTextActionText: sc.Str([sc.Ref('Vars.Repeat Item'), ' minutes left!']),
-    }),
-
-    sc.Action('is.workflow.actions.conditional', name='Alarm Text', params={
-      GroupingIdentifier: 'ED0FE990-3E15-4138-9443-BCC1D8B3F4F8',
-      WFControlFlowMode: 2,
-    }),
-
-    sc.Action('is.workflow.actions.list', name='List', params={
-      WFItems: [
+      sc.If_(sc.Cond(
         {
-          WFItemType: 0,
-          WFValue: sc.Str([sc.Ref('Alarm Text')]),
+          Type: 'Variable',
+          Variable: sc.Attach({
+            Aggrandizements: [
+              {
+                CoercionItemClass: 'WFNumberContentItem',
+                Type: 'WFCoercionVariableAggrandizement',
+              },
+            ],
+            Type: 'Variable',
+            VariableName: 'Repeat Item',
+          }),
         },
+        '≤',
         {
-          WFItemType: 0,
-          WFValue: sc.Str([sc.Ref('Warning Time', aggs=[
-            {
-              Type: 'WFDateFormatVariableAggrandizement',
-              WFDateFormatStyle: 'None',
-              WFISO8601IncludeTime: false,
-              WFTimeFormatStyle: 'Short',
-            },
-          ])]),
-        },
-      ],
-    }),
+          WFNumberValue: '0',
+        }
+      )).Then_([
 
-    sc.Action('is.workflow.actions.text.combine', {
-      WFTextCustomSeparator: ' — ',
-      WFTextSeparator: 'Custom',
-      text: sc.Attach(sc.Ref('List')),
-    }),
+        sc.Action('is.workflow.actions.gettext', {
+          WFTextActionText: "Time's up!",
+        }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: 'C8873D9E-7395-476B-9B3D-905A85EC35EE',
-      WFControlFlowMode: 1,
-    }),
+      ]).Else_([
 
-    sc.Action('is.workflow.actions.nothing'),
+        sc.Action('is.workflow.actions.gettext', {
+          WFTextActionText: sc.Str([sc.Ref('Vars.Repeat Item'), ' minutes left!']),
+        }),
 
-    sc.Action('is.workflow.actions.conditional', name='If Result', params={
-      GroupingIdentifier: 'C8873D9E-7395-476B-9B3D-905A85EC35EE',
-      WFControlFlowMode: 2,
-    }),
+      ]).EndIf_(name='Alarm Text'),
+
+      sc.Action('is.workflow.actions.list', name='List', params={
+        WFItems: [
+          {
+            WFItemType: 0,
+            WFValue: sc.Str([sc.Ref('Alarm Text')]),
+          },
+          {
+            WFItemType: 0,
+            WFValue: sc.Str([sc.Ref('Warning Time', aggs=[
+              {
+                Type: 'WFDateFormatVariableAggrandizement',
+                WFDateFormatStyle: 'None',
+                WFISO8601IncludeTime: false,
+                WFTimeFormatStyle: 'Short',
+              },
+            ])]),
+          },
+        ],
+      }),
+
+      sc.Action('is.workflow.actions.text.combine', {
+        WFTextCustomSeparator: ' — ',
+        WFTextSeparator: 'Custom',
+        text: sc.Attach(sc.Ref('List')),
+      }),
+
+    ]).Else_([
+
+      sc.Action('is.workflow.actions.nothing'),
+
+    ]).EndIf_(name='If Result'),
 
     sc.Action('is.workflow.actions.getvariable', {
       WFVariable: sc.Attach(sc.Ref('If Result')),

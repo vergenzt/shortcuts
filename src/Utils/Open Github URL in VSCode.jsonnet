@@ -14,28 +14,23 @@ local sc = import 'shortcuts.libsonnet';
       text: sc.Str([sc.Input]),
     }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '37FACB10-90AE-4291-8398-BEA591C7E341',
-      WFCondition: 101,
-      WFControlFlowMode: 0,
-      WFInput: {
+    sc.If_(sc.Cond(
+      {
         Type: 'Variable',
         Variable: sc.Attach(sc.Ref('Matches')),
       },
-    }),
+      'does not have any value'
+    )).Then_([
 
-    sc.Action('is.workflow.actions.notification', {
-      WFInput: sc.Attach(sc.Input),
-      WFNotificationActionBody: sc.Str(['No Github URL detected: ', sc.Input]),
-      WFNotificationActionSound: false,
-    }),
+      sc.Action('is.workflow.actions.notification', {
+        WFInput: sc.Attach(sc.Input),
+        WFNotificationActionBody: sc.Str(['No Github URL detected: ', sc.Input]),
+        WFNotificationActionSound: false,
+      }),
 
-    sc.Action('is.workflow.actions.exit'),
+      sc.Action('is.workflow.actions.exit'),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '37FACB10-90AE-4291-8398-BEA591C7E341',
-      WFControlFlowMode: 2,
-    }),
+    ]).EndIf_(),
 
     sc.Action('is.workflow.actions.file', name='Code Folder', params={
       WFFile: {

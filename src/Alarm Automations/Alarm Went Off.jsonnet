@@ -89,11 +89,8 @@ local sc = import 'shortcuts.libsonnet';
       WFControlFlowMode: 2,
     }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '55EEE80D-D908-4AB3-BA29-F3762BE3870F',
-      WFCondition: 4,
-      WFControlFlowMode: 0,
-      WFInput: {
+    sc.If_(sc.Cond(
+      {
         Type: 'Variable',
         Variable: sc.Attach(sc.Ref('Repeat Results', aggs=[
           {
@@ -102,17 +99,12 @@ local sc = import 'shortcuts.libsonnet';
           },
         ])),
       },
-    }),
+      'is'
+    )).Then_([
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '55EEE80D-D908-4AB3-BA29-F3762BE3870F',
-      WFControlFlowMode: 1,
-    }),
+    ]).Else_([
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '55EEE80D-D908-4AB3-BA29-F3762BE3870F',
-      WFControlFlowMode: 2,
-    }),
+    ]).EndIf_(),
 
   ]),
   WFWorkflowClientVersion: '3607.0.2',

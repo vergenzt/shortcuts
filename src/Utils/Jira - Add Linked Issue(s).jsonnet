@@ -10,59 +10,46 @@ local sc = import 'shortcuts.libsonnet';
       WFInput: sc.Attach(sc.Input),
     }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: 'AA47C097-218D-48E1-8EC2-CE887F3EA1C4',
-      WFCondition: 100,
-      WFControlFlowMode: 0,
-      WFInput: {
+    sc.If_(sc.Cond(
+      {
         Type: 'Variable',
         Variable: sc.Attach(sc.Ref('Input As Dict')),
       },
-    }),
+      'has any value'
+    )).Then_([
 
-    sc.Action('is.workflow.actions.getvalueforkey', {
-      WFDictionaryKey: 'issue_key',
-      WFInput: sc.Attach(sc.Ref('Input As Dict')),
-    }),
+      sc.Action('is.workflow.actions.getvalueforkey', {
+        WFDictionaryKey: 'issue_key',
+        WFInput: sc.Attach(sc.Ref('Input As Dict')),
+      }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: 'AA47C097-218D-48E1-8EC2-CE887F3EA1C4',
-      WFControlFlowMode: 1,
-    }),
+    ]).Else_([
 
-    sc.Action('is.workflow.actions.text.replace', {
-      WFInput: sc.Str([sc.Input]),
-      WFReplaceTextFind: '.*\\b([A-Z]+-[1-9][0-9]*)\\b.*',
-      WFReplaceTextRegularExpression: true,
-      WFReplaceTextReplace: '$1',
-    }),
+      sc.Action('is.workflow.actions.text.replace', {
+        WFInput: sc.Str([sc.Input]),
+        WFReplaceTextFind: '.*\\b([A-Z]+-[1-9][0-9]*)\\b.*',
+        WFReplaceTextRegularExpression: true,
+        WFReplaceTextReplace: '$1',
+      }),
 
-    sc.Action('is.workflow.actions.conditional', name='Issue key', params={
-      GroupingIdentifier: 'AA47C097-218D-48E1-8EC2-CE887F3EA1C4',
-      WFControlFlowMode: 2,
-    }),
+    ]).EndIf_(name='Issue key'),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '1D9BEA05-EA73-49E7-A495-B0566729ABA0',
-      WFCondition: 101,
-      WFControlFlowMode: 0,
-      WFInput: {
+    sc.If_(sc.Cond(
+      {
         Type: 'Variable',
         Variable: sc.Attach(sc.Ref('Issue key')),
       },
-    }),
+      'does not have any value'
+    )).Then_([
 
-    sc.Action('is.workflow.actions.notification', {
-      WFInput: sc.Attach(sc.Ref('Issue key')),
-      WFNotificationActionBody: 'No issue key provided!',
-    }),
+      sc.Action('is.workflow.actions.notification', {
+        WFInput: sc.Attach(sc.Ref('Issue key')),
+        WFNotificationActionBody: 'No issue key provided!',
+      }),
 
-    sc.Action('is.workflow.actions.exit'),
+      sc.Action('is.workflow.actions.exit'),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '1D9BEA05-EA73-49E7-A495-B0566729ABA0',
-      WFControlFlowMode: 2,
-    }),
+    ]).EndIf_(),
 
     sc.Action('dk.simonbs.DataJar.GetValueIntent', name='Value', params={
       keyPath: 'jira-config.issueLinkTypes',

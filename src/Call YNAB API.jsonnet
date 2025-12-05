@@ -8,11 +8,8 @@ local sc = import 'shortcuts.libsonnet';
       WFInput: sc.Attach(sc.Input),
     }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '42008FCF-811C-4119-9A38-B4C7DFE77739',
-      WFCondition: 100,
-      WFControlFlowMode: 0,
-      WFInput: {
+    sc.If_(sc.Cond(
+      {
         Type: 'Variable',
         Variable: sc.Attach(sc.Ref('Dictionary', aggs=[
           {
@@ -21,17 +18,12 @@ local sc = import 'shortcuts.libsonnet';
           },
         ])),
       },
-    }),
+      'has any value'
+    )).Then_([
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '42008FCF-811C-4119-9A38-B4C7DFE77739',
-      WFControlFlowMode: 1,
-    }),
+    ]).Else_([
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '42008FCF-811C-4119-9A38-B4C7DFE77739',
-      WFControlFlowMode: 2,
-    }),
+    ]).EndIf_(),
 
     sc.Action('dk.simonbs.DataJar.GetValueIntent', name='Value', params={
       keyPath: '1password-uris.YNAB_TOKEN',

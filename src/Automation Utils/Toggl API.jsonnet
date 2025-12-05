@@ -40,63 +40,58 @@ local sc = import 'shortcuts.libsonnet';
       WFInput: sc.Attach(sc.Ref('Input Dict')),
     }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '4C6CDAC1-3AF6-4835-87D8-C5348FA88848',
-      WFCondition: 100,
-      WFControlFlowMode: 0,
-      WFInput: {
+    sc.If_(sc.Cond(
+      {
         Type: 'Variable',
         Variable: sc.Attach(sc.Ref('Query Params')),
       },
-    }),
+      'has any value'
+    )).Then_([
 
-    sc.Action('is.workflow.actions.repeat.each', {
-      GroupingIdentifier: 'CB0F08F7-D254-42C4-933F-CDCE8DCF4415',
-      WFControlFlowMode: 0,
-      WFInput: sc.Attach(sc.Ref('Query Params', aggs=[
-        {
-          CoercionItemClass: 'WFDictionaryContentItem',
-          Type: 'WFCoercionVariableAggrandizement',
-        },
-        {
-          PropertyName: 'Keys',
-          Type: 'WFPropertyVariableAggrandizement',
-        },
-      ])),
-    }),
+      sc.Action('is.workflow.actions.repeat.each', {
+        GroupingIdentifier: 'CB0F08F7-D254-42C4-933F-CDCE8DCF4415',
+        WFControlFlowMode: 0,
+        WFInput: sc.Attach(sc.Ref('Query Params', aggs=[
+          {
+            CoercionItemClass: 'WFDictionaryContentItem',
+            Type: 'WFCoercionVariableAggrandizement',
+          },
+          {
+            PropertyName: 'Keys',
+            Type: 'WFPropertyVariableAggrandizement',
+          },
+        ])),
+      }),
 
-    sc.Action('is.workflow.actions.urlencode', name='Key', params={
-      WFInput: sc.Str([sc.Ref('Vars.Repeat Item')]),
-    }),
+      sc.Action('is.workflow.actions.urlencode', name='Key', params={
+        WFInput: sc.Str([sc.Ref('Vars.Repeat Item')]),
+      }),
 
-    sc.Action('is.workflow.actions.getvalueforkey', name='Value', params={
-      WFDictionaryKey: sc.Str([sc.Ref('Vars.Repeat Item')]),
-      WFInput: sc.Attach(sc.Ref('Query Params')),
-    }),
+      sc.Action('is.workflow.actions.getvalueforkey', name='Value', params={
+        WFDictionaryKey: sc.Str([sc.Ref('Vars.Repeat Item')]),
+        WFInput: sc.Attach(sc.Ref('Query Params')),
+      }),
 
-    sc.Action('is.workflow.actions.urlencode', name='Value', params={
-      WFInput: sc.Str([sc.Ref('Value')]),
-    }),
+      sc.Action('is.workflow.actions.urlencode', name='Value', params={
+        WFInput: sc.Str([sc.Ref('Value')]),
+      }),
 
-    sc.Action('is.workflow.actions.gettext', {
-      WFTextActionText: sc.Str([sc.Ref('Key')]),
-    }),
+      sc.Action('is.workflow.actions.gettext', {
+        WFTextActionText: sc.Str([sc.Ref('Key')]),
+      }),
 
-    sc.Action('is.workflow.actions.repeat.each', name='Repeat Results', params={
-      GroupingIdentifier: 'CB0F08F7-D254-42C4-933F-CDCE8DCF4415',
-      WFControlFlowMode: 2,
-    }),
+      sc.Action('is.workflow.actions.repeat.each', name='Repeat Results', params={
+        GroupingIdentifier: 'CB0F08F7-D254-42C4-933F-CDCE8DCF4415',
+        WFControlFlowMode: 2,
+      }),
 
-    sc.Action('is.workflow.actions.text.combine', {
-      WFTextCustomSeparator: '&',
-      WFTextSeparator: 'Custom',
-      text: sc.Attach(sc.Ref('Repeat Results')),
-    }),
+      sc.Action('is.workflow.actions.text.combine', {
+        WFTextCustomSeparator: '&',
+        WFTextSeparator: 'Custom',
+        text: sc.Attach(sc.Ref('Repeat Results')),
+      }),
 
-    sc.Action('is.workflow.actions.conditional', name='Query', params={
-      GroupingIdentifier: '4C6CDAC1-3AF6-4835-87D8-C5348FA88848',
-      WFControlFlowMode: 2,
-    }),
+    ]).EndIf_(name='Query'),
 
     sc.Action('is.workflow.actions.list', name='List', params={
       WFItems: [

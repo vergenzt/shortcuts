@@ -97,11 +97,8 @@ local sc = import 'shortcuts.libsonnet';
       WFInput: sc.Attach(sc.Ref('from')),
     }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: 'C8492311-4C65-4A50-BAA1-5C18CAC7EF4F',
-      WFCondition: 100,
-      WFControlFlowMode: 0,
-      WFInput: {
+    sc.If_(sc.Cond(
+      {
         Type: 'Variable',
         Variable: sc.Attach(sc.Ref('from[0]', aggs=[
           {
@@ -114,27 +111,22 @@ local sc = import 'shortcuts.libsonnet';
           },
         ])),
       },
-    }),
+      'has any value'
+    )).Then_([
 
-    sc.Action('is.workflow.actions.getvalueforkey', {
-      WFDictionaryKey: 'name',
-      WFInput: sc.Attach(sc.Ref('from[0]')),
-    }),
+      sc.Action('is.workflow.actions.getvalueforkey', {
+        WFDictionaryKey: 'name',
+        WFInput: sc.Attach(sc.Ref('from[0]')),
+      }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: 'C8492311-4C65-4A50-BAA1-5C18CAC7EF4F',
-      WFControlFlowMode: 1,
-    }),
+    ]).Else_([
 
-    sc.Action('is.workflow.actions.getvalueforkey', {
-      WFDictionaryKey: 'email',
-      WFInput: sc.Attach(sc.Ref('from[0]')),
-    }),
+      sc.Action('is.workflow.actions.getvalueforkey', {
+        WFDictionaryKey: 'email',
+        WFInput: sc.Attach(sc.Ref('from[0]')),
+      }),
 
-    sc.Action('is.workflow.actions.conditional', name='From', params={
-      GroupingIdentifier: 'C8492311-4C65-4A50-BAA1-5C18CAC7EF4F',
-      WFControlFlowMode: 2,
-    }),
+    ]).EndIf_(name='From'),
 
     sc.Action('is.workflow.actions.getitemfromlist', name='messageId', params={
       WFInput: sc.Attach({

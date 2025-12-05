@@ -8,34 +8,28 @@ local sc = import 'shortcuts.libsonnet';
       WFDeviceDetail: 'Device Model',
     }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '2607D75E-2498-4367-B38D-ECE360DB437F',
-      WFCondition: 4,
-      WFConditionalActionString: 'Mac',
-      WFControlFlowMode: 0,
-      WFInput: {
+    sc.If_(sc.Cond(
+      {
         Type: 'Variable',
         Variable: sc.Attach(sc.Ref('Device Model')),
       },
-    }),
+      'is',
+      {
+        WFConditionalActionString: 'Mac',
+      }
+    )).Then_([
 
-    sc.Action('is.workflow.actions.gettext', {
-      WFTextActionText: 'https',
-    }),
+      sc.Action('is.workflow.actions.gettext', {
+        WFTextActionText: 'https',
+      }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '2607D75E-2498-4367-B38D-ECE360DB437F',
-      WFControlFlowMode: 1,
-    }),
+    ]).Else_([
 
-    sc.Action('is.workflow.actions.gettext', {
-      WFTextActionText: 'googlesheets',
-    }),
+      sc.Action('is.workflow.actions.gettext', {
+        WFTextActionText: 'googlesheets',
+      }),
 
-    sc.Action('is.workflow.actions.conditional', name='Scheme', params={
-      GroupingIdentifier: '2607D75E-2498-4367-B38D-ECE360DB437F',
-      WFControlFlowMode: 2,
-    }),
+    ]).EndIf_(name='Scheme'),
 
     sc.Action('is.workflow.actions.url', name='URL', params={
       'Show-WFURLActionURL': true,

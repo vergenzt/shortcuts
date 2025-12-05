@@ -75,35 +75,27 @@ local sc = import 'shortcuts.libsonnet';
       WFInput: sc.Attach(sc.Ref('Vars.vals')),
     }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: 'D9F34061-54B9-4CE8-AAF0-2FE250B17914',
-      WFCondition: 100,
-      WFControlFlowMode: 0,
-      WFInput: {
+    sc.If_(sc.Cond(
+      {
         Type: 'Variable',
         Variable: sc.Attach(sc.Ref('Vars.esc')),
       },
-    }),
+      'has any value'
+    )).Then_([
 
-    sc.Action('is.workflow.actions.runworkflow', {
-      WFInput: sc.Attach(sc.Ref('Dictionary Value')),
-      WFWorkflow: sc.Attach(sc.Ref('Vars.esc')),
-      WFWorkflowName: sc.Attach(sc.Ref('Vars.esc')),
-    }),
+      sc.Action('is.workflow.actions.runworkflow', {
+        WFInput: sc.Attach(sc.Ref('Dictionary Value')),
+        WFWorkflow: sc.Attach(sc.Ref('Vars.esc')),
+        WFWorkflowName: sc.Attach(sc.Ref('Vars.esc')),
+      }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: 'D9F34061-54B9-4CE8-AAF0-2FE250B17914',
-      WFControlFlowMode: 1,
-    }),
+    ]).Else_([
 
-    sc.Action('is.workflow.actions.getvariable', {
-      WFVariable: sc.Attach(sc.Ref('Dictionary Value')),
-    }),
+      sc.Action('is.workflow.actions.getvariable', {
+        WFVariable: sc.Attach(sc.Ref('Dictionary Value')),
+      }),
 
-    sc.Action('is.workflow.actions.conditional', name='If Result', params={
-      GroupingIdentifier: 'D9F34061-54B9-4CE8-AAF0-2FE250B17914',
-      WFControlFlowMode: 2,
-    }),
+    ]).EndIf_(name='If Result'),
 
     sc.Action('is.workflow.actions.text.replace', name='Updated Text', params={
       WFInput: sc.Str([sc.Ref('Vars.fmt')]),

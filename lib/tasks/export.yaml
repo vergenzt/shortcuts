@@ -67,7 +67,7 @@ tasks:
     generates:
     - {ref: .UNSIGNED}
     cmds:
-    - plutil -convert xml1 {{q .JSON_OUT}} -o {{q .UNSIGNED}}
+    - json-to-plist <{{q .JSON_OUT}} >{{q .UNSIGNED}}
 
   sign:
     label: *label-by-path

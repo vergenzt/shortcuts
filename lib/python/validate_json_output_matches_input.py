@@ -28,16 +28,17 @@ def main(old_path: Path, new_path: Path) -> None:
     path_vals: dict[JSONPath, Vals] = defaultdict(lambda: Vals(set(), set()))
     old_val_paths: dict[OldValue, set[JSONPath]] = defaultdict(set)
 
-    print(patch)
     for action in patch.patch:
+        print(action)
         match action:
             case {"path": path}:
-                old_val: Any = resolve_pointer(old_json, path, None)
+                old_val: str = json.dumps(resolve_pointer(old_json, path, None))
                 if old_val:
+                    print(old_val)
                     path_vals[path].old.add(old_val)
                     old_val_paths[old_val].add(path)
 
-                new_val: Any = resolve_pointer(new_json, path, None)
+                new_val: str = json.dumps(resolve_pointer(new_json, path, None))
                 if new_val:
                     path_vals[path].new.add(new_val)
 

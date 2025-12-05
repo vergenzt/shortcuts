@@ -12,12 +12,8 @@ local sc = import 'shortcuts.libsonnet';
       WFInput: sc.Attach(sc.Ref('My Shortcuts')),
     }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '39F1EC3C-990A-48C7-8F12-1E92E7A0B51B',
-      WFCondition: 99,
-      WFConditionalActionString: '🔂',
-      WFControlFlowMode: 0,
-      WFInput: {
+    sc.If_(sc.Cond(
+      {
         Type: 'Variable',
         Variable: sc.Attach({
           Aggrandizements: [
@@ -31,17 +27,18 @@ local sc = import 'shortcuts.libsonnet';
           VariableName: 'Repeat Item',
         }),
       },
-    }),
+      'contains',
+      {
+        WFConditionalActionString: '🔂',
+      }
+    )).Then_([
 
-    sc.Action('is.workflow.actions.runworkflow', {
-      WFWorkflow: sc.Attach(sc.Ref('Vars.Repeat Item')),
-      WFWorkflowName: sc.Attach(sc.Ref('Vars.Repeat Item')),
-    }),
+      sc.Action('is.workflow.actions.runworkflow', {
+        WFWorkflow: sc.Attach(sc.Ref('Vars.Repeat Item')),
+        WFWorkflowName: sc.Attach(sc.Ref('Vars.Repeat Item')),
+      }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '39F1EC3C-990A-48C7-8F12-1E92E7A0B51B',
-      WFControlFlowMode: 2,
-    }),
+    ]).EndIf_(),
 
     sc.Action('is.workflow.actions.repeat.each', {
       GroupingIdentifier: 'B4F3CD09-4BC6-4CBD-B8AC-2DC99998DBF2',

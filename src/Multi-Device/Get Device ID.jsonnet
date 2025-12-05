@@ -23,34 +23,29 @@ local sc = import 'shortcuts.libsonnet';
       WFInput: sc.Attach(sc.Ref('Shortcut Result')),
     }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '70681BE9-B13D-47A3-ADEB-4D9A2BFB7094',
-      WFCondition: 101,
-      WFControlFlowMode: 0,
-      WFInput: {
+    sc.If_(sc.Cond(
+      {
         Type: 'Variable',
         Variable: sc.Attach(sc.Ref('Dictionary Value')),
       },
-    }),
+      'does not have any value'
+    )).Then_([
 
-    sc.Action('is.workflow.actions.ask', name='Provided Input', params={
-      WFAllowsMultilineText: false,
-      WFAskActionDefaultAnswer: '',
-      WFAskActionPrompt: 'Device not labeled! Would you like to label it?',
-      WFInputType: 'Text',
-    }),
+      sc.Action('is.workflow.actions.ask', name='Provided Input', params={
+        WFAllowsMultilineText: false,
+        WFAskActionDefaultAnswer: '',
+        WFAskActionPrompt: 'Device not labeled! Would you like to label it?',
+        WFInputType: 'Text',
+      }),
 
-    sc.Action('dk.simonbs.DataJar.SetValueIntent', {
-      keyPath: sc.Str(['Device Labels.', sc.Ref('Network Details')]),
-      overwriteStrategy: 'alwaysDisallow',
-      valueConversionMode: 'text',
-      values: sc.Attach(sc.Ref('Provided Input')),
-    }),
+      sc.Action('dk.simonbs.DataJar.SetValueIntent', {
+        keyPath: sc.Str(['Device Labels.', sc.Ref('Network Details')]),
+        overwriteStrategy: 'alwaysDisallow',
+        valueConversionMode: 'text',
+        values: sc.Attach(sc.Ref('Provided Input')),
+      }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '70681BE9-B13D-47A3-ADEB-4D9A2BFB7094',
-      WFControlFlowMode: 2,
-    }),
+    ]).EndIf_(),
 
     sc.Action('is.workflow.actions.output', {
       WFNoOutputSurfaceBehavior: 'Copy to Clipboard',

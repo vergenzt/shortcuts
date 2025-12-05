@@ -8,62 +8,56 @@ local sc = import 'shortcuts.libsonnet';
       WFDeviceDetail: 'Device Model',
     }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '6C16A978-32F1-45D5-A028-BFFC2A301E17',
-      WFCondition: 4,
-      WFConditionalActionString: 'Mac',
-      WFControlFlowMode: 0,
-      WFInput: {
+    sc.If_(sc.Cond(
+      {
         Type: 'Variable',
         Variable: sc.Attach(sc.Ref('Device Model')),
       },
-    }),
+      'is',
+      {
+        WFConditionalActionString: 'Mac',
+      }
+    )).Then_([
 
-    sc.Action('is.workflow.actions.gettext', name='Text', params={
-      WFTextActionText: "jq -c 'if type == \"array\" then .[] else . end' \\\n| parallel '\\\n  curl \\\n  --no-progress-meter \\\n  --fail-with-body \\\n  --url {[ [.base_url, .path] | join(\"/\") ]} \\\n  {[ .method // empty | \"--request\", . ]} \\\n  {[ .params // empty | to_entries | map(\"--url-query\", \"\\(.key)=\\(.value)\")[] ]} \\\n  {[ .data // empty | to_entries | map(\"--data-urlencode\", \"(\\.key)=\\(.value)\")[] ]} \\\n  {[ .form // empty | to_entries | map(\"--form-string\", \"(\\.key)=\\(.value)\")[] ]} \\\n  {[ .json // empty | \"--json\", . ]}",
-    }),
+      sc.Action('is.workflow.actions.gettext', name='Text', params={
+        WFTextActionText: "jq -c 'if type == \"array\" then .[] else . end' \\\n| parallel '\\\n  curl \\\n  --no-progress-meter \\\n  --fail-with-body \\\n  --url {[ [.base_url, .path] | join(\"/\") ]} \\\n  {[ .method // empty | \"--request\", . ]} \\\n  {[ .params // empty | to_entries | map(\"--url-query\", \"\\(.key)=\\(.value)\")[] ]} \\\n  {[ .data // empty | to_entries | map(\"--data-urlencode\", \"(\\.key)=\\(.value)\")[] ]} \\\n  {[ .form // empty | to_entries | map(\"--form-string\", \"(\\.key)=\\(.value)\")[] ]} \\\n  {[ .json // empty | \"--json\", . ]}",
+      }),
 
-    sc.Action('is.workflow.actions.runshellscript', name='Shell Script Result', params={
-      Input: sc.Attach(sc.Input),
-      InputMode: 'to stdin',
-      Script: sc.Str([sc.Ref('Text')]),
-    }),
+      sc.Action('is.workflow.actions.runshellscript', name='Shell Script Result', params={
+        Input: sc.Attach(sc.Input),
+        InputMode: 'to stdin',
+        Script: sc.Str([sc.Ref('Text')]),
+      }),
 
-    sc.Action('is.workflow.actions.previewdocument', {
-      WFInput: sc.Attach(sc.Ref('Shell Script Result')),
-    }),
+      sc.Action('is.workflow.actions.previewdocument', {
+        WFInput: sc.Attach(sc.Ref('Shell Script Result')),
+      }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '6C16A978-32F1-45D5-A028-BFFC2A301E17',
-      WFControlFlowMode: 2,
-    }),
+    ]).EndIf_(),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: 'B4F4A155-D1B9-4A89-AA17-1A9CBA5CFE54',
-      WFCondition: 4,
-      WFConditionalActionString: 'iPhone',
-      WFControlFlowMode: 0,
-      WFInput: {
+    sc.If_(sc.Cond(
+      {
         Type: 'Variable',
         Variable: sc.Attach(sc.Ref('Device Model')),
       },
-    }),
+      'is',
+      {
+        WFConditionalActionString: 'iPhone',
+      }
+    )).Then_([
 
-    sc.Action('is.workflow.actions.gettext', name='Text'),
+      sc.Action('is.workflow.actions.gettext', name='Text'),
 
-    sc.Action('dk.simonbs.Scriptable.RunScriptInlineIntent', {
-      'Show-texts': false,
-      'Show-urls': false,
-      ShowWhenRun: false,
-      parameter: [],
-      script: sc.Str([sc.Ref('Text')]),
-      texts: sc.Str([sc.Ref('Input Dict')]),
-    }),
+      sc.Action('dk.simonbs.Scriptable.RunScriptInlineIntent', {
+        'Show-texts': false,
+        'Show-urls': false,
+        ShowWhenRun: false,
+        parameter: [],
+        script: sc.Str([sc.Ref('Text')]),
+        texts: sc.Str([sc.Ref('Input Dict')]),
+      }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: 'B4F4A155-D1B9-4A89-AA17-1A9CBA5CFE54',
-      WFControlFlowMode: 2,
-    }),
+    ]).EndIf_(),
 
   ]),
   WFWorkflowClientVersion: '3607.0.2',

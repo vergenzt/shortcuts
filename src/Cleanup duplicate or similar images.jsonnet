@@ -114,12 +114,8 @@ local sc = import 'shortcuts.libsonnet';
       },
     }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: 'BA3C2F70-11AD-4ED9-8402-E4A769E54001',
-      WFCondition: 4,
-      WFControlFlowMode: 0,
-      WFEnumeration: 'Mac',
-      WFInput: {
+    sc.If_(sc.Cond(
+      {
         Type: 'Variable',
         Variable: sc.Attach({
           Aggrandizements: [
@@ -131,332 +127,316 @@ local sc = import 'shortcuts.libsonnet';
           Type: 'DeviceDetails',
         }),
       },
-    }),
+      'is',
+      {
+        UUID: '265AD133-B82F-4159-AC30-6EE51DB5E047',
+        WFEnumeration: 'Mac',
+      }
+    )).Then_([
 
-    sc.Action('is.workflow.actions.number', name='Number', params={
-      WFNumberActionNumber: sc.Attach(sc.Ref('Options', aggs=[
-        {
-          DictionaryKey: 'BatchSize.Mac',
-          Type: 'WFDictionaryValueVariableAggrandizement',
-        },
-      ])),
-    }),
+      sc.Action('is.workflow.actions.number', name='Number', params={
+        WFNumberActionNumber: sc.Attach(sc.Ref('Options', aggs=[
+          {
+            DictionaryKey: 'BatchSize.Mac',
+            Type: 'WFDictionaryValueVariableAggrandizement',
+          },
+        ])),
+      }),
 
-    sc.Action('is.workflow.actions.setvariable', {
-      WFInput: sc.Attach(sc.Ref('Number')),
-      WFVariableName: 'BatchSize',
-    }),
+      sc.Action('is.workflow.actions.setvariable', {
+        WFInput: sc.Attach(sc.Ref('Number')),
+        WFVariableName: 'BatchSize',
+      }),
 
-    sc.Action('is.workflow.actions.number', name='Number', params={
-      WFNumberActionNumber: sc.Attach(sc.Ref('Options', aggs=[
-        {
-          DictionaryKey: 'MaxNumImages.Mac',
-          Type: 'WFDictionaryValueVariableAggrandizement',
-        },
-      ])),
-    }),
+      sc.Action('is.workflow.actions.number', name='Number', params={
+        WFNumberActionNumber: sc.Attach(sc.Ref('Options', aggs=[
+          {
+            DictionaryKey: 'MaxNumImages.Mac',
+            Type: 'WFDictionaryValueVariableAggrandizement',
+          },
+        ])),
+      }),
 
-    sc.Action('is.workflow.actions.setvariable', {
-      WFInput: sc.Attach(sc.Ref('Number')),
-      WFVariableName: 'Max images',
-    }),
+      sc.Action('is.workflow.actions.setvariable', {
+        WFInput: sc.Attach(sc.Ref('Number')),
+        WFVariableName: 'Max images',
+      }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: 'BA3C2F70-11AD-4ED9-8402-E4A769E54001',
-      WFControlFlowMode: 1,
-    }),
+    ]).Else_([
 
-    sc.Action('is.workflow.actions.number', name='Number', params={
-      WFNumberActionNumber: sc.Attach(sc.Ref('Options', aggs=[
-        {
-          DictionaryKey: 'BatchSize.iOS',
-          Type: 'WFDictionaryValueVariableAggrandizement',
-        },
-      ])),
-    }),
+      sc.Action('is.workflow.actions.number', name='Number', params={
+        WFNumberActionNumber: sc.Attach(sc.Ref('Options', aggs=[
+          {
+            DictionaryKey: 'BatchSize.iOS',
+            Type: 'WFDictionaryValueVariableAggrandizement',
+          },
+        ])),
+      }),
 
-    sc.Action('is.workflow.actions.setvariable', {
-      WFInput: sc.Attach(sc.Ref('Number')),
-      WFVariableName: 'BatchSize',
-    }),
+      sc.Action('is.workflow.actions.setvariable', {
+        WFInput: sc.Attach(sc.Ref('Number')),
+        WFVariableName: 'BatchSize',
+      }),
 
-    sc.Action('is.workflow.actions.number', name='Number', params={
-      WFNumberActionNumber: sc.Attach(sc.Ref('Options', aggs=[
-        {
-          DictionaryKey: 'MaxNumImages.iOS',
-          Type: 'WFDictionaryValueVariableAggrandizement',
-        },
-      ])),
-    }),
+      sc.Action('is.workflow.actions.number', name='Number', params={
+        WFNumberActionNumber: sc.Attach(sc.Ref('Options', aggs=[
+          {
+            DictionaryKey: 'MaxNumImages.iOS',
+            Type: 'WFDictionaryValueVariableAggrandizement',
+          },
+        ])),
+      }),
 
-    sc.Action('is.workflow.actions.setvariable', {
-      WFInput: sc.Attach(sc.Ref('Number')),
-      WFVariableName: 'Max images',
-    }),
+      sc.Action('is.workflow.actions.setvariable', {
+        WFInput: sc.Attach(sc.Ref('Number')),
+        WFVariableName: 'Max images',
+      }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: 'BA3C2F70-11AD-4ED9-8402-E4A769E54001',
-      WFControlFlowMode: 2,
-    }),
+    ]).EndIf_(),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '376A2409-192B-45E7-B467-85FA26BE87CA',
-      WFCondition: 100,
-      WFControlFlowMode: 0,
-      WFInput: {
+    sc.If_(sc.Cond(
+      {
         Type: 'Variable',
         Variable: sc.Attach(sc.Input),
       },
-    }),
+      'has any value',
+      {
+        UUID: 'D4FA68D6-A610-4761-8AF6-00D99F4A6E78',
+      }
+    )).Then_([
 
-    sc.Action('is.workflow.actions.filter.photos', {
-      WFContentItemFilter: {
-        Value: {
-          WFActionParameterFilterPrefix: 1,
-          WFActionParameterFilterTemplates: [
-            {
-              Operator: 4,
-              Property: 'Media Type',
-              Removable: true,
-              Values: {
-                Enumeration: {
-                  Value: 'Image',
-                  WFSerializationType: 'WFStringSubstitutableState',
+      sc.Action('is.workflow.actions.filter.photos', {
+        WFContentItemFilter: {
+          Value: {
+            WFActionParameterFilterPrefix: 1,
+            WFActionParameterFilterTemplates: [
+              {
+                Operator: 4,
+                Property: 'Media Type',
+                Removable: true,
+                Values: {
+                  Enumeration: {
+                    Value: 'Image',
+                    WFSerializationType: 'WFStringSubstitutableState',
+                  },
+                  Unit: 4,
                 },
-                Unit: 4,
               },
-            },
-          ],
-          WFContentPredicateBoundedDate: false,
+            ],
+            WFContentPredicateBoundedDate: false,
+          },
+          WFSerializationType: 'WFContentPredicateTableTemplate',
         },
-        WFSerializationType: 'WFContentPredicateTableTemplate',
-      },
-      WFContentItemInputParameter: sc.Attach(sc.Input),
-      WFContentItemLimitEnabled: false,
-      WFContentItemLimitNumber: sc.Attach(sc.Ref('Vars.Max images')),
-    }),
+        WFContentItemInputParameter: sc.Attach(sc.Input),
+        WFContentItemLimitEnabled: false,
+        WFContentItemLimitNumber: sc.Attach(sc.Ref('Vars.Max images')),
+      }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '376A2409-192B-45E7-B467-85FA26BE87CA',
-      WFControlFlowMode: 1,
-    }),
+    ]).Else_([
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '9EBFE732-4FF7-4AF9-B269-A63494FC9003',
-      WFCondition: 4,
-      WFControlFlowMode: 0,
-      WFEnumeration: 'Mac',
-      WFInput: {
-        Type: 'Variable',
-        Variable: sc.Attach({
-          Aggrandizements: [
-            {
-              PropertyName: 'Device Type',
-              Type: 'WFPropertyVariableAggrandizement',
-            },
+      sc.If_(sc.Cond(
+        {
+          Type: 'Variable',
+          Variable: sc.Attach({
+            Aggrandizements: [
+              {
+                PropertyName: 'Device Type',
+                Type: 'WFPropertyVariableAggrandizement',
+              },
+            ],
+            Type: 'DeviceDetails',
+          }),
+        },
+        'is',
+        {
+          UUID: 'D932EB04-F084-4AF3-A455-5FD51CD1EB1F',
+          WFEnumeration: 'Mac',
+        }
+      )).Then_([
+
+        sc.Action('is.workflow.actions.choosefrommenu', {
+          GroupingIdentifier: 'B841B9A7-7344-46E0-913E-5EA29BA093E5',
+          WFControlFlowMode: 0,
+          WFMenuItems: [
+            'Photos',
+            'One or more folders in Finder',
           ],
-          Type: 'DeviceDetails',
+          WFMenuPrompt: 'Load images from',
         }),
-      },
-    }),
 
-    sc.Action('is.workflow.actions.choosefrommenu', {
-      GroupingIdentifier: 'B841B9A7-7344-46E0-913E-5EA29BA093E5',
-      WFControlFlowMode: 0,
-      WFMenuItems: [
-        'Photos',
-        'One or more folders in Finder',
-      ],
-      WFMenuPrompt: 'Load images from',
-    }),
+        sc.Action('is.workflow.actions.choosefrommenu', {
+          GroupingIdentifier: 'B841B9A7-7344-46E0-913E-5EA29BA093E5',
+          WFControlFlowMode: 1,
+          WFMenuItemTitle: 'Photos',
+        }),
 
-    sc.Action('is.workflow.actions.choosefrommenu', {
-      GroupingIdentifier: 'B841B9A7-7344-46E0-913E-5EA29BA093E5',
-      WFControlFlowMode: 1,
-      WFMenuItemTitle: 'Photos',
-    }),
-
-    sc.Action('is.workflow.actions.filter.photos', {
-      WFContentItemFilter: {
-        Value: {
-          WFActionParameterFilterPrefix: 0,
-          WFActionParameterFilterTemplates: [
-            {
-              Operator: 4,
-              Property: 'Album',
-              Removable: true,
-              Values: {
-                Enumeration: {
-                  Value: sc.Attach({
-                    Prompt: 'Select album(s) and/or other criteria to search for photos',
-                    Type: 'Ask',
-                  }),
-                  WFSerializationType: 'WFStringSubstitutableState',
+        sc.Action('is.workflow.actions.filter.photos', {
+          WFContentItemFilter: {
+            Value: {
+              WFActionParameterFilterPrefix: 0,
+              WFActionParameterFilterTemplates: [
+                {
+                  Operator: 4,
+                  Property: 'Album',
+                  Removable: true,
+                  Values: {
+                    Enumeration: {
+                      Value: sc.Attach({
+                        Prompt: 'Select album(s) and/or other criteria to search for photos',
+                        Type: 'Ask',
+                      }),
+                      WFSerializationType: 'WFStringSubstitutableState',
+                    },
+                    Unit: 4,
+                  },
                 },
-                Unit: 4,
-              },
+              ],
+              WFContentPredicateBoundedDate: false,
             },
-          ],
-          WFContentPredicateBoundedDate: false,
-        },
-        WFSerializationType: 'WFContentPredicateTableTemplate',
-      },
-      WFContentItemInputParameter: 'Library',
-      WFContentItemLimitEnabled: false,
-      WFContentItemLimitNumber: sc.Attach(sc.Ref('Vars.Max images')),
-    }),
+            WFSerializationType: 'WFContentPredicateTableTemplate',
+          },
+          WFContentItemInputParameter: 'Library',
+          WFContentItemLimitEnabled: false,
+          WFContentItemLimitNumber: sc.Attach(sc.Ref('Vars.Max images')),
+        }),
 
-    sc.Action('is.workflow.actions.choosefrommenu', {
-      GroupingIdentifier: 'B841B9A7-7344-46E0-913E-5EA29BA093E5',
-      WFControlFlowMode: 1,
-      WFMenuItemTitle: 'One or more folders in Finder',
-    }),
+        sc.Action('is.workflow.actions.choosefrommenu', {
+          GroupingIdentifier: 'B841B9A7-7344-46E0-913E-5EA29BA093E5',
+          WFControlFlowMode: 1,
+          WFMenuItemTitle: 'One or more folders in Finder',
+        }),
 
-    sc.Action('is.workflow.actions.file.select', name='Finder folder', params={
-      SelectMultiple: true,
-      WFPickingMode: 'Folders',
-    }),
+        sc.Action('is.workflow.actions.file.select', name='Finder folder', params={
+          SelectMultiple: true,
+          WFPickingMode: 'Folders',
+        }),
 
-    sc.Action('is.workflow.actions.setvariable', {
-      WFInput: sc.Attach(sc.Ref('Finder folder')),
-      WFVariableName: 'Use finder',
-    }),
+        sc.Action('is.workflow.actions.setvariable', {
+          WFInput: sc.Attach(sc.Ref('Finder folder')),
+          WFVariableName: 'Use finder',
+        }),
 
-    sc.Action('is.workflow.actions.repeat.each', {
-      GroupingIdentifier: 'DEC4EAD9-4905-480F-804D-CF8330EAADEE',
-      WFControlFlowMode: 0,
-      WFInput: sc.Attach(sc.Ref('Vars.Use finder')),
-    }),
+        sc.Action('is.workflow.actions.repeat.each', {
+          GroupingIdentifier: 'DEC4EAD9-4905-480F-804D-CF8330EAADEE',
+          WFControlFlowMode: 0,
+          WFInput: sc.Attach(sc.Ref('Vars.Use finder')),
+        }),
 
-    sc.Action('is.workflow.actions.file.getfoldercontents', {
-      WFFolder: sc.Attach(sc.Ref('Vars.Repeat Item')),
-    }),
+        sc.Action('is.workflow.actions.file.getfoldercontents', {
+          WFFolder: sc.Attach(sc.Ref('Vars.Repeat Item')),
+        }),
 
-    sc.Action('is.workflow.actions.repeat.each', {
-      GroupingIdentifier: 'DEC4EAD9-4905-480F-804D-CF8330EAADEE',
-      WFControlFlowMode: 2,
-    }),
+        sc.Action('is.workflow.actions.repeat.each', {
+          GroupingIdentifier: 'DEC4EAD9-4905-480F-804D-CF8330EAADEE',
+          WFControlFlowMode: 2,
+        }),
 
-    sc.Action('is.workflow.actions.choosefrommenu', {
-      GroupingIdentifier: 'B841B9A7-7344-46E0-913E-5EA29BA093E5',
-      WFControlFlowMode: 2,
-    }),
+        sc.Action('is.workflow.actions.choosefrommenu', {
+          GroupingIdentifier: 'B841B9A7-7344-46E0-913E-5EA29BA093E5',
+          WFControlFlowMode: 2,
+        }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '9EBFE732-4FF7-4AF9-B269-A63494FC9003',
-      WFControlFlowMode: 1,
-    }),
+      ]).Else_([
 
-    sc.Action('is.workflow.actions.filter.photos', {
-      WFContentItemFilter: {
-        Value: {
-          WFActionParameterFilterPrefix: 0,
-          WFActionParameterFilterTemplates: [
-            {
-              Operator: 4,
-              Property: 'Album',
-              Removable: true,
-              Values: {
-                Enumeration: {
-                  Value: sc.Attach({
-                    Prompt: 'Select album(s) and/or other criteria to search for photos',
-                    Type: 'Ask',
-                  }),
-                  WFSerializationType: 'WFStringSubstitutableState',
+        sc.Action('is.workflow.actions.filter.photos', {
+          WFContentItemFilter: {
+            Value: {
+              WFActionParameterFilterPrefix: 0,
+              WFActionParameterFilterTemplates: [
+                {
+                  Operator: 4,
+                  Property: 'Album',
+                  Removable: true,
+                  Values: {
+                    Enumeration: {
+                      Value: sc.Attach({
+                        Prompt: 'Select album(s) and/or other criteria to search for photos',
+                        Type: 'Ask',
+                      }),
+                      WFSerializationType: 'WFStringSubstitutableState',
+                    },
+                    Unit: 4,
+                  },
                 },
-                Unit: 4,
-              },
+              ],
+              WFContentPredicateBoundedDate: false,
             },
-          ],
-          WFContentPredicateBoundedDate: false,
-        },
-        WFSerializationType: 'WFContentPredicateTableTemplate',
-      },
-      WFContentItemInputParameter: 'Library',
-      WFContentItemLimitEnabled: false,
-      WFContentItemLimitNumber: sc.Attach(sc.Ref('Vars.Max images')),
-    }),
+            WFSerializationType: 'WFContentPredicateTableTemplate',
+          },
+          WFContentItemInputParameter: 'Library',
+          WFContentItemLimitEnabled: false,
+          WFContentItemLimitNumber: sc.Attach(sc.Ref('Vars.Max images')),
+        }),
 
-    sc.Action('is.workflow.actions.conditional', name='If Result', params={
-      GroupingIdentifier: '9EBFE732-4FF7-4AF9-B269-A63494FC9003',
-      WFControlFlowMode: 2,
-    }),
+      ]).EndIf_(name='If Result'),
 
-    sc.Action('is.workflow.actions.filter.photos', {
-      WFContentItemFilter: {
-        Value: {
-          WFActionParameterFilterPrefix: 1,
-          WFActionParameterFilterTemplates: [
-            {
-              Operator: 4,
-              Property: 'Media Type',
-              Removable: true,
-              Values: {
-                Enumeration: {
-                  Value: 'Image',
-                  WFSerializationType: 'WFStringSubstitutableState',
+      sc.Action('is.workflow.actions.filter.photos', {
+        WFContentItemFilter: {
+          Value: {
+            WFActionParameterFilterPrefix: 1,
+            WFActionParameterFilterTemplates: [
+              {
+                Operator: 4,
+                Property: 'Media Type',
+                Removable: true,
+                Values: {
+                  Enumeration: {
+                    Value: 'Image',
+                    WFSerializationType: 'WFStringSubstitutableState',
+                  },
+                  Unit: 4,
                 },
-                Unit: 4,
               },
-            },
-          ],
-          WFContentPredicateBoundedDate: false,
+            ],
+            WFContentPredicateBoundedDate: false,
+          },
+          WFSerializationType: 'WFContentPredicateTableTemplate',
         },
-        WFSerializationType: 'WFContentPredicateTableTemplate',
-      },
-      WFContentItemInputParameter: sc.Attach(sc.Ref('If Result')),
-      WFContentItemLimitEnabled: false,
-      WFContentItemLimitNumber: sc.Attach(sc.Ref('Vars.Max images')),
-    }),
+        WFContentItemInputParameter: sc.Attach(sc.Ref('If Result')),
+        WFContentItemLimitEnabled: false,
+        WFContentItemLimitNumber: sc.Attach(sc.Ref('Vars.Max images')),
+      }),
 
-    sc.Action('is.workflow.actions.conditional', name='If Result', params={
-      GroupingIdentifier: '376A2409-192B-45E7-B467-85FA26BE87CA',
-      WFControlFlowMode: 2,
-    }),
+    ]).EndIf_(name='If Result'),
 
     sc.Action('is.workflow.actions.count', name='Original count', params={
       Input: sc.Attach(sc.Ref('If Result')),
     }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '7DB4E8FC-2CFA-4F34-BBF6-F37851135579',
-      WFCondition: 2,
-      WFControlFlowMode: 0,
-      WFInput: {
+    sc.If_(sc.Cond(
+      {
         Type: 'Variable',
         Variable: sc.Attach(sc.Ref('Original count')),
       },
-      WFNumberValue: sc.Attach(sc.Ref('Vars.Max images')),
-    }),
+      '>',
+      {
+        UUID: 'BD368A4F-70DF-4E5C-936F-2F0574582859',
+        WFNumberValue: sc.Attach(sc.Ref('Vars.Max images')),
+      }
+    )).Then_([
 
-    sc.Action('is.workflow.actions.filter.photos', {
-      WFContentItemFilter: {
-        Value: {
-          WFActionParameterFilterPrefix: 1,
-          WFActionParameterFilterTemplates: [],
-          WFContentPredicateBoundedDate: false,
+      sc.Action('is.workflow.actions.filter.photos', {
+        WFContentItemFilter: {
+          Value: {
+            WFActionParameterFilterPrefix: 1,
+            WFActionParameterFilterTemplates: [],
+            WFContentPredicateBoundedDate: false,
+          },
+          WFSerializationType: 'WFContentPredicateTableTemplate',
         },
-        WFSerializationType: 'WFContentPredicateTableTemplate',
-      },
-      WFContentItemInputParameter: sc.Attach(sc.Ref('If Result')),
-      WFContentItemLimitEnabled: true,
-      WFContentItemLimitNumber: sc.Attach(sc.Ref('Vars.Max images')),
-      WFContentItemSortProperty: 'Random',
-    }),
+        WFContentItemInputParameter: sc.Attach(sc.Ref('If Result')),
+        WFContentItemLimitEnabled: true,
+        WFContentItemLimitNumber: sc.Attach(sc.Ref('Vars.Max images')),
+        WFContentItemSortProperty: 'Random',
+      }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '7DB4E8FC-2CFA-4F34-BBF6-F37851135579',
-      WFControlFlowMode: 1,
-    }),
+    ]).Else_([
 
-    sc.Action('is.workflow.actions.getvariable', {
-      WFVariable: sc.Attach(sc.Ref('If Result')),
-    }),
+      sc.Action('is.workflow.actions.getvariable', {
+        WFVariable: sc.Attach(sc.Ref('If Result')),
+      }),
 
-    sc.Action('is.workflow.actions.conditional', name='If Result', params={
-      GroupingIdentifier: '7DB4E8FC-2CFA-4F34-BBF6-F37851135579',
-      WFControlFlowMode: 2,
-    }),
+    ]).EndIf_(name='If Result'),
 
     sc.Action('is.workflow.actions.setvariable', {
       WFInput: sc.Attach(sc.Ref('If Result')),
@@ -472,53 +452,48 @@ local sc = import 'shortcuts.libsonnet';
       WFVariableName: 'Image count',
     }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '883FDE9F-BF82-4F08-9953-692F7A6E5FF5',
-      WFCondition: 0,
-      WFControlFlowMode: 0,
-      WFInput: {
+    sc.If_(sc.Cond(
+      {
         Type: 'Variable',
         Variable: sc.Attach(sc.Ref('Vars.Image count')),
       },
-      WFNumberValue: sc.Attach(sc.Ref('Original count')),
-    }),
+      '<',
+      {
+        UUID: '6C926B90-A218-4FF0-954E-75891E719537',
+        WFNumberValue: sc.Attach(sc.Ref('Original count')),
+      }
+    )).Then_([
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '83902807-DBFF-4DED-99B8-82EF2EF4BF07',
-      WFCondition: 5,
-      WFControlFlowMode: 0,
-      WFEnumeration: 'Mac',
-      WFInput: {
-        Type: 'Variable',
-        Variable: sc.Attach({
-          Aggrandizements: [
-            {
-              PropertyName: 'Device Type',
-              Type: 'WFPropertyVariableAggrandizement',
-            },
-          ],
-          Type: 'DeviceDetails',
+      sc.If_(sc.Cond(
+        {
+          Type: 'Variable',
+          Variable: sc.Attach({
+            Aggrandizements: [
+              {
+                PropertyName: 'Device Type',
+                Type: 'WFPropertyVariableAggrandizement',
+              },
+            ],
+            Type: 'DeviceDetails',
+          }),
+        },
+        'is not',
+        {
+          WFEnumeration: 'Mac',
+        }
+      )).Then_([
+
+        sc.Action('is.workflow.actions.gettext', name='Text', params={
+          WFTextActionText: sc.Str([sc.Ref('Original count')]),
         }),
-      },
-    }),
 
-    sc.Action('is.workflow.actions.gettext', name='Text', params={
-      WFTextActionText: sc.Str([sc.Ref('Original count')]),
-    }),
+        sc.Action('is.workflow.actions.alert', {
+          WFAlertActionMessage: sc.Str([sc.Ref('Text')]),
+        }),
 
-    sc.Action('is.workflow.actions.alert', {
-      WFAlertActionMessage: sc.Str([sc.Ref('Text')]),
-    }),
+      ]).EndIf_(),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '83902807-DBFF-4DED-99B8-82EF2EF4BF07',
-      WFControlFlowMode: 2,
-    }),
-
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '883FDE9F-BF82-4F08-9953-692F7A6E5FF5',
-      WFControlFlowMode: 2,
-    }),
+    ]).EndIf_(),
 
     sc.Action('is.workflow.actions.getvalueforkey', name='Dictionary Value', params={
       WFDictionaryKey: 'DupThreshold',
@@ -707,158 +682,140 @@ local sc = import 'shortcuts.libsonnet';
       WFTimeUntilUnit: 'Seconds',
     }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: 'AB233B0D-3F0F-415E-AC36-289AD22C5D72',
-      WFCondition: 2,
-      WFControlFlowMode: 0,
-      WFInput: {
+    sc.If_(sc.Cond(
+      {
         Type: 'Variable',
         Variable: sc.Attach(sc.Ref('Time Between Dates')),
       },
-      WFNumberValue: sc.Attach(sc.Ref('Options', aggs=[
+      '>',
+      {
+        UUID: 'E4913BA4-16E7-4E46-98C1-DAE49006099E',
+        WFNumberValue: sc.Attach(sc.Ref('Options', aggs=[
+          {
+            DictionaryKey: 'ProgressSeconds',
+            Type: 'WFDictionaryValueVariableAggrandizement',
+          },
+        ])),
+      }
+    )).Then_([
+
+      sc.Action('is.workflow.actions.gettimebetweendates', name='Time Between Dates', params={
+        WFInput: sc.Str([{
+          Type: 'CurrentDate',
+        }]),
+        WFTimeUntilFromDate: sc.Str([sc.Ref('Date')]),
+        WFTimeUntilUnit: 'Seconds',
+      }),
+
+      sc.Action('is.workflow.actions.count', name='CurNumImages', params={
+        Input: sc.Attach(sc.Ref('Vars.Hash list')),
+      }),
+
+      sc.Action('is.workflow.actions.calculateexpression', name='Calculation Result', params={
+        Input: sc.Str([sc.Ref('CurNumImages')]),
+      }),
+
+      sc.Action('is.workflow.actions.round', name='Items per second', params={
+        WFInput: sc.Attach(sc.Ref('Calculation Result')),
+        WFRoundTo: 'Tenths',
+      }),
+
+      sc.Action('is.workflow.actions.gettext', name='Text', params={
+        WFTextActionText: sc.Str(['round(', sc.Ref('Vars.Image count'), '/', sc.Ref('CurNumImages'), '*(', sc.Ref('Time Between Dates')]),
+      }),
+
+      sc.Action('is.workflow.actions.calculateexpression', name='Seconds remaining', params={
+        Input: sc.Str([sc.Ref('Text')]),
+      }),
+
+      sc.If_(sc.Cond(
         {
-          DictionaryKey: 'ProgressSeconds',
-          Type: 'WFDictionaryValueVariableAggrandizement',
+          Type: 'Variable',
+          Variable: sc.Attach(sc.Ref('Vars.Repeat Index')),
         },
-      ])),
-    }),
+        '>',
+        {
+          UUID: '1EC6E4AC-CA98-4011-9F5B-3B913172C608',
+          WFNumberValue: '2',
+        }
+      )).Then_([
 
-    sc.Action('is.workflow.actions.gettimebetweendates', name='Time Between Dates', params={
-      WFInput: sc.Str([{
-        Type: 'CurrentDate',
-      }]),
-      WFTimeUntilFromDate: sc.Str([sc.Ref('Date')]),
-      WFTimeUntilUnit: 'Seconds',
-    }),
+        sc.If_(sc.Cond(
+          {
+            Type: 'Variable',
+            Variable: sc.Attach(sc.Ref('Seconds remaining')),
+          },
+          '>',
+          {
+            UUID: '11A59BDE-545F-499E-B361-33F6515AF5C4',
+            WFNumberValue: '0',
+          }
+        )).Then_([
 
-    sc.Action('is.workflow.actions.count', name='CurNumImages', params={
-      Input: sc.Attach(sc.Ref('Vars.Hash list')),
-    }),
+          sc.If_(sc.Cond(
+            {
+              Type: 'Variable',
+              Variable: sc.Attach(sc.Ref('Seconds remaining')),
+            },
+            '>',
+            {
+              WFNumberValue: '80',
+            }
+          )).Then_([
 
-    sc.Action('is.workflow.actions.calculateexpression', name='Calculation Result', params={
-      Input: sc.Str([sc.Ref('CurNumImages')]),
-    }),
+            sc.Action('is.workflow.actions.calculateexpression', name='Minutes remaining', params={
+              Input: sc.Str(['ceil(', sc.Ref('Seconds remaining'), '/60)']),
+            }),
 
-    sc.Action('is.workflow.actions.round', name='Items per second', params={
-      WFInput: sc.Attach(sc.Ref('Calculation Result')),
-      WFRoundTo: 'Tenths',
-    }),
+            sc.Action('is.workflow.actions.gettext', {
+              WFTextActionText: sc.Str([sc.Ref('Minutes remaining'), 'm left']),
+            }),
 
-    sc.Action('is.workflow.actions.gettext', name='Text', params={
-      WFTextActionText: sc.Str(['round(', sc.Ref('Vars.Image count'), '/', sc.Ref('CurNumImages'), '*(', sc.Ref('Time Between Dates')]),
-    }),
+          ]).Else_([
 
-    sc.Action('is.workflow.actions.calculateexpression', name='Seconds remaining', params={
-      Input: sc.Str([sc.Ref('Text')]),
-    }),
+            sc.Action('is.workflow.actions.gettext', {
+              WFTextActionText: sc.Str([sc.Ref('Seconds remaining'), 's left']),
+            }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '2BB9153E-3BAD-4E19-A64E-2013A2D713F4',
-      WFCondition: 2,
-      WFControlFlowMode: 0,
-      WFInput: {
-        Type: 'Variable',
-        Variable: sc.Attach(sc.Ref('Vars.Repeat Index')),
-      },
-      WFNumberValue: '2',
-    }),
+          ]).EndIf_(),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: 'D1315B0F-2414-4736-A972-4B2B31E648C7',
-      WFCondition: 2,
-      WFControlFlowMode: 0,
-      WFInput: {
-        Type: 'Variable',
-        Variable: sc.Attach(sc.Ref('Seconds remaining')),
-      },
-      WFNumberValue: '0',
-    }),
+        ]).Else_([
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '81754D8C-F123-4EA1-924D-7EFEC7FB2EEC',
-      WFCondition: 2,
-      WFControlFlowMode: 0,
-      WFInput: {
-        Type: 'Variable',
-        Variable: sc.Attach(sc.Ref('Seconds remaining')),
-      },
-      WFNumberValue: '80',
-    }),
+          sc.Action('is.workflow.actions.gettext'),
 
-    sc.Action('is.workflow.actions.calculateexpression', name='Minutes remaining', params={
-      Input: sc.Str(['ceil(', sc.Ref('Seconds remaining'), '/60)']),
-    }),
+        ]).EndIf_(),
 
-    sc.Action('is.workflow.actions.gettext', {
-      WFTextActionText: sc.Str([sc.Ref('Minutes remaining'), 'm left']),
-    }),
+      ]).Else_([
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '81754D8C-F123-4EA1-924D-7EFEC7FB2EEC',
-      WFControlFlowMode: 1,
-    }),
+        sc.Action('is.workflow.actions.gettext'),
 
-    sc.Action('is.workflow.actions.gettext', {
-      WFTextActionText: sc.Str([sc.Ref('Seconds remaining'), 's left']),
-    }),
+      ]).EndIf_(name='Time left'),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '81754D8C-F123-4EA1-924D-7EFEC7FB2EEC',
-      WFControlFlowMode: 2,
-    }),
+      sc.Action('is.workflow.actions.calculateexpression', name='Calculation Result', params={
+        Input: sc.Str(['round(', sc.Ref('Vars.Repeat Index')]),
+      }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: 'D1315B0F-2414-4736-A972-4B2B31E648C7',
-      WFControlFlowMode: 1,
-    }),
+      sc.Action('is.workflow.actions.gettext', name='Text', params={
+        WFTextActionText: sc.Str([sc.Ref('Time left'), ' @ ', sc.Ref('Items per second')]),
+      }),
 
-    sc.Action('is.workflow.actions.gettext'),
+      sc.Action('is.workflow.actions.getitemfromlist', name='Item from List', params={
+        WFInput: sc.Attach(sc.Ref('Item from List')),
+        WFItemSpecifier: 'Random Item',
+      }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: 'D1315B0F-2414-4736-A972-4B2B31E648C7',
-      WFControlFlowMode: 2,
-    }),
+      sc.Action('is.workflow.actions.notification', {
+        WFInput: sc.Attach(sc.Ref('Item from List')),
+        WFNotificationActionBody: sc.Str([sc.Ref('Text')]),
+        WFNotificationActionSound: false,
+      }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '2BB9153E-3BAD-4E19-A64E-2013A2D713F4',
-      WFControlFlowMode: 1,
-    }),
+      sc.Action('is.workflow.actions.setvariable', {
+        WFInput: sc.Attach(sc.Ref('Date')),
+        WFVariableName: 'TimeLast',
+      }),
 
-    sc.Action('is.workflow.actions.gettext'),
-
-    sc.Action('is.workflow.actions.conditional', name='Time left', params={
-      GroupingIdentifier: '2BB9153E-3BAD-4E19-A64E-2013A2D713F4',
-      WFControlFlowMode: 2,
-    }),
-
-    sc.Action('is.workflow.actions.calculateexpression', name='Calculation Result', params={
-      Input: sc.Str(['round(', sc.Ref('Vars.Repeat Index')]),
-    }),
-
-    sc.Action('is.workflow.actions.gettext', name='Text', params={
-      WFTextActionText: sc.Str([sc.Ref('Time left'), ' @ ', sc.Ref('Items per second')]),
-    }),
-
-    sc.Action('is.workflow.actions.getitemfromlist', name='Item from List', params={
-      WFInput: sc.Attach(sc.Ref('Item from List')),
-      WFItemSpecifier: 'Random Item',
-    }),
-
-    sc.Action('is.workflow.actions.notification', {
-      WFInput: sc.Attach(sc.Ref('Item from List')),
-      WFNotificationActionBody: sc.Str([sc.Ref('Text')]),
-      WFNotificationActionSound: false,
-    }),
-
-    sc.Action('is.workflow.actions.setvariable', {
-      WFInput: sc.Attach(sc.Ref('Date')),
-      WFVariableName: 'TimeLast',
-    }),
-
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: 'AB233B0D-3F0F-415E-AC36-289AD22C5D72',
-      WFControlFlowMode: 2,
-    }),
+    ]).EndIf_(),
 
     sc.Action('is.workflow.actions.repeat.count', {
       GroupingIdentifier: '5D9EE8B3-FCC0-4D77-BDC7-E8A064BE780C',
@@ -924,736 +881,648 @@ local sc = import 'shortcuts.libsonnet';
       }),
     }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '940A3022-66DA-45BC-96BA-2A3F1569DC1C',
-      WFCondition: 4,
-      WFControlFlowMode: 0,
-      WFInput: {
+    sc.If_(sc.Cond(
+      {
         Type: 'Variable',
         Variable: sc.Attach(sc.Ref('Duplicate set count')),
       },
-      WFNumberValue: '0',
-    }),
+      'is',
+      {
+        UUID: '755DABCC-7FF2-4D4D-B727-E4C1F238358A',
+        WFNumberValue: '0',
+      }
+    )).Then_([
 
-    sc.Action('is.workflow.actions.alert', {
-      WFAlertActionCancelButtonShown: false,
-      WFAlertActionMessage: 'All clean! No duplicates found. ',
-    }),
-
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '940A3022-66DA-45BC-96BA-2A3F1569DC1C',
-      WFControlFlowMode: 1,
-    }),
-
-    sc.Action('is.workflow.actions.setvariable', {
-      WFInput: sc.Attach(sc.Ref('Duplicate set count')),
-      WFVariableName: 'Total count',
-    }),
-
-    sc.Action('is.workflow.actions.repeat.each', {
-      GroupingIdentifier: '5B169A6D-A228-409B-8B43-E534E2416F2B',
-      WFControlFlowMode: 0,
-      WFInput: sc.Attach({
-        Aggrandizements: [
-          {
-            PropertyName: 'Values',
-            Type: 'WFPropertyVariableAggrandizement',
-          },
-        ],
-        Type: 'Variable',
-        VariableName: 'Duplicate dictionary',
+      sc.Action('is.workflow.actions.alert', {
+        WFAlertActionCancelButtonShown: false,
+        WFAlertActionMessage: 'All clean! No duplicates found. ',
       }),
-    }),
 
-    sc.Action('is.workflow.actions.count', name='Count', params={
-      Input: sc.Attach(sc.Ref('Vars.Repeat Item')),
-    }),
+    ]).Else_([
 
-    sc.Action('is.workflow.actions.math', name='Calculation Result', params={
-      WFInput: sc.Attach(sc.Ref('Count')),
-      WFMathOperand: sc.Attach(sc.Ref('Vars.Total count')),
-    }),
+      sc.Action('is.workflow.actions.setvariable', {
+        WFInput: sc.Attach(sc.Ref('Duplicate set count')),
+        WFVariableName: 'Total count',
+      }),
 
-    sc.Action('is.workflow.actions.setvariable', {
-      WFInput: sc.Attach(sc.Ref('Calculation Result')),
-      WFVariableName: 'Total count',
-    }),
-
-    sc.Action('is.workflow.actions.repeat.each', {
-      GroupingIdentifier: '5B169A6D-A228-409B-8B43-E534E2416F2B',
-      WFControlFlowMode: 2,
-    }),
-
-    sc.Action('is.workflow.actions.dictionary', name='Dictionary', params={
-      WFItems: {
-        Value: {
-          WFDictionaryFieldValueItems: [
+      sc.Action('is.workflow.actions.repeat.each', {
+        GroupingIdentifier: '5B169A6D-A228-409B-8B43-E534E2416F2B',
+        WFControlFlowMode: 0,
+        WFInput: sc.Attach({
+          Aggrandizements: [
             {
-              WFItemType: 0,
-              WFKey: sc.Str(['Clean ', sc.Ref('dup type')]),
-              WFValue: sc.Str(['Choose which ', sc.Ref('dup type'), ' to keep or delete']),
-            },
-            {
-              WFItemType: 0,
-              WFKey: sc.Str(['Copy into separate albums/folders']),
-              WFValue: sc.Str(['Group ', sc.Ref('dup type'), ' into separate albums/folders for viewing/deleting']),
-            },
-            {
-              WFItemType: 0,
-              WFKey: sc.Str(['Copy into same album/folder']),
-              WFValue: sc.Str(['Put all ', sc.Ref('dup type'), ' into same album/folder for viewing/deleting']),
+              PropertyName: 'Values',
+              Type: 'WFPropertyVariableAggrandizement',
             },
           ],
-        },
-        WFSerializationType: 'WFDictionaryFieldValue',
-      },
-    }),
-
-    sc.Action('is.workflow.actions.gettext', name='Text', params={
-      WFTextActionText: sc.Str([sc.Ref('Chosen dup type'), ' found for ', sc.Ref('Duplicate set count'), ' image(s); ', sc.Ref('Vars.Total count'), ' ', sc.Ref('dup type')]),
-    }),
-
-    sc.Action('is.workflow.actions.choosefromlist', name='Chosen Item', params={
-      WFChooseFromListActionPrompt: sc.Str([sc.Ref('Text')]),
-      WFInput: sc.Attach(sc.Ref('Dictionary')),
-    }),
-
-    sc.Action('is.workflow.actions.date', name='Date'),
-
-    sc.Action('is.workflow.actions.setvariable', {
-      WFInput: sc.Attach(sc.Ref('Date')),
-      WFVariableName: 'TimeLast',
-    }),
-
-    sc.Action('is.workflow.actions.nothing', name='Nothing'),
-
-    sc.Action('is.workflow.actions.repeat.each', {
-      GroupingIdentifier: 'E427C3BD-F21F-48A8-B778-0FA3B0396EFB',
-      WFControlFlowMode: 0,
-      WFInput: sc.Attach({
-        Aggrandizements: [
-          {
-            PropertyName: 'Keys',
-            Type: 'WFPropertyVariableAggrandizement',
-          },
-        ],
-        Type: 'Variable',
-        VariableName: 'Duplicate dictionary',
+          Type: 'Variable',
+          VariableName: 'Duplicate dictionary',
+        }),
       }),
-    }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '78CC5DF8-7A5D-4E17-B6B6-D7C55A562638',
-      WFCondition: 999,
-      WFConditionalActionString: 'same',
-      WFControlFlowMode: 0,
-      WFInput: {
-        Type: 'Variable',
-        Variable: sc.Attach(sc.Ref('Chosen Item', aggs=[
-          {
-            CoercionItemClass: 'WFStringContentItem',
-            Type: 'WFCoercionVariableAggrandizement',
+      sc.Action('is.workflow.actions.count', name='Count', params={
+        Input: sc.Attach(sc.Ref('Vars.Repeat Item')),
+      }),
+
+      sc.Action('is.workflow.actions.math', name='Calculation Result', params={
+        WFInput: sc.Attach(sc.Ref('Count')),
+        WFMathOperand: sc.Attach(sc.Ref('Vars.Total count')),
+      }),
+
+      sc.Action('is.workflow.actions.setvariable', {
+        WFInput: sc.Attach(sc.Ref('Calculation Result')),
+        WFVariableName: 'Total count',
+      }),
+
+      sc.Action('is.workflow.actions.repeat.each', {
+        GroupingIdentifier: '5B169A6D-A228-409B-8B43-E534E2416F2B',
+        WFControlFlowMode: 2,
+      }),
+
+      sc.Action('is.workflow.actions.dictionary', name='Dictionary', params={
+        WFItems: {
+          Value: {
+            WFDictionaryFieldValueItems: [
+              {
+                WFItemType: 0,
+                WFKey: sc.Str(['Clean ', sc.Ref('dup type')]),
+                WFValue: sc.Str(['Choose which ', sc.Ref('dup type'), ' to keep or delete']),
+              },
+              {
+                WFItemType: 0,
+                WFKey: sc.Str(['Copy into separate albums/folders']),
+                WFValue: sc.Str(['Group ', sc.Ref('dup type'), ' into separate albums/folders for viewing/deleting']),
+              },
+              {
+                WFItemType: 0,
+                WFKey: sc.Str(['Copy into same album/folder']),
+                WFValue: sc.Str(['Put all ', sc.Ref('dup type'), ' into same album/folder for viewing/deleting']),
+              },
+            ],
           },
-        ])),
-      },
-    }),
-
-    sc.Action('is.workflow.actions.setvariable', {
-      WFInput: sc.Attach(sc.Ref('Nothing')),
-      WFVariableName: 'Display images',
-    }),
-
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '78CC5DF8-7A5D-4E17-B6B6-D7C55A562638',
-      WFControlFlowMode: 2,
-    }),
-
-    sc.Action('is.workflow.actions.getitemfromlist', name='Item from List', params={
-      WFInput: sc.Attach(sc.Ref('Vars.Image list')),
-      WFItemIndex: sc.Attach(sc.Ref('Vars.Repeat Item')),
-      WFItemSpecifier: 'Item At Index',
-    }),
-
-    sc.Action('is.workflow.actions.appendvariable', {
-      WFInput: sc.Attach(sc.Ref('Item from List')),
-      WFVariableName: 'Display images',
-    }),
-
-    sc.Action('is.workflow.actions.getvalueforkey', name='Dictionary Value', params={
-      WFDictionaryKey: sc.Str([sc.Ref('Vars.Repeat Item')]),
-      WFInput: sc.Attach(sc.Ref('Vars.Duplicate dictionary')),
-    }),
-
-    sc.Action('is.workflow.actions.repeat.each', {
-      GroupingIdentifier: 'DA0F21C4-E324-4BF3-85BB-C935E2A289F9',
-      WFControlFlowMode: 0,
-      WFInput: sc.Attach(sc.Ref('Dictionary Value')),
-    }),
-
-    sc.Action('is.workflow.actions.getitemfromlist', name='Item from List', params={
-      WFInput: sc.Attach(sc.Ref('Vars.Image list')),
-      WFItemIndex: sc.Attach(sc.Ref('Vars.Repeat Item 2')),
-      WFItemSpecifier: 'Item At Index',
-    }),
-
-    sc.Action('is.workflow.actions.appendvariable', {
-      WFInput: sc.Attach(sc.Ref('Item from List')),
-      WFVariableName: 'Display images',
-    }),
-
-    sc.Action('is.workflow.actions.nothing'),
-
-    sc.Action('is.workflow.actions.repeat.each', {
-      GroupingIdentifier: 'DA0F21C4-E324-4BF3-85BB-C935E2A289F9',
-      WFControlFlowMode: 2,
-    }),
-
-    sc.Action('is.workflow.actions.count', name='Set size', params={
-      Input: sc.Attach(sc.Ref('Vars.Display images')),
-    }),
-
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '50B45AB4-EB22-400F-88C6-759F06B5BF75',
-      WFCondition: 99,
-      WFConditionalActionString: 'album',
-      WFControlFlowMode: 0,
-      WFInput: {
-        Type: 'Variable',
-        Variable: sc.Attach(sc.Ref('Chosen Item', aggs=[
-          {
-            CoercionItemClass: 'WFStringContentItem',
-            Type: 'WFCoercionVariableAggrandizement',
-          },
-        ])),
-      },
-    }),
-
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: 'B50879F2-4528-438F-B3EC-CD4F33E1BE0E',
-      WFCondition: 99,
-      WFConditionalActionString: 'separate',
-      WFControlFlowMode: 0,
-      WFInput: {
-        Type: 'Variable',
-        Variable: sc.Attach(sc.Ref('Chosen Item', aggs=[
-          {
-            CoercionItemClass: 'WFStringContentItem',
-            Type: 'WFCoercionVariableAggrandizement',
-          },
-        ])),
-      },
-    }),
-
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: 'C74AD5E0-828B-473A-8DE7-10FD16ABD26C',
-      WFCondition: 100,
-      WFControlFlowMode: 0,
-      WFInput: {
-        Type: 'Variable',
-        Variable: sc.Attach(sc.Ref('Vars.Use finder')),
-      },
-    }),
-
-    sc.Action('is.workflow.actions.gettext', name='Folder name', params={
-      WFTextActionText: sc.Str(['(', sc.Ref('Vars.Repeat Index'), ' of ', sc.Ref('dup type'), ') ', sc.Ref('Duplicate set count')]),
-    }),
-
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '0E6608EC-6AE1-4E88-BFAB-D395F73C5BF6',
-      WFCondition: 101,
-      WFControlFlowMode: 0,
-      WFInput: {
-        Type: 'Variable',
-        Variable: sc.Attach(sc.Ref('Vars.Out folder')),
-      },
-    }),
-
-    sc.Action('is.workflow.actions.alert', {
-      WFAlertActionCancelButtonShown: false,
-      WFAlertActionMessage: sc.Str(['Where should ', sc.Ref('dup type'), ' be stored?']),
-    }),
-
-    sc.Action('is.workflow.actions.file.select', name='File', params={
-      WFPickingMode: 'Folders',
-    }),
-
-    sc.Action('is.workflow.actions.setvariable', {
-      WFInput: sc.Attach(sc.Ref('File')),
-      WFVariableName: 'Out folder',
-    }),
-
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '0E6608EC-6AE1-4E88-BFAB-D395F73C5BF6',
-      WFControlFlowMode: 2,
-    }),
-
-    sc.Action('is.workflow.actions.file.createfolder', name='Created Folder', params={
-      WFFilePath: sc.Str([sc.Ref('Folder name')]),
-      WFFolder: sc.Attach(sc.Ref('Vars.Out folder')),
-    }),
-
-    sc.Action('is.workflow.actions.documentpicker.save', {
-      WFAskWhereToSave: false,
-      WFFolder: sc.Attach(sc.Ref('Created Folder')),
-      WFInput: sc.Attach(sc.Ref('Vars.Display images')),
-      WFSaveFileOverwrite: true,
-    }),
-
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: 'C74AD5E0-828B-473A-8DE7-10FD16ABD26C',
-      WFControlFlowMode: 1,
-    }),
-
-    sc.Action('is.workflow.actions.gettext', name='Album name', params={
-      WFTextActionText: sc.Str([sc.Ref('Date', aggs=[
-        {
-          Type: 'WFDateFormatVariableAggrandizement',
-          WFDateFormat: 'MMM-dd HH-mm',
-          WFDateFormatStyle: 'Custom',
-          WFISO8601IncludeTime: false,
+          WFSerializationType: 'WFDictionaryFieldValue',
         },
-      ]), ' (', sc.Ref('Set size'), ' of ', sc.Ref('dup type'), '): ', sc.Ref('Vars.Repeat Index')]),
-    }),
+      }),
 
-    sc.Action('is.workflow.actions.photos.createalbum', {
-      AlbumName: sc.Str([sc.Ref('Album name')]),
-      WFInput: sc.Attach(sc.Ref('Vars.Display images')),
-    }),
+      sc.Action('is.workflow.actions.gettext', name='Text', params={
+        WFTextActionText: sc.Str([sc.Ref('Chosen dup type'), ' found for ', sc.Ref('Duplicate set count'), ' image(s); ', sc.Ref('Vars.Total count'), ' ', sc.Ref('dup type')]),
+      }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: 'C74AD5E0-828B-473A-8DE7-10FD16ABD26C',
-      WFControlFlowMode: 2,
-    }),
+      sc.Action('is.workflow.actions.choosefromlist', name='Chosen Item', params={
+        WFChooseFromListActionPrompt: sc.Str([sc.Ref('Text')]),
+        WFInput: sc.Attach(sc.Ref('Dictionary')),
+      }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: 'B50879F2-4528-438F-B3EC-CD4F33E1BE0E',
-      WFControlFlowMode: 2,
-    }),
+      sc.Action('is.workflow.actions.date', name='Date'),
 
-    sc.Action('is.workflow.actions.date', name='Date'),
+      sc.Action('is.workflow.actions.setvariable', {
+        WFInput: sc.Attach(sc.Ref('Date')),
+        WFVariableName: 'TimeLast',
+      }),
 
-    sc.Action('is.workflow.actions.gettimebetweendates', name='Time Between Dates', params={
-      WFInput: sc.Str([sc.Ref('Date')]),
-      WFTimeUntilFromDate: sc.Str([sc.Ref('Vars.TimeLast')]),
-      WFTimeUntilUnit: 'Seconds',
-    }),
+      sc.Action('is.workflow.actions.nothing', name='Nothing'),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '793FDDED-696A-4B35-AC32-EF1A694CC554',
-      WFCondition: 2,
-      WFControlFlowMode: 0,
-      WFInput: {
-        Type: 'Variable',
-        Variable: sc.Attach(sc.Ref('Time Between Dates')),
-      },
-      WFNumberValue: sc.Attach(sc.Ref('Options', aggs=[
+      sc.Action('is.workflow.actions.repeat.each', {
+        GroupingIdentifier: 'E427C3BD-F21F-48A8-B778-0FA3B0396EFB',
+        WFControlFlowMode: 0,
+        WFInput: sc.Attach({
+          Aggrandizements: [
+            {
+              PropertyName: 'Keys',
+              Type: 'WFPropertyVariableAggrandizement',
+            },
+          ],
+          Type: 'Variable',
+          VariableName: 'Duplicate dictionary',
+        }),
+      }),
+
+      sc.If_(sc.Cond(
         {
-          DictionaryKey: 'ProgressSeconds',
-          Type: 'WFDictionaryValueVariableAggrandizement',
+          Type: 'Variable',
+          Variable: sc.Attach(sc.Ref('Chosen Item', aggs=[
+            {
+              CoercionItemClass: 'WFStringContentItem',
+              Type: 'WFCoercionVariableAggrandizement',
+            },
+          ])),
         },
-      ])),
-    }),
-
-    sc.Action('is.workflow.actions.gettimebetweendates', name='Time Between Dates', params={
-      WFInput: sc.Str([{
-        Type: 'CurrentDate',
-      }]),
-      WFTimeUntilFromDate: sc.Str([sc.Ref('Date')]),
-      WFTimeUntilUnit: 'Seconds',
-    }),
-
-    sc.Action('is.workflow.actions.gettext', name='Text', params={
-      WFTextActionText: sc.Str(['round(', sc.Ref('Duplicate set count'), '/', sc.Ref('Vars.Repeat Index'), '*(', sc.Ref('Time Between Dates')]),
-    }),
-
-    sc.Action('is.workflow.actions.calculateexpression', name='Seconds elapsed', params={
-      Input: sc.Str([sc.Ref('Text')]),
-    }),
-
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: 'A78120CE-F01D-484F-8915-02E3292C5C66',
-      WFCondition: 2,
-      WFControlFlowMode: 0,
-      WFInput: {
-        Type: 'Variable',
-        Variable: sc.Attach(sc.Ref('Vars.Repeat Index')),
-      },
-      WFNumberValue: '2',
-    }),
-
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '57F003A2-3557-45A0-8F7D-8300BF2FCEDC',
-      WFCondition: 2,
-      WFControlFlowMode: 0,
-      WFInput: {
-        Type: 'Variable',
-        Variable: sc.Attach(sc.Ref('Seconds elapsed')),
-      },
-      WFNumberValue: '0',
-    }),
-
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '79E484F8-E9A9-4FB6-92C7-29F41FB1DEAA',
-      WFCondition: 2,
-      WFControlFlowMode: 0,
-      WFInput: {
-        Type: 'Variable',
-        Variable: sc.Attach(sc.Ref('Seconds elapsed')),
-      },
-      WFNumberValue: '80',
-    }),
-
-    sc.Action('is.workflow.actions.calculateexpression', name='Minutes elapsed', params={
-      Input: sc.Str(['ceil(', sc.Ref('Seconds elapsed'), '/60)']),
-    }),
-
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '0D7D494B-1EF0-4C73-8B8F-F2084C88B4D5',
-      WFCondition: 4,
-      WFControlFlowMode: 0,
-      WFInput: {
-        Type: 'Variable',
-        Variable: sc.Attach(sc.Ref('Minutes elapsed')),
-      },
-      WFNumberValue: '1',
-    }),
-
-    sc.Action('is.workflow.actions.gettext', {
-      WFTextActionText: sc.Str([sc.Ref('Minutes elapsed'), ' minute left, ']),
-    }),
-
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '0D7D494B-1EF0-4C73-8B8F-F2084C88B4D5',
-      WFControlFlowMode: 1,
-    }),
-
-    sc.Action('is.workflow.actions.gettext', {
-      WFTextActionText: sc.Str([sc.Ref('Minutes elapsed'), ' minutes left, ']),
-    }),
-
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '0D7D494B-1EF0-4C73-8B8F-F2084C88B4D5',
-      WFControlFlowMode: 2,
-    }),
-
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '79E484F8-E9A9-4FB6-92C7-29F41FB1DEAA',
-      WFControlFlowMode: 1,
-    }),
-
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: 'E70CACA1-CADE-4D8A-AFA1-99F72FA958F6',
-      WFCondition: 4,
-      WFControlFlowMode: 0,
-      WFInput: {
-        Type: 'Variable',
-        Variable: sc.Attach(sc.Ref('Seconds elapsed')),
-      },
-      WFNumberValue: '1',
-    }),
-
-    sc.Action('is.workflow.actions.gettext', {
-      WFTextActionText: sc.Str([sc.Ref('Seconds elapsed'), ' second left, ']),
-    }),
-
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: 'E70CACA1-CADE-4D8A-AFA1-99F72FA958F6',
-      WFControlFlowMode: 1,
-    }),
-
-    sc.Action('is.workflow.actions.gettext', {
-      WFTextActionText: sc.Str([sc.Ref('Seconds elapsed'), ' seconds left, ']),
-    }),
-
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: 'E70CACA1-CADE-4D8A-AFA1-99F72FA958F6',
-      WFControlFlowMode: 2,
-    }),
-
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '79E484F8-E9A9-4FB6-92C7-29F41FB1DEAA',
-      WFControlFlowMode: 2,
-    }),
-
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '57F003A2-3557-45A0-8F7D-8300BF2FCEDC',
-      WFControlFlowMode: 1,
-    }),
-
-    sc.Action('is.workflow.actions.gettext'),
-
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '57F003A2-3557-45A0-8F7D-8300BF2FCEDC',
-      WFControlFlowMode: 2,
-    }),
-
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: 'A78120CE-F01D-484F-8915-02E3292C5C66',
-      WFControlFlowMode: 1,
-    }),
-
-    sc.Action('is.workflow.actions.gettext'),
-
-    sc.Action('is.workflow.actions.conditional', name='Time left', params={
-      GroupingIdentifier: 'A78120CE-F01D-484F-8915-02E3292C5C66',
-      WFControlFlowMode: 2,
-    }),
-
-    sc.Action('is.workflow.actions.calculateexpression', name='Calculation Result', params={
-      Input: sc.Str(['round(', sc.Ref('Vars.Repeat Index')]),
-    }),
-
-    sc.Action('is.workflow.actions.gettext', name='Text', params={
-      WFTextActionText: sc.Str(['Organizing ', sc.Ref('dup type'), ' (', sc.Ref('Time left')]),
-    }),
-
-    sc.Action('is.workflow.actions.getitemfromlist', name='Item from List', params={
-      WFInput: sc.Attach(sc.Ref('Vars.Display images')),
-      WFItemSpecifier: 'Random Item',
-    }),
-
-    sc.Action('is.workflow.actions.notification', {
-      WFInput: sc.Attach(sc.Ref('Item from List')),
-      WFNotificationActionBody: sc.Str([sc.Ref('Text')]),
-      WFNotificationActionSound: false,
-    }),
-
-    sc.Action('is.workflow.actions.setvariable', {
-      WFInput: sc.Attach(sc.Ref('Date')),
-      WFVariableName: 'TimeLast',
-    }),
-
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '793FDDED-696A-4B35-AC32-EF1A694CC554',
-      WFControlFlowMode: 2,
-    }),
-
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '50B45AB4-EB22-400F-88C6-759F06B5BF75',
-      WFControlFlowMode: 1,
-    }),
-
-    sc.Action('is.workflow.actions.math', name='Calculation Result', params={
-      WFInput: sc.Attach(sc.Ref('Set size')),
-      WFMathOperand: '1',
-      WFMathOperation: '-',
-    }),
-
-    sc.Action('is.workflow.actions.gettext', name='Text', params={
-      WFTextActionText: sc.Str(['(', sc.Ref('Vars.Repeat Index'), ' of ', sc.Ref('Calculation Result'), ') Found ', sc.Ref('dup type')]),
-    }),
-
-    sc.Action('is.workflow.actions.choosefromlist', name='Chosen Item', params={
-      WFChooseFromListActionPrompt: sc.Str([sc.Ref('Text')]),
-      WFChooseFromListActionSelectAll: false,
-      WFChooseFromListActionSelectMultiple: true,
-      WFInput: sc.Attach(sc.Ref('Vars.Display images')),
-    }),
-
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: 'AD4456C6-8ADB-4C9A-9247-7FEDCCB46BC6',
-      WFCondition: 100,
-      WFControlFlowMode: 0,
-      WFInput: {
-        Type: 'Variable',
-        Variable: sc.Attach(sc.Ref('Vars.Use finder')),
-      },
-    }),
-
-    sc.Action('is.workflow.actions.file.delete', {
-      WFInput: sc.Attach(sc.Ref('Chosen Item')),
-    }),
-
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: 'AD4456C6-8ADB-4C9A-9247-7FEDCCB46BC6',
-      WFControlFlowMode: 1,
-    }),
-
-    sc.Action('is.workflow.actions.deletephotos', {
-      photos: sc.Attach(sc.Ref('Chosen Item')),
-    }),
-
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: 'AD4456C6-8ADB-4C9A-9247-7FEDCCB46BC6',
-      WFControlFlowMode: 2,
-    }),
-
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '50B45AB4-EB22-400F-88C6-759F06B5BF75',
-      WFControlFlowMode: 2,
-    }),
-
-    sc.Action('is.workflow.actions.nothing'),
-
-    sc.Action('is.workflow.actions.repeat.each', {
-      GroupingIdentifier: 'E427C3BD-F21F-48A8-B778-0FA3B0396EFB',
-      WFControlFlowMode: 2,
-    }),
-
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: 'DD62D663-5379-46C0-93D6-8BB9E780BD76',
-      WFCondition: 99,
-      WFConditionalActionString: 'album',
-      WFControlFlowMode: 0,
-      WFInput: {
-        Type: 'Variable',
-        Variable: sc.Attach(sc.Ref('Chosen Item', aggs=[
-          {
-            CoercionItemClass: 'WFStringContentItem',
-            Type: 'WFCoercionVariableAggrandizement',
-          },
-        ])),
-      },
-    }),
-
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '55D66AD6-2514-4665-911A-DBEE3CD013D8',
-      WFCondition: 999,
-      WFConditionalActionString: 'separate',
-      WFControlFlowMode: 0,
-      WFInput: {
-        Type: 'Variable',
-        Variable: sc.Attach(sc.Ref('Chosen Item', aggs=[
-          {
-            CoercionItemClass: 'WFStringContentItem',
-            Type: 'WFCoercionVariableAggrandizement',
-          },
-        ])),
-      },
-    }),
-
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '4E1D0FAE-10FA-4537-B67E-BC666C4AEE60',
-      WFCondition: 100,
-      WFControlFlowMode: 0,
-      WFInput: {
-        Type: 'Variable',
-        Variable: sc.Attach(sc.Ref('Vars.Use finder')),
-      },
-    }),
-
-    sc.Action('is.workflow.actions.gettext', {
-      WFTextActionText: sc.Str(['(', sc.Ref('Vars.Total count'), ' ', sc.Ref('Vars.Image count'), ' of ', sc.Ref('dup type')]),
-    }),
-
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '4B8B25F0-0769-4609-8535-F9B52D417CAE',
-      WFCondition: 101,
-      WFControlFlowMode: 0,
-      WFInput: {
-        Type: 'Variable',
-        Variable: sc.Attach(sc.Ref('Vars.Out folder')),
-      },
-    }),
-
-    sc.Action('is.workflow.actions.alert', {
-      WFAlertActionCancelButtonShown: false,
-      WFAlertActionMessage: sc.Str(['Where should ', sc.Ref('dup type'), ' be stored?']),
-    }),
-
-    sc.Action('is.workflow.actions.file.select', name='File', params={
-      WFPickingMode: 'Folders',
-    }),
-
-    sc.Action('is.workflow.actions.setvariable', {
-      WFInput: sc.Attach(sc.Ref('File')),
-      WFVariableName: 'Out folder',
-    }),
-
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '4B8B25F0-0769-4609-8535-F9B52D417CAE',
-      WFControlFlowMode: 2,
-    }),
-
-    sc.Action('is.workflow.actions.documentpicker.save', {
-      WFAskWhereToSave: false,
-      WFFolder: sc.Attach(sc.Ref('Vars.Out folder')),
-      WFInput: sc.Attach(sc.Ref('Vars.Display images')),
-      WFSaveFileOverwrite: true,
-    }),
-
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '4E1D0FAE-10FA-4537-B67E-BC666C4AEE60',
-      WFControlFlowMode: 1,
-    }),
-
-    sc.Action('is.workflow.actions.gettext', name='Album name', params={
-      WFTextActionText: sc.Str([sc.Ref('Date', aggs=[
+        'does not contain',
         {
-          Type: 'WFDateFormatVariableAggrandizement',
-          WFDateFormat: 'MMM-dd HH-mm',
-          WFDateFormatStyle: 'Custom',
-          WFISO8601IncludeTime: false,
+          WFConditionalActionString: 'same',
+        }
+      )).Then_([
+
+        sc.Action('is.workflow.actions.setvariable', {
+          WFInput: sc.Attach(sc.Ref('Nothing')),
+          WFVariableName: 'Display images',
+        }),
+
+      ]).EndIf_(),
+
+      sc.Action('is.workflow.actions.getitemfromlist', name='Item from List', params={
+        WFInput: sc.Attach(sc.Ref('Vars.Image list')),
+        WFItemIndex: sc.Attach(sc.Ref('Vars.Repeat Item')),
+        WFItemSpecifier: 'Item At Index',
+      }),
+
+      sc.Action('is.workflow.actions.appendvariable', {
+        WFInput: sc.Attach(sc.Ref('Item from List')),
+        WFVariableName: 'Display images',
+      }),
+
+      sc.Action('is.workflow.actions.getvalueforkey', name='Dictionary Value', params={
+        WFDictionaryKey: sc.Str([sc.Ref('Vars.Repeat Item')]),
+        WFInput: sc.Attach(sc.Ref('Vars.Duplicate dictionary')),
+      }),
+
+      sc.Action('is.workflow.actions.repeat.each', {
+        GroupingIdentifier: 'DA0F21C4-E324-4BF3-85BB-C935E2A289F9',
+        WFControlFlowMode: 0,
+        WFInput: sc.Attach(sc.Ref('Dictionary Value')),
+      }),
+
+      sc.Action('is.workflow.actions.getitemfromlist', name='Item from List', params={
+        WFInput: sc.Attach(sc.Ref('Vars.Image list')),
+        WFItemIndex: sc.Attach(sc.Ref('Vars.Repeat Item 2')),
+        WFItemSpecifier: 'Item At Index',
+      }),
+
+      sc.Action('is.workflow.actions.appendvariable', {
+        WFInput: sc.Attach(sc.Ref('Item from List')),
+        WFVariableName: 'Display images',
+      }),
+
+      sc.Action('is.workflow.actions.nothing'),
+
+      sc.Action('is.workflow.actions.repeat.each', {
+        GroupingIdentifier: 'DA0F21C4-E324-4BF3-85BB-C935E2A289F9',
+        WFControlFlowMode: 2,
+      }),
+
+      sc.Action('is.workflow.actions.count', name='Set size', params={
+        Input: sc.Attach(sc.Ref('Vars.Display images')),
+      }),
+
+      sc.If_(sc.Cond(
+        {
+          Type: 'Variable',
+          Variable: sc.Attach(sc.Ref('Chosen Item', aggs=[
+            {
+              CoercionItemClass: 'WFStringContentItem',
+              Type: 'WFCoercionVariableAggrandizement',
+            },
+          ])),
         },
-      ]), ' (', sc.Ref('Duplicate set count'), ' ', sc.Ref('Vars.Image count'), ' of ', sc.Ref('Vars.Total count')]),
-    }),
+        'contains',
+        {
+          UUID: 'D43FBAEA-CF1B-43FF-8746-0DEB71079D0B',
+          WFConditionalActionString: 'album',
+        }
+      )).Then_([
 
-    sc.Action('is.workflow.actions.photos.createalbum', {
-      AlbumName: sc.Str([sc.Ref('Album name')]),
-      WFInput: sc.Attach(sc.Ref('Vars.Display images')),
-    }),
+        sc.If_(sc.Cond(
+          {
+            Type: 'Variable',
+            Variable: sc.Attach(sc.Ref('Chosen Item', aggs=[
+              {
+                CoercionItemClass: 'WFStringContentItem',
+                Type: 'WFCoercionVariableAggrandizement',
+              },
+            ])),
+          },
+          'contains',
+          {
+            UUID: '9B04E7D9-47BE-41CF-9C8B-233C29DCF4C3',
+            WFConditionalActionString: 'separate',
+          }
+        )).Then_([
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '4E1D0FAE-10FA-4537-B67E-BC666C4AEE60',
-      WFControlFlowMode: 2,
-    }),
+          sc.If_(sc.Cond(
+            {
+              Type: 'Variable',
+              Variable: sc.Attach(sc.Ref('Vars.Use finder')),
+            },
+            'has any value',
+            {
+              UUID: '778E1939-0A55-4DF4-A76F-7D4A88B33500',
+            }
+          )).Then_([
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '55D66AD6-2514-4665-911A-DBEE3CD013D8',
-      WFControlFlowMode: 2,
-    }),
+            sc.Action('is.workflow.actions.gettext', name='Folder name', params={
+              WFTextActionText: sc.Str(['(', sc.Ref('Vars.Repeat Index'), ' of ', sc.Ref('dup type'), ') ', sc.Ref('Duplicate set count')]),
+            }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '922C6772-262A-4E79-8166-B755BDCE5BB2',
-      WFCondition: 100,
-      WFControlFlowMode: 0,
-      WFInput: {
-        Type: 'Variable',
-        Variable: sc.Attach(sc.Ref('Vars.Use finder')),
-      },
-    }),
+            sc.If_(sc.Cond(
+              {
+                Type: 'Variable',
+                Variable: sc.Attach(sc.Ref('Vars.Out folder')),
+              },
+              'does not have any value'
+            )).Then_([
 
-    sc.Action('is.workflow.actions.gettext', {
-      WFTextActionText: sc.Str(['Finished. ', sc.Ref('Chosen dup type')]),
-    }),
+              sc.Action('is.workflow.actions.alert', {
+                WFAlertActionCancelButtonShown: false,
+                WFAlertActionMessage: sc.Str(['Where should ', sc.Ref('dup type'), ' be stored?']),
+              }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '922C6772-262A-4E79-8166-B755BDCE5BB2',
-      WFControlFlowMode: 1,
-    }),
+              sc.Action('is.workflow.actions.file.select', name='File', params={
+                WFPickingMode: 'Folders',
+              }),
 
-    sc.Action('is.workflow.actions.gettext', {
-      WFTextActionText: sc.Str(['Finished. ', sc.Ref('Chosen dup type'), ' grouped into new album(s) in Photos. You can delete the images in the album(s) and it will be removed from your library. Then you can remove the album(s).']),
-    }),
+              sc.Action('is.workflow.actions.setvariable', {
+                WFInput: sc.Attach(sc.Ref('File')),
+                WFVariableName: 'Out folder',
+              }),
 
-    sc.Action('is.workflow.actions.conditional', name='If Result', params={
-      GroupingIdentifier: '922C6772-262A-4E79-8166-B755BDCE5BB2',
-      WFControlFlowMode: 2,
-    }),
+            ]).EndIf_(),
 
-    sc.Action('is.workflow.actions.alert', {
-      WFAlertActionCancelButtonShown: false,
-      WFAlertActionMessage: sc.Str([sc.Ref('If Result')]),
-    }),
+            sc.Action('is.workflow.actions.file.createfolder', name='Created Folder', params={
+              WFFilePath: sc.Str([sc.Ref('Folder name')]),
+              WFFolder: sc.Attach(sc.Ref('Vars.Out folder')),
+            }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: 'DD62D663-5379-46C0-93D6-8BB9E780BD76',
-      WFControlFlowMode: 1,
-    }),
+            sc.Action('is.workflow.actions.documentpicker.save', {
+              WFAskWhereToSave: false,
+              WFFolder: sc.Attach(sc.Ref('Created Folder')),
+              WFInput: sc.Attach(sc.Ref('Vars.Display images')),
+              WFSaveFileOverwrite: true,
+            }),
 
-    sc.Action('is.workflow.actions.alert', {
-      WFAlertActionMessage: 'All finished! Have a nice day!',
-    }),
+          ]).Else_([
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: 'DD62D663-5379-46C0-93D6-8BB9E780BD76',
-      WFControlFlowMode: 2,
-    }),
+            sc.Action('is.workflow.actions.gettext', name='Album name', params={
+              WFTextActionText: sc.Str([sc.Ref('Date', aggs=[
+                {
+                  Type: 'WFDateFormatVariableAggrandizement',
+                  WFDateFormat: 'MMM-dd HH-mm',
+                  WFDateFormatStyle: 'Custom',
+                  WFISO8601IncludeTime: false,
+                },
+              ]), ' (', sc.Ref('Set size'), ' of ', sc.Ref('dup type'), '): ', sc.Ref('Vars.Repeat Index')]),
+            }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '940A3022-66DA-45BC-96BA-2A3F1569DC1C',
-      WFControlFlowMode: 2,
-    }),
+            sc.Action('is.workflow.actions.photos.createalbum', {
+              AlbumName: sc.Str([sc.Ref('Album name')]),
+              WFInput: sc.Attach(sc.Ref('Vars.Display images')),
+            }),
+
+          ]).EndIf_(),
+
+        ]).EndIf_(),
+
+        sc.Action('is.workflow.actions.date', name='Date'),
+
+        sc.Action('is.workflow.actions.gettimebetweendates', name='Time Between Dates', params={
+          WFInput: sc.Str([sc.Ref('Date')]),
+          WFTimeUntilFromDate: sc.Str([sc.Ref('Vars.TimeLast')]),
+          WFTimeUntilUnit: 'Seconds',
+        }),
+
+        sc.If_(sc.Cond(
+          {
+            Type: 'Variable',
+            Variable: sc.Attach(sc.Ref('Time Between Dates')),
+          },
+          '>',
+          {
+            UUID: 'D9CB6B66-2CA9-4218-9DFA-229B2375685F',
+            WFNumberValue: sc.Attach(sc.Ref('Options', aggs=[
+              {
+                DictionaryKey: 'ProgressSeconds',
+                Type: 'WFDictionaryValueVariableAggrandizement',
+              },
+            ])),
+          }
+        )).Then_([
+
+          sc.Action('is.workflow.actions.gettimebetweendates', name='Time Between Dates', params={
+            WFInput: sc.Str([{
+              Type: 'CurrentDate',
+            }]),
+            WFTimeUntilFromDate: sc.Str([sc.Ref('Date')]),
+            WFTimeUntilUnit: 'Seconds',
+          }),
+
+          sc.Action('is.workflow.actions.gettext', name='Text', params={
+            WFTextActionText: sc.Str(['round(', sc.Ref('Duplicate set count'), '/', sc.Ref('Vars.Repeat Index'), '*(', sc.Ref('Time Between Dates')]),
+          }),
+
+          sc.Action('is.workflow.actions.calculateexpression', name='Seconds elapsed', params={
+            Input: sc.Str([sc.Ref('Text')]),
+          }),
+
+          sc.If_(sc.Cond(
+            {
+              Type: 'Variable',
+              Variable: sc.Attach(sc.Ref('Vars.Repeat Index')),
+            },
+            '>',
+            {
+              UUID: 'B43420F8-307F-4A6C-87BC-0AB02D00304D',
+              WFNumberValue: '2',
+            }
+          )).Then_([
+
+            sc.If_(sc.Cond(
+              {
+                Type: 'Variable',
+                Variable: sc.Attach(sc.Ref('Seconds elapsed')),
+              },
+              '>',
+              {
+                UUID: '61C23F7D-AAFE-4249-80D3-E8E1E9C0DC87',
+                WFNumberValue: '0',
+              }
+            )).Then_([
+
+              sc.If_(sc.Cond(
+                {
+                  Type: 'Variable',
+                  Variable: sc.Attach(sc.Ref('Seconds elapsed')),
+                },
+                '>',
+                {
+                  WFNumberValue: '80',
+                }
+              )).Then_([
+
+                sc.Action('is.workflow.actions.calculateexpression', name='Minutes elapsed', params={
+                  Input: sc.Str(['ceil(', sc.Ref('Seconds elapsed'), '/60)']),
+                }),
+
+                sc.If_(sc.Cond(
+                  {
+                    Type: 'Variable',
+                    Variable: sc.Attach(sc.Ref('Minutes elapsed')),
+                  },
+                  'is',
+                  {
+                    WFNumberValue: '1',
+                  }
+                )).Then_([
+
+                  sc.Action('is.workflow.actions.gettext', {
+                    WFTextActionText: sc.Str([sc.Ref('Minutes elapsed'), ' minute left, ']),
+                  }),
+
+                ]).Else_([
+
+                  sc.Action('is.workflow.actions.gettext', {
+                    WFTextActionText: sc.Str([sc.Ref('Minutes elapsed'), ' minutes left, ']),
+                  }),
+
+                ]).EndIf_(),
+
+              ]).Else_([
+
+                sc.If_(sc.Cond(
+                  {
+                    Type: 'Variable',
+                    Variable: sc.Attach(sc.Ref('Seconds elapsed')),
+                  },
+                  'is',
+                  {
+                    WFNumberValue: '1',
+                  }
+                )).Then_([
+
+                  sc.Action('is.workflow.actions.gettext', {
+                    WFTextActionText: sc.Str([sc.Ref('Seconds elapsed'), ' second left, ']),
+                  }),
+
+                ]).Else_([
+
+                  sc.Action('is.workflow.actions.gettext', {
+                    WFTextActionText: sc.Str([sc.Ref('Seconds elapsed'), ' seconds left, ']),
+                  }),
+
+                ]).EndIf_(),
+
+              ]).EndIf_(),
+
+            ]).Else_([
+
+              sc.Action('is.workflow.actions.gettext'),
+
+            ]).EndIf_(),
+
+          ]).Else_([
+
+            sc.Action('is.workflow.actions.gettext'),
+
+          ]).EndIf_(name='Time left'),
+
+          sc.Action('is.workflow.actions.calculateexpression', name='Calculation Result', params={
+            Input: sc.Str(['round(', sc.Ref('Vars.Repeat Index')]),
+          }),
+
+          sc.Action('is.workflow.actions.gettext', name='Text', params={
+            WFTextActionText: sc.Str(['Organizing ', sc.Ref('dup type'), ' (', sc.Ref('Time left')]),
+          }),
+
+          sc.Action('is.workflow.actions.getitemfromlist', name='Item from List', params={
+            WFInput: sc.Attach(sc.Ref('Vars.Display images')),
+            WFItemSpecifier: 'Random Item',
+          }),
+
+          sc.Action('is.workflow.actions.notification', {
+            WFInput: sc.Attach(sc.Ref('Item from List')),
+            WFNotificationActionBody: sc.Str([sc.Ref('Text')]),
+            WFNotificationActionSound: false,
+          }),
+
+          sc.Action('is.workflow.actions.setvariable', {
+            WFInput: sc.Attach(sc.Ref('Date')),
+            WFVariableName: 'TimeLast',
+          }),
+
+        ]).EndIf_(),
+
+      ]).Else_([
+
+        sc.Action('is.workflow.actions.math', name='Calculation Result', params={
+          WFInput: sc.Attach(sc.Ref('Set size')),
+          WFMathOperand: '1',
+          WFMathOperation: '-',
+        }),
+
+        sc.Action('is.workflow.actions.gettext', name='Text', params={
+          WFTextActionText: sc.Str(['(', sc.Ref('Vars.Repeat Index'), ' of ', sc.Ref('Calculation Result'), ') Found ', sc.Ref('dup type')]),
+        }),
+
+        sc.Action('is.workflow.actions.choosefromlist', name='Chosen Item', params={
+          WFChooseFromListActionPrompt: sc.Str([sc.Ref('Text')]),
+          WFChooseFromListActionSelectAll: false,
+          WFChooseFromListActionSelectMultiple: true,
+          WFInput: sc.Attach(sc.Ref('Vars.Display images')),
+        }),
+
+        sc.If_(sc.Cond(
+          {
+            Type: 'Variable',
+            Variable: sc.Attach(sc.Ref('Vars.Use finder')),
+          },
+          'has any value'
+        )).Then_([
+
+          sc.Action('is.workflow.actions.file.delete', {
+            WFInput: sc.Attach(sc.Ref('Chosen Item')),
+          }),
+
+        ]).Else_([
+
+          sc.Action('is.workflow.actions.deletephotos', {
+            photos: sc.Attach(sc.Ref('Chosen Item')),
+          }),
+
+        ]).EndIf_(),
+
+      ]).EndIf_(),
+
+      sc.Action('is.workflow.actions.nothing'),
+
+      sc.Action('is.workflow.actions.repeat.each', {
+        GroupingIdentifier: 'E427C3BD-F21F-48A8-B778-0FA3B0396EFB',
+        WFControlFlowMode: 2,
+      }),
+
+      sc.If_(sc.Cond(
+        {
+          Type: 'Variable',
+          Variable: sc.Attach(sc.Ref('Chosen Item', aggs=[
+            {
+              CoercionItemClass: 'WFStringContentItem',
+              Type: 'WFCoercionVariableAggrandizement',
+            },
+          ])),
+        },
+        'contains',
+        {
+          UUID: '14F0650C-AD71-411D-9658-989814B3A78A',
+          WFConditionalActionString: 'album',
+        }
+      )).Then_([
+
+        sc.If_(sc.Cond(
+          {
+            Type: 'Variable',
+            Variable: sc.Attach(sc.Ref('Chosen Item', aggs=[
+              {
+                CoercionItemClass: 'WFStringContentItem',
+                Type: 'WFCoercionVariableAggrandizement',
+              },
+            ])),
+          },
+          'does not contain',
+          {
+            UUID: '15811CE6-1C46-4BFB-B3DE-C52E6C5BDF0C',
+            WFConditionalActionString: 'separate',
+          }
+        )).Then_([
+
+          sc.If_(sc.Cond(
+            {
+              Type: 'Variable',
+              Variable: sc.Attach(sc.Ref('Vars.Use finder')),
+            },
+            'has any value',
+            {
+              UUID: '44ADCEED-CA50-41A8-B966-C80C9CE33773',
+            }
+          )).Then_([
+
+            sc.Action('is.workflow.actions.gettext', {
+              WFTextActionText: sc.Str(['(', sc.Ref('Vars.Total count'), ' ', sc.Ref('Vars.Image count'), ' of ', sc.Ref('dup type')]),
+            }),
+
+            sc.If_(sc.Cond(
+              {
+                Type: 'Variable',
+                Variable: sc.Attach(sc.Ref('Vars.Out folder')),
+              },
+              'does not have any value'
+            )).Then_([
+
+              sc.Action('is.workflow.actions.alert', {
+                WFAlertActionCancelButtonShown: false,
+                WFAlertActionMessage: sc.Str(['Where should ', sc.Ref('dup type'), ' be stored?']),
+              }),
+
+              sc.Action('is.workflow.actions.file.select', name='File', params={
+                WFPickingMode: 'Folders',
+              }),
+
+              sc.Action('is.workflow.actions.setvariable', {
+                WFInput: sc.Attach(sc.Ref('File')),
+                WFVariableName: 'Out folder',
+              }),
+
+            ]).EndIf_(),
+
+            sc.Action('is.workflow.actions.documentpicker.save', {
+              WFAskWhereToSave: false,
+              WFFolder: sc.Attach(sc.Ref('Vars.Out folder')),
+              WFInput: sc.Attach(sc.Ref('Vars.Display images')),
+              WFSaveFileOverwrite: true,
+            }),
+
+          ]).Else_([
+
+            sc.Action('is.workflow.actions.gettext', name='Album name', params={
+              WFTextActionText: sc.Str([sc.Ref('Date', aggs=[
+                {
+                  Type: 'WFDateFormatVariableAggrandizement',
+                  WFDateFormat: 'MMM-dd HH-mm',
+                  WFDateFormatStyle: 'Custom',
+                  WFISO8601IncludeTime: false,
+                },
+              ]), ' (', sc.Ref('Duplicate set count'), ' ', sc.Ref('Vars.Image count'), ' of ', sc.Ref('Vars.Total count')]),
+            }),
+
+            sc.Action('is.workflow.actions.photos.createalbum', {
+              AlbumName: sc.Str([sc.Ref('Album name')]),
+              WFInput: sc.Attach(sc.Ref('Vars.Display images')),
+            }),
+
+          ]).EndIf_(),
+
+        ]).EndIf_(),
+
+        sc.If_(sc.Cond(
+          {
+            Type: 'Variable',
+            Variable: sc.Attach(sc.Ref('Vars.Use finder')),
+          },
+          'has any value'
+        )).Then_([
+
+          sc.Action('is.workflow.actions.gettext', {
+            WFTextActionText: sc.Str(['Finished. ', sc.Ref('Chosen dup type')]),
+          }),
+
+        ]).Else_([
+
+          sc.Action('is.workflow.actions.gettext', {
+            WFTextActionText: sc.Str(['Finished. ', sc.Ref('Chosen dup type'), ' grouped into new album(s) in Photos. You can delete the images in the album(s) and it will be removed from your library. Then you can remove the album(s).']),
+          }),
+
+        ]).EndIf_(name='If Result'),
+
+        sc.Action('is.workflow.actions.alert', {
+          WFAlertActionCancelButtonShown: false,
+          WFAlertActionMessage: sc.Str([sc.Ref('If Result')]),
+        }),
+
+      ]).Else_([
+
+        sc.Action('is.workflow.actions.alert', {
+          WFAlertActionMessage: 'All finished! Have a nice day!',
+        }),
+
+      ]).EndIf_(),
+
+    ]).EndIf_(),
 
     sc.Action('is.workflow.actions.comment', {
       WFCommentActionText: '【Auto-Update Routine】',
@@ -1704,12 +1573,8 @@ local sc = import 'shortcuts.libsonnet';
       WFInput: sc.Attach(sc.Ref('Info')),
     }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '0EF09A1E-8531-48AA-826E-B7422B4A676A',
-      WFCondition: 4,
-      WFConditionalActionString: 'Yes',
-      WFControlFlowMode: 0,
-      WFInput: {
+    sc.If_(sc.Cond(
+      {
         Type: 'Variable',
         Variable: sc.Attach(sc.Ref('True', aggs=[
           {
@@ -1718,301 +1583,291 @@ local sc = import 'shortcuts.libsonnet';
           },
         ])),
       },
-    }),
+      'is',
+      {
+        UUID: '3D0BA485-6AA0-408E-8FE6-6AA248A5C2A5',
+        WFConditionalActionString: 'Yes',
+      }
+    )).Then_([
 
-    sc.Action('is.workflow.actions.getipaddress', name='Current IP Address', params={
-      WFIPAddressSourceOption: 'External',
-      WFIPAddressTypeOption: 'IPv4',
-    }),
+      sc.Action('is.workflow.actions.getipaddress', name='Current IP Address', params={
+        WFIPAddressSourceOption: 'External',
+        WFIPAddressTypeOption: 'IPv4',
+      }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: 'AE7662ED-93B1-479F-BDBE-04D95942158D',
-      WFCondition: 100,
-      WFControlFlowMode: 0,
-      WFInput: {
-        Type: 'Variable',
-        Variable: sc.Attach(sc.Ref('Current IP Address')),
-      },
-    }),
-
-    sc.Action('is.workflow.actions.downloadurl', name='Result ', params={
-      WFURL: sc.Str(['https://routinehub.co/api/v1/shortcuts/', sc.Ref('Info', aggs=[
+      sc.If_(sc.Cond(
         {
-          DictionaryKey: 'RoutineHub ID',
-          Type: 'WFDictionaryValueVariableAggrandizement',
+          Type: 'Variable',
+          Variable: sc.Attach(sc.Ref('Current IP Address')),
         },
-      ]), '/versions/latest']),
-    }),
+        'has any value',
+        {
+          UUID: 'BF067D51-BEE7-4F24-BE0F-555E83555F99',
+        }
+      )).Then_([
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '816EE2D5-FB14-49B7-B59B-3D2F9FA9F254',
-      WFCondition: 99,
-      WFConditionalActionString: 'success',
-      WFControlFlowMode: 0,
-      WFInput: {
-        Type: 'Variable',
-        Variable: sc.Attach(sc.Ref('Result ', aggs=[
+        sc.Action('is.workflow.actions.downloadurl', name='Result ', params={
+          WFURL: sc.Str(['https://routinehub.co/api/v1/shortcuts/', sc.Ref('Info', aggs=[
+            {
+              DictionaryKey: 'RoutineHub ID',
+              Type: 'WFDictionaryValueVariableAggrandizement',
+            },
+          ]), '/versions/latest']),
+        }),
+
+        sc.If_(sc.Cond(
           {
-            CoercionItemClass: 'WFStringContentItem',
-            Type: 'WFCoercionVariableAggrandizement',
-          },
-        ])),
-      },
-    }),
-
-    sc.Action('is.workflow.actions.gettext', name='Text', params={
-      WFTextActionText: {
-        Value: {
-          attachmentsByRange: {
-            '{100, 1}': sc.Ref('Info', aggs=[
+            Type: 'Variable',
+            Variable: sc.Attach(sc.Ref('Result ', aggs=[
               {
-                DictionaryKey: 'Version',
-                Type: 'WFDictionaryValueVariableAggrandizement',
-              },
-            ]),
-            '{72, 1}': sc.Ref('Result ', aggs=[
-              {
-                CoercionItemClass: 'WFDictionaryContentItem',
+                CoercionItemClass: 'WFStringContentItem',
                 Type: 'WFCoercionVariableAggrandizement',
               },
-              {
-                DictionaryKey: 'Version',
-                Type: 'WFDictionaryValueVariableAggrandizement',
-              },
-            ]),
+            ])),
           },
-          string: "// Define the latest and current version numbers\nconst latestVersion = '￼';\nconst currentVersion = '￼';\n\n// Compare the two version numbers\nconst isLatestGreater = compareVersions(latestVersion, currentVersion);\n\n// Print the result\ndocument.write(`${+isLatestGreater}`);\n\n// Function to compare two semantic version numbers\nfunction compareVersions(v1, v2) {\n  // Split the version numbers into an array of numbers\n  const v1Arr = v1.split('.');\n  const v2Arr = v2.split('.');\n\n  // Compare the major, minor, and patch versions\n  for (let i = 0; i < 3; i++) {\n    const v1Part = parseInt(v1Arr[i]);\n    const v2Part = parseInt(v2Arr[i]);\n\n    if (v1Part > v2Part) {\n      return true;\n    } else if (v1Part < v2Part) {\n      return false;\n    }\n  }\n\n  // The two versions are equal\n  return false;\n}",
-        },
-        WFSerializationType: 'WFTextTokenString',
-      },
-    }),
-
-    sc.Action('is.workflow.actions.url', name='URL', params={
-      WFURLActionURL: sc.Str(['data:text/html;charset=utf-8,<script>', sc.Ref('Text'), '</script>']),
-    }),
-
-    sc.Action('is.workflow.actions.gettypeaction', name='Get File of Type', params={
-      WFFileType: 'com.apple.webarchive',
-      WFInput: sc.Attach(sc.Ref('URL')),
-    }),
-
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: 'BE871DE4-D998-4633-9BDD-744E3B82EDF8',
-      WFCondition: 4,
-      WFControlFlowMode: 0,
-      WFInput: {
-        Type: 'Variable',
-        Variable: sc.Attach(sc.Ref('Get File of Type', aggs=[
+          'contains',
           {
-            CoercionItemClass: 'WFBooleanContentItem',
-            Type: 'WFCoercionVariableAggrandizement',
-          },
-        ])),
-      },
-      WFNumberValue: sc.Attach(sc.Ref('Vars.Current Version')),
-    }),
+            UUID: '843563B2-20EF-4E80-9287-8C05F959CC1F',
+            WFConditionalActionString: 'success',
+          }
+        )).Then_([
 
-    sc.Action('is.workflow.actions.count', name='Count', params={
-      Input: sc.Attach(sc.Ref('Result ', aggs=[
-        {
-          CoercionItemClass: 'WFDictionaryContentItem',
-          Type: 'WFCoercionVariableAggrandizement',
-        },
-        {
-          DictionaryKey: 'Notes',
-          Type: 'WFDictionaryValueVariableAggrandizement',
-        },
-      ])),
-      WFCountType: 'Words',
-    }),
+          sc.Action('is.workflow.actions.gettext', name='Text', params={
+            WFTextActionText: {
+              Value: {
+                attachmentsByRange: {
+                  '{100, 1}': sc.Ref('Info', aggs=[
+                    {
+                      DictionaryKey: 'Version',
+                      Type: 'WFDictionaryValueVariableAggrandizement',
+                    },
+                  ]),
+                  '{72, 1}': sc.Ref('Result ', aggs=[
+                    {
+                      CoercionItemClass: 'WFDictionaryContentItem',
+                      Type: 'WFCoercionVariableAggrandizement',
+                    },
+                    {
+                      DictionaryKey: 'Version',
+                      Type: 'WFDictionaryValueVariableAggrandizement',
+                    },
+                  ]),
+                },
+                string: "// Define the latest and current version numbers\nconst latestVersion = '￼';\nconst currentVersion = '￼';\n\n// Compare the two version numbers\nconst isLatestGreater = compareVersions(latestVersion, currentVersion);\n\n// Print the result\ndocument.write(`${+isLatestGreater}`);\n\n// Function to compare two semantic version numbers\nfunction compareVersions(v1, v2) {\n  // Split the version numbers into an array of numbers\n  const v1Arr = v1.split('.');\n  const v2Arr = v2.split('.');\n\n  // Compare the major, minor, and patch versions\n  for (let i = 0; i < 3; i++) {\n    const v1Part = parseInt(v1Arr[i]);\n    const v2Part = parseInt(v2Arr[i]);\n\n    if (v1Part > v2Part) {\n      return true;\n    } else if (v1Part < v2Part) {\n      return false;\n    }\n  }\n\n  // The two versions are equal\n  return false;\n}",
+              },
+              WFSerializationType: 'WFTextTokenString',
+            },
+          }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: 'D3CC33C6-9AE9-4074-B573-A2B76345881D',
-      WFCondition: 2,
-      WFControlFlowMode: 0,
-      WFInput: {
-        Type: 'Variable',
-        Variable: sc.Attach(sc.Ref('Count')),
-      },
-      WFNumberValue: sc.Attach(sc.Ref('Info', aggs=[
-        {
-          DictionaryKey: 'Change log word count',
-          Type: 'WFDictionaryValueVariableAggrandizement',
-        },
-      ])),
-    }),
+          sc.Action('is.workflow.actions.url', name='URL', params={
+            WFURLActionURL: sc.Str(['data:text/html;charset=utf-8,<script>', sc.Ref('Text'), '</script>']),
+          }),
 
-    sc.Action('is.workflow.actions.text.split', name='Split Text', params={
-      WFTextSeparator: 'Spaces',
-      text: sc.Attach(sc.Ref('Result ', aggs=[
-        {
-          CoercionItemClass: 'WFDictionaryContentItem',
-          Type: 'WFCoercionVariableAggrandizement',
-        },
-        {
-          DictionaryKey: 'Notes',
-          Type: 'WFDictionaryValueVariableAggrandizement',
-        },
-      ])),
-    }),
+          sc.Action('is.workflow.actions.gettypeaction', name='Get File of Type', params={
+            WFFileType: 'com.apple.webarchive',
+            WFInput: sc.Attach(sc.Ref('URL')),
+          }),
 
-    sc.Action('is.workflow.actions.getitemfromlist', name='Item from List', params={
-      WFInput: sc.Attach(sc.Ref('Split Text')),
-      WFItemRangeEnd: sc.Attach(sc.Ref('Info', aggs=[
-        {
-          DictionaryKey: 'Change log word count',
-          Type: 'WFDictionaryValueVariableAggrandizement',
-        },
-      ])),
-      WFItemSpecifier: 'Items in Range',
-    }),
+          sc.If_(sc.Cond(
+            {
+              Type: 'Variable',
+              Variable: sc.Attach(sc.Ref('Get File of Type', aggs=[
+                {
+                  CoercionItemClass: 'WFBooleanContentItem',
+                  Type: 'WFCoercionVariableAggrandizement',
+                },
+              ])),
+            },
+            'is',
+            {
+              UUID: 'F9FBA074-AD8C-4417-A8B1-6FB00A27C95F',
+              WFNumberValue: sc.Attach(sc.Ref('Vars.Current Version')),
+            }
+          )).Then_([
 
-    sc.Action('is.workflow.actions.text.combine', name='Combined Text', params={
-      WFTextSeparator: 'Spaces',
-      text: sc.Attach(sc.Ref('Item from List')),
-    }),
+            sc.Action('is.workflow.actions.count', name='Count', params={
+              Input: sc.Attach(sc.Ref('Result ', aggs=[
+                {
+                  CoercionItemClass: 'WFDictionaryContentItem',
+                  Type: 'WFCoercionVariableAggrandizement',
+                },
+                {
+                  DictionaryKey: 'Notes',
+                  Type: 'WFDictionaryValueVariableAggrandizement',
+                },
+              ])),
+              WFCountType: 'Words',
+            }),
 
-    sc.Action('is.workflow.actions.gettext', {
-      WFTextActionText: sc.Str([sc.Ref('Combined Text'), '...']),
-    }),
+            sc.If_(sc.Cond(
+              {
+                Type: 'Variable',
+                Variable: sc.Attach(sc.Ref('Count')),
+              },
+              '>',
+              {
+                WFNumberValue: sc.Attach(sc.Ref('Info', aggs=[
+                  {
+                    DictionaryKey: 'Change log word count',
+                    Type: 'WFDictionaryValueVariableAggrandizement',
+                  },
+                ])),
+              }
+            )).Then_([
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: 'D3CC33C6-9AE9-4074-B573-A2B76345881D',
-      WFControlFlowMode: 1,
-    }),
+              sc.Action('is.workflow.actions.text.split', name='Split Text', params={
+                WFTextSeparator: 'Spaces',
+                text: sc.Attach(sc.Ref('Result ', aggs=[
+                  {
+                    CoercionItemClass: 'WFDictionaryContentItem',
+                    Type: 'WFCoercionVariableAggrandizement',
+                  },
+                  {
+                    DictionaryKey: 'Notes',
+                    Type: 'WFDictionaryValueVariableAggrandizement',
+                  },
+                ])),
+              }),
 
-    sc.Action('is.workflow.actions.getvariable', {
-      WFVariable: sc.Attach(sc.Ref('Result ', aggs=[
-        {
-          CoercionItemClass: 'WFDictionaryContentItem',
-          Type: 'WFCoercionVariableAggrandizement',
-        },
-        {
-          DictionaryKey: 'Notes',
-          Type: 'WFDictionaryValueVariableAggrandizement',
-        },
-      ])),
-    }),
+              sc.Action('is.workflow.actions.getitemfromlist', name='Item from List', params={
+                WFInput: sc.Attach(sc.Ref('Split Text')),
+                WFItemRangeEnd: sc.Attach(sc.Ref('Info', aggs=[
+                  {
+                    DictionaryKey: 'Change log word count',
+                    Type: 'WFDictionaryValueVariableAggrandizement',
+                  },
+                ])),
+                WFItemSpecifier: 'Items in Range',
+              }),
 
-    sc.Action('is.workflow.actions.conditional', name='Notes processed', params={
-      GroupingIdentifier: 'D3CC33C6-9AE9-4074-B573-A2B76345881D',
-      WFControlFlowMode: 2,
-    }),
+              sc.Action('is.workflow.actions.text.combine', name='Combined Text', params={
+                WFTextSeparator: 'Spaces',
+                text: sc.Attach(sc.Ref('Item from List')),
+              }),
 
-    sc.Action('is.workflow.actions.gettext', name='Upgrade prompt', params={
-      WFTextActionText: sc.Str(['New Version: ', sc.Ref('Result ', aggs=[
-        {
-          CoercionItemClass: 'WFDictionaryContentItem',
-          Type: 'WFCoercionVariableAggrandizement',
-        },
-        {
-          DictionaryKey: 'Version',
-          Type: 'WFDictionaryValueVariableAggrandizement',
-        },
-      ]), '\nRelease: ', sc.Ref('Result ', aggs=[
-        {
-          CoercionItemClass: 'WFDictionaryContentItem',
-          Type: 'WFCoercionVariableAggrandizement',
-        },
-        {
-          DictionaryKey: 'Release',
-          Type: 'WFDictionaryValueVariableAggrandizement',
-        },
-      ])]),
-    }),
+              sc.Action('is.workflow.actions.gettext', {
+                WFTextActionText: sc.Str([sc.Ref('Combined Text'), '...']),
+              }),
 
-    sc.Action('is.workflow.actions.choosefrommenu', {
-      GroupingIdentifier: 'A868DB78-D204-43A4-B386-66BA46DFAAA4',
-      WFControlFlowMode: 0,
-      WFMenuItems: [
-        '🌐 Go to RoutineHub',
-        '📥 Download Update',
-        '↵  Not Now',
-      ],
-      WFMenuPrompt: sc.Str([sc.Ref('Upgrade prompt')]),
-    }),
+            ]).Else_([
 
-    sc.Action('is.workflow.actions.choosefrommenu', {
-      GroupingIdentifier: 'A868DB78-D204-43A4-B386-66BA46DFAAA4',
-      WFControlFlowMode: 1,
-      WFMenuItemTitle: '🌐 Go to RoutineHub',
-    }),
+              sc.Action('is.workflow.actions.getvariable', {
+                WFVariable: sc.Attach(sc.Ref('Result ', aggs=[
+                  {
+                    CoercionItemClass: 'WFDictionaryContentItem',
+                    Type: 'WFCoercionVariableAggrandizement',
+                  },
+                  {
+                    DictionaryKey: 'Notes',
+                    Type: 'WFDictionaryValueVariableAggrandizement',
+                  },
+                ])),
+              }),
 
-    sc.Action('is.workflow.actions.openurl', {
-      WFInput: sc.Str(['https://routinehub.co/shortcut/', sc.Ref('Info', aggs=[
-        {
-          DictionaryKey: 'RoutineHub ID',
-          Type: 'WFDictionaryValueVariableAggrandizement',
-        },
-      ]), '/']),
-    }),
+            ]).EndIf_(name='Notes processed'),
 
-    sc.Action('is.workflow.actions.exit'),
+            sc.Action('is.workflow.actions.gettext', name='Upgrade prompt', params={
+              WFTextActionText: sc.Str(['New Version: ', sc.Ref('Result ', aggs=[
+                {
+                  CoercionItemClass: 'WFDictionaryContentItem',
+                  Type: 'WFCoercionVariableAggrandizement',
+                },
+                {
+                  DictionaryKey: 'Version',
+                  Type: 'WFDictionaryValueVariableAggrandizement',
+                },
+              ]), '\nRelease: ', sc.Ref('Result ', aggs=[
+                {
+                  CoercionItemClass: 'WFDictionaryContentItem',
+                  Type: 'WFCoercionVariableAggrandizement',
+                },
+                {
+                  DictionaryKey: 'Release',
+                  Type: 'WFDictionaryValueVariableAggrandizement',
+                },
+              ])]),
+            }),
 
-    sc.Action('is.workflow.actions.choosefrommenu', {
-      GroupingIdentifier: 'A868DB78-D204-43A4-B386-66BA46DFAAA4',
-      WFControlFlowMode: 1,
-      WFMenuItemTitle: '📥 Download Update',
-    }),
+            sc.Action('is.workflow.actions.choosefrommenu', {
+              GroupingIdentifier: 'A868DB78-D204-43A4-B386-66BA46DFAAA4',
+              WFControlFlowMode: 0,
+              WFMenuItems: [
+                '🌐 Go to RoutineHub',
+                '📥 Download Update',
+                '↵  Not Now',
+              ],
+              WFMenuPrompt: sc.Str([sc.Ref('Upgrade prompt')]),
+            }),
 
-    sc.Action('is.workflow.actions.url.expand', name='Expanded URL', params={
-      URL: sc.Str([sc.Ref('Result ', aggs=[
-        {
-          CoercionItemClass: 'WFDictionaryContentItem',
-          Type: 'WFCoercionVariableAggrandizement',
-        },
-        {
-          DictionaryKey: 'URL',
-          Type: 'WFDictionaryValueVariableAggrandizement',
-        },
-      ])]),
-    }),
+            sc.Action('is.workflow.actions.choosefrommenu', {
+              GroupingIdentifier: 'A868DB78-D204-43A4-B386-66BA46DFAAA4',
+              WFControlFlowMode: 1,
+              WFMenuItemTitle: '🌐 Go to RoutineHub',
+            }),
 
-    sc.Action('is.workflow.actions.text.replace', name='Updated Text', params={
-      WFInput: sc.Str([sc.Ref('Expanded URL')]),
-      WFReplaceTextCaseSensitive: false,
-      WFReplaceTextFind: 'https://www.icloud.com/',
-      WFReplaceTextReplace: 'shortcuts://',
-    }),
+            sc.Action('is.workflow.actions.openurl', {
+              WFInput: sc.Str(['https://routinehub.co/shortcut/', sc.Ref('Info', aggs=[
+                {
+                  DictionaryKey: 'RoutineHub ID',
+                  Type: 'WFDictionaryValueVariableAggrandizement',
+                },
+              ]), '/']),
+            }),
 
-    sc.Action('is.workflow.actions.openurl', {
-      WFInput: sc.Attach(sc.Ref('Updated Text')),
-    }),
+            sc.Action('is.workflow.actions.exit'),
 
-    sc.Action('is.workflow.actions.exit'),
+            sc.Action('is.workflow.actions.choosefrommenu', {
+              GroupingIdentifier: 'A868DB78-D204-43A4-B386-66BA46DFAAA4',
+              WFControlFlowMode: 1,
+              WFMenuItemTitle: '📥 Download Update',
+            }),
 
-    sc.Action('is.workflow.actions.choosefrommenu', {
-      GroupingIdentifier: 'A868DB78-D204-43A4-B386-66BA46DFAAA4',
-      WFControlFlowMode: 1,
-      WFMenuItemTitle: '↵  Not Now',
-    }),
+            sc.Action('is.workflow.actions.url.expand', name='Expanded URL', params={
+              URL: sc.Str([sc.Ref('Result ', aggs=[
+                {
+                  CoercionItemClass: 'WFDictionaryContentItem',
+                  Type: 'WFCoercionVariableAggrandizement',
+                },
+                {
+                  DictionaryKey: 'URL',
+                  Type: 'WFDictionaryValueVariableAggrandizement',
+                },
+              ])]),
+            }),
 
-    sc.Action('is.workflow.actions.choosefrommenu', {
-      GroupingIdentifier: 'A868DB78-D204-43A4-B386-66BA46DFAAA4',
-      WFControlFlowMode: 2,
-    }),
+            sc.Action('is.workflow.actions.text.replace', name='Updated Text', params={
+              WFInput: sc.Str([sc.Ref('Expanded URL')]),
+              WFReplaceTextCaseSensitive: false,
+              WFReplaceTextFind: 'https://www.icloud.com/',
+              WFReplaceTextReplace: 'shortcuts://',
+            }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: 'BE871DE4-D998-4633-9BDD-744E3B82EDF8',
-      WFControlFlowMode: 2,
-    }),
+            sc.Action('is.workflow.actions.openurl', {
+              WFInput: sc.Attach(sc.Ref('Updated Text')),
+            }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '816EE2D5-FB14-49B7-B59B-3D2F9FA9F254',
-      WFControlFlowMode: 2,
-    }),
+            sc.Action('is.workflow.actions.exit'),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: 'AE7662ED-93B1-479F-BDBE-04D95942158D',
-      WFControlFlowMode: 2,
-    }),
+            sc.Action('is.workflow.actions.choosefrommenu', {
+              GroupingIdentifier: 'A868DB78-D204-43A4-B386-66BA46DFAAA4',
+              WFControlFlowMode: 1,
+              WFMenuItemTitle: '↵  Not Now',
+            }),
 
-    sc.Action('is.workflow.actions.nothing'),
+            sc.Action('is.workflow.actions.choosefrommenu', {
+              GroupingIdentifier: 'A868DB78-D204-43A4-B386-66BA46DFAAA4',
+              WFControlFlowMode: 2,
+            }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '0EF09A1E-8531-48AA-826E-B7422B4A676A',
-      WFControlFlowMode: 2,
-    }),
+          ]).EndIf_(),
+
+        ]).EndIf_(),
+
+      ]).EndIf_(),
+
+      sc.Action('is.workflow.actions.nothing'),
+
+    ]).EndIf_(),
 
     sc.Action('is.workflow.actions.comment', {
       WFCommentActionText: '【Auto-Update Routine Ends Here】',

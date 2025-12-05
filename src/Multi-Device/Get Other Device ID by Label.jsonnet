@@ -46,37 +46,34 @@ local sc = import 'shortcuts.libsonnet';
       ])),
     }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '4ADA7C54-6705-4FE3-BB63-CCBD757DC3DE',
-      WFCondition: 5,
-      WFConditionalActionString: sc.Str([sc.Ref('Device ID')]),
-      WFControlFlowMode: 0,
-      WFInput: {
+    sc.If_(sc.Cond(
+      {
         Type: 'Variable',
         Variable: sc.Attach(sc.Ref('Vars.Repeat Item')),
       },
-    }),
+      'is not',
+      {
+        WFConditionalActionString: sc.Str([sc.Ref('Device ID')]),
+      }
+    )).Then_([
 
-    sc.Action('is.workflow.actions.getvalueforkey', name='Dictionary Value', params={
-      WFDictionaryKey: sc.Str([sc.Ref('Vars.Repeat Item')]),
-      WFInput: sc.Attach(sc.Ref('Device Labels')),
-    }),
+      sc.Action('is.workflow.actions.getvalueforkey', name='Dictionary Value', params={
+        WFDictionaryKey: sc.Str([sc.Ref('Vars.Repeat Item')]),
+        WFInput: sc.Attach(sc.Ref('Device Labels')),
+      }),
 
-    sc.Action('is.workflow.actions.setvalueforkey', name='Dictionary', params={
-      WFDictionary: sc.Attach(sc.Ref('Vars.Menu')),
-      WFDictionaryKey: sc.Str([sc.Ref('Dictionary Value')]),
-      WFDictionaryValue: sc.Str([sc.Ref('Vars.Repeat Item')]),
-    }),
+      sc.Action('is.workflow.actions.setvalueforkey', name='Dictionary', params={
+        WFDictionary: sc.Attach(sc.Ref('Vars.Menu')),
+        WFDictionaryKey: sc.Str([sc.Ref('Dictionary Value')]),
+        WFDictionaryValue: sc.Str([sc.Ref('Vars.Repeat Item')]),
+      }),
 
-    sc.Action('is.workflow.actions.setvariable', {
-      WFInput: sc.Attach(sc.Ref('Dictionary')),
-      WFVariableName: 'Menu',
-    }),
+      sc.Action('is.workflow.actions.setvariable', {
+        WFInput: sc.Attach(sc.Ref('Dictionary')),
+        WFVariableName: 'Menu',
+      }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '4ADA7C54-6705-4FE3-BB63-CCBD757DC3DE',
-      WFControlFlowMode: 2,
-    }),
+    ]).EndIf_(),
 
     sc.Action('is.workflow.actions.repeat.each', {
       GroupingIdentifier: 'B415E81D-19C0-4B0D-BCDB-001B43402E3B',

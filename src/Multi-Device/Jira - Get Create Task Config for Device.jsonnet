@@ -32,133 +32,119 @@ local sc = import 'shortcuts.libsonnet';
       WFInput: sc.Attach(sc.Ref('Instance IDs By Device ID')),
     }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '5D2433DA-C2D9-4574-94A9-9CD66937FAB4',
-      WFCondition: 101,
-      WFControlFlowMode: 0,
-      WFInput: {
+    sc.If_(sc.Cond(
+      {
         Type: 'Variable',
         Variable: sc.Attach(sc.Ref('Instance IDs')),
       },
-    }),
+      'does not have any value'
+    )).Then_([
 
-    sc.Action('is.workflow.actions.alert', {
-      WFAlertActionMessage: 'No instance configured for device! Would you like to configure one?',
-    }),
+      sc.Action('is.workflow.actions.alert', {
+        WFAlertActionMessage: 'No instance configured for device! Would you like to configure one?',
+      }),
 
-    sc.Action('dk.simonbs.DataJar.ViewValueIntent', {
-      keyPath: 'Jira Create Task Config',
-    }),
+      sc.Action('dk.simonbs.DataJar.ViewValueIntent', {
+        keyPath: 'Jira Create Task Config',
+      }),
 
-    sc.Action('is.workflow.actions.exit'),
+      sc.Action('is.workflow.actions.exit'),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '5D2433DA-C2D9-4574-94A9-9CD66937FAB4',
-      WFControlFlowMode: 1,
-    }),
+    ]).Else_([
 
-    sc.Action('is.workflow.actions.count', name='Count', params={
-      Input: sc.Attach(sc.Ref('Instance IDs')),
-    }),
+      sc.Action('is.workflow.actions.count', name='Count', params={
+        Input: sc.Attach(sc.Ref('Instance IDs')),
+      }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '74A4EA81-DD0F-4589-A817-B956A43B1B92',
-      WFCondition: 2,
-      WFControlFlowMode: 0,
-      WFInput: {
-        Type: 'Variable',
-        Variable: sc.Attach(sc.Ref('Count')),
-      },
-      WFNumberValue: '1',
-    }),
-
-    sc.Action('is.workflow.actions.dictionary', name='Empty Dictionary'),
-
-    sc.Action('is.workflow.actions.setvariable', {
-      WFInput: sc.Attach(sc.Ref('Empty Dictionary')),
-      WFVariableName: 'Instance Labels',
-    }),
-
-    sc.Action('is.workflow.actions.repeat.each', {
-      GroupingIdentifier: '62FF8516-8CF1-4D5B-89D9-B71798B93826',
-      WFControlFlowMode: 0,
-      WFInput: sc.Attach(sc.Ref('Instance IDs', aggs=[
+      sc.If_(sc.Cond(
         {
-          CoercionItemClass: 'WFStringContentItem',
-          Type: 'WFCoercionVariableAggrandizement',
+          Type: 'Variable',
+          Variable: sc.Attach(sc.Ref('Count')),
         },
-      ])),
-    }),
-
-    sc.Action('is.workflow.actions.setvariable', {
-      WFInput: sc.Attach(sc.Ref('Vars.Repeat Item')),
-      WFVariableName: 'Instance ID',
-    }),
-
-    sc.Action('is.workflow.actions.getvalueforkey', name='Instance', params={
-      WFDictionaryKey: sc.Str([sc.Ref('Vars.Repeat Item')]),
-      WFInput: sc.Attach(sc.Ref('Instances')),
-    }),
-
-    sc.Action('is.workflow.actions.setvalueforkey', name='Dictionary', params={
-      WFDictionary: sc.Attach(sc.Ref('Vars.Instance Labels')),
-      WFDictionaryKey: sc.Str([sc.Ref('Instance', aggs=[
+        '>',
         {
-          CoercionItemClass: 'WFDictionaryContentItem',
-          Type: 'WFCoercionVariableAggrandizement',
-        },
-        {
-          DictionaryKey: 'label',
-          Type: 'WFDictionaryValueVariableAggrandizement',
-        },
-      ])]),
-      WFDictionaryValue: sc.Str([sc.Ref('Vars.Repeat Item')]),
-    }),
+          WFNumberValue: '1',
+        }
+      )).Then_([
 
-    sc.Action('is.workflow.actions.setvariable', {
-      WFInput: sc.Attach(sc.Ref('Dictionary')),
-      WFVariableName: 'Instance Labels',
-    }),
+        sc.Action('is.workflow.actions.dictionary', name='Empty Dictionary'),
 
-    sc.Action('is.workflow.actions.repeat.each', {
-      GroupingIdentifier: '62FF8516-8CF1-4D5B-89D9-B71798B93826',
-      WFControlFlowMode: 2,
-    }),
+        sc.Action('is.workflow.actions.setvariable', {
+          WFInput: sc.Attach(sc.Ref('Empty Dictionary')),
+          WFVariableName: 'Instance Labels',
+        }),
 
-    sc.Action('is.workflow.actions.choosefromlist', name='Chosen Item', params={
-      WFChooseFromListActionPrompt: 'Which Jira instance?',
-      WFInput: sc.Attach(sc.Ref('Vars.Instance Labels')),
-    }),
+        sc.Action('is.workflow.actions.repeat.each', {
+          GroupingIdentifier: '62FF8516-8CF1-4D5B-89D9-B71798B93826',
+          WFControlFlowMode: 0,
+          WFInput: sc.Attach(sc.Ref('Instance IDs', aggs=[
+            {
+              CoercionItemClass: 'WFStringContentItem',
+              Type: 'WFCoercionVariableAggrandizement',
+            },
+          ])),
+        }),
 
-    sc.Action('is.workflow.actions.getvalueforkey', {
-      WFDictionaryKey: sc.Str([sc.Ref('Chosen Item')]),
-      WFInput: sc.Attach(sc.Ref('Instances', aggs=[
-        {
-          CoercionItemClass: 'WFDictionaryContentItem',
-          Type: 'WFCoercionVariableAggrandizement',
-        },
-      ])),
-    }),
+        sc.Action('is.workflow.actions.setvariable', {
+          WFInput: sc.Attach(sc.Ref('Vars.Repeat Item')),
+          WFVariableName: 'Instance ID',
+        }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '74A4EA81-DD0F-4589-A817-B956A43B1B92',
-      WFControlFlowMode: 1,
-    }),
+        sc.Action('is.workflow.actions.getvalueforkey', name='Instance', params={
+          WFDictionaryKey: sc.Str([sc.Ref('Vars.Repeat Item')]),
+          WFInput: sc.Attach(sc.Ref('Instances')),
+        }),
 
-    sc.Action('is.workflow.actions.getvalueforkey', {
-      WFDictionaryKey: sc.Str([sc.Ref('Instance IDs')]),
-      WFInput: sc.Attach(sc.Ref('Instances')),
-    }),
+        sc.Action('is.workflow.actions.setvalueforkey', name='Dictionary', params={
+          WFDictionary: sc.Attach(sc.Ref('Vars.Instance Labels')),
+          WFDictionaryKey: sc.Str([sc.Ref('Instance', aggs=[
+            {
+              CoercionItemClass: 'WFDictionaryContentItem',
+              Type: 'WFCoercionVariableAggrandizement',
+            },
+            {
+              DictionaryKey: 'label',
+              Type: 'WFDictionaryValueVariableAggrandizement',
+            },
+          ])]),
+          WFDictionaryValue: sc.Str([sc.Ref('Vars.Repeat Item')]),
+        }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '74A4EA81-DD0F-4589-A817-B956A43B1B92',
-      WFControlFlowMode: 2,
-    }),
+        sc.Action('is.workflow.actions.setvariable', {
+          WFInput: sc.Attach(sc.Ref('Dictionary')),
+          WFVariableName: 'Instance Labels',
+        }),
 
-    sc.Action('is.workflow.actions.conditional', name='If Result', params={
-      GroupingIdentifier: '5D2433DA-C2D9-4574-94A9-9CD66937FAB4',
-      WFControlFlowMode: 2,
-    }),
+        sc.Action('is.workflow.actions.repeat.each', {
+          GroupingIdentifier: '62FF8516-8CF1-4D5B-89D9-B71798B93826',
+          WFControlFlowMode: 2,
+        }),
+
+        sc.Action('is.workflow.actions.choosefromlist', name='Chosen Item', params={
+          WFChooseFromListActionPrompt: 'Which Jira instance?',
+          WFInput: sc.Attach(sc.Ref('Vars.Instance Labels')),
+        }),
+
+        sc.Action('is.workflow.actions.getvalueforkey', {
+          WFDictionaryKey: sc.Str([sc.Ref('Chosen Item')]),
+          WFInput: sc.Attach(sc.Ref('Instances', aggs=[
+            {
+              CoercionItemClass: 'WFDictionaryContentItem',
+              Type: 'WFCoercionVariableAggrandizement',
+            },
+          ])),
+        }),
+
+      ]).Else_([
+
+        sc.Action('is.workflow.actions.getvalueforkey', {
+          WFDictionaryKey: sc.Str([sc.Ref('Instance IDs')]),
+          WFInput: sc.Attach(sc.Ref('Instances')),
+        }),
+
+      ]).EndIf_(),
+
+    ]).EndIf_(name='If Result'),
 
     sc.Action('is.workflow.actions.output', {
       WFOutput: sc.Str([sc.Ref('If Result')]),

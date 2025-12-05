@@ -84,24 +84,19 @@ local sc = import 'shortcuts.libsonnet';
       WFInput: sc.Attach(sc.Ref('List')),
     }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: 'C5BC56C1-0702-4768-B26B-4E99EB226BBA',
-      WFCondition: 100,
-      WFControlFlowMode: 0,
-      WFInput: {
+    sc.If_(sc.Cond(
+      {
         Type: 'Variable',
         Variable: sc.Attach(sc.Ref('Vars.Repeat Item 2')),
       },
-    }),
+      'has any value'
+    )).Then_([
 
-    sc.Action('is.workflow.actions.getvariable', {
-      WFVariable: sc.Attach(sc.Ref('Vars.Repeat Item 2')),
-    }),
+      sc.Action('is.workflow.actions.getvariable', {
+        WFVariable: sc.Attach(sc.Ref('Vars.Repeat Item 2')),
+      }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: 'C5BC56C1-0702-4768-B26B-4E99EB226BBA',
-      WFControlFlowMode: 2,
-    }),
+    ]).EndIf_(),
 
     sc.Action('is.workflow.actions.repeat.each', name='Repeat Results', params={
       GroupingIdentifier: '257DCF15-3390-47B6-9891-EF2C34FBA39B',
@@ -223,77 +218,68 @@ local sc = import 'shortcuts.libsonnet';
       WFVariableName: 'Due Date ISO',
     }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '11BC3E6C-4D1C-4D68-9814-456811832BE7',
-      WFCondition: 100,
-      WFConditionalActionString: 'T00:00:00',
-      WFControlFlowMode: 0,
-      WFInput: {
+    sc.If_(sc.Cond(
+      {
         Type: 'Variable',
         Variable: sc.Attach(sc.Ref('Vars.Due Date ISO')),
       },
-    }),
+      'has any value',
+      {
+        WFConditionalActionString: 'T00:00:00',
+      }
+    )).Then_([
 
-    sc.Action('is.workflow.actions.text.split', name='Split Text', params={
-      WFTextCustomSeparator: 'T',
-      WFTextSeparator: 'Custom',
-      text: sc.Attach(sc.Ref('Vars.Due Date ISO')),
-    }),
+      sc.Action('is.workflow.actions.text.split', name='Split Text', params={
+        WFTextCustomSeparator: 'T',
+        WFTextSeparator: 'Custom',
+        text: sc.Attach(sc.Ref('Vars.Due Date ISO')),
+      }),
 
-    sc.Action('is.workflow.actions.getitemfromlist', name='Due Date', params={
-      WFInput: sc.Attach(sc.Ref('Split Text')),
-    }),
+      sc.Action('is.workflow.actions.getitemfromlist', name='Due Date', params={
+        WFInput: sc.Attach(sc.Ref('Split Text')),
+      }),
 
-    sc.Action('is.workflow.actions.gettext', name='Due Date Meta', params={
-      WFTextActionText: sc.Str(['due_date: ', sc.Ref('Due Date')]),
-    }),
+      sc.Action('is.workflow.actions.gettext', name='Due Date Meta', params={
+        WFTextActionText: sc.Str(['due_date: ', sc.Ref('Due Date')]),
+      }),
 
-    sc.Action('is.workflow.actions.appendvariable', {
-      WFInput: sc.Attach(sc.Ref('Due Date Meta')),
-      WFVariableName: 'Frontmatter',
-    }),
+      sc.Action('is.workflow.actions.appendvariable', {
+        WFInput: sc.Attach(sc.Ref('Due Date Meta')),
+        WFVariableName: 'Frontmatter',
+      }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: 'C56C1A12-52FE-471F-9646-4ACA618280C7',
-      WFCondition: 999,
-      WFConditionalActionString: 'T00:00:00',
-      WFControlFlowMode: 0,
-      WFInput: {
-        Type: 'Variable',
-        Variable: sc.Attach(sc.Ref('Vars.Due Date ISO')),
-      },
-    }),
+      sc.If_(sc.Cond(
+        {
+          Type: 'Variable',
+          Variable: sc.Attach(sc.Ref('Vars.Due Date ISO')),
+        },
+        'does not contain',
+        {
+          WFConditionalActionString: 'T00:00:00',
+        }
+      )).Then_([
 
-    sc.Action('is.workflow.actions.getitemfromlist', name='Due Time', params={
-      WFInput: sc.Attach(sc.Ref('Split Text')),
-      WFItemIndex: '2',
-      WFItemSpecifier: 'Item At Index',
-    }),
+        sc.Action('is.workflow.actions.getitemfromlist', name='Due Time', params={
+          WFInput: sc.Attach(sc.Ref('Split Text')),
+          WFItemIndex: '2',
+          WFItemSpecifier: 'Item At Index',
+        }),
 
-    sc.Action('is.workflow.actions.gettext', name='Due Time Meta', params={
-      WFTextActionText: sc.Str(['due_time: ', sc.Ref('Due Time')]),
-    }),
+        sc.Action('is.workflow.actions.gettext', name='Due Time Meta', params={
+          WFTextActionText: sc.Str(['due_time: ', sc.Ref('Due Time')]),
+        }),
 
-    sc.Action('is.workflow.actions.appendvariable', {
-      WFInput: sc.Attach(sc.Ref('Due Time Meta')),
-      WFVariableName: 'Frontmatter',
-    }),
+        sc.Action('is.workflow.actions.appendvariable', {
+          WFInput: sc.Attach(sc.Ref('Due Time Meta')),
+          WFVariableName: 'Frontmatter',
+        }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: 'C56C1A12-52FE-471F-9646-4ACA618280C7',
-      WFControlFlowMode: 2,
-    }),
+      ]).EndIf_(),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '11BC3E6C-4D1C-4D68-9814-456811832BE7',
-      WFControlFlowMode: 2,
-    }),
+    ]).EndIf_(),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '68E2F2EA-A823-4AA1-9E63-E82799B52408',
-      WFCondition: 100,
-      WFControlFlowMode: 0,
-      WFInput: {
+    sc.If_(sc.Cond(
+      {
         Type: 'Variable',
         Variable: sc.Attach({
           Aggrandizements: [
@@ -306,31 +292,29 @@ local sc = import 'shortcuts.libsonnet';
           VariableName: 'Repeat Item',
         }),
       },
-    }),
+      'has any value'
+    )).Then_([
 
-    sc.Action('is.workflow.actions.properties.reminders', name='Reminder Location', params={
-      WFContentItemPropertyName: 'Reminder Location',
-      WFInput: sc.Attach(sc.Ref('Vars.Repeat Item')),
-    }),
+      sc.Action('is.workflow.actions.properties.reminders', name='Reminder Location', params={
+        WFContentItemPropertyName: 'Reminder Location',
+        WFInput: sc.Attach(sc.Ref('Vars.Repeat Item')),
+      }),
 
-    sc.Action('is.workflow.actions.gettext', name='Text', params={
-      WFTextActionText: sc.Str(['reminder_location_geo: geo:', sc.Ref('Reminder Location', aggs=[
-        {
-          PropertyName: 'Latitude',
-          Type: 'WFPropertyVariableAggrandizement',
-        },
-      ])]),
-    }),
+      sc.Action('is.workflow.actions.gettext', name='Text', params={
+        WFTextActionText: sc.Str(['reminder_location_geo: geo:', sc.Ref('Reminder Location', aggs=[
+          {
+            PropertyName: 'Latitude',
+            Type: 'WFPropertyVariableAggrandizement',
+          },
+        ])]),
+      }),
 
-    sc.Action('is.workflow.actions.appendvariable', {
-      WFInput: sc.Attach(sc.Ref('Text')),
-      WFVariableName: 'Frontmatter',
-    }),
+      sc.Action('is.workflow.actions.appendvariable', {
+        WFInput: sc.Attach(sc.Ref('Text')),
+        WFVariableName: 'Frontmatter',
+      }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '68E2F2EA-A823-4AA1-9E63-E82799B52408',
-      WFControlFlowMode: 2,
-    }),
+    ]).EndIf_(),
 
     sc.Action('is.workflow.actions.text.combine', name='Frontmatter Combined', params={
       text: sc.Attach(sc.Ref('Vars.Frontmatter')),
@@ -414,24 +398,19 @@ local sc = import 'shortcuts.libsonnet';
       WFInput: sc.Attach(sc.Ref('List')),
     }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '6B3C089D-98D0-499C-A3DD-D1F928C7C56B',
-      WFCondition: 100,
-      WFControlFlowMode: 0,
-      WFInput: {
+    sc.If_(sc.Cond(
+      {
         Type: 'Variable',
         Variable: sc.Attach(sc.Ref('Vars.Repeat Item 2')),
       },
-    }),
+      'has any value'
+    )).Then_([
 
-    sc.Action('is.workflow.actions.getvariable', {
-      WFVariable: sc.Attach(sc.Ref('Vars.Repeat Item 2')),
-    }),
+      sc.Action('is.workflow.actions.getvariable', {
+        WFVariable: sc.Attach(sc.Ref('Vars.Repeat Item 2')),
+      }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '6B3C089D-98D0-499C-A3DD-D1F928C7C56B',
-      WFControlFlowMode: 2,
-    }),
+    ]).EndIf_(),
 
     sc.Action('is.workflow.actions.repeat.each', name='Repeat Results', params={
       GroupingIdentifier: 'A8687361-9785-48CE-83F9-0C7E2B08D4E0',

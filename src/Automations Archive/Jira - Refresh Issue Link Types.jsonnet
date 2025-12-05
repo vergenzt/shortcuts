@@ -34,26 +34,21 @@ local sc = import 'shortcuts.libsonnet';
       WFWorkflowName: 'Jira API',
     }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '96F69A5F-24ED-4F3A-8216-F8C1807E8C6D',
-      WFCondition: 100,
-      WFControlFlowMode: 0,
-      WFInput: {
+    sc.If_(sc.Cond(
+      {
         Type: 'Variable',
         Variable: sc.Attach(sc.Ref('Get Link Types Result')),
       },
-    }),
+      'has any value'
+    )).Then_([
 
-    sc.Action('dk.simonbs.DataJar.SetValueIntent', {
-      keyPath: 'jira-config.issueLinkTypes',
-      overwriteStrategy: 'alwaysAllow',
-      values: sc.Attach(sc.Ref('Get Link Types Result')),
-    }),
+      sc.Action('dk.simonbs.DataJar.SetValueIntent', {
+        keyPath: 'jira-config.issueLinkTypes',
+        overwriteStrategy: 'alwaysAllow',
+        values: sc.Attach(sc.Ref('Get Link Types Result')),
+      }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '96F69A5F-24ED-4F3A-8216-F8C1807E8C6D',
-      WFControlFlowMode: 2,
-    }),
+    ]).EndIf_(),
 
   ]),
   WFWorkflowClientVersion: '3607.0.2',

@@ -278,78 +278,68 @@ local sc = import 'shortcuts.libsonnet';
       WFInput: sc.Attach(sc.Ref('Vars.Repeat Item')),
     }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '45D68504-844B-4442-A6C9-E2A4C53E75BC',
-      WFCondition: 100,
-      WFControlFlowMode: 0,
-      WFInput: {
+    sc.If_(sc.Cond(
+      {
         Type: 'Variable',
         Variable: sc.Attach(sc.Ref('Due Date')),
       },
-    }),
+      'has any value'
+    )).Then_([
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '4EBACF8B-4223-4128-B956-2E3076C9EF95',
-      WFCondition: 100,
-      WFControlFlowMode: 0,
-      WFInput: {
-        Type: 'Variable',
-        Variable: sc.Attach(sc.Ref('Start Date')),
-      },
-    }),
-
-    sc.Action('is.workflow.actions.gettimebetweendates', name='Time Between Dates', params={
-      WFInput: sc.Str([sc.Ref('Due Date')]),
-      WFTimeUntilFromDate: sc.Str([sc.Ref('Start Date')]),
-      WFTimeUntilUnit: 'Days',
-    }),
-
-    sc.Action('is.workflow.actions.adjustdate', name='New Due Date', params={
-      WFDate: sc.Str([sc.Ref('New Start Date')]),
-      WFDuration: {
-        Value: {
-          Magnitude: sc.Ref('Time Between Dates'),
-          Unit: 'days',
-        },
-        WFSerializationType: 'WFQuantityFieldValue',
-      },
-    }),
-
-    sc.Action('is.workflow.actions.setvalueforkey', name='Dictionary', params={
-      WFDictionary: sc.Attach(sc.Ref('Vars.New Field Values')),
-      WFDictionaryKey: sc.Str([sc.Ref('Constants', aggs=[
+      sc.If_(sc.Cond(
         {
-          CoercionItemClass: 'WFDictionaryContentItem',
-          Type: 'WFCoercionVariableAggrandizement',
+          Type: 'Variable',
+          Variable: sc.Attach(sc.Ref('Start Date')),
         },
-        {
-          DictionaryKey: 'Field: Due Date',
-          Type: 'WFDictionaryValueVariableAggrandizement',
-        },
-      ])]),
-      WFDictionaryValue: sc.Str([sc.Ref('New Due Date', aggs=[
-        {
-          Type: 'WFDateFormatVariableAggrandizement',
-          WFDateFormatStyle: 'ISO 8601',
-          WFISO8601IncludeTime: false,
-        },
-      ])]),
-    }),
+        'has any value'
+      )).Then_([
 
-    sc.Action('is.workflow.actions.setvariable', {
-      WFInput: sc.Attach(sc.Ref('Dictionary')),
-      WFVariableName: 'New Field Values',
-    }),
+        sc.Action('is.workflow.actions.gettimebetweendates', name='Time Between Dates', params={
+          WFInput: sc.Str([sc.Ref('Due Date')]),
+          WFTimeUntilFromDate: sc.Str([sc.Ref('Start Date')]),
+          WFTimeUntilUnit: 'Days',
+        }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '4EBACF8B-4223-4128-B956-2E3076C9EF95',
-      WFControlFlowMode: 2,
-    }),
+        sc.Action('is.workflow.actions.adjustdate', name='New Due Date', params={
+          WFDate: sc.Str([sc.Ref('New Start Date')]),
+          WFDuration: {
+            Value: {
+              Magnitude: sc.Ref('Time Between Dates'),
+              Unit: 'days',
+            },
+            WFSerializationType: 'WFQuantityFieldValue',
+          },
+        }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '45D68504-844B-4442-A6C9-E2A4C53E75BC',
-      WFControlFlowMode: 2,
-    }),
+        sc.Action('is.workflow.actions.setvalueforkey', name='Dictionary', params={
+          WFDictionary: sc.Attach(sc.Ref('Vars.New Field Values')),
+          WFDictionaryKey: sc.Str([sc.Ref('Constants', aggs=[
+            {
+              CoercionItemClass: 'WFDictionaryContentItem',
+              Type: 'WFCoercionVariableAggrandizement',
+            },
+            {
+              DictionaryKey: 'Field: Due Date',
+              Type: 'WFDictionaryValueVariableAggrandizement',
+            },
+          ])]),
+          WFDictionaryValue: sc.Str([sc.Ref('New Due Date', aggs=[
+            {
+              Type: 'WFDateFormatVariableAggrandizement',
+              WFDateFormatStyle: 'ISO 8601',
+              WFISO8601IncludeTime: false,
+            },
+          ])]),
+        }),
+
+        sc.Action('is.workflow.actions.setvariable', {
+          WFInput: sc.Attach(sc.Ref('Dictionary')),
+          WFVariableName: 'New Field Values',
+        }),
+
+      ]).EndIf_(),
+
+    ]).EndIf_(),
 
     sc.Action('is.workflow.actions.dictionary', name='Issue Edit Dictionary', params={
       WFItems: {

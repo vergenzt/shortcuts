@@ -4,79 +4,74 @@ local sc = import 'shortcuts.libsonnet';
   WFQuickActionSurfaces: [],
   WFWorkflowActions: sc.ActionsSeq([
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '1956F603-0C15-4191-BB22-59822C2310F1',
-      WFCondition: 101,
-      WFControlFlowMode: 0,
-      WFInput: {
+    sc.If_(sc.Cond(
+      {
         Type: 'Variable',
         Variable: sc.Attach(sc.Input),
       },
-    }),
+      'does not have any value'
+    )).Then_([
 
-    sc.Action('is.workflow.actions.gettext', name='Text', params={
-      WFTextActionText: 'select * from pair_configs',
-    }),
+      sc.Action('is.workflow.actions.gettext', name='Text', params={
+        WFTextActionText: 'select * from pair_configs',
+      }),
 
-    sc.Action('is.workflow.actions.dictionary', {
-      WFItems: {
-        Value: {
-          WFDictionaryFieldValueItems: [
-            {
-              WFItemType: 0,
-              WFKey: sc.Str(['db']),
-              WFValue: sc.Str(['Clone Calendars.sqlite3']),
-            },
-            {
-              WFItemType: 0,
-              WFKey: sc.Str(['query']),
-              WFValue: sc.Str([sc.Ref('Text')]),
-            },
-          ],
+      sc.Action('is.workflow.actions.dictionary', {
+        WFItems: {
+          Value: {
+            WFDictionaryFieldValueItems: [
+              {
+                WFItemType: 0,
+                WFKey: sc.Str(['db']),
+                WFValue: sc.Str(['Clone Calendars.sqlite3']),
+              },
+              {
+                WFItemType: 0,
+                WFKey: sc.Str(['query']),
+                WFValue: sc.Str([sc.Ref('Text')]),
+              },
+            ],
+          },
+          WFSerializationType: 'WFDictionaryFieldValue',
         },
-        WFSerializationType: 'WFDictionaryFieldValue',
-      },
-    }),
+      }),
 
-    sc.Action('net.filippomaguolo.SQLiteMobile.RunScript2Intent', name='SQL Result', params={
-      outputFormat: 'json',
-      saveHistory: false,
-      sql: 'select * from pair_configs',
-      sqliteDatabaseName: 'Clone Calendars.sqlite3',
-    }),
+      sc.Action('net.filippomaguolo.SQLiteMobile.RunScript2Intent', name='SQL Result', params={
+        outputFormat: 'json',
+        saveHistory: false,
+        sql: 'select * from pair_configs',
+        sqliteDatabaseName: 'Clone Calendars.sqlite3',
+      }),
 
-    sc.Action('is.workflow.actions.repeat.each', {
-      GroupingIdentifier: 'DF2CE90A-0B7A-432D-AE42-9D0DA638A372',
-      WFControlFlowMode: 0,
-      WFInput: sc.Attach(sc.Ref('SQL Result', aggs=[
-        {
-          CoercionItemClass: 'WFDictionaryContentItem',
-          Type: 'WFCoercionVariableAggrandizement',
+      sc.Action('is.workflow.actions.repeat.each', {
+        GroupingIdentifier: 'DF2CE90A-0B7A-432D-AE42-9D0DA638A372',
+        WFControlFlowMode: 0,
+        WFInput: sc.Attach(sc.Ref('SQL Result', aggs=[
+          {
+            CoercionItemClass: 'WFDictionaryContentItem',
+            Type: 'WFCoercionVariableAggrandizement',
+          },
+        ])),
+      }),
+
+      sc.Action('is.workflow.actions.runworkflow', {
+        WFInput: sc.Attach(sc.Ref('Vars.Repeat Item')),
+        WFWorkflow: {
+          isSelf: true,
+          workflowIdentifier: 'D33414F8-5B8B-4EF8-9B28-06B8436D550B',
+          workflowName: 'Clone Calendars',
         },
-      ])),
-    }),
+        WFWorkflowName: 'Clone Calendars',
+      }),
 
-    sc.Action('is.workflow.actions.runworkflow', {
-      WFInput: sc.Attach(sc.Ref('Vars.Repeat Item')),
-      WFWorkflow: {
-        isSelf: true,
-        workflowIdentifier: 'D33414F8-5B8B-4EF8-9B28-06B8436D550B',
-        workflowName: 'Clone Calendars',
-      },
-      WFWorkflowName: 'Clone Calendars',
-    }),
+      sc.Action('is.workflow.actions.repeat.each', {
+        GroupingIdentifier: 'DF2CE90A-0B7A-432D-AE42-9D0DA638A372',
+        WFControlFlowMode: 2,
+      }),
 
-    sc.Action('is.workflow.actions.repeat.each', {
-      GroupingIdentifier: 'DF2CE90A-0B7A-432D-AE42-9D0DA638A372',
-      WFControlFlowMode: 2,
-    }),
+      sc.Action('is.workflow.actions.exit'),
 
-    sc.Action('is.workflow.actions.exit'),
-
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '1956F603-0C15-4191-BB22-59822C2310F1',
-      WFControlFlowMode: 2,
-    }),
+    ]).EndIf_(),
 
     sc.Action('is.workflow.actions.filter.calendarevents', name='Calendar Events', params={
       WFContentItemFilter: {
@@ -249,103 +244,95 @@ local sc = import 'shortcuts.libsonnet';
       },
     }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '8EA6249C-559F-4BC8-BE30-BD2B3FA17892',
-      WFCondition: 100,
-      WFControlFlowMode: 0,
-      WFInput: {
+    sc.If_(sc.Cond(
+      {
         Type: 'Variable',
         Variable: sc.Attach(sc.Ref('dst Events')),
       },
-    }),
+      'has any value'
+    )).Then_([
 
-    sc.Action('is.workflow.actions.getitemfromlist', {
-      WFInput: sc.Attach(sc.Ref('dst Events')),
-    }),
-
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '8EA6249C-559F-4BC8-BE30-BD2B3FA17892',
-      WFControlFlowMode: 1,
-    }),
-
-    sc.Action('is.workflow.actions.addnewevent', name='New Event', params={
-      ShowWhenRun: false,
-      WFCalendarDescriptor: sc.Attach({
-        Aggrandizements: [
-          {
-            CoercionItemClass: 'WFDictionaryContentItem',
-            Type: 'WFCoercionVariableAggrandizement',
-          },
-          {
-            DictionaryKey: 'dst_calendar',
-            Type: 'WFDictionaryValueVariableAggrandizement',
-          },
-        ],
-        Type: 'ExtensionInput',
+      sc.Action('is.workflow.actions.getitemfromlist', {
+        WFInput: sc.Attach(sc.Ref('dst Events')),
       }),
-      WFCalendarItemAllDay: sc.Attach({
-        Aggrandizements: [
-          {
-            PropertyName: 'Is All Day',
-            Type: 'WFPropertyVariableAggrandizement',
-          },
-        ],
-        Type: 'Variable',
-        VariableName: 'Repeat Item',
+
+    ]).Else_([
+
+      sc.Action('is.workflow.actions.addnewevent', name='New Event', params={
+        ShowWhenRun: false,
+        WFCalendarDescriptor: sc.Attach({
+          Aggrandizements: [
+            {
+              CoercionItemClass: 'WFDictionaryContentItem',
+              Type: 'WFCoercionVariableAggrandizement',
+            },
+            {
+              DictionaryKey: 'dst_calendar',
+              Type: 'WFDictionaryValueVariableAggrandizement',
+            },
+          ],
+          Type: 'ExtensionInput',
+        }),
+        WFCalendarItemAllDay: sc.Attach({
+          Aggrandizements: [
+            {
+              PropertyName: 'Is All Day',
+              Type: 'WFPropertyVariableAggrandizement',
+            },
+          ],
+          Type: 'Variable',
+          VariableName: 'Repeat Item',
+        }),
+        WFCalendarItemEndDate: sc.Str([{
+          Aggrandizements: [
+            {
+              PropertyName: 'End Date',
+              Type: 'WFPropertyVariableAggrandizement',
+            },
+            {
+              Type: 'WFDateFormatVariableAggrandizement',
+              WFDateFormatStyle: 'ISO 8601',
+              WFISO8601IncludeTime: true,
+            },
+          ],
+          Type: 'Variable',
+          VariableName: 'Repeat Item',
+        }]),
+        WFCalendarItemLocation: sc.Str([{
+          Aggrandizements: [
+            {
+              PropertyName: 'Location',
+              Type: 'WFPropertyVariableAggrandizement',
+            },
+          ],
+          Type: 'Variable',
+          VariableName: 'Repeat Item',
+        }]),
+        WFCalendarItemNotes: sc.Str([sc.Ref('dst Notes')]),
+        WFCalendarItemStartDate: sc.Str([{
+          Aggrandizements: [
+            {
+              PropertyName: 'Start Date',
+              Type: 'WFPropertyVariableAggrandizement',
+            },
+            {
+              Type: 'WFDateFormatVariableAggrandizement',
+              WFDateFormatStyle: 'ISO 8601',
+              WFISO8601IncludeTime: true,
+            },
+          ],
+          Type: 'Variable',
+          VariableName: 'Repeat Item',
+        }]),
+        WFCalendarItemTitle: sc.Str([sc.Ref('dst Title')]),
       }),
-      WFCalendarItemEndDate: sc.Str([{
-        Aggrandizements: [
-          {
-            PropertyName: 'End Date',
-            Type: 'WFPropertyVariableAggrandizement',
-          },
-          {
-            Type: 'WFDateFormatVariableAggrandizement',
-            WFDateFormatStyle: 'ISO 8601',
-            WFISO8601IncludeTime: true,
-          },
-        ],
-        Type: 'Variable',
-        VariableName: 'Repeat Item',
-      }]),
-      WFCalendarItemLocation: sc.Str([{
-        Aggrandizements: [
-          {
-            PropertyName: 'Location',
-            Type: 'WFPropertyVariableAggrandizement',
-          },
-        ],
-        Type: 'Variable',
-        VariableName: 'Repeat Item',
-      }]),
-      WFCalendarItemNotes: sc.Str([sc.Ref('dst Notes')]),
-      WFCalendarItemStartDate: sc.Str([{
-        Aggrandizements: [
-          {
-            PropertyName: 'Start Date',
-            Type: 'WFPropertyVariableAggrandizement',
-          },
-          {
-            Type: 'WFDateFormatVariableAggrandizement',
-            WFDateFormatStyle: 'ISO 8601',
-            WFISO8601IncludeTime: true,
-          },
-        ],
-        Type: 'Variable',
-        VariableName: 'Repeat Item',
-      }]),
-      WFCalendarItemTitle: sc.Str([sc.Ref('dst Title')]),
-    }),
 
-    sc.Action('is.workflow.actions.notification', {
-      WFInput: sc.Attach(sc.Ref('New Event')),
-      WFNotificationActionBody: sc.Str(['Created synced event: ', sc.Ref('New Event')]),
-    }),
+      sc.Action('is.workflow.actions.notification', {
+        WFInput: sc.Attach(sc.Ref('New Event')),
+        WFNotificationActionBody: sc.Str(['Created synced event: ', sc.Ref('New Event')]),
+      }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '8EA6249C-559F-4BC8-BE30-BD2B3FA17892',
-      WFControlFlowMode: 2,
-    }),
+    ]).EndIf_(),
 
     sc.Action('is.workflow.actions.repeat.each', name='Synced Events', params={
       GroupingIdentifier: '7507F84F-766C-45C2-B9F5-55FC5AD0E431',

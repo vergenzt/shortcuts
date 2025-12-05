@@ -97,59 +97,48 @@ local sc = import 'shortcuts.libsonnet';
       WFInput: sc.Attach(sc.Ref('Vars.Repeat Item')),
     }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '96AB6539-120D-4246-A24B-80C6F2F3758E',
-      WFCondition: 100,
-      WFControlFlowMode: 0,
-      WFInput: {
+    sc.If_(sc.Cond(
+      {
         Type: 'Variable',
         Variable: sc.Attach(sc.Ref('Endpoint Text')),
       },
-    }),
+      'has any value'
+    )).Then_([
 
-    sc.Action('is.workflow.actions.detect.date', name='Endpoint', params={
-      WFInput: sc.Attach(sc.Ref('Endpoint Text')),
-    }),
+      sc.Action('is.workflow.actions.detect.date', name='Endpoint', params={
+        WFInput: sc.Attach(sc.Ref('Endpoint Text')),
+      }),
 
-    sc.Action('is.workflow.actions.gettimebetweendates', name='Endpoint Interval', params={
-      WFInput: sc.Str([sc.Ref('Split Time (UTC)')]),
-      WFTimeUntilFromDate: sc.Str([sc.Ref('Endpoint')]),
-      WFTimeUntilUnit: 'Seconds',
-    }),
+      sc.Action('is.workflow.actions.gettimebetweendates', name='Endpoint Interval', params={
+        WFInput: sc.Str([sc.Ref('Split Time (UTC)')]),
+        WFTimeUntilFromDate: sc.Str([sc.Ref('Endpoint')]),
+        WFTimeUntilUnit: 'Seconds',
+      }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: 'AF919587-F239-4E2F-8061-D205AF6AC302',
-      WFCondition: 5,
-      WFControlFlowMode: 0,
-      WFInput: {
-        Type: 'Variable',
-        Variable: sc.Attach(sc.Ref('Endpoint Interval')),
-      },
-      WFNumberValue: '0',
-    }),
+      sc.If_(sc.Cond(
+        {
+          Type: 'Variable',
+          Variable: sc.Attach(sc.Ref('Endpoint Interval')),
+        },
+        'is not',
+        {
+          WFNumberValue: '0',
+        }
+      )).Then_([
 
-    sc.Action('is.workflow.actions.calculateexpression', {
-      Input: sc.Str([sc.Ref('Endpoint Interval')]),
-    }),
+        sc.Action('is.workflow.actions.calculateexpression', {
+          Input: sc.Str([sc.Ref('Endpoint Interval')]),
+        }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: 'AF919587-F239-4E2F-8061-D205AF6AC302',
-      WFControlFlowMode: 1,
-    }),
+      ]).Else_([
 
-    sc.Action('is.workflow.actions.number', {
-      WFNumberActionNumber: '0',
-    }),
+        sc.Action('is.workflow.actions.number', {
+          WFNumberActionNumber: '0',
+        }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: 'AF919587-F239-4E2F-8061-D205AF6AC302',
-      WFControlFlowMode: 2,
-    }),
+      ]).EndIf_(),
 
-    sc.Action('is.workflow.actions.conditional', name='If Result', params={
-      GroupingIdentifier: '96AB6539-120D-4246-A24B-80C6F2F3758E',
-      WFControlFlowMode: 2,
-    }),
+    ]).EndIf_(name='If Result'),
 
     sc.Action('is.workflow.actions.gettext', {
       WFTextActionText: sc.Str([sc.Ref('Vars.Repeat Item 2')]),
@@ -191,321 +180,316 @@ local sc = import 'shortcuts.libsonnet';
       WFInput: sc.Attach(sc.Ref('Dictionary')),
     }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '4FAF4B8F-8164-4849-B48A-32D3A32C12FC',
-      WFCondition: 100,
-      WFControlFlowMode: 0,
-      WFInput: {
+    sc.If_(sc.Cond(
+      {
         Type: 'Variable',
         Variable: sc.Attach(sc.Ref('Dictionary Value')),
       },
-    }),
+      'has any value'
+    )).Then_([
 
-    sc.Action('is.workflow.actions.comment', {
-      WFCommentActionText: 'Split Time splits Repeat Item\n→ create new pre-split entry\n→ update Repeat Item entry to set start time to Split Time',
-    }),
+      sc.Action('is.workflow.actions.comment', {
+        WFCommentActionText: 'Split Time splits Repeat Item\n→ create new pre-split entry\n→ update Repeat Item entry to set start time to Split Time',
+      }),
 
-    sc.Action('is.workflow.actions.dictionary', name='New Entry Request', params={
-      WFItems: {
-        Value: {
-          WFDictionaryFieldValueItems: [
-            {
-              WFItemType: 0,
-              WFKey: sc.Str(['start']),
-              WFValue: sc.Str([{
-                Aggrandizements: [
-                  {
-                    CoercionItemClass: 'WFDictionaryContentItem',
-                    Type: 'WFCoercionVariableAggrandizement',
-                  },
-                  {
-                    DictionaryKey: 'start',
-                    Type: 'WFDictionaryValueVariableAggrandizement',
-                  },
-                ],
-                Type: 'Variable',
-                VariableName: 'Repeat Item',
-              }]),
-            },
-            {
-              WFItemType: 0,
-              WFKey: sc.Str(['stop']),
-              WFValue: sc.Str([sc.Ref('Split Time (UTC)')]),
-            },
-            {
-              WFItemType: 0,
-              WFKey: sc.Str(['created_with']),
-              WFValue: sc.Str(['Shortcuts']),
-            },
-            {
-              WFItemType: 0,
-              WFKey: sc.Str(['description']),
-              WFValue: sc.Str([{
-                Aggrandizements: [
-                  {
-                    CoercionItemClass: 'WFDictionaryContentItem',
-                    Type: 'WFCoercionVariableAggrandizement',
-                  },
-                  {
-                    DictionaryKey: 'description',
-                    Type: 'WFDictionaryValueVariableAggrandizement',
-                  },
-                ],
-                Type: 'Variable',
-                VariableName: 'Repeat Item',
-              }]),
-            },
-            {
-              WFItemType: 0,
-              WFKey: sc.Str(['project_id']),
-              WFValue: sc.Str([{
-                Aggrandizements: [
-                  {
-                    CoercionItemClass: 'WFDictionaryContentItem',
-                    Type: 'WFCoercionVariableAggrandizement',
-                  },
-                  {
-                    DictionaryKey: 'project_id',
-                    Type: 'WFDictionaryValueVariableAggrandizement',
-                  },
-                ],
-                Type: 'Variable',
-                VariableName: 'Repeat Item',
-              }]),
-            },
-            {
-              WFItemType: 0,
-              WFKey: sc.Str(['task_id']),
-              WFValue: sc.Str([{
-                Aggrandizements: [
-                  {
-                    CoercionItemClass: 'WFDictionaryContentItem',
-                    Type: 'WFCoercionVariableAggrandizement',
-                  },
-                  {
-                    DictionaryKey: 'task_id',
-                    Type: 'WFDictionaryValueVariableAggrandizement',
-                  },
-                ],
-                Type: 'Variable',
-                VariableName: 'Repeat Item',
-              }]),
-            },
-            {
-              WFItemType: 4,
-              WFKey: sc.Str(['billable']),
-              WFValue: sc.Num(sc.Attach({
-                Aggrandizements: [
-                  {
-                    CoercionItemClass: 'WFDictionaryContentItem',
-                    Type: 'WFCoercionVariableAggrandizement',
-                  },
-                  {
-                    DictionaryKey: 'billable',
-                    Type: 'WFDictionaryValueVariableAggrandizement',
-                  },
-                ],
-                Type: 'Variable',
-                VariableName: 'Repeat Item',
-              })),
-            },
-          ],
-        },
-        WFSerializationType: 'WFDictionaryFieldValue',
-      },
-    }),
-
-    sc.Action('is.workflow.actions.setvalueforkey', name='Updated JSON', params={
-      WFDictionary: sc.Attach(sc.Ref('New Entry Request', aggs=[
-        {
-          DictionaryKey: 'json',
-          Type: 'WFDictionaryValueVariableAggrandizement',
-        },
-      ])),
-      WFDictionaryKey: 'tag_ids',
-      WFDictionaryValue: sc.Str([{
-        Aggrandizements: [
-          {
-            CoercionItemClass: 'WFDictionaryContentItem',
-            Type: 'WFCoercionVariableAggrandizement',
+      sc.Action('is.workflow.actions.dictionary', name='New Entry Request', params={
+        WFItems: {
+          Value: {
+            WFDictionaryFieldValueItems: [
+              {
+                WFItemType: 0,
+                WFKey: sc.Str(['start']),
+                WFValue: sc.Str([{
+                  Aggrandizements: [
+                    {
+                      CoercionItemClass: 'WFDictionaryContentItem',
+                      Type: 'WFCoercionVariableAggrandizement',
+                    },
+                    {
+                      DictionaryKey: 'start',
+                      Type: 'WFDictionaryValueVariableAggrandizement',
+                    },
+                  ],
+                  Type: 'Variable',
+                  VariableName: 'Repeat Item',
+                }]),
+              },
+              {
+                WFItemType: 0,
+                WFKey: sc.Str(['stop']),
+                WFValue: sc.Str([sc.Ref('Split Time (UTC)')]),
+              },
+              {
+                WFItemType: 0,
+                WFKey: sc.Str(['created_with']),
+                WFValue: sc.Str(['Shortcuts']),
+              },
+              {
+                WFItemType: 0,
+                WFKey: sc.Str(['description']),
+                WFValue: sc.Str([{
+                  Aggrandizements: [
+                    {
+                      CoercionItemClass: 'WFDictionaryContentItem',
+                      Type: 'WFCoercionVariableAggrandizement',
+                    },
+                    {
+                      DictionaryKey: 'description',
+                      Type: 'WFDictionaryValueVariableAggrandizement',
+                    },
+                  ],
+                  Type: 'Variable',
+                  VariableName: 'Repeat Item',
+                }]),
+              },
+              {
+                WFItemType: 0,
+                WFKey: sc.Str(['project_id']),
+                WFValue: sc.Str([{
+                  Aggrandizements: [
+                    {
+                      CoercionItemClass: 'WFDictionaryContentItem',
+                      Type: 'WFCoercionVariableAggrandizement',
+                    },
+                    {
+                      DictionaryKey: 'project_id',
+                      Type: 'WFDictionaryValueVariableAggrandizement',
+                    },
+                  ],
+                  Type: 'Variable',
+                  VariableName: 'Repeat Item',
+                }]),
+              },
+              {
+                WFItemType: 0,
+                WFKey: sc.Str(['task_id']),
+                WFValue: sc.Str([{
+                  Aggrandizements: [
+                    {
+                      CoercionItemClass: 'WFDictionaryContentItem',
+                      Type: 'WFCoercionVariableAggrandizement',
+                    },
+                    {
+                      DictionaryKey: 'task_id',
+                      Type: 'WFDictionaryValueVariableAggrandizement',
+                    },
+                  ],
+                  Type: 'Variable',
+                  VariableName: 'Repeat Item',
+                }]),
+              },
+              {
+                WFItemType: 4,
+                WFKey: sc.Str(['billable']),
+                WFValue: sc.Num(sc.Attach({
+                  Aggrandizements: [
+                    {
+                      CoercionItemClass: 'WFDictionaryContentItem',
+                      Type: 'WFCoercionVariableAggrandizement',
+                    },
+                    {
+                      DictionaryKey: 'billable',
+                      Type: 'WFDictionaryValueVariableAggrandizement',
+                    },
+                  ],
+                  Type: 'Variable',
+                  VariableName: 'Repeat Item',
+                })),
+              },
+            ],
           },
+          WFSerializationType: 'WFDictionaryFieldValue',
+        },
+      }),
+
+      sc.Action('is.workflow.actions.setvalueforkey', name='Updated JSON', params={
+        WFDictionary: sc.Attach(sc.Ref('New Entry Request', aggs=[
           {
-            DictionaryKey: 'tag_ids',
+            DictionaryKey: 'json',
             Type: 'WFDictionaryValueVariableAggrandizement',
           },
-        ],
-        Type: 'Variable',
-        VariableName: 'Repeat Item',
-      }]),
-    }),
-
-    sc.Action('is.workflow.actions.setvalueforkey', name='Updated New Entry Request', params={
-      WFDictionary: sc.Attach(sc.Ref('New Entry Request')),
-      WFDictionaryKey: 'json',
-      WFDictionaryValue: sc.Str([sc.Ref('Updated JSON')]),
-    }),
-
-    sc.Action('is.workflow.actions.dictionary', {
-      WFItems: {
-        Value: {
-          WFDictionaryFieldValueItems: [
+        ])),
+        WFDictionaryKey: 'tag_ids',
+        WFDictionaryValue: sc.Str([{
+          Aggrandizements: [
             {
-              WFItemType: 0,
-              WFKey: sc.Str(['method']),
-              WFValue: sc.Str(['POST']),
+              CoercionItemClass: 'WFDictionaryContentItem',
+              Type: 'WFCoercionVariableAggrandizement',
             },
             {
-              WFItemType: 0,
-              WFKey: sc.Str(['path']),
-              WFValue: sc.Str(['workspaces/', {
-                Aggrandizements: [
-                  {
-                    CoercionItemClass: 'WFDictionaryContentItem',
-                    Type: 'WFCoercionVariableAggrandizement',
-                  },
-                  {
-                    DictionaryKey: 'workspace_id',
-                    Type: 'WFDictionaryValueVariableAggrandizement',
-                  },
-                ],
-                Type: 'Variable',
-                VariableName: 'Repeat Item',
-              }, '/time_entries']),
+              DictionaryKey: 'tag_ids',
+              Type: 'WFDictionaryValueVariableAggrandizement',
             },
-            {
-              WFItemType: 1,
-              WFKey: sc.Str(['json']),
-              WFValue: {
-                Value: {
+          ],
+          Type: 'Variable',
+          VariableName: 'Repeat Item',
+        }]),
+      }),
+
+      sc.Action('is.workflow.actions.setvalueforkey', name='Updated New Entry Request', params={
+        WFDictionary: sc.Attach(sc.Ref('New Entry Request')),
+        WFDictionaryKey: 'json',
+        WFDictionaryValue: sc.Str([sc.Ref('Updated JSON')]),
+      }),
+
+      sc.Action('is.workflow.actions.dictionary', {
+        WFItems: {
+          Value: {
+            WFDictionaryFieldValueItems: [
+              {
+                WFItemType: 0,
+                WFKey: sc.Str(['method']),
+                WFValue: sc.Str(['POST']),
+              },
+              {
+                WFItemType: 0,
+                WFKey: sc.Str(['path']),
+                WFValue: sc.Str(['workspaces/', {
+                  Aggrandizements: [
+                    {
+                      CoercionItemClass: 'WFDictionaryContentItem',
+                      Type: 'WFCoercionVariableAggrandizement',
+                    },
+                    {
+                      DictionaryKey: 'workspace_id',
+                      Type: 'WFDictionaryValueVariableAggrandizement',
+                    },
+                  ],
+                  Type: 'Variable',
+                  VariableName: 'Repeat Item',
+                }, '/time_entries']),
+              },
+              {
+                WFItemType: 1,
+                WFKey: sc.Str(['json']),
+                WFValue: {
                   Value: {
-                    WFDictionaryFieldValueItems: [
-                      {
-                        WFItemType: 0,
-                        WFKey: sc.Str(['start']),
-                        WFValue: sc.Str([sc.Ref('Split Time (UTC)')]),
-                      },
-                      {
-                        WFItemType: 0,
-                        WFKey: sc.Str(['stop']),
-                        WFValue: sc.Str([{
-                          Aggrandizements: [
-                            {
-                              CoercionItemClass: 'WFDictionaryContentItem',
-                              Type: 'WFCoercionVariableAggrandizement',
-                            },
-                            {
-                              DictionaryKey: 'stop',
-                              Type: 'WFDictionaryValueVariableAggrandizement',
-                            },
-                          ],
-                          Type: 'Variable',
-                          VariableName: 'Repeat Item',
-                        }]),
-                      },
-                      {
-                        WFItemType: 0,
-                        WFKey: sc.Str(['created_with']),
-                        WFValue: sc.Str(['Shortcuts']),
-                      },
-                      {
-                        WFItemType: 0,
-                        WFKey: sc.Str(['description']),
-                        WFValue: sc.Str([{
-                          Aggrandizements: [
-                            {
-                              CoercionItemClass: 'WFDictionaryContentItem',
-                              Type: 'WFCoercionVariableAggrandizement',
-                            },
-                            {
-                              DictionaryKey: 'description',
-                              Type: 'WFDictionaryValueVariableAggrandizement',
-                            },
-                          ],
-                          Type: 'Variable',
-                          VariableName: 'Repeat Item',
-                        }]),
-                      },
-                      {
-                        WFItemType: 0,
-                        WFKey: sc.Str(['project_id']),
-                        WFValue: sc.Str([{
-                          Aggrandizements: [
-                            {
-                              CoercionItemClass: 'WFDictionaryContentItem',
-                              Type: 'WFCoercionVariableAggrandizement',
-                            },
-                            {
-                              DictionaryKey: 'project_id',
-                              Type: 'WFDictionaryValueVariableAggrandizement',
-                            },
-                          ],
-                          Type: 'Variable',
-                          VariableName: 'Repeat Item',
-                        }]),
-                      },
-                      {
-                        WFItemType: 0,
-                        WFKey: sc.Str(['task_id']),
-                        WFValue: sc.Str([{
-                          Aggrandizements: [
-                            {
-                              CoercionItemClass: 'WFDictionaryContentItem',
-                              Type: 'WFCoercionVariableAggrandizement',
-                            },
-                            {
-                              DictionaryKey: 'task_id',
-                              Type: 'WFDictionaryValueVariableAggrandizement',
-                            },
-                          ],
-                          Type: 'Variable',
-                          VariableName: 'Repeat Item',
-                        }]),
-                      },
-                      {
-                        WFItemType: 4,
-                        WFKey: sc.Str(['billable']),
-                        WFValue: sc.Num(sc.Attach({
-                          Aggrandizements: [
-                            {
-                              CoercionItemClass: 'WFDictionaryContentItem',
-                              Type: 'WFCoercionVariableAggrandizement',
-                            },
-                            {
-                              DictionaryKey: 'billable',
-                              Type: 'WFDictionaryValueVariableAggrandizement',
-                            },
-                          ],
-                          Type: 'Variable',
-                          VariableName: 'Repeat Item',
-                        })),
-                      },
-                    ],
+                    Value: {
+                      WFDictionaryFieldValueItems: [
+                        {
+                          WFItemType: 0,
+                          WFKey: sc.Str(['start']),
+                          WFValue: sc.Str([sc.Ref('Split Time (UTC)')]),
+                        },
+                        {
+                          WFItemType: 0,
+                          WFKey: sc.Str(['stop']),
+                          WFValue: sc.Str([{
+                            Aggrandizements: [
+                              {
+                                CoercionItemClass: 'WFDictionaryContentItem',
+                                Type: 'WFCoercionVariableAggrandizement',
+                              },
+                              {
+                                DictionaryKey: 'stop',
+                                Type: 'WFDictionaryValueVariableAggrandizement',
+                              },
+                            ],
+                            Type: 'Variable',
+                            VariableName: 'Repeat Item',
+                          }]),
+                        },
+                        {
+                          WFItemType: 0,
+                          WFKey: sc.Str(['created_with']),
+                          WFValue: sc.Str(['Shortcuts']),
+                        },
+                        {
+                          WFItemType: 0,
+                          WFKey: sc.Str(['description']),
+                          WFValue: sc.Str([{
+                            Aggrandizements: [
+                              {
+                                CoercionItemClass: 'WFDictionaryContentItem',
+                                Type: 'WFCoercionVariableAggrandizement',
+                              },
+                              {
+                                DictionaryKey: 'description',
+                                Type: 'WFDictionaryValueVariableAggrandizement',
+                              },
+                            ],
+                            Type: 'Variable',
+                            VariableName: 'Repeat Item',
+                          }]),
+                        },
+                        {
+                          WFItemType: 0,
+                          WFKey: sc.Str(['project_id']),
+                          WFValue: sc.Str([{
+                            Aggrandizements: [
+                              {
+                                CoercionItemClass: 'WFDictionaryContentItem',
+                                Type: 'WFCoercionVariableAggrandizement',
+                              },
+                              {
+                                DictionaryKey: 'project_id',
+                                Type: 'WFDictionaryValueVariableAggrandizement',
+                              },
+                            ],
+                            Type: 'Variable',
+                            VariableName: 'Repeat Item',
+                          }]),
+                        },
+                        {
+                          WFItemType: 0,
+                          WFKey: sc.Str(['task_id']),
+                          WFValue: sc.Str([{
+                            Aggrandizements: [
+                              {
+                                CoercionItemClass: 'WFDictionaryContentItem',
+                                Type: 'WFCoercionVariableAggrandizement',
+                              },
+                              {
+                                DictionaryKey: 'task_id',
+                                Type: 'WFDictionaryValueVariableAggrandizement',
+                              },
+                            ],
+                            Type: 'Variable',
+                            VariableName: 'Repeat Item',
+                          }]),
+                        },
+                        {
+                          WFItemType: 4,
+                          WFKey: sc.Str(['billable']),
+                          WFValue: sc.Num(sc.Attach({
+                            Aggrandizements: [
+                              {
+                                CoercionItemClass: 'WFDictionaryContentItem',
+                                Type: 'WFCoercionVariableAggrandizement',
+                              },
+                              {
+                                DictionaryKey: 'billable',
+                                Type: 'WFDictionaryValueVariableAggrandizement',
+                              },
+                            ],
+                            Type: 'Variable',
+                            VariableName: 'Repeat Item',
+                          })),
+                        },
+                      ],
+                    },
+                    WFSerializationType: 'WFDictionaryFieldValue',
                   },
                   WFSerializationType: 'WFDictionaryFieldValue',
                 },
-                WFSerializationType: 'WFDictionaryFieldValue',
               },
-            },
-          ],
+            ],
+          },
+          WFSerializationType: 'WFDictionaryFieldValue',
         },
-        WFSerializationType: 'WFDictionaryFieldValue',
-      },
-    }),
+      }),
 
-    sc.Action('is.workflow.actions.runworkflow', {
-      WFInput: sc.Attach(sc.Ref('Updated New Entry Request')),
-      WFWorkflow: {
-        isSelf: false,
-        workflowIdentifier: 'D7676A00-FF48-4BCC-AD06-21D893C2BFE9',
-        workflowName: 'Toggl API',
-      },
-      WFWorkflowName: 'Toggl API',
-    }),
+      sc.Action('is.workflow.actions.runworkflow', {
+        WFInput: sc.Attach(sc.Ref('Updated New Entry Request')),
+        WFWorkflow: {
+          isSelf: false,
+          workflowIdentifier: 'D7676A00-FF48-4BCC-AD06-21D893C2BFE9',
+          workflowName: 'Toggl API',
+        },
+        WFWorkflowName: 'Toggl API',
+      }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '4FAF4B8F-8164-4849-B48A-32D3A32C12FC',
-      WFControlFlowMode: 2,
-    }),
+    ]).EndIf_(),
 
     sc.Action('is.workflow.actions.repeat.each', {
       GroupingIdentifier: 'D9C206AD-C252-455D-A994-9C52097C95F0',

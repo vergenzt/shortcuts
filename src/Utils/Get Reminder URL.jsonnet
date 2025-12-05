@@ -4,53 +4,45 @@ local sc = import 'shortcuts.libsonnet';
   WFQuickActionSurfaces: [],
   WFWorkflowActions: sc.ActionsSeq([
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: 'F88CABCB-35BA-4710-96DB-0FAD3F9743DD',
-      WFCondition: 101,
-      WFControlFlowMode: 0,
-      WFInput: {
+    sc.If_(sc.Cond(
+      {
         Type: 'Variable',
         Variable: sc.Attach(sc.Input),
       },
-    }),
+      'does not have any value'
+    )).Then_([
 
-    sc.Action('is.workflow.actions.filter.reminders', name='Reminders', params={
-      WFContentItemFilter: {
-        Value: {
-          WFActionParameterFilterPrefix: 1,
-          WFActionParameterFilterTemplates: [
-            {
-              Operator: 4,
-              Property: 'List',
-              Removable: true,
-              Values: {
-                Enumeration: {
-                  Value: 'Reminders',
-                  WFSerializationType: 'WFStringSubstitutableState',
+      sc.Action('is.workflow.actions.filter.reminders', name='Reminders', params={
+        WFContentItemFilter: {
+          Value: {
+            WFActionParameterFilterPrefix: 1,
+            WFActionParameterFilterTemplates: [
+              {
+                Operator: 4,
+                Property: 'List',
+                Removable: true,
+                Values: {
+                  Enumeration: {
+                    Value: 'Reminders',
+                    WFSerializationType: 'WFStringSubstitutableState',
+                  },
                 },
               },
-            },
-          ],
-          WFContentPredicateBoundedDate: false,
+            ],
+            WFContentPredicateBoundedDate: false,
+          },
+          WFSerializationType: 'WFContentPredicateTableTemplate',
         },
-        WFSerializationType: 'WFContentPredicateTableTemplate',
-      },
-    }),
+      }),
 
-    sc.Action('is.workflow.actions.choosefromlist', {
-      WFChooseFromListActionPrompt: 'Select a reminder to get the UUID from.',
-      WFInput: sc.Attach(sc.Ref('Reminders')),
-    }),
+      sc.Action('is.workflow.actions.choosefromlist', {
+        WFChooseFromListActionPrompt: 'Select a reminder to get the UUID from.',
+        WFInput: sc.Attach(sc.Ref('Reminders')),
+      }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: 'F88CABCB-35BA-4710-96DB-0FAD3F9743DD',
-      WFControlFlowMode: 1,
-    }),
+    ]).Else_([
 
-    sc.Action('is.workflow.actions.conditional', name='If Result', params={
-      GroupingIdentifier: 'F88CABCB-35BA-4710-96DB-0FAD3F9743DD',
-      WFControlFlowMode: 2,
-    }),
+    ]).EndIf_(name='If Result'),
 
     sc.Action('is.workflow.actions.setitemname', name='Renamed Item', params={
       WFInput: sc.Attach(sc.Ref('If Result')),

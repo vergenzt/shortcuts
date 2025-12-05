@@ -188,11 +188,8 @@ local sc = import 'shortcuts.libsonnet';
       queryType: 'jq',
     }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: 'DDA9A0FE-3ABA-4A9B-A939-1777995CE8E9',
-      WFCondition: 100,
-      WFControlFlowMode: 0,
-      WFInput: {
+    sc.If_(sc.Cond(
+      {
         Type: 'Variable',
         Variable: sc.Attach(sc.Ref('Result', aggs=[
           {
@@ -201,101 +198,94 @@ local sc = import 'shortcuts.libsonnet';
           },
         ])),
       },
-    }),
+      'has any value'
+    )).Then_([
 
-    sc.Action('is.workflow.actions.dictionary', name='Dictionary', params={
-      WFItems: {
-        Value: {
-          WFDictionaryFieldValueItems: [
-            {
-              WFItemType: 0,
-              WFKey: sc.Str(['review_prompt']),
-              WFValue: sc.Str([sc.Ref('Filter Description Dictionary', aggs=[
-                {
-                  DictionaryKey: 'prompt',
-                  Type: 'WFDictionaryValueVariableAggrandizement',
-                },
-              ])]),
-            },
-            {
-              WFItemType: 0,
-              WFKey: sc.Str(['progress_info']),
-              WFValue: sc.Str([{
-                Aggrandizements: [
+      sc.Action('is.workflow.actions.dictionary', name='Dictionary', params={
+        WFItems: {
+          Value: {
+            WFDictionaryFieldValueItems: [
+              {
+                WFItemType: 0,
+                WFKey: sc.Str(['review_prompt']),
+                WFValue: sc.Str([sc.Ref('Filter Description Dictionary', aggs=[
                   {
-                    CoercionItemClass: 'WFDictionaryContentItem',
-                    Type: 'WFCoercionVariableAggrandizement',
-                  },
-                  {
-                    DictionaryKey: 'name',
+                    DictionaryKey: 'prompt',
                     Type: 'WFDictionaryValueVariableAggrandizement',
                   },
-                ],
-                Type: 'Variable',
-                VariableName: 'Repeat Item',
-              }, ' (', sc.Ref('Vars.Repeat Index 2')]),
+                ])]),
+              },
+              {
+                WFItemType: 0,
+                WFKey: sc.Str(['progress_info']),
+                WFValue: sc.Str([{
+                  Aggrandizements: [
+                    {
+                      CoercionItemClass: 'WFDictionaryContentItem',
+                      Type: 'WFCoercionVariableAggrandizement',
+                    },
+                    {
+                      DictionaryKey: 'name',
+                      Type: 'WFDictionaryValueVariableAggrandizement',
+                    },
+                  ],
+                  Type: 'Variable',
+                  VariableName: 'Repeat Item',
+                }, ' (', sc.Ref('Vars.Repeat Index 2')]),
+              },
+            ],
+          },
+          WFSerializationType: 'WFDictionaryFieldValue',
+        },
+      }),
+
+      sc.Action('is.workflow.actions.setvalueforkey', name='Dictionary', params={
+        WFDictionary: sc.Attach(sc.Ref('Dictionary')),
+        WFDictionaryKey: 'filter',
+        WFDictionaryValue: sc.Str([sc.Ref('Vars.Repeat Item')]),
+      }),
+
+      sc.Action('is.workflow.actions.setvalueforkey', name='Dictionary', params={
+        WFDictionary: sc.Attach(sc.Ref('Dictionary')),
+        WFDictionaryKey: 'issue',
+        WFDictionaryValue: sc.Str([{
+          Aggrandizements: [
+            {
+              CoercionItemClass: 'WFDictionaryContentItem',
+              Type: 'WFCoercionVariableAggrandizement',
             },
           ],
+          Type: 'Variable',
+          VariableName: 'Repeat Item 2',
+        }]),
+      }),
+
+      sc.Action('is.workflow.actions.runworkflow', {
+        WFInput: sc.Attach(sc.Ref('Dictionary')),
+        WFWorkflow: {
+          isSelf: false,
+          workflowIdentifier: 'DE45228B-5A30-4A30-AF37-DA40929C57C2',
+          workflowName: 'Jira - Prompt to Review',
         },
-        WFSerializationType: 'WFDictionaryFieldValue',
-      },
-    }),
+        WFWorkflowName: 'Jira - Prompt to Review',
+      }),
 
-    sc.Action('is.workflow.actions.setvalueforkey', name='Dictionary', params={
-      WFDictionary: sc.Attach(sc.Ref('Dictionary')),
-      WFDictionaryKey: 'filter',
-      WFDictionaryValue: sc.Str([sc.Ref('Vars.Repeat Item')]),
-    }),
+      sc.If_(sc.Cond(
+        {
+          Type: 'Variable',
+          Variable: sc.Attach(sc.Ref('Filter Description Dictionary', aggs=[
+            {
+              DictionaryKey: 'skip_add_connected_issues',
+              Type: 'WFDictionaryValueVariableAggrandizement',
+            },
+          ])),
+        },
+        'does not have any value'
+      )).Then_([
 
-    sc.Action('is.workflow.actions.setvalueforkey', name='Dictionary', params={
-      WFDictionary: sc.Attach(sc.Ref('Dictionary')),
-      WFDictionaryKey: 'issue',
-      WFDictionaryValue: sc.Str([{
-        Aggrandizements: [
-          {
-            CoercionItemClass: 'WFDictionaryContentItem',
-            Type: 'WFCoercionVariableAggrandizement',
-          },
-        ],
-        Type: 'Variable',
-        VariableName: 'Repeat Item 2',
-      }]),
-    }),
+      ]).EndIf_(),
 
-    sc.Action('is.workflow.actions.runworkflow', {
-      WFInput: sc.Attach(sc.Ref('Dictionary')),
-      WFWorkflow: {
-        isSelf: false,
-        workflowIdentifier: 'DE45228B-5A30-4A30-AF37-DA40929C57C2',
-        workflowName: 'Jira - Prompt to Review',
-      },
-      WFWorkflowName: 'Jira - Prompt to Review',
-    }),
-
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: 'A334B26F-D55D-429E-9239-81E9A45C3671',
-      WFCondition: 101,
-      WFControlFlowMode: 0,
-      WFInput: {
-        Type: 'Variable',
-        Variable: sc.Attach(sc.Ref('Filter Description Dictionary', aggs=[
-          {
-            DictionaryKey: 'skip_add_connected_issues',
-            Type: 'WFDictionaryValueVariableAggrandizement',
-          },
-        ])),
-      },
-    }),
-
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: 'A334B26F-D55D-429E-9239-81E9A45C3671',
-      WFControlFlowMode: 2,
-    }),
-
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: 'DDA9A0FE-3ABA-4A9B-A939-1777995CE8E9',
-      WFControlFlowMode: 2,
-    }),
+    ]).EndIf_(),
 
     sc.Action('is.workflow.actions.repeat.each', {
       GroupingIdentifier: 'E0CA601A-6D60-4670-B03D-08FB3BEAA176',

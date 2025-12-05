@@ -93,40 +93,34 @@ local sc = import 'shortcuts.libsonnet';
       text: sc.Str([sc.Ref('Chosen Item')]),
     }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: 'FF4D8839-949A-412C-9955-483681D84092',
-      WFCondition: 100,
-      WFConditionalActionString: 'Other',
-      WFControlFlowMode: 0,
-      WFInput: {
+    sc.If_(sc.Cond(
+      {
         Type: 'Variable',
         Variable: sc.Attach(sc.Ref('Matches')),
       },
-    }),
+      'has any value',
+      {
+        WFConditionalActionString: 'Other',
+      }
+    )).Then_([
 
-    sc.Action('is.workflow.actions.ask', name='Provided Input', params={
-      WFAskActionPrompt: 'Other',
-    }),
+      sc.Action('is.workflow.actions.ask', name='Provided Input', params={
+        WFAskActionPrompt: 'Other',
+      }),
 
-    sc.Action('is.workflow.actions.setvariable', {
-      WFInput: sc.Attach(sc.Ref('Provided Input')),
-      WFVariableName: 'Med',
-    }),
+      sc.Action('is.workflow.actions.setvariable', {
+        WFInput: sc.Attach(sc.Ref('Provided Input')),
+        WFVariableName: 'Med',
+      }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: 'FF4D8839-949A-412C-9955-483681D84092',
-      WFControlFlowMode: 1,
-    }),
+    ]).Else_([
 
-    sc.Action('is.workflow.actions.setvariable', {
-      WFInput: sc.Attach(sc.Ref('Chosen Item')),
-      WFVariableName: 'Med',
-    }),
+      sc.Action('is.workflow.actions.setvariable', {
+        WFInput: sc.Attach(sc.Ref('Chosen Item')),
+        WFVariableName: 'Med',
+      }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: 'FF4D8839-949A-412C-9955-483681D84092',
-      WFControlFlowMode: 2,
-    }),
+    ]).EndIf_(),
 
     sc.Action('is.workflow.actions.ask', name='Provided Input', params={
       WFAskActionDefaultAnswerDateAndTime: '',

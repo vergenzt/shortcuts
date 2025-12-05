@@ -50,47 +50,42 @@ local sc = import 'shortcuts.libsonnet';
       text: sc.Str([sc.Ref('Vars.Repeat Item')]),
     }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '5630081B-6738-4504-BA2E-C74F99F1FE1E',
-      WFCondition: 101,
-      WFControlFlowMode: 0,
-      WFInput: {
+    sc.If_(sc.Cond(
+      {
         Type: 'Variable',
         Variable: sc.Attach(sc.Ref('Matches')),
       },
-    }),
+      'does not have any value'
+    )).Then_([
 
-    sc.Action('is.workflow.actions.gettext', name='Text', params={
-      WFTextActionText: sc.Str([{
-        Aggrandizements: [
-          {
-            PropertyName: 'Creation Date',
-            PropertyUserInfo: 'WFFileCreationDate',
-            Type: 'WFPropertyVariableAggrandizement',
-          },
-          {
-            Type: 'WFDateFormatVariableAggrandizement',
-            WFDateFormat: 'yyyy-MM-dd EEE',
-            WFDateFormatStyle: 'Custom',
-            WFISO8601IncludeTime: false,
-          },
-        ],
-        Type: 'Variable',
-        VariableName: 'Repeat Item',
-      }]),
-    }),
+      sc.Action('is.workflow.actions.gettext', name='Text', params={
+        WFTextActionText: sc.Str([{
+          Aggrandizements: [
+            {
+              PropertyName: 'Creation Date',
+              PropertyUserInfo: 'WFFileCreationDate',
+              Type: 'WFPropertyVariableAggrandizement',
+            },
+            {
+              Type: 'WFDateFormatVariableAggrandizement',
+              WFDateFormat: 'yyyy-MM-dd EEE',
+              WFDateFormatStyle: 'Custom',
+              WFISO8601IncludeTime: false,
+            },
+          ],
+          Type: 'Variable',
+          VariableName: 'Repeat Item',
+        }]),
+      }),
 
-    sc.Action('is.workflow.actions.setters.reminders', {
-      Mode: 'Set',
-      WFContentItemPropertyName: 'Title',
-      WFInput: sc.Attach(sc.Ref('Vars.Repeat Item')),
-      WFReminderContentItemTitle: sc.Str([sc.Ref('Text')]),
-    }),
+      sc.Action('is.workflow.actions.setters.reminders', {
+        Mode: 'Set',
+        WFContentItemPropertyName: 'Title',
+        WFInput: sc.Attach(sc.Ref('Vars.Repeat Item')),
+        WFReminderContentItemTitle: sc.Str([sc.Ref('Text')]),
+      }),
 
-    sc.Action('is.workflow.actions.conditional', {
-      GroupingIdentifier: '5630081B-6738-4504-BA2E-C74F99F1FE1E',
-      WFControlFlowMode: 2,
-    }),
+    ]).EndIf_(),
 
     sc.Action('is.workflow.actions.repeat.each', {
       GroupingIdentifier: 'A3C7C977-62E5-4ECF-87BC-A8BA17E5F2CB',
