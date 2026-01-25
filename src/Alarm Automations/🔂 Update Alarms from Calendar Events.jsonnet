@@ -71,11 +71,6 @@ local sc = import 'shortcuts.libsonnet';
               WFKey: sc.Str(['🏷️⏱️']),
               WFValue: sc.Str(['-0,-15@,-30@,-60@,-120@,-180@,-240@,-360@']),
             },
-            {
-              WFItemType: 0,
-              WFKey: sc.Str(['🏷️swim']),
-              WFValue: sc.Str(['60']),
-            },
           ],
         },
         WFSerializationType: 'WFDictionaryFieldValue',
@@ -172,7 +167,7 @@ local sc = import 'shortcuts.libsonnet';
       AppIntentDescriptor: {
         ActionRequiresAppInstallation: true,
         AppIntentIdentifier: 'AlarmEntity',
-        BundleIdentifier: 'com.apple.clock',
+        BundleIdentifier: 'com.apple.mobiletimer',
         Name: 'Clock',
         TeamIdentifier: '0000000000',
       },
@@ -180,57 +175,25 @@ local sc = import 'shortcuts.libsonnet';
       WFContentItemFilter: {
         Value: {
           WFActionParameterFilterPrefix: 1,
-          WFActionParameterFilterTemplates: [],
+          WFActionParameterFilterTemplates: [
+            {
+              Operator: 99,
+              Property: 'label',
+              Removable: true,
+              Values: {
+                String: '🗓️',
+                Unit: 4,
+              },
+            },
+          ],
           WFContentPredicateBoundedDate: false,
         },
         WFSerializationType: 'WFContentPredicateTableTemplate',
       },
     }),
 
-    sc.Action('is.workflow.actions.repeat.each', {
-      GroupingIdentifier: '25CDD183-1362-42B9-8712-863F0F571C6B',
-      WFControlFlowMode: 0,
-      WFInput: sc.Attach(sc.Ref('Alarm')),
-    }),
-
-    sc.If_(sc.Cond(
-      {
-        Type: 'Variable',
-        Variable: sc.Attach({
-          Aggrandizements: [
-            {
-              PropertyName: 'label',
-              PropertyUserInfo: {
-                WFLinkEntityContentPropertyUserInfoPropertyIdentifier: 'label',
-              },
-              Type: 'WFPropertyVariableAggrandizement',
-            },
-          ],
-          Type: 'Variable',
-          VariableName: 'Repeat Item',
-        }),
-      },
-      'does not contain',
-      {
-        WFConditionalActionString: '🗓️',
-      }
-    )).Then_([
-
-      sc.Action('is.workflow.actions.nothing'),
-
-    ]).EndIf_(),
-
-    sc.Action('is.workflow.actions.repeat.each', name='Repeat Results', params={
-      GroupingIdentifier: '25CDD183-1362-42B9-8712-863F0F571C6B',
-      WFControlFlowMode: 2,
-    }),
-
-    sc.Action('is.workflow.actions.output', {
-      WFOutput: sc.Str([sc.Ref('Repeat Results')]),
-    }),
-
     sc.Action('is.workflow.actions.setvariable', {
-      WFInput: sc.Attach(sc.Ref('Repeat Results')),
+      WFInput: sc.Attach(sc.Ref('Alarm')),
       WFVariableName: 'Calendar Alarms',
     }),
 
@@ -384,7 +347,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.comment', {
-      WFCommentActionText: 'Get configured event start/end alarm lead time(s):',
+      WFCommentActionText: 'Get configured event start/end alarm lead time( ',
     }),
 
     sc.If_(sc.Cond(
@@ -664,7 +627,7 @@ local sc = import 'shortcuts.libsonnet';
           Type: 'Variable',
           Variable: sc.Attach(sc.Ref('|Start → Countdown Alarm|')),
         },
-        '>',
+        'is',
         {
           WFNumberValue: '0',
         }
@@ -1807,6 +1770,10 @@ local sc = import 'shortcuts.libsonnet';
             Variable: sc.Attach({
               Aggrandizements: [
                 {
+                  CoercionItemClass: 'WFLinkEntityContentItem_com.apple.clock_AlarmEntity',
+                  Type: 'WFCoercionVariableAggrandizement',
+                },
+                {
                   PropertyName: 'label',
                   PropertyUserInfo: {
                     WFLinkEntityContentPropertyUserInfoPropertyIdentifier: 'label',
@@ -2882,6 +2849,7 @@ local sc = import 'shortcuts.libsonnet';
 
         sc.Action('is.workflow.actions.notification', {
           WFNotificationActionBody: sc.Str(['Created ', sc.Ref('Vars.Desired Alarm Name')]),
+          WFNotificationActionSound: false,
         }),
 
       ]).Else_([
@@ -2971,67 +2939,36 @@ local sc = import 'shortcuts.libsonnet';
       WFInput: sc.Attach(sc.Ref('Vars.Unmatched Calendar Alarm Indices')),
     }),
 
-    sc.Action('is.workflow.actions.getitemfromlist', name='Item from List', params={
+    sc.Action('is.workflow.actions.repeat.each', {
+      GroupingIdentifier: 'B2A844C2-0CEB-4E08-B437-EBDA13C9BEDC',
+      WFControlFlowMode: 0,
+      WFInput: sc.Attach(sc.Ref('Vars.Unmatched Calendar Alarm Indices')),
+    }),
+
+    sc.Action('is.workflow.actions.repeat.each', {
+      GroupingIdentifier: 'B2A844C2-0CEB-4E08-B437-EBDA13C9BEDC',
+      WFControlFlowMode: 2,
+    }),
+
+    sc.Action('is.workflow.actions.getitemfromlist', {
       WFInput: sc.Attach(sc.Ref('Vars.Calendar Alarms')),
       WFItemIndex: sc.Attach(sc.Ref('Vars.Repeat Item')),
       WFItemSpecifier: 'Item At Index',
     }),
 
-    sc.Action('is.workflow.actions.setvariable', {
-      WFInput: sc.Attach(sc.Ref('Item from List')),
-      WFVariableName: 'Alarm to Disable',
-    }),
-
-    sc.If_(sc.Cond(
-      {
-        Type: 'Variable',
-        Variable: sc.Attach({
-          Aggrandizements: [
-            {
-              PropertyName: 'enabled',
-              PropertyUserInfo: 'enabled',
-              Type: 'WFPropertyVariableAggrandizement',
-            },
-          ],
-          Type: 'Variable',
-          VariableName: 'Alarm to Disable',
-        }),
-      },
-      'is'
-    )).Then_([
-
-      sc.Action('is.workflow.actions.notification', {
-        WFInput: sc.Attach(sc.Ref('Item from List')),
-        WFNotificationActionBody: sc.Str(['Disabling alarm ', {
-          Aggrandizements: [
-            {
-              PropertyName: 'label',
-              PropertyUserInfo: 'label',
-              Type: 'WFPropertyVariableAggrandizement',
-            },
-          ],
-          Type: 'Variable',
-          VariableName: 'Alarm to Disable',
-        }]),
-      }),
-
-      sc.Action('com.apple.mobiletimer-framework.MobileTimerIntents.MTToggleAlarmIntent', {
-        AppIntentDescriptor: {
-          AppIntentIdentifier: 'ToggleAlarmIntent',
-          BundleIdentifier: 'com.apple.mobiletimer',
-          Name: 'Clock',
-          TeamIdentifier: '0000000000',
-        },
-        ShowWhenRun: false,
-        alarm: sc.Attach(sc.Ref('Vars.Alarm to Disable')),
-        state: 0,
-      }),
-
-    ]).EndIf_(),
-
-    sc.Action('is.workflow.actions.repeat.each', {
+    sc.Action('is.workflow.actions.repeat.each', name='Repeat Results', params={
       GroupingIdentifier: 'FA4A18C4-308D-44AC-8E2E-31906FCC518F',
       WFControlFlowMode: 2,
+    }),
+
+    sc.Action('com.apple.mobiletimer.DeleteAlarmIntent', {
+      AppIntentDescriptor: {
+        AppIntentIdentifier: 'DeleteAlarmIntent',
+        BundleIdentifier: 'com.apple.mobiletimer',
+        Name: 'Clock',
+        TeamIdentifier: '0000000000',
+      },
+      entities: sc.Attach(sc.Ref('Repeat Results')),
     }),
 
   ]),
@@ -3059,8 +2996,6 @@ local sc = import 'shortcuts.libsonnet';
   WFWorkflowInputContentItemClasses: [],
   WFWorkflowMinimumClientVersion: 3010,
   WFWorkflowMinimumClientVersionString: '3010',
-  WFWorkflowOutputContentItemClasses: [
-    'WFContentItem',
-  ],
+  WFWorkflowOutputContentItemClasses: [],
   WFWorkflowTypes: [],
 }
