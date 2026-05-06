@@ -120,7 +120,7 @@ local sc = import 'shortcuts.libsonnet';
     ]).EndIf_(),
 
   ]),
-  WFWorkflowClientVersion: '3607.0.2',
+  WFWorkflowClientVersion: '4528.0.4.2',
   WFWorkflowHasOutputFallback: false,
   WFWorkflowHasShortcutInputVariables: true,
   WFWorkflowIcon: {
@@ -160,6 +160,7 @@ local sc = import 'shortcuts.libsonnet';
     'WFGenericFileContentItem',
   ],
   WFWorkflowTypes: [
+    'WFWorkflowTypeShowInSearch',
     'Watch',
   ],
 }

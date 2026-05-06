@@ -38,7 +38,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
   ]),
-  WFWorkflowClientVersion: '3607.0.2',
+  WFWorkflowClientVersion: '4528.0.4.2',
   WFWorkflowHasOutputFallback: false,
   WFWorkflowHasShortcutInputVariables: false,
   WFWorkflowIcon: {
@@ -55,6 +55,7 @@ local sc = import 'shortcuts.libsonnet';
     'WFGenericFileContentItem',
   ],
   WFWorkflowTypes: [
+    'WFWorkflowTypeShowInSearch',
     'Watch',
   ],
 }

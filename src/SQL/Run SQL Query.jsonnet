@@ -240,7 +240,7 @@ local sc = import 'shortcuts.libsonnet';
     ]).EndIf_(),
 
   ]),
-  WFWorkflowClientVersion: '3607.0.2',
+  WFWorkflowClientVersion: '4528.0.4.2',
   WFWorkflowHasOutputFallback: false,
   WFWorkflowHasShortcutInputVariables: true,
   WFWorkflowIcon: {
@@ -254,5 +254,7 @@ local sc = import 'shortcuts.libsonnet';
   WFWorkflowMinimumClientVersion: 900,
   WFWorkflowMinimumClientVersionString: '900',
   WFWorkflowOutputContentItemClasses: [],
-  WFWorkflowTypes: [],
+  WFWorkflowTypes: [
+    'WFWorkflowTypeShowInSearch',
+  ],
 }

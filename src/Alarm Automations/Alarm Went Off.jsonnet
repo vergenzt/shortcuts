@@ -84,30 +84,13 @@ local sc = import 'shortcuts.libsonnet';
       WFNotificationActionTitle: '',
     }),
 
-    sc.Action('is.workflow.actions.repeat.each', name='Repeat Results', params={
+    sc.Action('is.workflow.actions.repeat.each', {
       GroupingIdentifier: '1F8FD74D-2A4F-4A44-BBA4-4CB4D5FF6277',
       WFControlFlowMode: 2,
     }),
 
-    sc.If_(sc.Cond(
-      {
-        Type: 'Variable',
-        Variable: sc.Attach(sc.Ref('Repeat Results', aggs=[
-          {
-            PropertyName: 'label',
-            Type: 'WFPropertyVariableAggrandizement',
-          },
-        ])),
-      },
-      'is'
-    )).Then_([
-
-    ]).Else_([
-
-    ]).EndIf_(),
-
   ]),
-  WFWorkflowClientVersion: '3607.0.2',
+  WFWorkflowClientVersion: '4528.0.4.2',
   WFWorkflowHasOutputFallback: false,
   WFWorkflowHasShortcutInputVariables: false,
   WFWorkflowIcon: {
@@ -119,5 +102,7 @@ local sc = import 'shortcuts.libsonnet';
   WFWorkflowMinimumClientVersion: 900,
   WFWorkflowMinimumClientVersionString: '900',
   WFWorkflowOutputContentItemClasses: [],
-  WFWorkflowTypes: [],
+  WFWorkflowTypes: [
+    'WFWorkflowTypeShowInSearch',
+  ],
 }

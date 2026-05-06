@@ -197,7 +197,7 @@ local sc = import 'shortcuts.libsonnet';
     ]).EndIf_(),
 
   ]),
-  WFWorkflowClientVersion: '3607.0.2',
+  WFWorkflowClientVersion: '4528.0.4.2',
   WFWorkflowHasOutputFallback: true,
   WFWorkflowHasShortcutInputVariables: false,
   WFWorkflowIcon: {
@@ -214,6 +214,7 @@ local sc = import 'shortcuts.libsonnet';
   ],
   WFWorkflowTypes: [
     'NCWidget',
+    'WFWorkflowTypeShowInSearch',
     'Watch',
   ],
 }

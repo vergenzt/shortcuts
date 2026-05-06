@@ -332,9 +332,58 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.repeat.each', {
-      GroupingIdentifier: '3A666097-90F9-4E2A-BBDC-A7A2F903EB04',
+      GroupingIdentifier: 'C0DE4DC8-E713-47B8-B3B2-652F968D2658',
       WFControlFlowMode: 0,
       WFInput: sc.Attach(sc.Ref('Calendar Events')),
+    }),
+
+    sc.Action('is.workflow.actions.properties.calendarevents', name='Start Time', params={
+      WFContentItemPropertyName: 'Start Date',
+      WFInput: sc.Attach(sc.Ref('Vars.Repeat Item')),
+    }),
+
+    sc.If_(sc.Cond(
+      {
+        Type: 'Variable',
+        Variable: sc.Attach(sc.Ref('Start Time', aggs=[
+          {
+            PropertyName: 'Time',
+            Type: 'WFPropertyVariableAggrandizement',
+          },
+        ])),
+      },
+      'is not',
+      {
+        WFDate: {
+          __data__: '2026-03-18T04:00:46',
+          __type__: 'date-iso8601',
+        },
+      }
+    )).Then_([
+
+      sc.Action('is.workflow.actions.getvariable', {
+        WFVariable: sc.Attach(sc.Ref('Vars.Repeat Item')),
+      }),
+
+    ]).Else_([
+
+      sc.Action('is.workflow.actions.previewdocument', {
+        WFInput: sc.Attach(sc.Ref('Start Time')),
+      }),
+
+      sc.Action('is.workflow.actions.nothing'),
+
+    ]).EndIf_(),
+
+    sc.Action('is.workflow.actions.repeat.each', name='Filtered Calendar Events', params={
+      GroupingIdentifier: 'C0DE4DC8-E713-47B8-B3B2-652F968D2658',
+      WFControlFlowMode: 2,
+    }),
+
+    sc.Action('is.workflow.actions.repeat.each', {
+      GroupingIdentifier: '3A666097-90F9-4E2A-BBDC-A7A2F903EB04',
+      WFControlFlowMode: 0,
+      WFInput: sc.Attach(sc.Ref('Filtered Calendar Events')),
     }),
 
     sc.Action('is.workflow.actions.properties.calendarevents', name='Calendar', params={
@@ -373,7 +422,10 @@ local sc = import 'shortcuts.libsonnet';
           Type: 'CurrentDate',
         }),
       },
-      'has any value'
+      'has any value',
+      {
+        UUID: '05BBEBB2-6788-49B0-A156-63373C768CC5',
+      }
     )).Then_([
 
       sc.Action('is.workflow.actions.text.match', name='Matches', params={
@@ -2988,7 +3040,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
   ]),
-  WFWorkflowClientVersion: '3607.0.2',
+  WFWorkflowClientVersion: '4528.0.4.2',
   WFWorkflowHasOutputFallback: false,
   WFWorkflowHasShortcutInputVariables: false,
   WFWorkflowIcon: {
@@ -3013,5 +3065,7 @@ local sc = import 'shortcuts.libsonnet';
   WFWorkflowMinimumClientVersion: 3010,
   WFWorkflowMinimumClientVersionString: '3010',
   WFWorkflowOutputContentItemClasses: [],
-  WFWorkflowTypes: [],
+  WFWorkflowTypes: [
+    'WFWorkflowTypeShowInSearch',
+  ],
 }

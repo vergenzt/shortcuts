@@ -12,7 +12,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
   ]),
-  WFWorkflowClientVersion: '3607.0.2',
+  WFWorkflowClientVersion: '4528.0.4.2',
   WFWorkflowHasOutputFallback: false,
   WFWorkflowHasShortcutInputVariables: true,
   WFWorkflowIcon: {
@@ -38,5 +38,6 @@ local sc = import 'shortcuts.libsonnet';
   WFWorkflowTypes: [
     'ActionExtension',
     'QuickActions',
+    'WFWorkflowTypeShowInSearch',
   ],
 }
