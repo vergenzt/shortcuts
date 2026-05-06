@@ -50,13 +50,43 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.gettext', name='Text', params={
-      WFTextActionText: sc.Str(['---\ncreated_at: ', sc.Ref('Date'), '\nupdated_at: ', sc.Ref('Name'), '\nimport_source: Shortcut "Voice Journal"\n---\n# Voice journal entry from ', sc.Ref('Date', aggs=[
-        {
-          Type: 'WFDateFormatVariableAggrandizement',
-          WFDateFormatStyle: 'ISO 8601',
-          WFISO8601IncludeTime: true,
+      WFTextActionText: {
+        Value: {
+          attachmentsByRange: {
+            '{103, 1}': sc.Ref('Date'),
+            '{109, 1}': sc.Ref('Name'),
+            '{16, 1}': sc.Ref('Date', aggs=[
+              {
+                Type: 'WFDateFormatVariableAggrandizement',
+                WFDateFormatStyle: 'ISO 8601',
+                WFISO8601IncludeTime: true,
+              },
+            ]),
+            '{160, 1}': sc.Ref('Transcribe Audio'),
+            '{30, 1}': sc.Ref('Date', aggs=[
+              {
+                Type: 'WFDateFormatVariableAggrandizement',
+                WFDateFormatStyle: 'ISO 8601',
+                WFISO8601IncludeTime: true,
+              },
+            ]),
+          },
+          string: |||
+            ---
+              created_at: ￼
+              updated_at: ￼
+              import_source: Shortcut "Voice Journal"
+              ---
+              # Voice journal entry from ￼
+
+              ![[￼/audio.m4a]]
+
+              > [!note] Automated transcription
+              > ￼
+          |||,
         },
-      ]), '\n\n![[', sc.Ref('Transcribe Audio')]),
+        WFSerializationType: 'WFTextTokenString',
+      },
     }),
 
     sc.Action('is.workflow.actions.documentpicker.save', name='Saved File', params={

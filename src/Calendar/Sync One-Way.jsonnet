@@ -5,7 +5,15 @@ local sc = import 'shortcuts.libsonnet';
   WFWorkflowActions: sc.ActionsSeq([
 
     sc.Action('is.workflow.actions.comment', {
-      WFCommentActionText: 'Input dictionary with keys to sync Lists 1 and 2:\n- “Get List 1”: name of Shortcut to get list 1 (input: timestamp of sync start)\n- “Get List 2”: name of Shortcut to get list 2 (input: timestamp of sync start)\n- “ID of #1”: name of Shortcut returning string ID of a #1 (equal IDs are considered equivalent #1s and #2s); input: #1\n- “ID of #2”: name of Shortcut returning string ID of a #2; input: #2\n- “Create 2 from 1”: name of Shortcut to invoke when a #1 has no equivalent #2\n- “Remove orphaned 2”: name of Shortcut to invoke when a #2 has no equivalent #1',
+      WFCommentActionText: |||
+        Input dictionary with keys to sync Lists 1 and 2:
+          - “Get List 1”: name of Shortcut to get list 1 (input: timestamp of sync start)
+          - “Get List 2”: name of Shortcut to get list 2 (input: timestamp of sync start)
+          - “ID of #1”: name of Shortcut returning string ID of a #1 (equal IDs are considered equivalent #1s and #2s); input: #1
+          - “ID of #2”: name of Shortcut returning string ID of a #2; input: #2
+          - “Create 2 from 1”: name of Shortcut to invoke when a #1 has no equivalent #2
+          - “Remove orphaned 2”: name of Shortcut to invoke when a #2 has no equivalent #1
+      |||,
     }),
 
     sc.Action('is.workflow.actions.dictionary', name='Empty Dictionary'),

@@ -47,7 +47,10 @@ local sc = import 'shortcuts.libsonnet';
     )).Then_([
 
       sc.Action('is.workflow.actions.gettext', name='Text', params={
-        WFTextActionText: 'mouse=10-94-bb-a9-41-7a\nkeybd=70-f0-87-36-14-6e',
+        WFTextActionText: |||
+          mouse=10-94-bb-a9-41-7a
+            keybd=70-f0-87-36-14-6e
+        |||,
       }),
 
       sc.If_(sc.Cond(
@@ -68,7 +71,11 @@ local sc = import 'shortcuts.libsonnet';
 
         sc.Action('is.workflow.actions.runshellscript', {
           Input: sc.Attach(sc.Ref('Text')),
-          Script: "parallel --plain -t --tagstring='{1}' --colsep='=' \\\n  blueutil --unpair '{2}' '# {1}'",
+          Script: |||
+            parallel --plain -t --tagstring='{1}' --colsep='=' \\
+                blueutil --unpair '{2}' '# {1}'
+          |||
+          ,
           Shell: '/bin/bash',
         }),
 
@@ -77,7 +84,11 @@ local sc = import 'shortcuts.libsonnet';
         sc.Action('is.workflow.actions.runshellscript', {
           Input: sc.Attach(sc.Ref('Text')),
           RunAsRoot: false,
-          Script: "parallel --plain -t --tagstring='{1}' --colsep='=' \\\n  blueutil --pair '{2}' 0000 '# {1}'",
+          Script: |||
+            parallel --plain -t --tagstring='{1}' --colsep='=' \\
+                blueutil --pair '{2}' 0000 '# {1}'
+          |||
+          ,
           Shell: '/bin/bash',
         }),
 

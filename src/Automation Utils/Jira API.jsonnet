@@ -17,17 +17,49 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.gettext', name='Text', params={
-      WFTextActionText: sc.Str(['import json, requests\n\nargs, cfg, err_nonce = json.loads(r"""\n  [', sc.Ref('Input Dict', aggs=[
-        {
-          CoercionItemClass: 'WFDictionaryContentItem',
-          Type: 'WFCoercionVariableAggrandizement',
+      WFTextActionText: {
+        Value: {
+          attachmentsByRange: {
+            '{65, 1}': sc.Ref('Input Dict', aggs=[
+              {
+                CoercionItemClass: 'WFDictionaryContentItem',
+                Type: 'WFCoercionVariableAggrandizement',
+              },
+            ]),
+            '{68, 1}': sc.Ref('Jira Config', aggs=[
+              {
+                CoercionItemClass: 'WFDictionaryContentItem',
+                Type: 'WFCoercionVariableAggrandizement',
+              },
+            ]),
+            '{72, 1}': sc.Ref('Error Nonce'),
+          },
+          string: |||
+            import json, requests
+
+              args, cfg, err_nonce = json.loads(r"""
+                [￼, ￼, "￼"]
+              """)
+
+              resp = requests.request(
+                url=cfg["base_url"] + args.pop("path"),
+                **args,
+                auth=requests.auth.HTTPBasicAuth(
+                  cfg["username"],
+                  cfg["api_token"]
+                ),
+              )
+
+              if not resp.ok:
+                print(err_nonce)
+                print("On", resp.request.method, resp.request.path_url)
+                print("Error", resp.status_code, resp.reason)
+
+              print(resp.text)
+          |||,
         },
-      ]), ', ', sc.Ref('Jira Config', aggs=[
-        {
-          CoercionItemClass: 'WFDictionaryContentItem',
-          Type: 'WFCoercionVariableAggrandizement',
-        },
-      ])]),
+        WFSerializationType: 'WFTextTokenString',
+      },
     }),
 
     sc.Action('ch.marcela.ada.Pyto.RunCodeIntent', {

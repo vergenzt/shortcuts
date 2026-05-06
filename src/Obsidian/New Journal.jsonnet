@@ -5,27 +5,46 @@ local sc = import 'shortcuts.libsonnet';
   WFWorkflowActions: sc.ActionsSeq([
 
     sc.Action('is.workflow.actions.gettext', name='Content', params={
-      WFTextActionText: sc.Str(['---\nupdated_at: ', {
-        Aggrandizements: [
-          {
-            Type: 'WFDateFormatVariableAggrandizement',
-            WFDateFormatStyle: 'ISO 8601',
-            WFISO8601IncludeTime: true,
+      WFTextActionText: {
+        Value: {
+          attachmentsByRange: {
+            '{16, 1}': {
+              Aggrandizements: [
+                {
+                  Type: 'WFDateFormatVariableAggrandizement',
+                  WFDateFormatStyle: 'ISO 8601',
+                  WFISO8601IncludeTime: true,
+                },
+              ],
+              Type: 'CurrentDate',
+            },
+            '{30, 1}': {
+              Aggrandizements: [
+                {
+                  Type: 'WFDateFormatVariableAggrandizement',
+                  WFDateFormatStyle: 'ISO 8601',
+                  WFISO8601IncludeTime: true,
+                },
+              ],
+              Type: 'CurrentDate',
+            },
+            '{57, 1}': {
+              Type: 'CurrentDate',
+            },
+            '{60, 1}': sc.Input,
           },
-        ],
-        Type: 'CurrentDate',
-      }, '\ncreated_at: ', {
-        Aggrandizements: [
-          {
-            Type: 'WFDateFormatVariableAggrandizement',
-            WFDateFormatStyle: 'ISO 8601',
-            WFISO8601IncludeTime: true,
-          },
-        ],
-        Type: 'CurrentDate',
-      }, '\n---\n# Journal entry from ', {
-        Type: 'CurrentDate',
-      }]),
+          string: |||
+            ---
+              updated_at: ￼
+              created_at: ￼
+              ---
+              # Journal entry from ￼
+
+              ￼
+          |||,
+        },
+        WFSerializationType: 'WFTextTokenString',
+      },
     }),
 
     sc.Action('is.workflow.actions.gettext', name='New File Name', params={
@@ -57,7 +76,11 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.comment', {
-      WFCommentActionText: '^always seems to always set the file extension to .txt\n\nThis works around that:',
+      WFCommentActionText: |||
+        ^always seems to always set the file extension to .txt
+
+          This works around that:
+      |||,
     }),
 
     sc.Action('is.workflow.actions.file.rename', {

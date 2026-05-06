@@ -92,7 +92,23 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.gettext', name='jq', params={
-      WFTextActionText: sc.Str(['([.fields[]] | max) as $max\n| (\n  if .fields.customfield_', sc.Ref('Vars.FID'), ' == $max\n  then empty\n  else { key, newValue: $max }\n  end\n)']),
+      WFTextActionText: {
+        Value: {
+          attachmentsByRange: {
+            '{57, 1}': sc.Ref('Vars.FID'),
+          },
+          string: |||
+            ([.fields[]] | max) as $max
+              | (
+                if .fields.customfield_￼ == $max
+                then empty
+                else { key, newValue: $max }
+                end
+              )
+          |||,
+        },
+        WFSerializationType: 'WFTextTokenString',
+      },
     }),
 
     sc.Action('ke.bou.GizmoPack.QueryJSONIntent', name='Result', params={

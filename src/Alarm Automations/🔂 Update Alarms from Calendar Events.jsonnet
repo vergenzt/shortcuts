@@ -83,7 +83,23 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.comment', {
-      WFCommentActionText: '^Explanation:\n\nKeys must start with either a "📅" or a "🏷️" emoji.\n\n- "📅" means that the rest of the key represents a calendar name, which must match the calendar name in the Calendar app for an alarm to be created.\n\n- "🏷️" means that the rest of the key is a string which must be contained within the calendar event’s name for an alarm to be created.\n\nValues are then comma-separated strings which must be digits with an optional leading "-" (minus sign) and an optional trailing "@" (‘at’-sign). Each such value designates when an individual alarm should be set for.\n\nA positive number (i.e. with no leading minus sign) designates the number of minutes before the *start* of an event that an alarm should be created for.\n\nA negative number (i.e. with a leading minus sign) designates the number of minutes before the *end* of an event that an alarm should be created for.\n\nBy default, these alarms are created with snooze ENABLED. To disable snooze for an alarm time, append an "@" to the end of the number.',
+      WFCommentActionText: |||
+        ^Explanation:
+
+          Keys must start with either a "📅" or a "🏷️" emoji.
+
+          - "📅" means that the rest of the key represents a calendar name, which must match the calendar name in the Calendar app for an alarm to be created.
+
+          - "🏷️" means that the rest of the key is a string which must be contained within the calendar event’s name for an alarm to be created.
+
+          Values are then comma-separated strings which must be digits with an optional leading "-" (minus sign) and an optional trailing "@" (‘at’-sign). Each such value designates when an individual alarm should be set for.
+
+          A positive number (i.e. with no leading minus sign) designates the number of minutes before the *start* of an event that an alarm should be created for.
+
+          A negative number (i.e. with a leading minus sign) designates the number of minutes before the *end* of an event that an alarm should be created for.
+
+          By default, these alarms are created with snooze ENABLED. To disable snooze for an alarm time, append an "@" to the end of the number.
+      |||,
     }),
 
     sc.Action('is.workflow.actions.gettext', name='Text', params={

@@ -104,7 +104,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.gettext', name='Two Newlines', params={
-      WFTextActionText: '\n\n',
+      WFTextActionText: '\n\n\n',
     }),
 
     sc.Action('is.workflow.actions.text.combine', name='Combined Text', params={
@@ -306,6 +306,11 @@ local sc = import 'shortcuts.libsonnet';
             PropertyName: 'Latitude',
             Type: 'WFPropertyVariableAggrandizement',
           },
+        ]), ',', sc.Ref('Reminder Location', aggs=[
+          {
+            PropertyName: 'Latitude',
+            Type: 'WFPropertyVariableAggrandizement',
+          },
         ])]),
       }),
 
@@ -321,7 +326,21 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.gettext', name='New Note File Body', params={
-      WFTextActionText: sc.Str(['---\n', sc.Ref('Vars.Content')]),
+      WFTextActionText: {
+        Value: {
+          attachmentsByRange: {
+            '{10, 1}': sc.Ref('Vars.Content'),
+            '{4, 1}': sc.Ref('Frontmatter Combined'),
+          },
+          string: |||
+            ---
+              ￼
+              ---
+              ￼
+          |||,
+        },
+        WFSerializationType: 'WFTextTokenString',
+      },
     }),
 
     sc.Action('is.workflow.actions.gettext', name='New Note Filename', params={

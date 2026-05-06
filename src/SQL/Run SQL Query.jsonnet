@@ -138,7 +138,19 @@ local sc = import 'shortcuts.libsonnet';
       }),
 
       sc.Action('is.workflow.actions.gettext', name='Params Setup', params={
-        WFTextActionText: sc.Str(['create temp table params (name text primary key, value any);\n\ninsert into params values ', sc.Ref('Combined Text'), ';']),
+        WFTextActionText: {
+          Value: {
+            attachmentsByRange: {
+              '{88, 1}': sc.Ref('Combined Text'),
+            },
+            string: |||
+              create temp table params (name text primary key, value any);
+
+                insert into params values ￼;
+            |||,
+          },
+          WFSerializationType: 'WFTextTokenString',
+        },
       }),
 
       sc.Action('is.workflow.actions.dictionary', name='Dictionary', params={
@@ -178,7 +190,19 @@ local sc = import 'shortcuts.libsonnet';
       }),
 
       sc.Action('is.workflow.actions.gettext', {
-        WFTextActionText: sc.Str([sc.Ref('Params Setup')]),
+        WFTextActionText: {
+          Value: {
+            attachmentsByRange: {
+              '{0, 1}': sc.Ref('Params Setup'),
+              '{2, 1}': sc.Ref('Formatted Query'),
+            },
+            string: |||
+              ￼
+                ￼
+            |||,
+          },
+          WFSerializationType: 'WFTextTokenString',
+        },
       }),
 
     ]).Else_([

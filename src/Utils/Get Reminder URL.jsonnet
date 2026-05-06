@@ -50,7 +50,12 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.text.match', name='Matches', params={
-      WFMatchTextPattern: '\\nUID:(.*)\\n',
+      WFMatchTextPattern: |||
+        \
+          UID:(.*)\
+
+      |||
+      ,
       text: sc.Str([sc.Ref('Renamed Item')]),
     }),
 

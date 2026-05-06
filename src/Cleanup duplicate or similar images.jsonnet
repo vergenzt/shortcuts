@@ -5,11 +5,26 @@ local sc = import 'shortcuts.libsonnet';
   WFWorkflowActions: sc.ActionsSeq([
 
     sc.Action('is.workflow.actions.comment', {
-      WFCommentActionText: 'Delete duplicate images\nTim Wilson, June 2024',
+      WFCommentActionText: |||
+        Delete duplicate images
+          Tim Wilson, June 2024
+      |||,
     }),
 
     sc.Action('is.workflow.actions.comment', {
-      WFCommentActionText: 'UpdateCheck: Whether shortcut should check for updated versions after each run.\n\nProgressSeconds: How often progress notifications are shown, in seconds.\n\nHashSize: Defines N, and each image is turned into a NxN grayscale image. The higher the value, the more closely the algorithms “looks” at the images for differences. You need to raise/lower the DupThresholds if you raise/lower HashSize.\n\nDupThreshold: The maximum Hamming distance between two images’ dhashes in order for them to be considered duplicate or similar. e.g. Two images with a Hamming distance of less than the “Duplicate images” threshold will be considered a duplicate. Good threshold values depend on the HashSize.\n\nBatchSize: It’s faster to process images in batches, and this controls the batch size. You can crash the shortcut if you raise the value too high.\n\nMaxNumImages: Sets a limit on the number of images you’re able to process with the shortcut. The shortcut may crash or become very slow (process fewer images per second) if many images are loaded at once. ',
+      WFCommentActionText: |||
+        UpdateCheck: Whether shortcut should check for updated versions after each run.
+
+          ProgressSeconds: How often progress notifications are shown, in seconds.
+
+          HashSize: Defines N, and each image is turned into a NxN grayscale image. The higher the value, the more closely the algorithms “looks” at the images for differences. You need to raise/lower the DupThresholds if you raise/lower HashSize.
+
+          DupThreshold: The maximum Hamming distance between two images’ dhashes in order for them to be considered duplicate or similar. e.g. Two images with a Hamming distance of less than the “Duplicate images” threshold will be considered a duplicate. Good threshold values depend on the HashSize.
+
+          BatchSize: It’s faster to process images in batches, and this controls the batch size. You can crash the shortcut if you raise the value too high.
+
+          MaxNumImages: Sets a limit on the number of images you’re able to process with the shortcut. The shortcut may crash or become very slow (process fewer images per second) if many images are loaded at once.
+      |||,
     }),
 
     sc.Action('is.workflow.actions.dictionary', name='Options', params={
@@ -630,7 +645,98 @@ local sc = import 'shortcuts.libsonnet';
           attachmentsByRange: {
             '{2740, 1}': sc.Ref('Combined Text'),
           },
-          string: "function computeDHash(base64Images) {\n  const dHashValues = [];\n  let processedCount = 0;\n\n  base64Images.forEach((base64String, index) => {\n    const image = new Image();\n    image.src = `data:image/png;base64,${base64String.replaceAll(\"\\r\\n\", \"\")}`;\n\n    image.onload = () => {\n      const width = image.width;\n      const height = image.height;\n\n      const canvas = document.createElement(\"canvas\");\n      const context = canvas.getContext(\"2d\");\n      canvas.width = width;\n      canvas.height = height;\n      context.drawImage(image, 0, 0, width, height);\n\n      const imageData = context.getImageData(0, 0, width, height);\n      const pixels = imageData.data;\n\n      // Convert to grayscale and store in a new array\n      const grayscale = new Uint8Array(width * height);\n      for (let i = 0; i < pixels.length; i += 4) {\n        const r = pixels[i];\n        const g = pixels[i + 1];\n        const b = pixels[i + 2];\n        // Use luminance formula to convert to grayscale\n        grayscale[i / 4] = Math.round(0.299 * r + 0.587 * g + 0.114 * b);\n      }\n\n      // Allow the original pixels array to be garbage collected\n      imageData.data = null;\n\n      // Calculate row hash\n      let rowHash = \"\";\n      for (let i = 0; i < height; i++) {\n        for (let j = 0; j < width - 1; j++) {\n          const current = grayscale[i * width + j];\n          const next = grayscale[i * width + j + 1];\n          rowHash += current >= next ? \"1\" : \"0\";\n        }\n      }\n\n      // Calculate column hash\n      let colHash = \"\";\n      for (let j = 0; j < width; j++) {\n        for (let i = 0; i < height - 1; i++) {\n          const current = grayscale[i * width + j];\n          const next = grayscale[(i + 1) * width + j];\n          colHash += current >= next ? \"1\" : \"0\";\n        }\n      }\n\n      // Concatenate row and column hashes\n      const binaryDHash = rowHash + colHash;\n      \n      // Convert to base64\n      const base64DHash = binaryToBase64(binaryDHash);\n      \n      dHashValues[index] = base64DHash;\n      processedCount++;\n\n      if (processedCount === base64Images.length) {\n        // Prepare an output string, with one base64 dHash value per line\n        const output = dHashValues.join(\"\\n\");\n        document.body.textContent = encodeURIComponent(output);\n      }\n    };\n  });\n}\n\nfunction binaryToBase64(binaryString) {\n  const byteArray = new Uint8Array(binaryString.match(/.{1,8}/g).map(byte => parseInt(byte, 2)));\n  return btoa(String.fromCharCode.apply(null, byteArray));\n}\n\nfunction base64ToBinary(base64String) {\n  const binaryString = atob(base64String);\n  return Array.from(binaryString).map(char => \n    char.charCodeAt(0).toString(2).padStart(8, '0')\n  ).join('');\n}\n\n// Example usage\nconst base64Images = [`￼`];\n\ncomputeDHash(base64Images);",
+          string: |||
+            function computeDHash(base64Images) {
+                const dHashValues = [];
+                let processedCount = 0;
+
+                base64Images.forEach((base64String, index) => {
+                  const image = new Image();
+                  image.src = `data:image/png;base64,${base64String.replaceAll(\"\\r\
+              \", \"\")}`;
+
+                  image.onload = () => {
+                    const width = image.width;
+                    const height = image.height;
+
+                    const canvas = document.createElement(\"canvas\");
+                    const context = canvas.getContext(\"2d\");
+                    canvas.width = width;
+                    canvas.height = height;
+                    context.drawImage(image, 0, 0, width, height);
+
+                    const imageData = context.getImageData(0, 0, width, height);
+                    const pixels = imageData.data;
+
+                    // Convert to grayscale and store in a new array
+                    const grayscale = new Uint8Array(width * height);
+                    for (let i = 0; i < pixels.length; i += 4) {
+                      const r = pixels[i];
+                      const g = pixels[i + 1];
+                      const b = pixels[i + 2];
+                      // Use luminance formula to convert to grayscale
+                      grayscale[i / 4] = Math.round(0.299 * r + 0.587 * g + 0.114 * b);
+                    }
+
+                    // Allow the original pixels array to be garbage collected
+                    imageData.data = null;
+
+                    // Calculate row hash
+                    let rowHash = \"\";
+                    for (let i = 0; i < height; i++) {
+                      for (let j = 0; j < width - 1; j++) {
+              const current = grayscale[i * width + j];
+              const next = grayscale[i * width + j + 1];
+              rowHash += current >= next ? \"1\" : \"0\";
+                      }
+                    }
+
+                    // Calculate column hash
+                    let colHash = \"\";
+                    for (let j = 0; j < width; j++) {
+                      for (let i = 0; i < height - 1; i++) {
+              const current = grayscale[i * width + j];
+              const next = grayscale[(i + 1) * width + j];
+              colHash += current >= next ? \"1\" : \"0\";
+                      }
+                    }
+
+                    // Concatenate row and column hashes
+                    const binaryDHash = rowHash + colHash;
+
+                    // Convert to base64
+                    const base64DHash = binaryToBase64(binaryDHash);
+
+                    dHashValues[index] = base64DHash;
+                    processedCount++;
+
+                    if (processedCount === base64Images.length) {
+                      // Prepare an output string, with one base64 dHash value per line
+                      const output = dHashValues.join(\"\
+              \");
+                      document.body.textContent = encodeURIComponent(output);
+                    }
+                  };
+                });
+              }
+
+              function binaryToBase64(binaryString) {
+                const byteArray = new Uint8Array(binaryString.match(/.{1,8}/g).map(byte => parseInt(byte, 2)));
+                return btoa(String.fromCharCode.apply(null, byteArray));
+              }
+
+              function base64ToBinary(base64String) {
+                const binaryString = atob(base64String);
+                return Array.from(binaryString).map(char =>
+                  char.charCodeAt(0).toString(2).padStart(8, '0')
+                ).join('');
+              }
+
+              // Example usage
+              const base64Images = [`￼`];
+
+              computeDHash(base64Images);
+          |||,
         },
         WFSerializationType: 'WFTextTokenString',
       },
@@ -839,7 +945,144 @@ local sc = import 'shortcuts.libsonnet';
             '{109, 1}': sc.Ref('Dictionary Value'),
             '{3817, 1}': sc.Ref('Combined Text'),
           },
-          string: "// Set the duplicate threshold (maximum Hamming distance to be considered a duplicate)\nconst DUP_THRESHOLD = ￼;\n\n// BK-Tree node class\nclass BKTreeNode {\n    constructor(hash, index) {\n        this.hash = hash;\n        this.index = index;\n        this.exactDuplicates = [index];\n        this.children = new Map();\n    }\n}\n\n// BK-Tree class\nclass BKTree {\n    constructor() {\n        this.root = null;\n    }\n\n    insert(hash, index) {\n        if (!this.root) {\n            this.root = new BKTreeNode(hash, index);\n            return;\n        }\n\n        let node = this.root;\n        while (true) {\n            const distance = hammingDistance(node.hash, hash);\n            if (distance === 0) {\n                node.exactDuplicates.push(index);\n                return;\n            }\n            if (!node.children.has(distance)) {\n                node.children.set(distance, new BKTreeNode(hash, index));\n                return;\n            }\n            node = node.children.get(distance);\n        }\n    }\n\n    findDuplicates(hash, threshold) {\n        const duplicates = [];\n        this._search(this.root, hash, threshold, duplicates);\n        return duplicates;\n    }\n\n    _search(node, hash, threshold, results) {\n        if (!node) return;\n\n        const distance = hammingDistance(node.hash, hash);\n        if (distance <= threshold) {\n            results.push(...node.exactDuplicates.map(index => ({ index, distance })));\n        }\n\n        const minDistance = Math.max(0, distance - threshold);\n        const maxDistance = distance + threshold;\n\n        for (let i = minDistance; i <= maxDistance; i++) {\n            if (node.children.has(i)) {\n                this._search(node.children.get(i), hash, threshold, results);\n            }\n        }\n    }\n}\n\nfunction hammingDistance(hash1, hash2) {\n    const bin1 = base64ToBinary(hash1);\n    const bin2 = base64ToBinary(hash2);\n    let distance = 0;\n    for (let i = 0; i < bin1.length; i++) {\n        if (bin1[i] !== bin2[i]) distance++;\n    }\n    return distance;\n}\n\nfunction base64ToBinary(base64String) {\n    const binaryString = atob(base64String);\n    return Array.from(binaryString).map(char => \n        char.charCodeAt(0).toString(2).padStart(8, '0')\n    ).join('');\n}\n\nfunction findDuplicateImages(base64Hashes) {\n    const tree = new BKTree();\n    const allDuplicates = new Map();\n\n    for (let i = 0; i < base64Hashes.length; i++) {\n        const hash = base64Hashes[i];\n        const foundDuplicates = tree.findDuplicates(hash, DUP_THRESHOLD);\n        \n        if (foundDuplicates.length > 0) {\n            const group = new Set([i, ...foundDuplicates.map(d => d.index)]);\n            \n            // Merge with existing groups if there's an overlap\n            for (const [key, value] of allDuplicates.entries()) {\n                if ([...group].some(index => value.has(index))) {\n                    group.forEach(index => value.add(index));\n                    group.clear();\n                    break;\n                }\n            }\n            \n            // If the group wasn't merged, add it as a new group\n            if (group.size > 0) {\n                allDuplicates.set(i, group);\n            }\n        }\n\n        tree.insert(hash, i);\n    }\n\n    // Convert the map to the desired output format with 1-based indices\n    const duplicates = {};\n    for (const [key, value] of allDuplicates.entries()) {\n        const group = Array.from(value);\n        if (group.length > 1) {  // Only include groups with more than one image\n            const minIndex = Math.min(...group);\n            duplicates[minIndex + 1] = group\n                .filter(index => index !== minIndex)\n                .map(index => index + 1)\n                .sort((a, b) => a - b);\n        }\n    }\n\n    return duplicates;\n}\n\n// Example usage\nconst base64Hashes = [`￼`];\n\nconst duplicateResults = findDuplicateImages(base64Hashes);\n//console.log(JSON.stringify(duplicateResults, null, 2));\ndocument.body.textContent = encodeURIComponent(JSON.stringify(duplicateResults, null, 2));\n\n// Output: Image indices pointing to duplicates\n// {\"1\": [2,3], \"4\": [5]}",
+          string: |||
+            // Set the duplicate threshold (maximum Hamming distance to be considered a duplicate)
+              const DUP_THRESHOLD = ￼;
+
+              // BK-Tree node class
+              class BKTreeNode {
+                  constructor(hash, index) {
+                      this.hash = hash;
+                      this.index = index;
+                      this.exactDuplicates = [index];
+                      this.children = new Map();
+                  }
+              }
+
+              // BK-Tree class
+              class BKTree {
+                  constructor() {
+                      this.root = null;
+                  }
+
+                  insert(hash, index) {
+                      if (!this.root) {
+                this.root = new BKTreeNode(hash, index);
+                return;
+                      }
+
+                      let node = this.root;
+                      while (true) {
+                const distance = hammingDistance(node.hash, hash);
+                if (distance === 0) {
+                    node.exactDuplicates.push(index);
+                    return;
+                }
+                if (!node.children.has(distance)) {
+                    node.children.set(distance, new BKTreeNode(hash, index));
+                    return;
+                }
+                node = node.children.get(distance);
+                      }
+                  }
+
+                  findDuplicates(hash, threshold) {
+                      const duplicates = [];
+                      this._search(this.root, hash, threshold, duplicates);
+                      return duplicates;
+                  }
+
+                  _search(node, hash, threshold, results) {
+                      if (!node) return;
+
+                      const distance = hammingDistance(node.hash, hash);
+                      if (distance <= threshold) {
+                results.push(...node.exactDuplicates.map(index => ({ index, distance })));
+                      }
+
+                      const minDistance = Math.max(0, distance - threshold);
+                      const maxDistance = distance + threshold;
+
+                      for (let i = minDistance; i <= maxDistance; i++) {
+                if (node.children.has(i)) {
+                    this._search(node.children.get(i), hash, threshold, results);
+                }
+                      }
+                  }
+              }
+
+              function hammingDistance(hash1, hash2) {
+                  const bin1 = base64ToBinary(hash1);
+                  const bin2 = base64ToBinary(hash2);
+                  let distance = 0;
+                  for (let i = 0; i < bin1.length; i++) {
+                      if (bin1[i] !== bin2[i]) distance++;
+                  }
+                  return distance;
+              }
+
+              function base64ToBinary(base64String) {
+                  const binaryString = atob(base64String);
+                  return Array.from(binaryString).map(char =>
+                      char.charCodeAt(0).toString(2).padStart(8, '0')
+                  ).join('');
+              }
+
+              function findDuplicateImages(base64Hashes) {
+                  const tree = new BKTree();
+                  const allDuplicates = new Map();
+
+                  for (let i = 0; i < base64Hashes.length; i++) {
+                      const hash = base64Hashes[i];
+                      const foundDuplicates = tree.findDuplicates(hash, DUP_THRESHOLD);
+
+                      if (foundDuplicates.length > 0) {
+                const group = new Set([i, ...foundDuplicates.map(d => d.index)]);
+
+                // Merge with existing groups if there's an overlap
+                for (const [key, value] of allDuplicates.entries()) {
+                    if ([...group].some(index => value.has(index))) {
+                        group.forEach(index => value.add(index));
+                        group.clear();
+                        break;
+                    }
+                }
+
+                // If the group wasn't merged, add it as a new group
+                if (group.size > 0) {
+                    allDuplicates.set(i, group);
+                }
+                      }
+
+                      tree.insert(hash, i);
+                  }
+
+                  // Convert the map to the desired output format with 1-based indices
+                  const duplicates = {};
+                  for (const [key, value] of allDuplicates.entries()) {
+                      const group = Array.from(value);
+                      if (group.length > 1) {  // Only include groups with more than one image
+                const minIndex = Math.min(...group);
+                duplicates[minIndex + 1] = group
+                    .filter(index => index !== minIndex)
+                    .map(index => index + 1)
+                    .sort((a, b) => a - b);
+                      }
+                  }
+
+                  return duplicates;
+              }
+
+              // Example usage
+              const base64Hashes = [`￼`];
+
+              const duplicateResults = findDuplicateImages(base64Hashes);
+              //console.log(JSON.stringify(duplicateResults, null, 2));
+              document.body.textContent = encodeURIComponent(JSON.stringify(duplicateResults, null, 2));
+
+              // Output: Image indices pointing to duplicates
+              // {\"1\": [2,3], \"4\": [5]}
+          |||,
         },
         WFSerializationType: 'WFTextTokenString',
       },
@@ -1653,7 +1896,39 @@ local sc = import 'shortcuts.libsonnet';
                     },
                   ]),
                 },
-                string: "// Define the latest and current version numbers\nconst latestVersion = '￼';\nconst currentVersion = '￼';\n\n// Compare the two version numbers\nconst isLatestGreater = compareVersions(latestVersion, currentVersion);\n\n// Print the result\ndocument.write(`${+isLatestGreater}`);\n\n// Function to compare two semantic version numbers\nfunction compareVersions(v1, v2) {\n  // Split the version numbers into an array of numbers\n  const v1Arr = v1.split('.');\n  const v2Arr = v2.split('.');\n\n  // Compare the major, minor, and patch versions\n  for (let i = 0; i < 3; i++) {\n    const v1Part = parseInt(v1Arr[i]);\n    const v2Part = parseInt(v2Arr[i]);\n\n    if (v1Part > v2Part) {\n      return true;\n    } else if (v1Part < v2Part) {\n      return false;\n    }\n  }\n\n  // The two versions are equal\n  return false;\n}",
+                string: |||
+                  // Define the latest and current version numbers
+                    const latestVersion = '￼';
+                    const currentVersion = '￼';
+
+                    // Compare the two version numbers
+                    const isLatestGreater = compareVersions(latestVersion, currentVersion);
+
+                    // Print the result
+                    document.write(`${+isLatestGreater}`);
+
+                    // Function to compare two semantic version numbers
+                    function compareVersions(v1, v2) {
+                      // Split the version numbers into an array of numbers
+                      const v1Arr = v1.split('.');
+                      const v2Arr = v2.split('.');
+
+                      // Compare the major, minor, and patch versions
+                      for (let i = 0; i < 3; i++) {
+                        const v1Part = parseInt(v1Arr[i]);
+                        const v2Part = parseInt(v2Arr[i]);
+
+                        if (v1Part > v2Part) {
+                          return true;
+                        } else if (v1Part < v2Part) {
+                          return false;
+                        }
+                      }
+
+                      // The two versions are equal
+                      return false;
+                    }
+                |||,
               },
               WFSerializationType: 'WFTextTokenString',
             },
@@ -1767,25 +2042,39 @@ local sc = import 'shortcuts.libsonnet';
             ]).EndIf_(name='Notes processed'),
 
             sc.Action('is.workflow.actions.gettext', name='Upgrade prompt', params={
-              WFTextActionText: sc.Str(['New Version: ', sc.Ref('Result ', aggs=[
-                {
-                  CoercionItemClass: 'WFDictionaryContentItem',
-                  Type: 'WFCoercionVariableAggrandizement',
+              WFTextActionText: {
+                Value: {
+                  attachmentsByRange: {
+                    '{13, 1}': sc.Ref('Result ', aggs=[
+                      {
+                        CoercionItemClass: 'WFDictionaryContentItem',
+                        Type: 'WFCoercionVariableAggrandizement',
+                      },
+                      {
+                        DictionaryKey: 'Version',
+                        Type: 'WFDictionaryValueVariableAggrandizement',
+                      },
+                    ]),
+                    '{24, 1}': sc.Ref('Result ', aggs=[
+                      {
+                        CoercionItemClass: 'WFDictionaryContentItem',
+                        Type: 'WFCoercionVariableAggrandizement',
+                      },
+                      {
+                        DictionaryKey: 'Release',
+                        Type: 'WFDictionaryValueVariableAggrandizement',
+                      },
+                    ]),
+                    '{38, 1}': sc.Ref('Notes processed'),
+                  },
+                  string: |||
+                    New Version: ￼
+                      Release: ￼
+                      Whats New: "￼"
+                  |||,
                 },
-                {
-                  DictionaryKey: 'Version',
-                  Type: 'WFDictionaryValueVariableAggrandizement',
-                },
-              ]), '\nRelease: ', sc.Ref('Result ', aggs=[
-                {
-                  CoercionItemClass: 'WFDictionaryContentItem',
-                  Type: 'WFCoercionVariableAggrandizement',
-                },
-                {
-                  DictionaryKey: 'Release',
-                  Type: 'WFDictionaryValueVariableAggrandizement',
-                },
-              ])]),
+                WFSerializationType: 'WFTextTokenString',
+              },
             }),
 
             sc.Action('is.workflow.actions.choosefrommenu', {

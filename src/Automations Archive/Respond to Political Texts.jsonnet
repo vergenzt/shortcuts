@@ -5,15 +5,28 @@ local sc = import 'shortcuts.libsonnet';
   WFWorkflowActions: sc.ActionsSeq([
 
     sc.Action('is.workflow.actions.gettext', name='Text', params={
-      WFTextActionText: sc.Str(['Is the following text message a political ad? Message contents are included after the "---". Reply only "Yes" or "No". Do not explain your answer.\n\n---\n', {
-        Aggrandizements: [
-          {
-            PropertyName: 'Content',
-            Type: 'WFPropertyVariableAggrandizement',
+      WFTextActionText: {
+        Value: {
+          attachmentsByRange: {
+            '{152, 1}': {
+              Aggrandizements: [
+                {
+                  PropertyName: 'Content',
+                  Type: 'WFPropertyVariableAggrandizement',
+                },
+              ],
+              Type: 'ExtensionInput',
+            },
           },
-        ],
-        Type: 'ExtensionInput',
-      }]),
+          string: |||
+            Is the following text message a political ad? Message contents are included after the "---". Reply only "Yes" or "No". Do not explain your answer.
+
+              ---
+              ￼
+          |||,
+        },
+        WFSerializationType: 'WFTextTokenString',
+      },
     }),
 
     sc.Action('com.openai.chat.AskIntent', name='ChatGPT Response', params={

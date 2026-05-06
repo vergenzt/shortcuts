@@ -156,28 +156,54 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.gettext', name='dst Notes', params={
-      WFTextActionText: sc.Str([{
-        Aggrandizements: [
-          {
-            PropertyName: 'Notes',
-            Type: 'WFPropertyVariableAggrandizement',
+      WFTextActionText: {
+        Value: {
+          attachmentsByRange: {
+            '{0, 1}': {
+              Aggrandizements: [
+                {
+                  PropertyName: 'Notes',
+                  Type: 'WFPropertyVariableAggrandizement',
+                },
+              ],
+              Type: 'Variable',
+              VariableName: 'Repeat Item',
+            },
+            '{1, 1}': {
+              Aggrandizements: [
+                {
+                  CoercionItemClass: 'WFDictionaryContentItem',
+                  Type: 'WFCoercionVariableAggrandizement',
+                },
+                {
+                  DictionaryKey: 'dst_desc_sfx',
+                  Type: 'WFDictionaryValueVariableAggrandizement',
+                },
+              ],
+              Type: 'ExtensionInput',
+            },
+            '{4, 1}': {
+              Aggrandizements: [
+                {
+                  CoercionItemClass: 'WFDictionaryContentItem',
+                  Type: 'WFCoercionVariableAggrandizement',
+                },
+                {
+                  DictionaryKey: 'pair_id',
+                  Type: 'WFDictionaryValueVariableAggrandizement',
+                },
+              ],
+              Type: 'ExtensionInput',
+            },
           },
-        ],
-        Type: 'Variable',
-        VariableName: 'Repeat Item',
-      }, {
-        Aggrandizements: [
-          {
-            CoercionItemClass: 'WFDictionaryContentItem',
-            Type: 'WFCoercionVariableAggrandizement',
-          },
-          {
-            DictionaryKey: 'dst_desc_sfx',
-            Type: 'WFDictionaryValueVariableAggrandizement',
-          },
-        ],
-        Type: 'ExtensionInput',
-      }]),
+          string: |||
+            ￼￼
+
+              ￼
+          |||,
+        },
+        WFSerializationType: 'WFTextTokenString',
+      },
     }),
 
     sc.Action('is.workflow.actions.filter.calendarevents', name='dst Events', params={

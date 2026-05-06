@@ -170,21 +170,40 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.gettext', name='Text', params={
-      WFTextActionText: sc.Str([{
-        Aggrandizements: [
-          {
-            PropertyName: 'Notes',
-            Type: 'WFPropertyVariableAggrandizement',
+      WFTextActionText: {
+        Value: {
+          attachmentsByRange: {
+            '{0, 1}': {
+              Aggrandizements: [
+                {
+                  PropertyName: 'Notes',
+                  Type: 'WFPropertyVariableAggrandizement',
+                },
+              ],
+              Type: 'Variable',
+              VariableName: 'Repeat Item',
+            },
+            '{11, 1}': sc.Ref('Issue', aggs=[
+              {
+                PropertyName: 'site',
+                Type: 'WFPropertyVariableAggrandizement',
+              },
+            ]),
+            '{34, 1}': sc.Ref('Issue', aggs=[
+              {
+                PropertyName: 'key',
+                Type: 'WFPropertyVariableAggrandizement',
+              },
+            ]),
           },
-        ],
-        Type: 'Variable',
-        VariableName: 'Repeat Item',
-      }, '\n\nhttps://', sc.Ref('Issue', aggs=[
-        {
-          PropertyName: 'site',
-          Type: 'WFPropertyVariableAggrandizement',
+          string: |||
+            ￼
+
+              https://￼.atlassian.net/browse/￼
+          |||,
         },
-      ])]),
+        WFSerializationType: 'WFTextTokenString',
+      },
     }),
 
     sc.Action('is.workflow.actions.setters.reminders', {

@@ -15,16 +15,76 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.gettext', name='Text', params={
-      WFTextActionText: sc.Str(['{\n  "using": [\n    "urn:ietf:params:jmap:core",\n    "urn:ietf:params:jmap:mail"\n  ],\n  "methodCalls": [\n    [\n      "Email/query",\n      {\n        "accountId": "', sc.Ref('Fastmail Auth', aggs=[
-        {
-          CoercionItemClass: 'WFDictionaryContentItem',
-          Type: 'WFCoercionVariableAggrandizement',
+      WFTextActionText: {
+        Value: {
+          attachmentsByRange: {
+            '{161, 1}': sc.Ref('Fastmail Auth', aggs=[
+              {
+                CoercionItemClass: 'WFDictionaryContentItem',
+                Type: 'WFCoercionVariableAggrandizement',
+              },
+              {
+                DictionaryKey: 'accountId',
+                Type: 'WFDictionaryValueVariableAggrandizement',
+              },
+            ]),
+            '{401, 1}': sc.Ref('Fastmail Auth', aggs=[
+              {
+                CoercionItemClass: 'WFDictionaryContentItem',
+                Type: 'WFCoercionVariableAggrandizement',
+              },
+              {
+                DictionaryKey: 'accountId',
+                Type: 'WFDictionaryValueVariableAggrandizement',
+              },
+            ]),
+          },
+          string: |||
+            {
+                "using": [
+                  "urn:ietf:params:jmap:core",
+                  "urn:ietf:params:jmap:mail"
+                ],
+                "methodCalls": [
+                  [
+                    "Email/query",
+                    {
+                      "accountId": "￼",
+                      "filter": {
+              "hasKeyword": "$flagged",
+              "notKeyword": "obsidian-created"
+                      },
+                      "sort": [{ "property": "receivedAt" }]
+                    },
+                    1
+                  ],
+                  [
+                    "Email/get",
+                    {
+                      "accountId": "￼",
+                      "#ids": {
+              "resultOf": 1,
+              "name": "Email/query",
+              "path": "/ids"
+                      },
+                      "properties": [
+              "messageId",
+              "threadId",
+              "subject",
+              "from",
+              "preview",
+              "receivedAt"
+                      ]
+                    },
+                    2
+                  ]
+                ]
+              }
+
+          |||,
         },
-        {
-          DictionaryKey: 'accountId',
-          Type: 'WFDictionaryValueVariableAggrandizement',
-        },
-      ])]),
+        WFSerializationType: 'WFTextTokenString',
+      },
     }),
 
     sc.Action('is.workflow.actions.downloadurl', name='Contents of URL', params={
@@ -193,54 +253,83 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.gettext', name='Text', params={
-      WFTextActionText: sc.Str(['---\nupdated_at: ', sc.Ref('URL Encoded Text'), '\ncreated_at: ', sc.Ref('From'), '\nimported_at: ', {
-        Aggrandizements: [
-          {
-            CoercionItemClass: 'WFDictionaryContentItem',
-            Type: 'WFCoercionVariableAggrandizement',
+      WFTextActionText: {
+        Value: {
+          attachmentsByRange: {
+            '{129, 1}': sc.Ref('URL Encoded Text'),
+            '{148, 1}': sc.Ref('From'),
+            '{151, 1}': {
+              Aggrandizements: [
+                {
+                  CoercionItemClass: 'WFDictionaryContentItem',
+                  Type: 'WFCoercionVariableAggrandizement',
+                },
+                {
+                  DictionaryKey: 'subject',
+                  Type: 'WFDictionaryValueVariableAggrandizement',
+                },
+              ],
+              Type: 'Variable',
+              VariableName: 'Repeat Item',
+            },
+            '{16, 1}': sc.Ref('Email Received At', aggs=[
+              {
+                Type: 'WFDateFormatVariableAggrandizement',
+                WFDateFormatStyle: 'ISO 8601',
+                WFISO8601IncludeTime: true,
+              },
+            ]),
+            '{175, 1}': {
+              Aggrandizements: [
+                {
+                  CoercionItemClass: 'WFDictionaryContentItem',
+                  Type: 'WFCoercionVariableAggrandizement',
+                },
+                {
+                  DictionaryKey: 'preview',
+                  Type: 'WFDictionaryValueVariableAggrandizement',
+                },
+              ],
+              Type: 'Variable',
+              VariableName: 'Repeat Item',
+            },
+            '{30, 1}': sc.Ref('Email Received At', aggs=[
+              {
+                Type: 'WFDateFormatVariableAggrandizement',
+                WFDateFormatStyle: 'ISO 8601',
+                WFISO8601IncludeTime: true,
+              },
+            ]),
+            '{45, 1}': {
+              Aggrandizements: [
+                {
+                  Type: 'WFDateFormatVariableAggrandizement',
+                  WFDateFormatStyle: 'ISO 8601',
+                  WFISO8601IncludeTime: true,
+                },
+              ],
+              Type: 'CurrentDate',
+            },
+            '{98, 1}': sc.Ref('URL'),
           },
-          {
-            DictionaryKey: 'subject',
-            Type: 'WFDictionaryValueVariableAggrandizement',
-          },
-        ],
-        Type: 'Variable',
-        VariableName: 'Repeat Item',
-      }, '\nimport_source: Fastmail Pinned Email\nfastmail_url: ', sc.Ref('Email Received At', aggs=[
-        {
-          Type: 'WFDateFormatVariableAggrandizement',
-          WFDateFormatStyle: 'ISO 8601',
-          WFISO8601IncludeTime: true,
+          string: |||
+            ---
+              updated_at: ￼
+              created_at: ￼
+              imported_at: ￼
+              import_source: Fastmail Pinned Email
+              fastmail_url: ￼
+              email_message_url: message://￼
+              ---
+              # Email from ￼: ￼
+
+              > [!quote] Preview
+              > ￼
+
+          |||,
         },
-      ]), '\nemail_message_url: message://', {
-        Aggrandizements: [
-          {
-            CoercionItemClass: 'WFDictionaryContentItem',
-            Type: 'WFCoercionVariableAggrandizement',
-          },
-          {
-            DictionaryKey: 'preview',
-            Type: 'WFDictionaryValueVariableAggrandizement',
-          },
-        ],
-        Type: 'Variable',
-        VariableName: 'Repeat Item',
-      }, '\n---\n# Email from ', sc.Ref('Email Received At', aggs=[
-        {
-          Type: 'WFDateFormatVariableAggrandizement',
-          WFDateFormatStyle: 'ISO 8601',
-          WFISO8601IncludeTime: true,
-        },
-      ]), ': ', {
-        Aggrandizements: [
-          {
-            Type: 'WFDateFormatVariableAggrandizement',
-            WFDateFormatStyle: 'ISO 8601',
-            WFISO8601IncludeTime: true,
-          },
-        ],
-        Type: 'CurrentDate',
-      }]),
+        WFSerializationType: 'WFTextTokenString',
+      },
     }),
 
     sc.Action('is.workflow.actions.gettext', name='New File Name', params={
@@ -272,7 +361,11 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.comment', {
-      WFCommentActionText: '^always seems to always set the file extension to .txt\n\nThis works around that:',
+      WFCommentActionText: |||
+        ^always seems to always set the file extension to .txt
+
+          This works around that:
+      |||,
     }),
 
     sc.Action('is.workflow.actions.file.rename', {
@@ -281,16 +374,60 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.gettext', name='Text', params={
-      WFTextActionText: sc.Str(['{\n  "using": [\n    "urn:ietf:params:jmap:core",\n    "urn:ietf:params:jmap:mail"\n  ],\n  "methodCalls": [\n    [\n      "Email/set",\n      {\n        "accountId": "', sc.Ref('Fastmail Auth', aggs=[
-        {
-          CoercionItemClass: 'WFDictionaryContentItem',
-          Type: 'WFCoercionVariableAggrandizement',
+      WFTextActionText: {
+        Value: {
+          attachmentsByRange: {
+            '{159, 1}': sc.Ref('Fastmail Auth', aggs=[
+              {
+                CoercionItemClass: 'WFDictionaryContentItem',
+                Type: 'WFCoercionVariableAggrandizement',
+              },
+              {
+                DictionaryKey: 'accountId',
+                Type: 'WFDictionaryValueVariableAggrandizement',
+              },
+            ]),
+            '{194, 1}': {
+              Aggrandizements: [
+                {
+                  CoercionItemClass: 'WFDictionaryContentItem',
+                  Type: 'WFCoercionVariableAggrandizement',
+                },
+                {
+                  DictionaryKey: 'id',
+                  Type: 'WFDictionaryValueVariableAggrandizement',
+                },
+              ],
+              Type: 'Variable',
+              VariableName: 'Repeat Item',
+            },
+          },
+          string: |||
+            {
+                "using": [
+                  "urn:ietf:params:jmap:core",
+                  "urn:ietf:params:jmap:mail"
+                ],
+                "methodCalls": [
+                  [
+                    "Email/set",
+                    {
+                      "accountId": "￼",
+                      "update": {
+              "￼": {
+                "keywords/obsidian-created": true
+              }
+                      }
+                    },
+                    1
+                  ]
+                ]
+              }
+
+          |||,
         },
-        {
-          DictionaryKey: 'accountId',
-          Type: 'WFDictionaryValueVariableAggrandizement',
-        },
-      ])]),
+        WFSerializationType: 'WFTextTokenString',
+      },
     }),
 
     sc.Action('is.workflow.actions.downloadurl', {

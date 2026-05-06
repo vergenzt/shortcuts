@@ -105,7 +105,22 @@ local sc = import 'shortcuts.libsonnet';
       }),
 
       sc.Action('is.workflow.actions.gettext', name='Text', params={
-        WFTextActionText: sc.Str(['set -euo pipefail\n\n', sc.Ref('Set Args')]),
+        WFTextActionText: {
+          Value: {
+            attachmentsByRange: {
+              '{19, 1}': sc.Ref('Set Args'),
+              '{22, 1}': sc.Ref('Vars.Script'),
+            },
+            string: |||
+              set -euo pipefail
+
+                ￼
+
+                ￼
+            |||,
+          },
+          WFSerializationType: 'WFTextTokenString',
+        },
       }),
 
       sc.Action('is.workflow.actions.setvariable', {
@@ -114,7 +129,18 @@ local sc = import 'shortcuts.libsonnet';
       }),
 
       sc.Action('is.workflow.actions.gettext', name='Text', params={
-        WFTextActionText: sc.Str(['cd "/Users/tim_vergenz/Library/Mobile Documents/iCloud~md~obsidian/Documents/brain"\n', sc.Ref('Vars.Script')]),
+        WFTextActionText: {
+          Value: {
+            attachmentsByRange: {
+              '{84, 1}': sc.Ref('Vars.Script'),
+            },
+            string: |||
+              cd "/Users/tim_vergenz/Library/Mobile Documents/iCloud~md~obsidian/Documents/brain"
+                ￼
+            |||,
+          },
+          WFSerializationType: 'WFTextTokenString',
+        },
       }),
 
       sc.Action('is.workflow.actions.setvariable', {
@@ -131,7 +157,21 @@ local sc = import 'shortcuts.libsonnet';
     ]).Else_([
 
       sc.Action('is.workflow.actions.gettext', name='Text', params={
-        WFTextActionText: sc.Str(['cd ~brain\n\n', sc.Ref('Vars.Script'), '\n\nopen shortcuts://']),
+        WFTextActionText: {
+          Value: {
+            attachmentsByRange: {
+              '{11, 1}': sc.Ref('Vars.Script'),
+            },
+            string: |||
+              cd ~brain
+
+                ￼
+
+                open shortcuts://
+            |||,
+          },
+          WFSerializationType: 'WFTextTokenString',
+        },
       }),
 
       sc.Action('is.workflow.actions.setvariable', {
