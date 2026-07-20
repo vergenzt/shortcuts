@@ -104,7 +104,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
     sc.Action('is.workflow.actions.gettext', name='Two Newlines', params={
-      WFTextActionText: '\n\n\n',
+      WFTextActionText: '\n\n',
     }),
 
     sc.Action('is.workflow.actions.text.combine', name='Combined Text', params={
@@ -466,7 +466,7 @@ local sc = import 'shortcuts.libsonnet';
     }),
 
   ]),
-  WFWorkflowClientVersion: '4528.0.4.2',
+  WFWorkflowClientVersion: '4610',
   WFWorkflowHasOutputFallback: false,
   WFWorkflowHasShortcutInputVariables: false,
   WFWorkflowIcon: {

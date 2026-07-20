@@ -6,6 +6,8 @@ rule:
   has:
     pattern: $CONTENTS
     regex: '\\n' # escaped newline
+  not:
+    regex: '"\\n+"'  # not JUST escaped newlines
 
 transform:
   CONTENTS_UNESCAPED_NL:
